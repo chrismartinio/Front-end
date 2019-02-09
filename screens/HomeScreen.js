@@ -31,6 +31,10 @@ export default class HomeScreen extends React.Component {
     console.log('value: ', value);
   }
 
+  handleSignUp = () => {
+    this.props.navigation.navigate('SignUp');
+  }
+
 
   render() {
     return (
@@ -47,9 +51,6 @@ export default class HomeScreen extends React.Component {
               style={styles.welcomeImage}
             />
           </View>
-
-
-
           <View style={styles.formContainer}>
             <Form
               type={User}
@@ -68,7 +69,7 @@ export default class HomeScreen extends React.Component {
 
         <Button
           title="Sign Up!"
-          onPress={this.handleSubmit}
+          onPress={this.handleSignUp}
           color='blue'
         />
 
