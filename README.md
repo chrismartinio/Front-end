@@ -19,6 +19,9 @@ Installation reqs:
 *Problems occur if watchman isn't installed as rn uses it.
 
 Project Start:
-  1: yarn start
+  1: yarn start inside project directory
   2: choose a simulator to run. 
   3. dev stuff!!
+  
+  
+  
