@@ -7,15 +7,30 @@ import {
   Text,
   TouchableOpacity,
   View,
+  Button
 } from 'react-native';
 import { WebBrowser } from 'expo';
 
 import { MonoText } from '../components/StyledText';
+import t from 'tcomb-form-native';
+
+const Form = t.form.Form;
+
+const User = t.struct({
+  username: t.String,
+  password: t.String,
+});
 
 export default class HomeScreen extends React.Component {
   static navigationOptions = {
     header: null,
   };
+
+  handleSubmit = () => {
+    const value = this._form.getValue();
+    console.log('value: ', value);
+  }
+
 
   render() {
     return (
@@ -35,27 +50,27 @@ export default class HomeScreen extends React.Component {
 
 
 
+          <View style={styles.formContainer}>
+            <Form
+              type={User}
+              ref={c => this._form = c}
+            />
+          </View>
 
 
+      <View>
+        <Button
+          title="Sign in!"
+          onPress={this.handleSubmit}
+          color='blue'
+        />
+      </View>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        <Button
+          title="Sign Up!"
+          onPress={this.handleSubmit}
+          color='blue'
+        />
 
         </ScrollView>
       </View>
@@ -101,6 +116,12 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
   },
+  formContainer: {
+    justifyContent: 'center',
+    marginTop: 50,
+    padding: 10,
+    backgroundColor: '#ffffff',
+  },
   developmentModeText: {
     marginBottom: 20,
     color: 'rgba(0,0,0,0.4)',
@@ -114,11 +135,11 @@ const styles = StyleSheet.create({
   welcomeContainer: {
     alignItems: 'center',
     marginTop: 10,
-    marginBottom: 20,
+    marginBottom: 10,
   },
   welcomeImage: {
-    width: 100,
-    height: 80,
+    width: 400,
+    height: 250,
     resizeMode: 'contain',
     marginTop: 3,
     marginLeft: -10,
