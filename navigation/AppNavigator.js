@@ -2,11 +2,17 @@ import React from 'react';
 import { createAppContainer, createSwitchNavigator, createStackNavigator } from 'react-navigation';
 
 import MainTabNavigator from './MainTabNavigator';
-import SignupPage from '../screens/SignUpFlow/SignupPage'
+import SignupPage from '../screens/SignUpFlow/SignupPage';
+import RegistrationPage from '../screens/SignUpFlow/RegistrationPage';
+import SelfiePage from '../screens/SignUpFlow/SelfiePage';
+import ProfilePage from '../screens/SignUpFlow/ProfilePage';
 
 
 const AuthStack = createStackNavigator({
-  SignUp: SignupPage
+  SignUp: SignupPage,
+  Registration: RegistrationPage,
+  Selfie: SelfiePage,
+  Profile: ProfilePage
 })
 
 export default createAppContainer(createSwitchNavigator(

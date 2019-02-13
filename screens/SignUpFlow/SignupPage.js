@@ -10,7 +10,7 @@ import {
   Button
 } from 'react-native';
 import { WebBrowser } from 'expo';
-
+import { LinearGradient } from 'expo';
 import t from 'tcomb-form-native';
 
 const Form = t.form.Form;
@@ -40,30 +40,43 @@ export default class SignupPage extends React.Component {
   handleSubmit = () => {
     const value = this._form.getValue();
     console.log('value: ', value);
+    this.props.navigation.navigate('Registration');
   }
 
 
   render() {
     return (
       <View style={styles.container}>
+
         <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
+          <LinearGradient
+            colors={['#4c669f', '#3b5998', '#192f6a']}
+            style={{ alignItems: 'center'}}>
+
+
+
+
           <View style={styles.formContainer}>
-            <Form
-              type={details}
-              ref={d => this._form = d}
+                <Form
+                  type={details}
+                  ref={d => this._form = d}
+                />
+              </View>
+
+
+          <View>
+            <Button
+              title="Select Your Activities!"
+              onPress={this.handleSubmit}
+              color='blue'
             />
           </View>
 
 
-      <View>
-        <Button
-          title="Select Your Activities!"
-          onPress={this.handleSubmit}
-          color='blue'
-        />
-      </View>
 
+          </LinearGradient>
         </ScrollView>
+
       </View>
     );
   }
