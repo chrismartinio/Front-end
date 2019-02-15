@@ -3,6 +3,10 @@ import { Platform, StatusBar, StyleSheet, View } from 'react-native';
 import { AppLoading, Asset, Font, Icon } from 'expo';
 import AppNavigator from './navigation/AppNavigator';
 
+// either load here
+// but i think exporting this to another file
+// then wrapping that file in provider
+
 export default class App extends React.Component {
   state = {
     isLoadingComplete: false,

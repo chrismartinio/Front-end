@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, ImageBackground } from 'react-native';
-import image from '../Img/profileBackground.png';
+import image from '../../assets/images/profileBackground.png';
 
 const ProfileContainer = (props) =>
   <View style={styles.containerStyle}>

@@ -27,7 +27,7 @@ var Gender = t.enums({
 var details = t.struct({
   name: t.String,
   surname: t.String,
-  email: t.maybe(t.String),
+  email: t.String,
   age: Positive, // refinement
   gender: Gender,
 });
