@@ -42,13 +42,13 @@ exports.register = function (req, res, next) {
     // Check for registration errors
     console.log("body", req.body);
     const email = req.body.email;
-    const dateOfBirth = req.body.profile.dateOfBirth;
+    const dateOfBirth = req.body.dateOfBirth;
     const password = req.body.password;
-    const firstName = req.body.profile.firstName;
-    const lastName = req.body.profile.lastName;
-    const country = req.body.profile.country;
-    const city = req.body.profile.city;
-    const username = req.body.profile.username
+    const firstName = req.body.firstName;
+    const lastName = req.body.lastName;
+    const country = req.body.country;
+    const city = req.body.city;
+    const username = req.body.username
 
     // Return error if no username provided
     if (!username) {
@@ -68,45 +68,56 @@ exports.register = function (req, res, next) {
         return res.status(422).send({ error: 'You must enter a date of birth.' });
     }
 
-    User.findOne({ email: email }, function (err, existingUser) {
+    User.findOne({ email: email }, function (err, existingEmail) {
         console.log("existingEmail", existingEmail)
         if (err) { return next(err); }
-
-        // If user is not unique, return error
-        if (existingUser) {
+        // If email is not unique, return error
+        if (existingEmail) {
             return res.status(422).send({ error: 'That email address is already in use.' });
         }
 
-        // If email is unique and password was provided, create account
-        console.log(dateOfBirth, firstName, lastName, country, city, username)
-        let user = new User({
-            username: username,
-            password: password,
-
-            profile: {
-                email: email,
-                firstname: firstName,
-                lastName: lastName,
-                dateOfBirth: dateOfBirth,
-                country: country,
-                city: city
-            },
-        });
-        console.log('outside', user);
-        user.save(function (err, user) {
+        User.findOne({ username: username }, function (err, existingUsername) {
             if (err) { return next(err); }
 
-            // Subscribe member to Mailchimp list
-            // mailchimp.subscribeToNewsletter(user.email);
+            //If username is not unique, return error
 
-            // Respond with JWT if user was created
+            if (existingUsername) {
+                return res.status(422).send({
+                    error: 'That username is already in use.'
+                })
+            }
 
-            let userInfo = setUserInfo(user);
-            res.status(201).json({
-                token: 'JWT ' + generateToken(userInfo),
-                user: userInfo
+            // If email and username is unique and password was provided, create account
+            console.log(dateOfBirth, firstName, lastName, country, city, username)
+            let user = new User({
+                username: username,
+                password: password,
+
+                profile: {
+                    email: email,
+                    firstname: firstName,
+                    lastName: lastName,
+                    dateOfBirth: dateOfBirth,
+                    country: country,
+                    city: city
+                },
             });
-        });
+            console.log('outside', user);
+            user.save(function (err, user) {
+                if (err) { return next(err); }
+
+                // Subscribe member to Mailchimp list
+                // mailchimp.subscribeToNewsletter(user.email);
+
+                // Respond with JWT if user was created
+
+                let userInfo = setUserInfo(user);
+                res.status(201).json({
+                    token: 'JWT ' + generateToken(userInfo),
+                    user: userInfo
+                });
+            });
+        })
     });
 }
 

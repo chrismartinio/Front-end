@@ -6,18 +6,21 @@ const mongoose = require('mongoose'),
 // User Schema
 //================================
 const UserSchema = new Schema({
-    email: {
-        type: String,
-        lowercase: true,
-        unique: true,
-        required: true
-    },
     password: {
         type: String,
         required: true
     },
-
+    username: {
+        type: String,
+        required: true
+    },
     profile: {
+        email: {
+            type: String,
+            lowercase: true,
+            unique: true,
+            required: true
+        },
         firstname: { type: String },
         lastName: { type: String },
         dateOfBirth: { type: Date },
