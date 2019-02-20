@@ -1,15 +1,13 @@
 import { createStore, applyMiddleware } from 'redux';
 import axios from 'axios'
-import axiospromisemiddleware from 'axios-promise-middlware';
+import promise from 'redux-promise-middleware';
 import thunk from 'redux-thunk'
-import logger from 'redux-logger'
-// need to imoprt root reducer
-import rootReducer from './Reducers/RootReducer'
+import { createLogger } from 'redux-logger'
+// need to import root reducer
+import rootReducer from './Reducers/CreateProfileReducer'
 
+const middleware = applyMiddleware(thunk, createLogger())
 
-const middleware = applyMiddleware(thunk, logger, axiospromisemiddleware)
-const store = createStore(rootReducer, middleware)
-
-
-export default store;
-
+export default function configureStore(){
+  return createStore(rootReducer, middleware)
+}

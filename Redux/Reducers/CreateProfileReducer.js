@@ -1,5 +1,3 @@
-
-
 const CreateProfileReducer = (state ={profImage: null, name: null, likes:[]}, action) => {
   switch(action.type){
     case 'ADD_PROFILE_PICTURE':
