@@ -3,7 +3,8 @@ const AuthenticationController = require('./controllers/authentication'),
     ChatController = require('./controllers/chat'),
     express = require('express'),
     passportService = require('./config/passport'),
-    passport = require('passport');
+    passport = require('passport'),
+    s3Controller = require('./controllers/S3');
 
 // Middleware to require login/auth
 const requireAuth = passport.authenticate('jwt', { session: false });
@@ -13,7 +14,8 @@ module.exports = function (app) {
     // Initializing route groups
     const apiRoutes = express.Router(),
         authRoutes = express.Router(),
-        chatRoutes = express.Router();
+        chatRoutes = express.Router(),
+        S3 = express.Router();
 
     //=========================
     // Auth Routes
@@ -42,6 +44,15 @@ module.exports = function (app) {
 
     // Start new conversation
     chatRoutes.post('/new/:recipient', requireAuth, ChatController.newConversation);
+
+    // Set path for 
+    apiRoutes.use('/storage', S3);
+
+    // upload picture prior after login, before chat.
+    S3.post('/currentPicture', requireAuth, s3Controller.postCurrentPicture);
+
+    // download picture
+    S3.get('/currentPicture/:userId', requireAuth, s3Controller.getPicture);
 
     // Set url for API group routes
     app.use('/api', apiRoutes);
