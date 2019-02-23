@@ -1,12 +1,19 @@
-import React, { Component } from 'react'
-import { View, Text } from 'react-native'
-import { ActivityTag } from './ActivityTag'
+import React, { Component } from 'react';
+import { View, Text } from 'react-native';
+import { ActivityTag } from './ActivityTag';
+import { connect } from 'react-redux';
+
+import SetProfileLikesAction from '../../Redux/actions/SetProfileLikesAction'
 
 
 class Category extends Component {
   constructor() {
     super();
     this.renderActivityTags = this.renderActivityTags.bind(this);
+  }
+
+  handleRedux = () => {
+    this.props.SetProfileLikesAction('lol')
   }
 
   renderActivityTags() {
@@ -16,7 +23,7 @@ class Category extends Component {
     return listOfTags.map((Name, index) => {
       return (
         <View style={{width: '33%', height: 30, marginBottom:10 }} key={`001${index}`}>
-            <ActivityTag textContent={Name} key={`xo${index}`}/>
+            <ActivityTag textContent={Name} key={`xo${index}`} onPress={this.handleRedux}/>
         </View>
         );
     });
@@ -34,4 +41,14 @@ class Category extends Component {
   }
 }
 
-export default Category;
+const mapStateToProps = state => {
+  return {...state}
+}
+
+const mapDispatchToProps = dispatch => {
+  return {
+    SetProfileLikesAction: (payload) => dispatch(SetProfileLikesAction(payload))
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Category);
