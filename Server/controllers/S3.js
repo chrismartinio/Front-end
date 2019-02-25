@@ -5,12 +5,11 @@ const config = require('../config/main')
 const aws = require('aws-sdk');
 aws.config.update(config.S3);
 const s3 = new aws.S3();
-
+console.log(config.S3)
 const upload = multer({
     storage: multerS3({
         s3: s3,
-        bucket: 'medium-test',
-        acl: 'private',
+        bucket: 'blindlyapp',
         metadata: function (req, file, cb) {
             cb(null, { fieldName: file.fieldname });
         },

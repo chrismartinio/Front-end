@@ -6,7 +6,8 @@ module.exports = {
     // Setting port for server
     'port': process.env.PORT || 3000,
     'S3': {
-        secretAccessKey: '+xipJ905/hGHhM3Fod09vsNLfegd8DGN2jxoIuT4',
-        accessKeyId: 'AKIAJB7APCNF4JK2BH3A',
+        secretAccessKey: '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',
+        accessKeyId: 'AKIAJI4DJ2J5JOBNU36Q',
+        region: 'us-west-1'
     }
 }
