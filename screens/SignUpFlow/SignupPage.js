@@ -12,6 +12,8 @@ import {
 import { WebBrowser } from 'expo';
 import { LinearGradient } from 'expo';
 import t from 'tcomb-form-native';
+import { connect } from 'react-redux'
+import SetProfilePersonalAction from '../../storage/actions/SetProfilePersonalAction'
 
 const Form = t.form.Form;
 
@@ -32,14 +34,14 @@ var details = t.struct({
   gender: Gender,
 });
 
-export default class SignupPage extends React.Component {
+class SignupPage extends React.Component {
   static navigationOptions = {
     header: null,
   };
 
   handleSubmit = () => {
     const value = this._form.getValue();
-    console.log('value: ', value);
+    this.props.SetProfilePersonalAction(value)
     this.props.navigation.navigate('Registration');
   }
 
@@ -209,3 +211,12 @@ const styles = StyleSheet.create({
     color: '#2e78b7',
   },
 });
+
+const mapStateToProps = (state) => ({
+  ...state
+})
+const mapDispatchToProps = (dispatch) => ({
+  SetProfilePersonalAction: (payload) => dispatch(SetProfilePersonalAction(payload))
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(SignupPage);
