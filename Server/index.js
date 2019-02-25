@@ -12,6 +12,8 @@ mongoose.connect(config.database, { useNewUrlParser: true });
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
+
+
 // Start the server
 const server = app.listen(config.port);
 console.log('Your server is running on port ' + config.port + '.');
