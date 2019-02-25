@@ -505,4 +505,4 @@ buck-out/
 # End of https://www.gitignore.io/api/node,java,xcode,android,reactnative,androidstudio,visualstudiocode
 
 process.env
-main.js
+**/Server/config/main.js
