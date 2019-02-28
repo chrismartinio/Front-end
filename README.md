@@ -18,9 +18,9 @@ Installation reqs:
 
 *Problems occur if watchman isn't installed as rn uses it.
 Project Start:
-  1: yarn start inside project directory
-  2: choose a simulator to run.
-  3. dev stuff!!
+  1. create a key.js file in root directory.
+  2. export a object with secret access key/id. Can be found on trello back end board.
+  3. yarn start
 
 
 

@@ -13,6 +13,8 @@ import { WebBrowser } from 'expo';
 
 import { MonoText } from '../components/StyledText';
 import t from 'tcomb-form-native';
+import axios from 'axios'
+import keys from '../key.js'
 
 const Form = t.form.Form;
 
@@ -26,15 +28,40 @@ export default class HomeScreen extends React.Component {
     header: null,
   };
 
+
+
+
   handleSubmit = () => {
     const value = this._form.getValue();
+
+    // front end check:
     console.log('value: ', value);
+    // axios request here:
+
+    this.checkValidity(value)
+
+    //if exists
+
+    //then navigate to next screen
   }
 
   handleSignUp = () => {
     this.props.navigation.navigate('SignUp');
   }
 
+  checkValidity = (signInData) => {
+
+    axios.get('http://localhost:3000/api/auth/register',{
+        params: {
+          accessKeyId: null
+      }
+    }).then((response)=>{
+      console.log('this is the res',response)
+    }).catch((err)=>{
+      console.log('this is error,',err)
+    })
+
+  }
 
   render() {
     return (
