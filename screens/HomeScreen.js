@@ -14,6 +14,7 @@ import { WebBrowser } from 'expo';
 import { MonoText } from '../components/StyledText';
 import t from 'tcomb-form-native';
 import axios from 'axios'
+import keys from '../key.js'
 
 const Form = t.form.Form;
 
@@ -52,7 +53,7 @@ export default class HomeScreen extends React.Component {
 
     axios.get('http://localhost:3000/api/auth/register',{
         params: {
-          signInData: signInData
+          accessKeyId: null
       }
     }).then((response)=>{
       console.log('this is the res',response)
