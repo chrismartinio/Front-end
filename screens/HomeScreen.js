@@ -14,7 +14,12 @@ import { WebBrowser } from 'expo';
 import { MonoText } from '../components/StyledText';
 import t from 'tcomb-form-native';
 import axios from 'axios'
+<<<<<<< HEAD
 //import keys from '../key.js'
+=======
+import { Constants } from 'expo';
+const { manifest } = Constants;
+>>>>>>> e7bb34c54b829d18cdf623c1398fe6b324066742
 
 const Form = t.form.Form;
 
@@ -50,15 +55,16 @@ export default class HomeScreen extends React.Component {
   }
 
   checkValidity = (signInData) => {
+    const api = (typeof manifest.packagerOpts === `object`) && manifest.packagerOpts.dev
+  ? manifest.debuggerHost.split(`:`).shift().concat(`:3000`)
+  : `api.example.com`;
 
-    axios.get('http://localhost:3000/api/auth/register',{
-        params: {
-          accessKeyId: null
-      }
+    axios.get(`${api}/api/auth/register`,{
+
     }).then((response)=>{
       console.log('this is the res',response)
     }).catch((err)=>{
-      console.log('this is error,',err)
+      console.log(err)
     })
 
   }
