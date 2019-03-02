@@ -23,7 +23,7 @@ var Positive = t.refinement(t.Number, function (n) {
 var Gender = t.enums({
   M: 'Male',
   F: 'Female'
-});
+},'Gender');
 
 var details = t.struct({
   name: t.String,
@@ -47,28 +47,29 @@ class SignupPage extends React.Component {
 
   render(){
     return(
-      <View  style={{flex:1}}>
+      <View  textStyle={{ color: '#fff' }}style={{flex:1}}pickerContainer={{margin:100}}>
 
         <LinearGradient
-          colors={['#18cdf6', '#43218c']}
+          textStyle={{ color: '#fff' }}colors={['#18cdf6', '#43218c']}
           style={{flex:1}}
         >
 
 
-        <ScrollView>
+        <ScrollView >
 
-          <Text style={{top:70}}>
+          <Text textStyle={{ color: '#fff' }}style={{margin:10}}>
             This is the sign-up page
           </Text>
 
-          <View style={{top:100}}>
-          <Form
+          <View textStyle={{ color: '#fff' }}style={{margin:10}}>
+          <Form 
+                  style={{color:'black'}}
                   type={details}
                   ref={d => this._form = d}
                 />
           </View>
 
-          <View style={{top:250,width:'50%', backgroundColor:'white', right:'-25%'}}>
+          <View textStyle={{ color: '#fff' }}style={{width:'50%', backgroundColor:'white', right:'-25%',color:'black'}}>
             <Button
               onPress={this.handleSubmit}
               title='Continue'
@@ -86,7 +87,100 @@ class SignupPage extends React.Component {
   }
 
 }
-
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+  },
+  formContainer: {
+    justifyContent: 'center',
+    marginTop: 0,
+    padding: 10,
+    backgroundColor: '#ffffff',
+  },
+  developmentModeText: {
+    marginBottom: 20,
+    color: 'rgba(0,0,0,0.4)',
+    fontSize: 14,
+    lineHeight: 19,
+    textAlign: 'center',
+  },
+  contentContainer: {
+    paddingTop: 0,
+  },
+  welcomeContainer: {
+    alignItems: 'center',
+    marginTop: 10,
+    marginBottom: 10,
+  },
+  welcomeImage: {
+    width: 400,
+    height: 250,
+    resizeMode: 'contain',
+    marginTop: 3,
+    marginLeft: -10,
+  },
+  getStartedContainer: {
+    alignItems: 'center',
+    marginHorizontal: 50,
+  },
+  homeScreenFilename: {
+    marginVertical: 7,
+  },
+  codeHighlightText: {
+    color: 'rgba(96,100,109, 0.8)',
+  },
+  codeHighlightContainer: {
+    backgroundColor: 'rgba(0,0,0,0.05)',
+    borderRadius: 3,
+    paddingHorizontal: 4,
+  },
+  getStartedText: {
+    fontSize: 17,
+    color: 'rgba(96,100,109, 1)',
+    lineHeight: 24,
+    textAlign: 'center',
+  },
+  tabBarInfoContainer: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    ...Platform.select({
+      ios: {
+        shadowColor: 'black',
+        shadowOffset: { height: -3 },
+        shadowOpacity: 0.1,
+        shadowRadius: 3,
+      },
+      android: {
+        elevation: 20,
+      },
+    }),
+    alignItems: 'center',
+    backgroundColor: '#fbfbfb',
+    paddingVertical: 20,
+  },
+  tabBarInfoText: {
+    fontSize: 17,
+    color: 'rgba(96,100,109, 1)',
+    textAlign: 'center',
+  },
+  navigationFilename: {
+    marginTop: 5,
+  },
+  helpContainer: {
+    marginTop: 15,
+    alignItems: 'center',
+  },
+  helpLink: {
+    paddingVertical: 15,
+  },
+  helpLinkText: {
+    fontSize: 14,
+    color: '#2e78b7',
+  }
+});
 const mapStateToProps = (state) => ({
   ...state
 })

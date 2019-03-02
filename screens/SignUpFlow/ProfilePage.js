@@ -90,7 +90,7 @@ class ProfilePage extends React.Component {
 
     return this.state.likes.map((Name, index) => {
       return (
-        <View style={{width: '33%', height: 30, marginBottom: 10 }} key={`001${index}`}>
+        <View style={{color:'black',width: '33%', height: 30, marginBottom: 10 }} key={`001${index}`}>
             <ActivityTag textContent={Name} key={`pf1${index}`}/>
         </View>
         );
