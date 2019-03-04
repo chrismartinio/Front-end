@@ -12,15 +12,17 @@ const UserSchema = new Schema({
     },
     username: {
         type: String,
+        unique: true,
+        required: true
+    },
+    email: {
+        unique: true,
+        type: String,
+        lowercase: true,
         required: true
     },
     profile: {
-        email: {
-            type: String,
-            lowercase: true,
-            unique: true,
-            required: true
-        },
+
         firstname: { type: String },
         lastName: { type: String },
         dateOfBirth: { type: Date },
@@ -32,6 +34,7 @@ const UserSchema = new Schema({
 },
     {
         timestamps: true
+
     });
 
 // Pre-save of user to database, hash password if password is modified or new

@@ -11,14 +11,14 @@ function generateToken(user) {
 
 // Set user info from request
 function setUserInfo(request) {
-    console.log("request", request);
     return {
         _id: request._id,
         firstName: request.profile.firstName,
         lastName: request.profile.lastName,
         email: request.email,
         dateOfBirth: request.dateOfBirth,
-        profile: request.profile
+        profile: request.profile,
+        username: request.username
     };
 }
 //========================================
@@ -40,7 +40,6 @@ exports.login = function (req, res, next) {
 //========================================
 exports.register = function (req, res, next) {
     // Check for registration errors
-    console.log("body", req.body);
     const email = req.body.email;
     const dateOfBirth = req.body.dateOfBirth;
     const password = req.body.password;
@@ -69,7 +68,6 @@ exports.register = function (req, res, next) {
     }
 
     User.findOne({ email: email }, function (err, existingEmail) {
-        console.log("existingEmail", existingEmail)
         if (err) { return next(err); }
         // If email is not unique, return error
         if (existingEmail) {
@@ -88,13 +86,11 @@ exports.register = function (req, res, next) {
             }
 
             // If email and username is unique and password was provided, create account
-            console.log(dateOfBirth, firstName, lastName, country, city, username)
             let user = new User({
                 username: username,
                 password: password,
-
+                email: email,
                 profile: {
-                    email: email,
                     firstname: firstName,
                     lastName: lastName,
                     dateOfBirth: dateOfBirth,
@@ -102,7 +98,6 @@ exports.register = function (req, res, next) {
                     city: city
                 },
             });
-            console.log('outside', user);
             user.save(function (err, user) {
                 if (err) { return next(err); }
 
