@@ -49,7 +49,7 @@ module.exports = function (app) {
     apiRoutes.use('/storage', S3);
 
     // upload picture prior after login, before chat.
-    S3.post('/currentPicture', requireAuth, s3Controller.postCurrentPicture);
+    S3.post('/currentPicture/:userId', requireAuth, s3Controller.postCurrentPicture);
 
     // download picture
     S3.get('/currentPicture/:userId', requireAuth, s3Controller.getPicture);

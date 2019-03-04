@@ -1,11 +1,12 @@
 const multer = require('multer');
 const multerS3 = require('multer-s3');
 const config = require('../config/main')
+const Picture = require('../models/picture')
 //configure AWS
 const aws = require('aws-sdk');
 aws.config.update(config.S3);
 const s3 = new aws.S3();
-console.log(config.S3)
+
 const upload = multer({
     storage: multerS3({
         s3: s3,
@@ -27,7 +28,12 @@ exports.postCurrentPicture = function (req, res, next) {
             return res.status(422).send({ errors: [{ title: 'Image Upload Error', detail: err.message }] });
         }
 
-        return res.json({ 'imageUrl': req.file.location });
+        let picture = new Picture({
+            key: req.file.key,
+            user: req.params.userId
+        });
+
+        return res.json({ 'imageUrl': req.body });
     });
 }
 exports.getPicture = function (req, res, next) {
