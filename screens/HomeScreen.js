@@ -55,8 +55,10 @@ export default class HomeScreen extends React.Component {
   ? manifest.debuggerHost.split(`:`).shift().concat(`:3000`)
   : `api.example.com`;
 
-    axios.get(`${api}/api/auth/register`,{
+  console.log(signInData)
 
+    axios.post(`http://${api}/api/auth/login`,{
+      body: signInData
     }).then((response)=>{
       console.log('this is the res',response)
     }).catch((err)=>{

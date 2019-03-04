@@ -28,7 +28,7 @@ module.exports = function (app) {
     authRoutes.post('/register', AuthenticationController.register);
 
     // Login route
-    authRoutes.post('/login', requireLogin, AuthenticationController.login);
+    authRoutes.post('/login', AuthenticationController.login);
 
     // Set chat routes as a subgroup/middleware to apiRoutes
     apiRoutes.use('/chat', chatRoutes);
@@ -45,7 +45,7 @@ module.exports = function (app) {
     // Start new conversation
     chatRoutes.post('/new/:recipient', requireAuth, ChatController.newConversation);
 
-    // Set path for 
+    // Set path for
     apiRoutes.use('/storage', S3);
 
     // upload picture prior after login, before chat.
