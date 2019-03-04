@@ -18,18 +18,44 @@ import {
 
 import { LinearGradient } from 'expo'
 import axios from 'axios'
+import { connect } from 'react-redux'
 
-export default class ProfilePage extends React.Component {
+class ProfilePage extends React.Component {
 
   constructor(props) {
     super(props);
-    this.state = { profile: [],
+    this.state = {
+      profile: [],
       tagSelect: false,
+      someState: null,
       likes: ['lol', 'food', 'engineering', 'other stuff', 'loool']
     };
   }
 
-    renderTag() {
+  //https://hackernoon.com/replacing-componentwillreceiveprops-with-getderivedstatefromprops-c3956f7ce607
+  // this is for trelling if state changed
+  // if state changed then we use component did mount;
+
+  static getDerivedStateFromProps(nextProps, prevState){
+    if(nextProps !== prevState){
+      //return new state in object
+      return {someState:nextProps}
+    }
+    else return null
+  }
+
+  componentDidUpdate(prevProps, PrevState){
+    if(prevProps !== this.props){
+      //perfrom some operation here if we are updating:
+    alert('we register a change!')
+
+    this.setState({someState: this.props});
+    this.classMethod();
+    }
+  }
+
+
+  renderTag() {
     switch (this.state.tagSelect) {
       case true:
         return (
@@ -60,16 +86,20 @@ export default class ProfilePage extends React.Component {
         ))
 
       );
-     }
+    }
 
     return this.state.likes.map((Name, index) => {
       return (
-        <View style={{width: '33%', height: 30, marginBottom: 10 }} key={`001${index}`}>
+        <View style={{color:'black',width: '33%', height: 30, marginBottom: 10 }} key={`001${index}`}>
             <ActivityTag textContent={Name} key={`pf1${index}`}/>
         </View>
         );
     });
   }
+
+  static get
+
+
 
   componentWillMount() {
     axios.get('https://rallycoding.herokuapp.com/api/music_albums')
@@ -81,9 +111,6 @@ export default class ProfilePage extends React.Component {
       });
   }
 
-  handleProfileSubmit = () => {
-
-  }
 
   render(){
     return (
@@ -114,3 +141,9 @@ export default class ProfilePage extends React.Component {
     );
   }
 }
+
+const mapStateToProps = (state) => ({
+  ...state
+})
+
+export default connect(mapStateToProps)(ProfilePage);

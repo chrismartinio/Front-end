@@ -88,6 +88,8 @@ lint/tmp/
 gen-external-apklibs
 output.json
 
+
+
 ### AndroidStudio ###
 # Covers files to be ignored for android development using Android Studio.
 

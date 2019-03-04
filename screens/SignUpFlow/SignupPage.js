@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react'
 import {
   Image,
   Platform,
@@ -9,11 +9,12 @@ import {
   View,
   Button
 } from 'react-native';
-import { WebBrowser } from 'expo';
 import { LinearGradient } from 'expo';
-import t from 'tcomb-form-native';
-
+// import Categories from '../../components/SignUpFlow/Categories'
 const Form = t.form.Form;
+import t from 'tcomb-form-native';
+import { connect } from 'react-redux'
+import SetProfilePersonalAction from '../../storage/actions/SetProfilePersonalAction'
 
 var Positive = t.refinement(t.Number, function (n) {
   return n >= 18;
@@ -22,7 +23,7 @@ var Positive = t.refinement(t.Number, function (n) {
 var Gender = t.enums({
   M: 'Male',
   F: 'Female'
-});
+},'Gender');
 
 var details = t.struct({
   name: t.String,
@@ -31,90 +32,61 @@ var details = t.struct({
   age: Positive, // refinement
   gender: Gender,
 });
+class SignupPage extends React.Component {
+  // static navigationOptions = {
+  //   header: null,
+  // };
 
-export default class SignupPage extends React.Component {
-  static navigationOptions = {
-    header: null,
-  };
+  //having null header means no back  button is present!
 
   handleSubmit = () => {
     const value = this._form.getValue();
-    console.log('value: ', value);
+    this.props.SetProfilePersonalAction(value)
     this.props.navigation.navigate('Registration');
   }
 
+  render(){
+    return(
+      <View  textStyle={{ color: '#fff' }}style={{flex:1}}pickerContainer={{margin:100}}>
 
-  render() {
-    return (
-      <View style={styles.container}>
-
-        <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
-          <LinearGradient
-            colors={['#4c669f', '#3b5998', '#192f6a']}
-            style={{ alignItems: 'center'}}>
-
+        <LinearGradient
+          textStyle={{ color: '#fff' }}colors={['#18cdf6', '#43218c']}
+          style={{flex:1}}
+        >
 
 
+        <ScrollView >
 
-          <View style={styles.formContainer}>
-                <Form
+          <Text textStyle={{ color: '#fff' }}style={{margin:10}}>
+            This is the sign-up page
+          </Text>
+
+          <View textStyle={{ color: '#fff' }}style={{margin:10}}>
+          <Form 
+                  style={{color:'black'}}
                   type={details}
                   ref={d => this._form = d}
                 />
-              </View>
+          </View>
 
-
-          <View>
+          <View textStyle={{ color: '#fff' }}style={{width:'50%', backgroundColor:'white', right:'-25%',color:'black'}}>
             <Button
-              title="Select Your Activities!"
               onPress={this.handleSubmit}
+              title='Continue'
               color='blue'
             />
           </View>
 
 
-
-          </LinearGradient>
         </ScrollView>
 
+
+        </LinearGradient>
       </View>
-    );
+      )
   }
 
-  _maybeRenderDevelopmentModeWarning() {
-    if (__DEV__) {
-      const learnMoreButton = (
-        <Text onPress={this._handleLearnMorePress} style={styles.helpLinkText}>
-          Learn more
-        </Text>
-      );
-
-      return (
-        <Text style={styles.developmentModeText}>
-          Development mode is enabled, your app will be slower but you can use useful development
-          tools. {learnMoreButton}
-        </Text>
-      );
-    } else {
-      return (
-        <Text style={styles.developmentModeText}>
-          You are not in development mode, your app will run at full speed.
-        </Text>
-      );
-    }
-  }
-
-  _handleLearnMorePress = () => {
-    WebBrowser.openBrowserAsync('https://docs.expo.io/versions/latest/guides/development-mode');
-  };
-
-  _handleHelpPress = () => {
-    WebBrowser.openBrowserAsync(
-      'https://docs.expo.io/versions/latest/guides/up-and-running.html#can-t-see-your-changes'
-    );
-  };
 }
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -122,7 +94,7 @@ const styles = StyleSheet.create({
   },
   formContainer: {
     justifyContent: 'center',
-    marginTop: 50,
+    marginTop: 0,
     padding: 10,
     backgroundColor: '#ffffff',
   },
@@ -134,7 +106,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   contentContainer: {
-    paddingTop: 30,
+    paddingTop: 0,
   },
   welcomeContainer: {
     alignItems: 'center',
@@ -207,5 +179,14 @@ const styles = StyleSheet.create({
   helpLinkText: {
     fontSize: 14,
     color: '#2e78b7',
-  },
+  }
 });
+const mapStateToProps = (state) => ({
+  ...state
+})
+const mapDispatchToProps = (dispatch) => ({
+  SetProfilePersonalAction: (payload) => dispatch(SetProfilePersonalAction(payload))
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(SignupPage);
+

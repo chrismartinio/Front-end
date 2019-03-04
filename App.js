@@ -4,7 +4,7 @@ import { Platform, StatusBar, StyleSheet, View } from 'react-native';
 import { AppLoading, Asset, Font, Icon } from 'expo';
 import AppNavigator from './navigation/AppNavigator';
 import { Provider } from 'react-redux';
-import configureStore from './Redux/Store';
+import configureStore from './storage/Store';
 
 // either load here
 // but i think exporting this to another file
