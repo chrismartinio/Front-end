@@ -14,12 +14,9 @@ import { WebBrowser } from 'expo';
 import { MonoText } from '../components/StyledText';
 import t from 'tcomb-form-native';
 import axios from 'axios'
-<<<<<<< HEAD
-//import keys from '../key.js'
-=======
+
 import { Constants } from 'expo';
 const { manifest } = Constants;
->>>>>>> e7bb34c54b829d18cdf623c1398fe6b324066742
 
 const Form = t.form.Form;
 
