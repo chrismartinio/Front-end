@@ -77,7 +77,14 @@ export default class HomeScreen extends React.Component {
   //     console.log(err)
   //   })
 
-  signInWithFacebook()
+  var fbData = signInWithFacebook()
+  fbData.then((data)=>{
+    console.log(data.data)
+    //this.props.navigation.navigate('Chat')
+  }).catch((err)=>{
+    console.log(err)
+  })
+
 
   }
 
