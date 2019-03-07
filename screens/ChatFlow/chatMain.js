@@ -1,22 +1,66 @@
-import React, { Component } from 'react'
-import {View, Button, scrollableView, Text } from 'react-native'
+import React from 'react';
+import {
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 
-class Chat extends Component{
-  constructor(){
-    super()
-  }
+class Main extends React.Component {
+  static navigationOptions = {
+    title: 'Chatter',
+  };
 
-  render(){
-    return(
+  state = {
+    name: '',
+  };
+
+  onPress = () =>
+    this.props.navigation.navigate('ChatR', { name: this.state.name });
+
+  onChangeText = name => this.setState({ name });
+
+  render() {
+    return (
       <View>
-        <Text>
-          this is chat room!
-        </Text>
+        <Text style={styles.title}>Enter your name:</Text>
+        <TextInput
+          style={styles.nameInput}
+          placeHolder="John Cena"
+          onChangeText={this.onChangeText}
+          value={this.state.name}
+        />
+        <TouchableOpacity onPress={this.onPress}>
+          <Text style={styles.buttonText}>Next</Text>
+        </TouchableOpacity>
       </View>
-      )
+    );
   }
 }
 
-export default Chat;
+const offset = 24;
+const styles = StyleSheet.create({
+  title: {
+    marginTop: offset,
+    marginLeft: offset,
+    fontSize: offset,
+  },
+  nameInput: {
+    height: offset * 2,
+
+    margin: offset,
+    paddingHorizontal: offset,
+    borderColor: '#111111',
+    borderWidth: 1,
+  },
+  buttonText: {
+    marginLeft: offset,
+    fontSize: offset,
+  },
+});
+
+export default Main;
+
 
 

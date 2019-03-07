@@ -7,6 +7,7 @@ import RegistrationPage from '../screens/SignUpFlow/RegistrationPage';
 import SelfiePage from '../screens/SignUpFlow/SelfiePage';
 import ProfilePage from '../screens/SignUpFlow/ProfilePage';
 import ChatPage from '../screens/ChatFlow/chatMain';
+import ChatRoom from '../screens/ChatFlow/chatRoom';
 
 
 const AuthStack = createStackNavigator({
@@ -17,7 +18,8 @@ const AuthStack = createStackNavigator({
 })
 
 const ChatStack = createStackNavigator({
-  Chat: ChatPage
+  Chat: ChatPage,
+  ChatR: ChatRoom
 })
 
 export default createAppContainer(createSwitchNavigator(

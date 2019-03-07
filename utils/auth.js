@@ -1,4 +1,4 @@
-import  firebase from './mainFire'
+import firebase from './mainFire'
 
 // send data to back end: or to configure
 
@@ -18,7 +18,6 @@ export async function signInWithFacebook() {
 
   switch (type) {
     case 'success': {
-      console.log(firebase.default)
       await firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL);  // Set persistent auth state
       const credential = firebase.auth.FacebookAuthProvider.credential(token);
       const facebookProfileData = await firebase.auth().signInAndRetrieveDataWithCredential(credential);  // Sign in with Facebook credential
