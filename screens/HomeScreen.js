@@ -14,6 +14,7 @@ import { WebBrowser } from 'expo';
 import { MonoText } from '../components/StyledText';
 import t from 'tcomb-form-native';
 import axios from 'axios'
+import { signInWithFacebook } from '../utils/auth.js'
 
 import { Constants } from 'expo';
 const { manifest } = Constants;
@@ -52,19 +53,31 @@ export default class HomeScreen extends React.Component {
   }
 
   checkValidity = (signInData) => {
-    const api = (typeof manifest.packagerOpts === `object`) && manifest.packagerOpts.dev
-  ? manifest.debuggerHost.split(`:`).shift().concat(`:3000`)
-  : `api.example.com`;
+    //500 err
+  //   const api = (typeof manifest.packagerOpts === `object`) && manifest.packagerOpts.dev
+  // ? manifest.debuggerHost.split(`:`).shift().concat(`:3000`)
+  // : `api.example.com`;
 
-  console.log(signInData)
 
-    axios.post(`http://${api}/api/auth/login`,{
-      body: signInData
-    }).then((response)=>{
-      console.log('this is the res',response)
-    }).catch((err)=>{
-      console.log(err)
-    })
+
+
+  // var bodyFormData = new FormData();
+  // bodyFormData.append('username', signInData.username)
+  // bodyFormData.append('password', signInData.password)
+
+  //   axios({
+  //     method:'post',
+  //     url:`http://${api}/api/auth/login`,
+  //     data: bodyFormData,
+  //     config:{headers: {'Content-Type': 'multipart/form-data' }}
+  //   }).then((response)=>{
+  //     console.log('this is the res',response)
+  //   }).catch((err)=>{
+
+  //     console.log(err)
+  //   })
+
+  signInWithFacebook()
 
   }
 
