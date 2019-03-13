@@ -19,15 +19,16 @@ import {
 import { LinearGradient } from 'expo'
 import axios from 'axios'
 import { connect } from 'react-redux'
+import firebase from '../../utils/mainFire'
 
 class ProfilePage extends React.Component {
 
   constructor(props) {
     super(props);
     this.state = {
-      profile: [],
+      profile: 'https://rallycoding.herokuapp.com/api/music_albums',
       tagSelect: false,
-      someState: null,
+      profileData: null,
       likes: ['lol', 'food', 'engineering', 'other stuff', 'loool']
     };
   }
@@ -36,10 +37,28 @@ class ProfilePage extends React.Component {
   // this is for trelling if state changed
   // if state changed then we use component did mount;
 
+  //howwever we lose all input in child component
+  // if parent component changes with every change
+
+  // problem: when we send a dispatch in a parent component
+      // we also send another dispatch in the next component screen
+      // which causes the input from the parent to be erased in redux for some reason
+
+      //possible fix: sign in during categories: then
+
+  //possible fix is to just only change on specific differences: for example
+  // we can only change with email change
+
+  //fix: workaround: only when all details in sign up page are filled out does the data send
+
+
+
   static getDerivedStateFromProps(nextProps, prevState){
-    if(nextProps !== prevState){
+    console.log('comparisons!',nextProps, prevState)
+    if(nextProps.CreateProfileReducer !== prevState.profileData){
       //return new state in object
-      return {someState:nextProps}
+
+      return {profileData:nextProps}
     }
     else return null
   }
@@ -47,11 +66,31 @@ class ProfilePage extends React.Component {
   componentDidUpdate(prevProps, PrevState){
     if(prevProps !== this.props){
       //perfrom some operation here if we are updating:
-    alert('we register a change!')
 
-    this.setState({someState: this.props});
+    this.setState({profileData: this.props.CreateProfileReducer});
+
+
     this.classMethod();
     }
+  }
+
+  startInitialSignUp = (data) => {
+
+    //front end check here
+    //console.log('this is the prof data:',this.state.profileData.CreateProfileReducer.data)
+    const { email, password } = this.state.profileData.CreateProfileReducer.data
+
+    if(email && password){
+      console.log('were running')
+      firebase.auth().createUserWithEmailAndPassword(email, password).catch(function(error) {
+        // Handle Errors here.
+        var errorCode = error.code;
+        var errorMessage = error.message;
+        console.log(errorMessage, errorCode)
+        // ...
+      });
+
+     }
   }
 
 
@@ -61,7 +100,7 @@ class ProfilePage extends React.Component {
         return (
         this.state.likes.map((value, key) => (
             <ActivityTag
-              onPress={this.handleProfileSubmit}
+              onPress={this.startInitialSignUp}
               buttonStyle={{
                 backgroundColor: '#007aff',
                 shadowColor: '#000',
@@ -79,7 +118,7 @@ class ProfilePage extends React.Component {
 
           this.state.likes.map((value, key) => (
           <ActivityTag
-            onPress={this.handleProfileSubmit}
+            onPress={this.startInitialSignUp}
             textContent={value}
             key={`profile${key}`}
           />
@@ -95,20 +134,6 @@ class ProfilePage extends React.Component {
         </View>
         );
     });
-  }
-
-  static get
-
-
-
-  componentWillMount() {
-    axios.get('https://rallycoding.herokuapp.com/api/music_albums')
-      .then((res) => {
-        this.setState({ profile: res.data });
-      })
-      .catch((err) => {
-        console.log(err);
-      });
   }
 
 
@@ -131,11 +156,15 @@ class ProfilePage extends React.Component {
           </View>
         </CardSection>
 
+
         <CardSection>
-          <ConfirmationButton
-            title={'Approve your profile'}
-            style={{ borderColor: '#ff1493', color: '#ff1493' }}
-          />
+          <View>
+            <ConfirmationButton
+              title={'Approve your profile'}
+              style={{ borderColor: '#ff1493', color: '#ff1493' }}
+              onPress={this.startInitialSignUp}
+            />
+          </View>
         </CardSection>
       </ScrollView>
     );

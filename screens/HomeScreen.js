@@ -34,15 +34,15 @@ export default class HomeScreen extends React.Component {
 
 
 
-  handleSubmit = () => {
+  handleEmailAndPasswordSignin = () => {
     const value = this._form.getValue();
 
     // front end check:
     console.log('value: ', value);
     // axios request here:
 
-    this.checkValidity(value)
 
+    this.props.navigation.navigate('chat');
     //if exists
 
     //then navigate to next screen
@@ -52,40 +52,40 @@ export default class HomeScreen extends React.Component {
     this.props.navigation.navigate('SignUp');
   }
 
-  checkValidity = (signInData) => {
-    //500 err
-  //   const api = (typeof manifest.packagerOpts === `object`) && manifest.packagerOpts.dev
-  // ? manifest.debuggerHost.split(`:`).shift().concat(`:3000`)
-  // : `api.example.com`;
+  handleSocialMediaSignIn = (event) => {
+    const value = this._form.getValue();
+    //66 = fb
+    //76= google
+    // 86  twitter
+    console.log(event.target)
+    switch(event.target){
+      case 67 :
+        this.checkFaceBookValidity(value)
+        console.log('checked in with fb')
+        break;
+      case 77:
+        // google auth
+        break;
+      case 87:
+        // twitter auth
+        break;
+      default:
+        console.log('broken');
+
+    }
+
+  }
 
 
 
-
-  // var bodyFormData = new FormData();
-  // bodyFormData.append('username', signInData.username)
-  // bodyFormData.append('password', signInData.password)
-
-  //   axios({
-  //     method:'post',
-  //     url:`http://${api}/api/auth/login`,
-  //     data: bodyFormData,
-  //     config:{headers: {'Content-Type': 'multipart/form-data' }}
-  //   }).then((response)=>{
-  //     console.log('this is the res',response)
-  //   }).catch((err)=>{
-
-  //     console.log(err)
-  //   })
-
-  var fbData = signInWithFacebook()
-  fbData.then((data)=>{
-    console.log(data.data)
-    this.props.navigation.navigate('Chat')
-  }).catch((err)=>{
-    console.log(err)
-  })
-
-
+  checkFaceBookValidity = (signInData) => {
+    var fbData = signInWithFacebook()
+    fbData.then((data)=>{
+      console.log(data.data)
+      this.props.navigation.navigate('Chat')
+    }).catch((err)=>{
+      console.log(err)
+    })
   }
 
   render() {
@@ -111,11 +111,12 @@ export default class HomeScreen extends React.Component {
           </View>
 
 
-      <View>
+      <View style={styles.container}>
         <Button
           title="Sign in!"
-          onPress={this.handleSubmit}
+          onPress={(e)=>this.handleEmailAndPasswordSignin(e)}
           color='blue'
+          key='100'
         />
       </View>
 
@@ -124,6 +125,26 @@ export default class HomeScreen extends React.Component {
           onPress={this.handleSignUp}
           color='blue'
         />
+
+        <View style={{flex:1, flexDirection:'row', justifyContent:'center'}}>
+          <Button
+            title="facebook"
+            onPress={this.handleSocialMediaSignIn}
+            color='blue'
+          />
+
+        <Button
+          title="google"
+          onPress={this.handleSocialMediaSignIn}
+          color='blue'
+        />
+
+        <Button
+          title="twitter"
+          onPress={this.handleSocialMediaSignIn}
+          color='blue'
+        />
+        </View>
 
         </ScrollView>
       </View>
@@ -191,8 +212,8 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   welcomeImage: {
-    width: 400,
-    height: 250,
+    width: 300,
+    height: 200,
     resizeMode: 'contain',
     marginTop: 3,
     marginLeft: -10,

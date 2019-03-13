@@ -22,15 +22,17 @@ var Positive = t.refinement(t.Number, function (n) {
 
 var Gender = t.enums({
   M: 'Male',
-  F: 'Female'
+  F: 'Female',
+  T: 'Trans/CIS',
+  U: 'Unidentified'
 },'Gender');
 
 var details = t.struct({
   name: t.String,
-  surname: t.String,
   email: t.String,
+  password: t.String,
   age: Positive, // refinement
-  gender: Gender,
+  gender: Gender
 });
 class SignupPage extends React.Component {
   // static navigationOptions = {
@@ -41,8 +43,42 @@ class SignupPage extends React.Component {
 
   handleSubmit = () => {
     const value = this._form.getValue();
-    this.props.SetProfilePersonalAction(value)
-    this.props.navigation.navigate('Registration');
+
+
+    const nullCheck = (value) => {
+        if(value !== null){
+          return true
+        }
+      return false
+    }
+
+    const emailCheck = (email) =>{
+
+      // email validty check?
+      const checkAT = email.indexOf('@')
+      const checkCOM = email.indexOf('.com')
+        if(checkAT > 0 && checkCOM > 0 && email.length > 4){
+          return true
+        }
+      alert("Please Properly insert a email with a '@' & a '.com'")
+      return false
+    }
+
+    const passwordCheck = (password) => {
+      if(password.length > 6 ){
+        return true
+      }
+
+      return false
+    }
+
+    if(nullCheck(value) && emailCheck(value.email) && passwordCheck(value.password)){
+      for(let key in value){
+        value[key] = JSON.stringify(value[key])
+      }
+      this.props.SetProfilePersonalAction(value)
+      this.props.navigation.navigate('Registration');
+    }
   }
 
   render(){
@@ -58,11 +94,12 @@ class SignupPage extends React.Component {
         <ScrollView >
 
           <Text textStyle={{ color: '#fff' }}style={{margin:10}}>
-            This is the sign-up page
+            Passwords must be greater than 6 characters
+            emails must include a '@' & '.com'
           </Text>
 
           <View textStyle={{ color: '#fff' }}style={{margin:10}}>
-          <Form 
+          <Form
                   style={{color:'black'}}
                   type={details}
                   ref={d => this._form = d}
