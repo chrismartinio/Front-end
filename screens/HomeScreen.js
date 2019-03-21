@@ -42,7 +42,7 @@ export default class HomeScreen extends React.Component {
     // axios request here:
 
 
-    this.props.navigation.navigate('chat');
+    this.props.navigation.navigate('Chat');
     //if exists
 
     //then navigate to next screen

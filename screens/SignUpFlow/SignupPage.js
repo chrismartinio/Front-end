@@ -41,6 +41,10 @@ class SignupPage extends React.Component {
 
   //having null header means no back  button is present!
 
+  handleBackToSignIn = () => {
+    this.props.navigation.navigate('SignIn')
+  }
+
   handleSubmit = () => {
     const value = this._form.getValue();
 
@@ -110,6 +114,14 @@ class SignupPage extends React.Component {
             <Button
               onPress={this.handleSubmit}
               title='Continue'
+              color='blue'
+            />
+          </View>
+
+          <View textStyle={{ color: '#fff' }}style={{width:'50%', backgroundColor:'white', right:'-25%',color:'black'}}>
+            <Button
+              onPress={this.handleBackToSignIn}
+              title='Back To Main Page'
               color='blue'
             />
           </View>
