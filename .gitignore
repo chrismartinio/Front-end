@@ -38,6 +38,8 @@ proguard/
 # Android Studio captures folder
 captures/
 
+ChatServer/node_modules
+
 # IntelliJ
 *.iml
 .idea/workspace.xml

@@ -18,9 +18,12 @@ Installation reqs:
 
 *Problems occur if watchman isn't installed as rn uses it.
 Project Start:
-  1. create a key.js file in root directory.
-  2. export a object with secret access key/id. Can be found on trello back end board.
-  3. yarn start
+1. start ngrok server
+ $ ./ngrok http 3000
+2. start Chatmain server in ChatServer directory
+  $ nodemon Server.js
+3. Start front end in project directory
+  $ yarn start
 
 
 
