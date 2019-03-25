@@ -79,6 +79,8 @@ export default class App extends React.Component {
 
   // next: add updateUsername function
   updateUsername = username => {
+    // pull redux username and email then load it.
+
     this.setState({
       username
     });
