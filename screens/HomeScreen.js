@@ -41,7 +41,7 @@ export default class HomeScreen extends React.Component {
     console.log('value: ', value);
     // axios request here:
 
-    const userName = value.split('@')[0]
+
     // use action to send data to store.
 
 
