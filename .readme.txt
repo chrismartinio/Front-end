@@ -17,6 +17,13 @@ Installation reqs:
    
 *Problems occur if watchman isn't installed as rn uses it.
 
+Start chat server:
+1: 'cd ChatServer' to open the chat server directory
+2: 'node Server' to start the chat server on http://localhost:3000
+3: confirm http://localhost:3000 says "all green" in browser
+4: 'cd ..' to return to main directory
+5: './ngrok htpp 3000' to start ngrok tunnel
+
 Project Start:
   1: yarn start
   2: choose a simulator to run. 
