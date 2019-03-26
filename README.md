@@ -17,6 +17,9 @@ Installation reqs:
    https://docs.expo.io/versions/v32.0.0/workflow/android-studio-emulator/
 
 *Problems occur if watchman isn't installed as rn uses it.
+
+You will have to change the chatServer line 16 of chatMain.js (currntly http://10.0.0.246:3000/users) to the physical IP address of your computer NOT the local host IP address. It should be in your network settings.
+
 Project Start:
 1. start ngrok server
  $ ./ngrok http 3000
