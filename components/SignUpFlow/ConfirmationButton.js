@@ -19,7 +19,7 @@ const ConfirmationButton = ({ title, style, onPress }) => {
   );
 };
 
-const styles = {
+const styles = StyleSheet.create({
   buttonStyle: {
     backgroundColor: '#fff', //customizable
     borderColor: '#007aff', //customizable
@@ -38,7 +38,7 @@ const styles = {
     paddingTop: 10,
     paddingBottom: 10,
   }
-};
+});
 
 export { ConfirmationButton };
 

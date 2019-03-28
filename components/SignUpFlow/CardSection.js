@@ -6,7 +6,7 @@ const CardSection = (props) =>
     {props.children}
   </View>;
 
-const styles = {
+const styles = StyleSheet.create({
   containerStyle: {
     flex: 1,
     borderBottomWidth: 1,
@@ -18,6 +18,6 @@ const styles = {
     position: 'relative',
 
   }
-};
+});
 
 export { CardSection };
