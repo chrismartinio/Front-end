@@ -115,7 +115,6 @@ class ProfilePage extends React.Component {
       );
       default:
         return (
-
           this.state.likes.map((value, key) => (
           <ActivityTag
             onPress={this.startInitialSignUp}
