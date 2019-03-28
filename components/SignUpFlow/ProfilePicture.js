@@ -13,10 +13,10 @@ const ProfilePicture = ({ height, width, radius }) =>
     />
   </View>;
 
-const styles = {
+const styles = StyleSheet.create({
   imageStyles: {
     justifyContent: 'space-around',
   }
-};
+});
 
 export { ProfilePicture };

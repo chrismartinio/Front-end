@@ -13,7 +13,7 @@ const Header = ({ headerText }) => {
   );
 };
 
-const styles = {
+const styles = StyleSheet.create({
   viewStyle: {
     backgroundColor: '#F8F8F8',
     justifyContent: 'center',
@@ -29,7 +29,7 @@ const styles = {
     alignItems: 'center',
     paddingTop: 15
   }
-};
+});
 
 // make the component available to other parts of the app
 export { Header };

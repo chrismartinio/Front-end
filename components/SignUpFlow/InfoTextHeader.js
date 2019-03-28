@@ -11,8 +11,8 @@ const InfoTextHeader = () => {
   );
 };
 
-const styles = {
+const styles = StyleSheet.create({
 
-}
+});
 
 export { InfoTextHeader };

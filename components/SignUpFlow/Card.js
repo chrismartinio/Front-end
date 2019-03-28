@@ -7,7 +7,7 @@ const Card = (props) =>
   </View>;
 
 
-const styles = {
+const styles = StyleSheet.create({
   containerStyle: {
     borderWidth: 1,
     borderRadius: 2,
@@ -19,6 +19,6 @@ const styles = {
     marginTop: 10,
     backgroundColor: '#fff'
   }
-};
+});
 
 export { Card };

@@ -13,7 +13,7 @@ const ActivityTag = ({ buttonStyle, textStyle, onPress, textContent = 'food'}) =
   );
 };
 
-const styles = {
+const styles = StyleSheet.create({
   tagStyles: {
     borderColor: '#007aff',
     flex: 1,
@@ -34,6 +34,6 @@ const styles = {
     paddingTop: 5,
     paddingBottom: 5,
   }
-};
+});
 
 export { ActivityTag };

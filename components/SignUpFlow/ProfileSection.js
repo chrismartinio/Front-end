@@ -6,7 +6,7 @@ const ProfileSection = (props) =>
     {props.children}
   </View>;
 
-const styles = {
+const styles = StyleSheet.create({
   pictureContainer: {
     justifyContent: 'center',
     alignItems: 'center',
@@ -20,6 +20,6 @@ const styles = {
     shadowRadius: 5,
     elevation: 1
   }
-};
+});
 
 export { ProfileSection };

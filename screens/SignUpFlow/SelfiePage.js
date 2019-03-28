@@ -12,11 +12,11 @@ import Camera from '../../components/SignUpFlow/Camera';
 import SetProfilePictureAction from '../../storage/actions/SetProfilePictureAction';
 import { connect } from 'react-redux'
 
-const styles = {
+const styles = StyleSheet.create({
   imageStyles: {
     justifyContent: 'space-around',
   }
-};
+});
 
 class SelfiePage extends React.Component {
 

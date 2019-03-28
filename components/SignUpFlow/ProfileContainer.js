@@ -12,7 +12,7 @@ const ProfileContainer = (props) =>
     </ImageBackground>
   </View>;
 
-const styles = {
+const styles = StyleSheet.create({
   containerStyle: {
     borderBottomLeftRadius: 150,
     borderBottomRightRadius: 150,
@@ -23,6 +23,6 @@ const styles = {
     width: null,
     resizeMode: 'contain',
   }
-};
+});
 
 export { ProfileContainer };
