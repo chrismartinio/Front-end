@@ -10,6 +10,7 @@ import {
   Button
 } from 'react-native';
 import { WebBrowser } from 'expo';
+import Firebase from '../storage/Store'
 
 import { MonoText } from '../components/StyledText';
 import t from 'tcomb-form-native';
@@ -25,6 +26,8 @@ const User = t.struct({
   username: t.String,
   password: t.String,
 });
+
+
 
 export default class HomeScreen extends React.Component {
   static navigationOptions = {

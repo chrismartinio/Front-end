@@ -1,5 +1,5 @@
 import React from 'react';
-import { TouchableOpacity, Text } from 'react-native';
+import { TouchableOpacity, Text, StyleSheet } from 'react-native';
 
 const ActivityTag = ({ buttonStyle, textStyle, onPress, textContent = 'food'}) => {
   const { tagStyles, textStyles } = styles;

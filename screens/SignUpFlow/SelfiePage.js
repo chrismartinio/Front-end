@@ -5,7 +5,8 @@ import {
     ScrollView,
     Text,
     TouchableOpacity,
-    Image
+    Image,
+    StyleSheet
 } from 'react-native';
 import { LinearGradient } from 'expo';
 import Camera from '../../components/SignUpFlow/Camera';

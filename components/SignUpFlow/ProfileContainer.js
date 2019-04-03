@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, ImageBackground } from 'react-native';
+import { View, ImageBackground, StyleSheet } from 'react-native';
 import image from '../../assets/images/profileBackground.png';
 
 const ProfileContainer = (props) =>

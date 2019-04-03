@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Image } from 'react-native';
+import { View, Image, StyleSheet } from 'react-native';
 
 //take a user picture and display it on the field
 const ProfilePicture = ({ height, width, radius }) =>
