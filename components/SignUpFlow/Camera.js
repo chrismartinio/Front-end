@@ -1,7 +1,11 @@
 import React from 'react';
-import { Text, View, TouchableOpacity } from 'react-native';
+import { Text, View, Image, TouchableOpacity, StyleSheet } from 'react-native';
 import { Camera, Permissions } from 'expo';
-
+const styles = StyleSheet.create({
+  imageStyles: {
+    //justifyContent: 'space-around'
+  }
+});
 export default class CameraExample extends React.Component {
   state = {
     hasCameraPermission: null,
@@ -72,9 +76,17 @@ export default class CameraExample extends React.Component {
                 }}
                 onPress={this.snap}
                 >
+              
                 <Text
-                  style={{ fontSize: 18, marginBottom: 0, color: 'white' }}>
-                  {' '}Snap{' '}
+                  style={{ fontSize: 18, marginBottom: 0, color: 'white' ,right:15}}>
+                  <Image
+      source={{ uri: 'https://cdn.pixabay.com/photo/2017/09/28/08/58/camera-2794769_960_720.png' }}
+      style={styles.imageStyles}
+      height={36}
+      width={48}
+      borderRadius={0}
+    />
+                  {/* {' '}Snap{' '} */}
                 </Text>
               </TouchableOpacity>
             </View>

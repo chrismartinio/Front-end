@@ -12,6 +12,7 @@ import { LinearGradient } from 'expo';
 import Camera from '../../components/SignUpFlow/Camera';
 import SetProfilePictureAction from '../../storage/actions/SetProfilePictureAction';
 import { connect } from 'react-redux'
+import { white } from 'ansi-colors';
 
 const styles = StyleSheet.create({
   imageStyles: {
@@ -78,25 +79,34 @@ class SelfiePage extends React.Component {
 
   render(){
     return(
-      <View style={{flex:1, bottom:-40}}>
+      
+      <View style={{flex:1,height:725}}>
+      <LinearGradient
+      
+          colors={['#18cdf6', '#43218c']}
+          style={{flex:1}}
+        >
+
         <ScrollView>
-          <Text>
-            This is the selfie page
+        <Text style={{fontSize:24,top:20,color:'white', alignSelf:"center"}}>
+            Take Photo
           </Text>
 
 
 
-          <View>
+          
+
+          <View style={{top:25,height:580, backgroundColor:'white'}}>
+          <Camera/>
+          </View>
+          {/* <View style={{top:35,width:'50%', backgroundColor:'white', right:'-25%'}}>
           <Button
             title='Submit selfie'
             onPress={this.handleSelfieSubmit}
           />
-          </View>
-
-          <View style={{height:500}}>
-          <Camera/>
-          </View>
+          </View> */}
         </ScrollView>
+        </LinearGradient>
       </View>
 
       )
