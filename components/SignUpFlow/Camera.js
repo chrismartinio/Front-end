@@ -1,11 +1,12 @@
 import React from 'react';
-import { Text, View, Image, TouchableOpacity, StyleSheet } from 'react-native';
+import { Text, View, Image, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
 import { Camera, Permissions } from 'expo';
 const styles = StyleSheet.create({
   imageStyles: {
     //justifyContent: 'space-around'
   }
 });
+var {height, width}= Dimensions.get('window')
 export default class CameraExample extends React.Component {
   state = {
     hasCameraPermission: null,

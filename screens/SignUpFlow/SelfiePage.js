@@ -6,13 +6,15 @@ import {
     Text,
     TouchableOpacity,
     Image,
-    StyleSheet
+    StyleSheet,
+    Dimensions
 } from 'react-native';
 import { LinearGradient } from 'expo';
 import Camera from '../../components/SignUpFlow/Camera';
 import SetProfilePictureAction from '../../storage/actions/SetProfilePictureAction';
 import { connect } from 'react-redux'
 import { white } from 'ansi-colors';
+var {height, width}= Dimensions.get('window')
 
 const styles = StyleSheet.create({
   imageStyles: {
@@ -80,7 +82,7 @@ class SelfiePage extends React.Component {
   render(){
     return(
       
-      <View style={{flex:1,height:725}}>
+      <View style={{flex:1,height:height}}>
       <LinearGradient
       
           colors={['#18cdf6', '#43218c']}
@@ -96,7 +98,7 @@ class SelfiePage extends React.Component {
 
           
 
-          <View style={{top:25,height:580, backgroundColor:'white'}}>
+          <View style={{top:height/20,height:height/1.65, backgroundColor:'white'}}>
           <Camera/>
           </View>
           {/* <View style={{top:35,width:'50%', backgroundColor:'white', right:'-25%'}}>
