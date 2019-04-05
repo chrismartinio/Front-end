@@ -36,7 +36,6 @@ export default class LinksScreen extends React.Component {
   }
 
   handleChange = () => {
-
     if(this._form.getValue().Component === 'sPROFILE'){
       this.props.navigation.navigate('TestProfile');
     } else if(this._form.getValue().Component === 'sREGISTRATION'){
@@ -49,7 +48,6 @@ export default class LinksScreen extends React.Component {
       this.props.navigation.navigate('TestPhotoReview');
     }
   }
-
   // order
   // drop dowwn menu
   // rendered component
