@@ -5,15 +5,19 @@ import ProfilePage from './SignUpFlow/ProfilePage'
 import RegistrationPage from './SignUpFlow/RegistrationPage'
 import SelfiePage from './SignUpFlow/SelfiePage'
 import SignupPage from './SignUpFlow/SignupPage'
+import PhotoReview from './SignUpFlow/PhotoReview'
 import t from 'tcomb-form-native';
 const Form = t.form.Form;
+
+console.log(PhotoReview)
 
 
 var Component = t.enums({
   sPROFILE: 'SignupFlow/ProfilePage',
   sREGISTRATION: 'SignupFlow/RegistrationPage',
   sSELFIE: 'SignupFlow/SelfiePage',
-  sSIGNUP: 'SignupFlow/SignupPage'
+  sSIGNUP: 'SignupFlow/SignupPage',
+  sPHOTOREVIEW: 'SignupFlow/PhotoReview'
 },'Component');
 
 var details = t.struct({
@@ -49,6 +53,10 @@ export default class LinksScreen extends React.Component {
       this.setState({
         CurrentScreen: SignupPage
       })
+    } else if(this._form.getValue().Component === 'sPHOTOREVIEW'){
+      this.setState({
+        CurrentScreen: PhotoReview
+      })
     } else {
       this.setState({
         CurrentScreen: ProfilePage
@@ -64,16 +72,16 @@ export default class LinksScreen extends React.Component {
     let CurrentScreen = this.state.CurrentScreen
     return (
       <ScrollView style={styles.container}>
+        <View>
+          <CurrentScreen />
+        </View>
+
         <Form
             style={{color:'black'}}
             type={details}
             ref={d => this._form = d}
             onChange={this.handleChange}
         />
-
-        <View>
-        <CurrentScreen />
-        </View>
 
       </ScrollView>
     );

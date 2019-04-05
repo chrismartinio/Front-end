@@ -81,10 +81,10 @@ class SelfiePage extends React.Component {
 
   render(){
     return(
-      
+
       <View style={{flex:1,height:height}}>
       <LinearGradient
-      
+
           colors={['#18cdf6', '#43218c']}
           style={{flex:1}}
         >
@@ -96,7 +96,7 @@ class SelfiePage extends React.Component {
 
 
 
-          
+
 
           <View style={{top:height/20,height:height/1.65, backgroundColor:'white'}}>
           <Camera/>
