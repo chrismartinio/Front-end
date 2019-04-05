@@ -5,9 +5,19 @@ import MainTabNavigator from './MainTabNavigator';
 import SignupPage from '../screens/SignUpFlow/SignupPage';
 import RegistrationPage from '../screens/SignUpFlow/RegistrationPage';
 import SelfiePage from '../screens/SignUpFlow/SelfiePage';
+import PhotoReview from '../screens/SignUpFlow/PhotoReview';
 import ProfilePage from '../screens/SignUpFlow/ProfilePage';
 import ChatPage from '../screens/ChatFlow/chatMain';
 import mainSignInPage from '../screens/HomeScreen'
+
+const TestStack = createStackNavigator({
+  TestSignUp: SignupPage,
+  TestRegistration: RegistrationPage,
+  TestSelfie: SelfiePage,
+  TestProfile: ProfilePage,
+  TestChatPage: ChatPage,
+  TestPhotoReview: PhotoReview
+})
 
 
 const AuthStack = createStackNavigator({
@@ -28,6 +38,7 @@ export default createAppContainer(createSwitchNavigator(
     Main: MainTabNavigator,
     Auth: AuthStack,
     Chat: ChatStack,
-    SignIn: mainSignInPage
+    SignIn: mainSignInPage,
+    Test: TestStack
   }
 ));

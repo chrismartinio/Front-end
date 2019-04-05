@@ -38,29 +38,15 @@ export default class LinksScreen extends React.Component {
   handleChange = () => {
 
     if(this._form.getValue().Component === 'sPROFILE'){
-      this.setState({
-        CurrentScreen: ProfilePage
-      })
+      this.props.navigation.navigate('TestProfile');
     } else if(this._form.getValue().Component === 'sREGISTRATION'){
-      this.setState({
-        CurrentScreen: RegistrationPage
-      })
+      this.props.navigation.navigate('TestRegistration');
     }  else if(this._form.getValue().Component === 'sSELFIE'){
-      this.setState({
-        CurrentScreen: SelfiePage
-      })
+      this.props.navigation.navigate('TestSelfie');
     } else if(this._form.getValue().Component === 'sSIGNUP'){
-      this.setState({
-        CurrentScreen: SignupPage
-      })
+      this.props.navigation.navigate('TestSignUp');
     } else if(this._form.getValue().Component === 'sPHOTOREVIEW'){
-      this.setState({
-        CurrentScreen: PhotoReview
-      })
-    } else {
-      this.setState({
-        CurrentScreen: ProfilePage
-      })
+      this.props.navigation.navigate('TestPhotoReview');
     }
   }
 
@@ -72,10 +58,6 @@ export default class LinksScreen extends React.Component {
     let CurrentScreen = this.state.CurrentScreen
     return (
       <ScrollView style={styles.container}>
-        <View>
-          <CurrentScreen />
-        </View>
-
         <Form
             style={{color:'black'}}
             type={details}
