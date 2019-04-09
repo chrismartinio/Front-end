@@ -6,18 +6,18 @@ import RegistrationPage from './SignUpFlow/RegistrationPage'
 import SelfiePage from './SignUpFlow/SelfiePage'
 import SignupPage from './SignUpFlow/SignupPage'
 import PhotoReview from './SignUpFlow/PhotoReview'
+import MatchBackground from '../components/ChatFlow/MatchBackground';
+
 import t from 'tcomb-form-native';
 const Form = t.form.Form;
-
-console.log(PhotoReview)
-
 
 var Component = t.enums({
   sPROFILE: 'SignupFlow/ProfilePage',
   sREGISTRATION: 'SignupFlow/RegistrationPage',
   sSELFIE: 'SignupFlow/SelfiePage',
   sSIGNUP: 'SignupFlow/SignupPage',
-  sPHOTOREVIEW: 'SignupFlow/PhotoReview'
+  sPHOTOREVIEW: 'SignupFlow/PhotoReview',
+  sCurrTest: 'Current Test Screen'
 },'Component');
 
 var details = t.struct({
@@ -46,11 +46,10 @@ export default class LinksScreen extends React.Component {
       this.props.navigation.navigate('TestSignUp');
     } else if(this._form.getValue().Component === 'sPHOTOREVIEW'){
       this.props.navigation.navigate('TestPhotoReview');
+    }  else if(this._form.getValue().Component === 'sCurrTest'){
+      this.props.navigation.navigate('TestScreen');
     }
   }
-  // order
-  // drop dowwn menu
-  // rendered component
 
   render() {
     let CurrentScreen = this.state.CurrentScreen

@@ -8,7 +8,8 @@ import SelfiePage from '../screens/SignUpFlow/SelfiePage';
 import PhotoReview from '../screens/SignUpFlow/PhotoReview';
 import ProfilePage from '../screens/SignUpFlow/ProfilePage';
 import ChatPage from '../screens/ChatFlow/chatMain';
-import mainSignInPage from '../screens/HomeScreen'
+import mainSignInPage from '../screens/HomeScreen';
+import TestScreen from '../components/ChatFlow/MatchBackground';
 
 const TestStack = createStackNavigator({
   TestSignUp: SignupPage,
@@ -16,7 +17,8 @@ const TestStack = createStackNavigator({
   TestSelfie: SelfiePage,
   TestProfile: ProfilePage,
   TestChatPage: ChatPage,
-  TestPhotoReview: PhotoReview
+  TestPhotoReview: PhotoReview,
+  TestScreen: TestScreen
 })
 
 
