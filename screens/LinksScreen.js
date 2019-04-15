@@ -7,6 +7,12 @@ import SelfiePage from './SignUpFlow/SelfiePage'
 import SignupPage from './SignUpFlow/SignupPage'
 import PhotoReview from './SignUpFlow/PhotoReview'
 import MatchBackground from '../components/ChatFlow/MatchBackground';
+import InitialMatchChoice from './ChatFlow/InitialMatchChoice'
+import Selection from './ChatFlow/Selection'
+import GhostingOthers from './ChatFlow/GhostingOthers'
+import GotGhosted from './ChatFlow/GotGhosted'
+import GotLucky from './ChatFlow/GotLuckyGoToChat'
+
 
 import t from 'tcomb-form-native';
 const Form = t.form.Form;
@@ -17,12 +23,17 @@ var Component = t.enums({
   sSELFIE: 'SignupFlow/SelfiePage',
   sSIGNUP: 'SignupFlow/SignupPage',
   sPHOTOREVIEW: 'SignupFlow/PhotoReview',
-  sCurrTest: 'Current Test Screen'
+  sCurrTest: 'Current Test Screen',
+  sSelection: 'ChatFlow/Selection',
+  sGhostingOthers:'ChatFlow/GhostOthers',
+  sGotGhosted: 'ChatFlow/GotGhosted',
+  sGotLucky: 'ChatFlowGotLucky',
 },'Component');
 
 var details = t.struct({
   Component: Component
 });
+
 
 export default class LinksScreen extends React.Component {
   static navigationOptions = {
@@ -48,7 +59,16 @@ export default class LinksScreen extends React.Component {
       this.props.navigation.navigate('TestPhotoReview');
     }  else if(this._form.getValue().Component === 'sCurrTest'){
       this.props.navigation.navigate('TestScreen');
+    } else if(this._form.getValue().Component === 'sSelection'){
+      this.props.navigation.navigate('Selection');
+    } else if(this._form.getValue().Component === 'sGhostingOthers'){
+      this.props.navigation.navigate('GhostingOthers');
+    } else if(this._form.getValue().Component === 'sGotGhosted'){
+      this.props.navigation.navigate('GotGhosted');
+    } else if(this._form.getValue().Component === 'sGotLucky'){
+      this.props.navigation.navigate('GotLucky');
     }
+
   }
 
   render() {

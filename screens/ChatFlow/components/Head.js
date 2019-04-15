@@ -12,7 +12,7 @@ class MatchHeader extends Component {
   render(){
     const styles = StyleSheet.create({
       Title: {
-        color: 'white',
+        color: 'pink',
         fontWeight: 'bold',
         margin: 'auto',
         textAlign: 'center'

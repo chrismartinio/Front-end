@@ -9,7 +9,13 @@ import PhotoReview from '../screens/SignUpFlow/PhotoReview';
 import ProfilePage from '../screens/SignUpFlow/ProfilePage';
 import ChatPage from '../screens/ChatFlow/chatMain';
 import mainSignInPage from '../screens/HomeScreen';
-import TestScreen from '../components/ChatFlow/MatchBackground';
+import TestScreen from '../screens/ChatFlow/InitialMatchChoice';
+import GhostingOthersScreen from '../screens/ChatFlow/GhostingOthers';
+import GotLucky from '../screens/ChatFlow/GotLuckyGoToChat';
+import InitialMatchChoice from '../screens/ChatFlow/InitialMatchChoice';
+import Selection from '../screens/ChatFlow/Selection';
+import GotGhosted from '../screens/ChatFlow/GotGhosted';
+
 
 const TestStack = createStackNavigator({
   TestSignUp: SignupPage,
@@ -31,6 +37,11 @@ const AuthStack = createStackNavigator({
 
 const ChatStack = createStackNavigator({
   Chat: ChatPage,
+  InitialMatchChoice:InitialMatchChoice,
+  GhostingOthers: GhostingOthersScreen,
+  GotLucky: GotLucky,
+  Selection: Selection,
+  GotGhosted: GotGhosted
 })
 
 export default createAppContainer(createSwitchNavigator(
