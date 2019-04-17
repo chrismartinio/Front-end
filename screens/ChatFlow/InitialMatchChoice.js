@@ -4,7 +4,6 @@ import React, { Component } from 'react';
 import { ScrollView, Text, StyleSheet, View, Dimensions, ActivityIndicator, Image, TouchableOpacity } from 'react-native';
 import { LinearGradient } from 'expo';
 import { ProfilePicture } from '../../components/SignUpFlow/ProfilePicture'
-import { AnimatedCircularProgress } from 'react-native-circular-progress';
 
 
 
