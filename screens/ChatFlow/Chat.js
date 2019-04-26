@@ -194,3 +194,40 @@ const styles = StyleSheet.create({
     fontSize: 16
   }
 });
+
+
+
+
+
+
+
+
+// InterpolateContainer = (array) => {
+//         for(let i = 0; i < array.length - 1; i++){
+
+//         }
+//       }
+
+//       SetComponentInterpolate = (componentX, componentY, direction=1) => {
+//         var snapshot= 50, radius = 100
+//         var inputRange = [], outputRange = [];
+//         for (var i=0; i<=snapshot; ++i) {
+//             var value = i/snapshot;
+//             var move = direction * Math.sin(value * Math.PI * 2) * radius;
+//             move+=this.centerXOffset;
+//             inputRange.push(value);
+//             outputRange.push(move);
+//         }
+//         componentX = this.animated.interpolate({ inputRange, outputRange });
+
+//         /// translateY
+//         inputRange = [], outputRange = [];
+//         for (i=0; i<=snapshot; ++i) {
+//             value = i/snapshot;
+//             move = -Math.cos(value * Math.PI * 2) * radius;
+//             move+=this.centerYOffset;
+//             inputRange.push(value);
+//             outputRange.push(move);
+//         }
+//         this.translateY = this.animated.interpolate({ inputRange, outputRange });
+// }

@@ -17,6 +17,7 @@ import GotLucky from './ChatFlow/GotLuckyGoToChat'
 import t from 'tcomb-form-native';
 const Form = t.form.Form;
 
+
 var Component = t.enums({
   sPROFILE: 'SignupFlow/ProfilePage',
   sREGISTRATION: 'SignupFlow/RegistrationPage',
@@ -45,6 +46,7 @@ export default class LinksScreen extends React.Component {
       CurrentScreen: ProfilePage
     }
   }
+
 
   handleChange = () => {
     if(this._form.getValue().Component === 'sPROFILE'){

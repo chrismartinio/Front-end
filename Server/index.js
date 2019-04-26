@@ -34,4 +34,4 @@ app.use(function (req, res, next) {
 });
 
 const router = require('./router');
-router(app);  
+router(app);
