@@ -38,6 +38,14 @@ export default class App extends React.Component {
     this.chatWithUser = null;
   }
 
+  componentDidUpdate(prevProps, prevState){
+
+    if( prevProps.messages !== prevState.messages &&this.state.messages.length - 1 !== 0){
+      console.log('messaages updates: 44', this.state.messages)
+    }
+  }
+
+
   render() {
     return (
       <View style={styles.container}>
@@ -246,7 +254,7 @@ export default class App extends React.Component {
       .subscribeToRoom({
         roomId: roomId,
         hooks: {
-          onNewMessage: this.onReceiveMessage,
+          onMessage: this.onReceiveMessage,
           onUserStartedTyping: this.onUserTypes,
           onUserStoppedTyping: this.onUserNotTypes
         },
@@ -271,7 +279,7 @@ export default class App extends React.Component {
   // next: add onReceiveMessage function
   onReceiveMessage = message => {
     let isCurrentUser = this.currentUser.id == message.sender.id ? true : false;
-
+    console.log('Recieved a message from store; line')
     let messages = [...this.state.messages];
     messages.push({
       key: message.id.toString(),

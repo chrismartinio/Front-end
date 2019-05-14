@@ -10,7 +10,8 @@ class ProfilePicture extends Component{
     super(props)
     this.state = {
       intensity: new Animated.Value(0),
-      blurRadius: 30,
+      blurRadius: 90,
+      intervalId:null
     }
   }
 
@@ -20,19 +21,26 @@ class ProfilePicture extends Component{
           blurRadius: --this.state.blurRadius
         })
       }
+
+      if(this.state.currentTime === 0){
+          clearInterval(this.state.intervalId)
+      }
     }
 
     componentDidMount(){
 
       this._animate();
       //will need to unmount this eventuall or will cause problems
-      setInterval(this.handleTimer, 100)
+      const id = setInterval(this.handleTimer, 1000)
+      this.setState({
+        intervalId:id
+      })
     }
 
    _animate = () => {
       let { intensity } = this.state;
       Animated.timing(intensity, {duration: 1, toValue: 100}).start(() => {
-        Animated.timing(intensity, {duration: 100, toValue: 0}).start();
+        Animated.timing(intensity, {duration: 9000000, toValue: 0}).start();
       });
    }
 
@@ -60,16 +68,16 @@ class ProfilePicture extends Component{
 const { height, width } = Dimensions.get('window')
 const styles = StyleSheet.create({
   AnimatedStyles: {
-    height:160,
-    width:160,
-    borderRadius:80,
+    height:180,
+    width:180,
+    borderRadius:90,
     zIndex:0 ,
   },
   imageStyles: {
     zIndex:0,
-    height: 160,
-    width:160,
-    borderRadius:80
+    height: 180,
+    width:180,
+    borderRadius:90
   }
 });
 

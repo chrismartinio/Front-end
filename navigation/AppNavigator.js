@@ -15,6 +15,9 @@ import GotLucky from '../screens/ChatFlow/GotLuckyGoToChat';
 import InitialMatchChoice from '../screens/ChatFlow/InitialMatchChoice';
 import Selection from '../screens/ChatFlow/Selection';
 import GotGhosted from '../screens/ChatFlow/GotGhosted';
+import CreateQuestionaire from '../screens/FindMatchFlow/matchCreateQuestionaire';
+import ReplyQuestionaire from '../screens/FindMatchFlow/matchCreateReply';
+import ViewQuestionaire from '../screens/FindMatchFlow/matchViewReply';
 
 
 const TestStack = createStackNavigator({
@@ -44,6 +47,12 @@ const ChatStack = createStackNavigator({
   GotGhosted: GotGhosted
 })
 
+const MatchStack = createStackNavigator({
+  CreateQuestionaire: CreateQuestionaire,
+  ViewQuestionaire: ViewQuestionaire,
+  ReplyQuestionaire: ReplyQuestionaire
+})
+
 export default createAppContainer(createSwitchNavigator(
   {
     // You could add another route here for authentication.
@@ -52,6 +61,7 @@ export default createAppContainer(createSwitchNavigator(
     Auth: AuthStack,
     Chat: ChatStack,
     SignIn: mainSignInPage,
+    Match: MatchStack,
     Test: TestStack
   }
 ));

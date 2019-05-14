@@ -12,6 +12,9 @@ import Selection from './ChatFlow/Selection'
 import GhostingOthers from './ChatFlow/GhostingOthers'
 import GotGhosted from './ChatFlow/GotGhosted'
 import GotLucky from './ChatFlow/GotLuckyGoToChat'
+import createQuestionnaire from './FindMatchFlow/matchCreateQuestionaire'
+import createReply from './FindMatchFlow/matchCreateReply'
+import ViewReply from './FindMatchFlow/matchViewReply'
 
 
 import t from 'tcomb-form-native';
@@ -29,6 +32,9 @@ var Component = t.enums({
   sGhostingOthers:'ChatFlow/GhostOthers',
   sGotGhosted: 'ChatFlow/GotGhosted',
   sGotLucky: 'ChatFlowGotLucky',
+  sCreateQuestionaire:'MatchFlow/CreateQuestionaire',
+  sCreateReply: 'MatchFlow/ReplyQuestionaire',
+  sViewReply:'MatchFlow/ViewQuestionnaire'
 },'Component');
 
 var details = t.struct({
@@ -69,6 +75,12 @@ export default class LinksScreen extends React.Component {
       this.props.navigation.navigate('GotGhosted');
     } else if(this._form.getValue().Component === 'sGotLucky'){
       this.props.navigation.navigate('GotLucky');
+    } else if(this._form.getValue().Component === 'sCreateQuestionaire'){
+      this.props.navigation.navigate('CreateQuestionaire');
+    } else if(this._form.getValue().Component === 'sCreateReply'){
+      this.props.navigation.navigate('ReplyQuestionaire');
+    } else if(this._form.getValue().Component === 'sViewReply'){
+      this.props.navigation.navigate('ViewQuestionaire');
     }
 
   }
