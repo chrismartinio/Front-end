@@ -1,9 +1,11 @@
 import React,{ Component } from 'react';
-import { Text, View, StyleSheet, ImageBackground, Dimensions, TouchableOpacity } from 'react-native';
+import { Text, View, StyleSheet, ImageBackground, Dimensions, TouchableOpacity, Platform, Picker } from 'react-native';
 import t from 'tcomb-form-native';
 import Profile from '../ChatFlow/components/circleTimer'
 
 const Form = t.form.Form;
+// const stylesheet = _.cloneDeep(t.form.Form.stylesheet);
+// stylesheet.textbox.normal.color = '#18cdf6';
 
 
 var Questions = t.enums({
@@ -23,12 +25,19 @@ const styles = StyleSheet.create({
     borderRadius:2,
   },
   flexContainer: {
-
+    flex: 1,
+    flexDirection:'row',
+    top:10,
+    //left:10,
+    right: 10
   },
   infoHead: {
-    left: (.7) * width,
-    top:height *(1/8),
-    position: 'absolute'
+    color: '#18cdf6',
+    fontSize:30,
+    height: 200,
+    width:200,
+    textAlign: 'right'
+
   },
   container: {
     flex: 1,
@@ -36,13 +45,25 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: 'transparent',
 
-
   },
   myButton:{
     padding: 15,
     borderRadius:20,
     backgroundColor:'hotpink',
+  },
+  Question:{
+    color: '#18cdf6'
+  },
+  buttonInput:{
+    color: 'white'
+  },
+  marginContainer:{
+    margin:20,
+    height:'100%',
+
+
   }
+
 })
 
 
@@ -65,7 +86,7 @@ class CreateQuestionnaire extends Component {
           options: {
             fields: {
               name: {
-                placeholder: 'Your placeholder here'
+                placeholder: 'Your placeholder here',
           }
         }
       }
@@ -77,20 +98,23 @@ class CreateQuestionnaire extends Component {
 
     return(
       <View>
-
         <ImageBackground style={styles.ImageBackground} source={require('../../assets/Assets_V1/Butterfly_Background/Butterfly_Background@1.png')}>
 
-              <Text style={styles.infoHead}>
-                hello world
-              </Text>
-
+          <View style={styles.marginContainer}>
+            <View style={styles.flexContainer}>
               <Profile percent={0}/>
 
+              <Text style={styles.infoHead}>
+                hello world blsdfksdfn ksjdbfkjsd kjsdbfkjsdb
+              </Text>
 
-            <Text>
+            </View>
+
+
+
+            <Text style={styles.Question}>
               Question One
             </Text>
-
 
             <Form
               type={Questions}
@@ -98,7 +122,8 @@ class CreateQuestionnaire extends Component {
               options={this.state.options}
             />
 
-            <Text>
+
+            <Text style={styles.Question}>
               Question 2
 
             </Text>
@@ -109,7 +134,7 @@ class CreateQuestionnaire extends Component {
             />
 
 
-            <Text>
+            <Text style={styles.Question}>
             Question 3
 
             </Text>
@@ -120,15 +145,15 @@ class CreateQuestionnaire extends Component {
             />
 
 
-      <View style={styles.container}>
-        <TouchableOpacity>
+          <View style={styles.container}>
+            <TouchableOpacity>
 
-          <View style={styles.myButton}>
-            <Text>Rounded Corner</Text>
+              <View style={styles.myButton}>
+                <Text style={styles.buttonInput}>Submit</Text>
+              </View>
+            </TouchableOpacity>
           </View>
-        </TouchableOpacity>
-      </View>
-
+        </View>
         </ImageBackground>
       </View>
       )

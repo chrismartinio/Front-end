@@ -22,12 +22,12 @@ const Form = t.form.Form;
 
 
 var Component = t.enums({
+  sCurrTest: 'Current Test Screen',
   sPROFILE: 'SignupFlow/ProfilePage',
   sREGISTRATION: 'SignupFlow/RegistrationPage',
   sSELFIE: 'SignupFlow/SelfiePage',
   sSIGNUP: 'SignupFlow/SignupPage',
   sPHOTOREVIEW: 'SignupFlow/PhotoReview',
-  sCurrTest: 'Current Test Screen',
   sSelection: 'ChatFlow/Selection',
   sGhostingOthers:'ChatFlow/GhostOthers',
   sGotGhosted: 'ChatFlow/GotGhosted',

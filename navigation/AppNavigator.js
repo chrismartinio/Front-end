@@ -20,14 +20,15 @@ import ReplyQuestionaire from '../screens/FindMatchFlow/matchCreateReply';
 import ViewQuestionaire from '../screens/FindMatchFlow/matchViewReply';
 
 
+
 const TestStack = createStackNavigator({
+  TestScreen: CreateQuestionaire,
   TestSignUp: SignupPage,
   TestRegistration: RegistrationPage,
   TestSelfie: SelfiePage,
   TestProfile: ProfilePage,
   TestChatPage: ChatPage,
   TestPhotoReview: PhotoReview,
-  TestScreen: TestScreen
 })
 
 
