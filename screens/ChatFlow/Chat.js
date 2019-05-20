@@ -74,7 +74,7 @@ export default class Chat extends React.Component {
     },
   };
   render() {
-    const { refreshing = false } = this.props;
+    const { refreshing = true } = this.props;
 
     return (
       <KeyboardAvoidingView style={styles.container} behavior="padding" enabled>
@@ -161,11 +161,13 @@ export default class Chat extends React.Component {
   // next: add renderItem
   // app/screens/Chat.js
   renderItem = ({ item }) => {
+
     let box_style = item.isCurrentUser ? 'current_user_msg' : 'other_user_msg';
     let username_style = item.isCurrentUser
       ? 'current_user_username'
       : 'other_user_username';
 
+    alert('line 81, item:',item);
     return (
       <View key={item.key} style={styles.msg}>
         <View style={styles.msg_wrapper}>

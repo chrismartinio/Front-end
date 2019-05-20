@@ -13,13 +13,21 @@ import Selection from './ChatFlow/Selection'
 import GhostingOthers from './ChatFlow/GhostingOthers'
 import GotGhosted from './ChatFlow/GotGhosted'
 import GotLucky from './ChatFlow/GotLuckyGoToChat'
+<<<<<<< HEAD
 import ChatPage from './ChatFlow/chatMain'
+=======
+import createQuestionnaire from './FindMatchFlow/matchCreateQuestionaire'
+import createReply from './FindMatchFlow/matchCreateReply'
+import ViewReply from './FindMatchFlow/matchViewReply'
+
+>>>>>>> 0f3a004fff0967ffa6bc6a7bb0627fd4f765ef29
 
 import t from 'tcomb-form-native';
 const Form = t.form.Form;
 
 
 var Component = t.enums({
+  sCurrTest: 'Current Test Screen',
   sPROFILE: 'SignupFlow/ProfilePage',
   sMATCHES: 'SignupFlow/Matches',
   sChatPage: 'ChatFlow/chatMain',
@@ -27,11 +35,13 @@ var Component = t.enums({
 sREGISTRATION: 'SignupFlow/RegistrationPage',
   sSIGNUP: 'SignupFlow/SignupPage',
   sPHOTOREVIEW: 'SignupFlow/PhotoReview',
-  sCurrTest: 'Current Test Screen',
   sSelection: 'ChatFlow/Selection',
   sGhostingOthers:'ChatFlow/GhostOthers',
   sGotGhosted: 'ChatFlow/GotGhosted',
   sGotLucky: 'ChatFlowGotLucky',
+  sCreateQuestionaire:'MatchFlow/CreateQuestionaire',
+  sCreateReply: 'MatchFlow/ReplyQuestionaire',
+  sViewReply:'MatchFlow/ViewQuestionnaire'
 },'Component');
 
 var details = t.struct({
@@ -76,6 +86,12 @@ export default class LinksScreen extends React.Component {
       this.props.navigation.navigate('GotGhosted');
     } else if(this._form.getValue().Component === 'sGotLucky'){
       this.props.navigation.navigate('GotLucky');
+    } else if(this._form.getValue().Component === 'sCreateQuestionaire'){
+      this.props.navigation.navigate('CreateQuestionaire');
+    } else if(this._form.getValue().Component === 'sCreateReply'){
+      this.props.navigation.navigate('ReplyQuestionaire');
+    } else if(this._form.getValue().Component === 'sViewReply'){
+      this.props.navigation.navigate('ViewQuestionaire');
     }
 
   }

@@ -24,7 +24,7 @@ class InitialMatch extends Component{
     }
 
     componentDidMount = () => {
-      const id = setInterval(this.handleTimer, 100)
+      const id = setInterval(this.handleTimer, 1000)
       this.setState({
         intervalId:id
       })
@@ -73,7 +73,7 @@ class InitialMatch extends Component{
     height:'100%'
   },
     MatchHeader:{
-      top:.32 * height,
+      top:.2 * height,
       left:(1/4) * width,
       width:'50%'
     },
@@ -111,6 +111,10 @@ class InitialMatch extends Component{
       justifyContent: 'space-around',
       padding: 10
     },
+    timerText: {
+      color:'hotpink',
+      left: width * .3
+    }
   })
 
     return(
@@ -119,12 +123,17 @@ class InitialMatch extends Component{
       >
         <ScrollView style={styles.container}>
 
-        <View style={styles.TimerContainer}>
-          <CircularTimer percent={this.state.currentTime} />
-        </View>
+
           <View style={styles.MatchHeader}>
             <MatchHeader title={'CONGRATS'} text={'You and Taylor must like each other. You have had a 90 second chat'}/>
           </View>
+
+        <View style={styles.TimerContainer}>
+          <CircularTimer percent={this.state.currentTime} />
+          <Text style={styles.timerText}>
+           { this.state.currentTime } sec left
+          </Text>
+        </View>
 
           <View style={styles.TextHeader}>
             <InfoText title={'Taylor Swift'} text={'CA, 91741'}/>

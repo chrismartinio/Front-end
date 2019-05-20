@@ -28,7 +28,6 @@ const CircleTimer = ({percent}) => {
   }
   return(
     <View style={styles.container}>
-
       <View style={[styles.progressLayer, firstProgressLayerStyle]}></View>
       {
         renderThirdLayer(percent)
@@ -39,8 +38,6 @@ const CircleTimer = ({percent}) => {
           borderRadius={85}
           blurRadius={30}
       />
-
-
     </View>
   )
 
@@ -48,10 +45,10 @@ const CircleTimer = ({percent}) => {
 //const { height, width } = Dimensions.get('window')
 const styles = StyleSheet.create({
  container: {
-  borderColor:'grey',
+  borderColor:'hotpink',
   height: 200,
   width:200,
-  borderWidth:20,
+  borderWidth:10,
   borderRadius:100,
   justifyContent:'center',
   alignItems:'center',
@@ -60,7 +57,7 @@ const styles = StyleSheet.create({
   width:200,
   height:200,
   position:'absolute',
-  borderWidth:20,
+  borderWidth:10,
   borderRadius: 100,
   borderLeftColor: 'transparent',
   borderBottomColor: 'transparent',
@@ -72,7 +69,7 @@ const styles = StyleSheet.create({
     width: 200,
     height: 200,
     position: 'absolute',
-    borderWidth: 20,
+    borderWidth: 10,
     borderRadius: 100,
     borderLeftColor: 'transparent',
     borderBottomColor: 'transparent',
@@ -84,15 +81,13 @@ const styles = StyleSheet.create({
   width:200,
   height:200,
   position:'absolute',
-  borderWidth:20,
+  borderWidth:10,
   borderRadius:100,
   borderLeftColor: 'transparent',
   borderBottomColor: 'transparent',
-  borderRightColor: 'grey',
-  borderTopColor: 'grey',
+  borderRightColor: 'hotpink',
+  borderTopColor: 'hotpink',
   transform:[{rotateZ: '-135deg'}]
-
-
  }
 })
 
