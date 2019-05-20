@@ -2,6 +2,7 @@ import React from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { ExpoLinksView } from '@expo/samples';
 import ProfilePage from './SignUpFlow/ProfilePage'
+import MatchesPage from './SignUpFlow/Matches'
 import RegistrationPage from './SignUpFlow/RegistrationPage'
 import SelfiePage from './SignUpFlow/SelfiePage'
 import SignupPage from './SignUpFlow/SignupPage'
@@ -12,7 +13,7 @@ import Selection from './ChatFlow/Selection'
 import GhostingOthers from './ChatFlow/GhostingOthers'
 import GotGhosted from './ChatFlow/GotGhosted'
 import GotLucky from './ChatFlow/GotLuckyGoToChat'
-
+import ChatPage from './ChatFlow/chatMain'
 
 import t from 'tcomb-form-native';
 const Form = t.form.Form;
@@ -20,8 +21,10 @@ const Form = t.form.Form;
 
 var Component = t.enums({
   sPROFILE: 'SignupFlow/ProfilePage',
-  sREGISTRATION: 'SignupFlow/RegistrationPage',
+  sMATCHES: 'SignupFlow/Matches',
+  sChatPage: 'ChatFlow/chatMain',
   sSELFIE: 'SignupFlow/SelfiePage',
+sREGISTRATION: 'SignupFlow/RegistrationPage',
   sSIGNUP: 'SignupFlow/SignupPage',
   sPHOTOREVIEW: 'SignupFlow/PhotoReview',
   sCurrTest: 'Current Test Screen',
@@ -51,7 +54,11 @@ export default class LinksScreen extends React.Component {
   handleChange = () => {
     if(this._form.getValue().Component === 'sPROFILE'){
       this.props.navigation.navigate('TestProfile');
-    } else if(this._form.getValue().Component === 'sREGISTRATION'){
+    } else if(this._form.getValue().Component === 'sMATCHES'){
+      this.props.navigation.navigate('TestMatches');
+    }else if(this._form.getValue().Component === 'sChatPage'){
+      this.props.navigation.navigate('TestChatPage');
+    }else if(this._form.getValue().Component === 'sREGISTRATION'){
       this.props.navigation.navigate('TestRegistration');
     }  else if(this._form.getValue().Component === 'sSELFIE'){
       this.props.navigation.navigate('TestSelfie');

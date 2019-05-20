@@ -3,6 +3,7 @@ import { createAppContainer, createSwitchNavigator, createStackNavigator } from 
 
 import MainTabNavigator from './MainTabNavigator';
 import SignupPage from '../screens/SignUpFlow/SignupPage';
+import MatchesPage from '../screens/SignUpFlow/Matches';
 import RegistrationPage from '../screens/SignUpFlow/RegistrationPage';
 import SelfiePage from '../screens/SignUpFlow/SelfiePage';
 import PhotoReview from '../screens/SignUpFlow/PhotoReview';
@@ -24,7 +25,8 @@ const TestStack = createStackNavigator({
   TestProfile: ProfilePage,
   TestChatPage: ChatPage,
   TestPhotoReview: PhotoReview,
-  TestScreen: TestScreen
+  TestScreen: TestScreen,
+  TestMatches: MatchesPage
 })
 
 
