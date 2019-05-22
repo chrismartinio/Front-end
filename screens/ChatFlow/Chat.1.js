@@ -105,18 +105,19 @@ export default class Chat extends React.Component {
             />
             <Image 
               style={{left:45,top:-30,width:this.state.maxVal*2,height:10}}
-              source={{uri: "/Users/Drew/Documents/blindlyDateRMK/assets/Assets_V1/greybar.jpg"}}
+              source={require("../../assets/Assets_V1/greybar.jpg")}
             />
             <Image 
               style={{left:45,top:-40,width:this.state.currentSlider*2,height:10}}
-              source={{uri: "/Users/Drew/Documents/blindlyDateRMK/assets/Assets_V1/bluebar.JPG"}}
+              source={require("../../assets/Assets_V1/bluebar.jpg")}
             />
             <Text  style={{left:45,top:-40, color:"#18cdf6"}} >
                 {Math.ceil(this.state.currentTime)} sec left
               </Text>
             <Image 
               style={{left:width*.775,top:height*.525, width:80,height:80,borderRadius:40}}
-              source={{uri: "/Users/Drew/Documents/blindlyDateRMK/assets/Assets_V1/Ghost/Ghost Pink/Ghosty_Pink@1.png"}}
+              source={require("../../assets/Assets_V1/Ghost/Ghost Pink/Ghosty_Pink@1.png")}
+
             />
             <FlatList data={this.props.messages} renderItem={this.renderItem} />
           </ScrollView>

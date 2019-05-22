@@ -13,14 +13,7 @@ import Selection from './ChatFlow/Selection'
 import GhostingOthers from './ChatFlow/GhostingOthers'
 import GotGhosted from './ChatFlow/GotGhosted'
 import GotLucky from './ChatFlow/GotLuckyGoToChat'
-<<<<<<< HEAD
 import ChatPage from './ChatFlow/chatMain'
-=======
-import createQuestionnaire from './FindMatchFlow/matchCreateQuestionaire'
-import createReply from './FindMatchFlow/matchCreateReply'
-import ViewReply from './FindMatchFlow/matchViewReply'
-
->>>>>>> 0f3a004fff0967ffa6bc6a7bb0627fd4f765ef29
 
 import t from 'tcomb-form-native';
 const Form = t.form.Form;

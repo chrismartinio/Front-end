@@ -282,7 +282,7 @@ class SelfiePage extends React.Component {
           colors={['#18cdf6', '#43218c']}
           style={{flex:1}}
         >           
-        <ImageBackground source={require('/Users/Drew/Documents/blindlyDateRMK/assets/Assets_V1/Butterfly_Background/butterflyBackground.png')} style={styles.backgroundImage}>
+        <ImageBackground source={require('../../assets/Assets_V1/Butterfly_Background/butterflyBackground.png')} style={styles.backgroundImage}>
 
         <ScrollView>
         <Text style={{fontSize:60,top:height*.3,left:width/3,color:'white', alignSelf:"center"}}>

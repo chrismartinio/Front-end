@@ -52,7 +52,7 @@ export default class App extends React.Component {
   render() {
     return (
       <View style={styles.container}>
-          <ImageBackground source={require('/Users/Drew/Documents/blindlyDateRMK/assets/Assets_V1/Butterfly_Background/butterflyBackground.png')} style={styles.backgroundImage}>
+          <ImageBackground source={require('../../assets/Assets_V1/Butterfly_Background/butterflyBackground.png')} style={styles.backgroundImage}>
 
         {this.state.currentScreen == "login" && (
           <View style={styles.login}>
