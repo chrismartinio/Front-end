@@ -66,7 +66,7 @@ class InitialMatch extends Component{
 
 
   render(){
-  var {height, width}= Dimensions.get('window')
+  var { height, width }= Dimensions.get('window')
   const styles = StyleSheet.create({
   container: {
     width: '100%',
