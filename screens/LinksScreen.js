@@ -2,6 +2,7 @@ import React from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { ExpoLinksView } from '@expo/samples';
 import ProfilePage from './SignUpFlow/ProfilePage'
+import MatchesPage from './SignUpFlow/Matches'
 import RegistrationPage from './SignUpFlow/RegistrationPage'
 import SelfiePage from './SignUpFlow/SelfiePage'
 import SignupPage from './SignUpFlow/SignupPage'
@@ -12,10 +13,14 @@ import Selection from './ChatFlow/Selection'
 import GhostingOthers from './ChatFlow/GhostingOthers'
 import GotGhosted from './ChatFlow/GotGhosted'
 import GotLucky from './ChatFlow/GotLuckyGoToChat'
+<<<<<<< HEAD
+import ChatPage from './ChatFlow/chatMain'
+=======
 import createQuestionnaire from './FindMatchFlow/matchCreateQuestionaire'
 import createReply from './FindMatchFlow/matchCreateReply'
 import ViewReply from './FindMatchFlow/matchViewReply'
 
+>>>>>>> 0f3a004fff0967ffa6bc6a7bb0627fd4f765ef29
 
 import t from 'tcomb-form-native';
 const Form = t.form.Form;
@@ -24,8 +29,10 @@ const Form = t.form.Form;
 var Component = t.enums({
   sCurrTest: 'Current Test Screen',
   sPROFILE: 'SignupFlow/ProfilePage',
-  sREGISTRATION: 'SignupFlow/RegistrationPage',
+  sMATCHES: 'SignupFlow/Matches',
+  sChatPage: 'ChatFlow/chatMain',
   sSELFIE: 'SignupFlow/SelfiePage',
+sREGISTRATION: 'SignupFlow/RegistrationPage',
   sSIGNUP: 'SignupFlow/SignupPage',
   sPHOTOREVIEW: 'SignupFlow/PhotoReview',
   sSelection: 'ChatFlow/Selection',
@@ -57,7 +64,11 @@ export default class LinksScreen extends React.Component {
   handleChange = () => {
     if(this._form.getValue().Component === 'sPROFILE'){
       this.props.navigation.navigate('TestProfile');
-    } else if(this._form.getValue().Component === 'sREGISTRATION'){
+    } else if(this._form.getValue().Component === 'sMATCHES'){
+      this.props.navigation.navigate('TestMatches');
+    }else if(this._form.getValue().Component === 'sChatPage'){
+      this.props.navigation.navigate('TestChatPage');
+    }else if(this._form.getValue().Component === 'sREGISTRATION'){
       this.props.navigation.navigate('TestRegistration');
     }  else if(this._form.getValue().Component === 'sSELFIE'){
       this.props.navigation.navigate('TestSelfie');

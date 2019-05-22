@@ -18,7 +18,6 @@ import Header from "./ComponentHeader";
 //import console = require("console");
 //import { url } from "inspector";
 import { LinearGradient, BlurView } from 'expo';
-//import console = require("console");
 var {height, width}= Dimensions.get('window')
 
 export default class Chat extends React.Component {
@@ -45,12 +44,12 @@ export default class Chat extends React.Component {
     let timer = this.state.currentTime
     let slider = this.state.currentSlider
     let blurR = this.state.blurRadius
-    //console.log(this.props.message)
 
       this.setState({
         currentTime:--timer,
         currentSlider:++slider,
       })
+
       if(this.state.currentTime === 0){
         this.props.backToUsers()
         clearInterval(this.state.intervalId)
@@ -74,7 +73,7 @@ export default class Chat extends React.Component {
     },
   };
   render() {
-    const { refreshing = true } = this.props;
+    const { refreshing = false } = this.props;
 
     return (
       <KeyboardAvoidingView style={styles.container} behavior="padding" enabled>
@@ -99,7 +98,6 @@ export default class Chat extends React.Component {
                 onRefresh={this.props.loadPreviousMessages}
               />
             }>
-
             <Image 
               style={{width:40,height:40,borderRadius:20}}
               blurRadius={this.state.currentTime/20}
@@ -120,8 +118,7 @@ export default class Chat extends React.Component {
               style={{left:width*.775,top:height*.525, width:80,height:80,borderRadius:40}}
               source={{uri: "/Users/Drew/Documents/blindlyDateRMK/assets/Assets_V1/Ghost/Ghost Pink/Ghosty_Pink@1.png"}}
             />
-                        <FlatList data={this.props.messages} renderItem={this.renderItem} />
-
+            <FlatList data={this.props.messages} renderItem={this.renderItem} />
           </ScrollView>
 
           {this.props.chatWithUserIsTyping && (
@@ -161,13 +158,11 @@ export default class Chat extends React.Component {
   // next: add renderItem
   // app/screens/Chat.js
   renderItem = ({ item }) => {
-
     let box_style = item.isCurrentUser ? 'current_user_msg' : 'other_user_msg';
     let username_style = item.isCurrentUser
       ? 'current_user_username'
       : 'other_user_username';
 
-    alert('line 81, item:',item);
     return (
       <View key={item.key} style={styles.msg}>
         <View style={styles.msg_wrapper}>
@@ -240,7 +235,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     padding: 10,
     borderTopWidth: 1,
-    backgroundColor:"white",
     borderTopColor: "#e5e5e5",
     justifyContent: "space-between",
   },

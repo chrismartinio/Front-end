@@ -138,9 +138,6 @@ export default class App extends React.Component {
                 // action hooks. These functions will be executed when any of the four events below happens
                 hooks: {
                   onUserCameOnline: this.handleInUser,
-                  onNewMessage: this.onReceiveMessage,
-                  onMessage: message => {
-                    console.log("Received message:", message)},
                   onUserJoinedRoom: this.handleInUser,
                   onUserLeftRoom: this.handleOutUser,
                   onUserWentOffline: this.handleOutUser
@@ -265,7 +262,7 @@ export default class App extends React.Component {
       .subscribeToRoom({
         roomId: roomId,
         hooks: {
-          onMessage: this.onReceiveMessage,
+          onNewMessage: this.onReceiveMessage,
           onUserStartedTyping: this.onUserTypes,
           onUserStoppedTyping: this.onUserNotTypes
         },
@@ -289,8 +286,8 @@ export default class App extends React.Component {
   };
   // next: add onReceiveMessage function
   onReceiveMessage = message => {
-
     let isCurrentUser = this.currentUser.id == message.sender.id ? true : false;
+
     let messages = [...this.state.messages];
     messages.push({
       key: message.id.toString(),
@@ -299,6 +296,7 @@ export default class App extends React.Component {
       datetime: message.createdAt,
       isCurrentUser // this one determines the styling used for the chat bubble
     });
+
     this.setState(
       {
         messages
@@ -359,8 +357,6 @@ export default class App extends React.Component {
   // next: add sendMessage function
   sendMessage = () => {
     if (this.state.message) {
-      console.log(this.state.message)
-
       this.currentUser
         .sendMessage({
           text: this.state.message,
@@ -374,9 +370,7 @@ export default class App extends React.Component {
         .catch(err => {
           console.log(`error adding message to room: ${err}`);
         });
-        
     }
-
   };
 
   // next: add loadPreviousMessages function

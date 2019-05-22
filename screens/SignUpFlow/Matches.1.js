@@ -8,10 +8,8 @@ import {
     TouchableOpacity,
     TouchableHighlight, 
     Image,
-    Modal, 
     StyleSheet,
-    Dimensions,
-    ImageBackground
+    Dimensions
 } from 'react-native';
 import { LinearGradient } from 'expo';
 import Hello from './hello'
@@ -42,15 +40,7 @@ var name4="Zac";
 var pic5='https://resizing.flixster.com/zYHoIjM-IBcqyt8S3ZJzudd9E24=/fit-in/1152x864/v1.cjszOTU0NDtqOzE4MDAwOzEyMDA7MzkyOzYwMA'
 var name5="Chris";
 
-let name = "Bob"
-let isFemale=false;
-let himHer = "him"
-let hisHer = "his"
-if(isFemale)
-{
-  himHer="her";
-  hisHer="her"
-}
+
 
 //end front end variables
 const styles = StyleSheet.create({
@@ -122,12 +112,7 @@ const styles = StyleSheet.create({
     width: 50,
     height:50,
     top:-350
-  },
-  backgroundImage: {
-    height: '100%',
-    width: '100%',
-    flex: 1,
-  },
+  }
 });
 
 class SelfiePage extends React.Component {
@@ -252,37 +237,35 @@ class SelfiePage extends React.Component {
       }}>
             <TouchableOpacity style={styles}onPress={() => { 
               this.currentName=this.generatedUsers[index]
-              //console.log("Start Position: "+this.startPosition[index])
-              //console.log("Name: "+this.generatedUsers[index])
-              //console.log("Current Name: "+this.currentName)
-              this.setModalVisible(true);
+              console.log("Start Position: "+this.startPosition[index])
+              console.log("Name: "+this.generatedUsers[index])
+              console.log("Current Name: "+this.currentName)
+
               //if(this.startPosition[index]!=.75)
                 //this.animate()  
           }}>
+              
               <Hello user = {this.generatedUsers[index]} image={this.generatedImages[index]}>
+              
               </Hello>
+              
             </TouchableOpacity>
+            
           </Animated.View>
+          
           )
-    }
-    state = {
-      modalVisible: false,
-    };
-    setModalVisible(visible) {
-      this.setState({modalVisible: visible});
+          
     }
   render(){
 
     return(
 
       <View style={{flex:1,height:height}}>
-
       <LinearGradient
 
           colors={['#18cdf6', '#43218c']}
           style={{flex:1}}
-        >           
-        <ImageBackground source={require('/Users/Drew/Documents/blindlyDateRMK/assets/Assets_V1/Butterfly_Background/butterflyBackground.png')} style={styles.backgroundImage}>
+        >
 
         <ScrollView>
         <Text style={{fontSize:60,top:height*.3,left:width/3,color:'white', alignSelf:"center"}}>
@@ -292,9 +275,10 @@ class SelfiePage extends React.Component {
             Matches
           </Text>
           <Text style={{fontSize:18,top:height*.3,left:width/3,color:'white', alignSelf:"center"}}>
-            {numOfNewMatches} new 
+          {numOfNewMatches} new 
+          {this.currentName}
           </Text>
-          <TouchableOpacity style={{backgroundColor:'#ff2ae8',top: -75,width:"25%",alignSelf:"center",borderRadius:25,borderColor:"white",borderWidth:1}}>
+          <TouchableOpacity style={{backgroundColor:'#ff2ae8',top: -50,width:"25%",alignSelf:"center",borderRadius:25}}>
           <Button  onPress={() =>{ this.animate();}} color="white"title="SPIN" type="solid" />
           </TouchableOpacity>
 
@@ -306,7 +290,6 @@ class SelfiePage extends React.Component {
             height={width*1}
             width={width*1}
             borderRadius={0}
-            zIndex={-10}
           />
            
         { 
@@ -324,37 +307,7 @@ class SelfiePage extends React.Component {
         
         
         </ScrollView>
-        </ImageBackground>
-
         </LinearGradient>
-        <Modal
-          animationType="slide"
-          transparent={true}
-          visible={this.state.modalVisible}
-          onRequestClose={() => {
-            Alert.alert('Modal has been closed.');
-          }}>
-          <View style={{left:"12%",width:"75%",height:200,top:"25%",backgroundColor:'white',borderColor:"black",borderWidth:"2",borderRadius:15}}>
-            <View style={{fontSize:24,color:'white',top: 0, height:50,backgroundColor:"#63289a",alignSelf:"center",width:"100%",
-            borderTopEndRadius:13,borderTopStartRadius:13}}>
-              <Text style={{fontSize:24,color:'white',top: "15%",alignSelf:"center"}}>CHAT</Text>
-              
-              
-            </View>
-            <Text style={{fontSize:16,color:'black',top: "10%",alignSelf:"center",textAlign:"center"}}>
-            Would you like to ask {this.currentName} to chat?
-            </Text>
-              
-              <TouchableHighlight style={{backgroundColor:'#ff2ae8',left:"-30%",top: 50,width:"30%",alignSelf:"center",borderRadius:25,borderColor:"black",borderWidth:1}}>
-                <Button  onPress={() => 
-                { this.setModalVisible(!this.state.modalVisible);}} color="white"title="YES" type="solid" />
-              </TouchableHighlight>
-              <TouchableHighlight style={{backgroundColor:'#ff2ae8',left:"30%",top: 10,width:"30%",alignSelf:"center",borderRadius:25,borderColor:"black",borderWidth:1}}>
-                <Button  onPress={() => 
-                { this.setModalVisible(!this.state.modalVisible);}} color="white"title="NO" type="solid" />
-              </TouchableHighlight>
-          </View>
-        </Modal>
       </View>
 
       )
