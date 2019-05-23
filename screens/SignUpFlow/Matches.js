@@ -281,7 +281,11 @@ class SelfiePage extends React.Component {
 
           colors={['#18cdf6', '#43218c']}
           style={{flex:1}}
+<<<<<<< HEAD
         >
+=======
+        >           
+>>>>>>> 362499ed769bc6acff71beeba80208b2f028ee7a
         <ImageBackground source={require('../../assets/Assets_V1/Butterfly_Background/butterflyBackground.png')} style={styles.backgroundImage}>
 
         <ScrollView>
