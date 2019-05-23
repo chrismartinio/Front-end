@@ -98,7 +98,7 @@ class CreateQuestionnaire extends Component {
 
     return(
       <View>
-        <ImageBackground style={styles.ImageBackground} source={require('../../assets/Assets_V1/Butterfly_Background/Butterfly_Background@1.png')}>
+        <ImageBackground style={styles.ImageBackground} source={require('../../assets/Assets_V1/Butterfly_Background/butterflyBackground.png')}>
 
           <View style={styles.marginContainer}>
             <View style={styles.flexContainer}>

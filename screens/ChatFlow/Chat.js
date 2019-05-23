@@ -100,25 +100,25 @@ export default class Chat extends React.Component {
               />
             }>
 
-            <Image 
+            <Image
               style={{width:40,height:40,borderRadius:20}}
               blurRadius={this.state.currentTime/20}
               source={{uri: "https://media.gq.com/photos/56d4902a9acdcf20275ef34c/master/w_806,h_1173,c_limit/tom-hardy-lead-840.jpg"}}
             />
-            <Image 
+            <Image
               style={{left:45,top:-30,width:this.state.maxVal*2,height:10}}
-              source={{uri: "/Users/Drew/Documents/blindlyDateRMK/assets/Assets_V1/greybar.jpg"}}
+              source={require('../../assets/Assets_V1/greybar.jpg')}
             />
-            <Image 
+            <Image
               style={{left:45,top:-40,width:this.state.currentSlider*2,height:10}}
-              source={{uri: "/Users/Drew/Documents/blindlyDateRMK/assets/Assets_V1/bluebar.JPG"}}
+              source={require('../../assets/Assets_V1/bluebar.jpg')}
             />
             <Text  style={{left:45,top:-40, color:"#18cdf6"}} >
                 {Math.ceil(this.state.currentTime)} sec left
               </Text>
-            <Image 
+            <Image
               style={{left:width*.775,top:height*.525, width:80,height:80,borderRadius:40}}
-              source={{uri: "/Users/Drew/Documents/blindlyDateRMK/assets/Assets_V1/Ghost/Ghost Pink/Ghosty_Pink@1.png"}}
+              source={require('../../assets/Assets_V1/Ghost/Ghost Pink/Ghosty_Pink@1.png')}
             />
                         <FlatList data={this.props.messages} renderItem={this.renderItem} />
 
@@ -150,10 +150,10 @@ export default class Chat extends React.Component {
               )}
             </View>
           </View>
-          
+
         </View>
 
-        
+
       </KeyboardAvoidingView>
     );
   }

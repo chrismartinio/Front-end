@@ -6,9 +6,9 @@ import {
     ScrollView,
     Text,
     TouchableOpacity,
-    TouchableHighlight, 
+    TouchableHighlight,
     Image,
-    Modal, 
+    Modal,
     StyleSheet,
     Dimensions,
     ImageBackground
@@ -57,7 +57,7 @@ const styles = StyleSheet.create({
   imageStyles: {
     alignContent: 'center',
     justifyContent: 'center',
-    
+
   },
   container: {
     flex: 1,
@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
     width: 50,
     height:50,
     //zIndex:100
-    
+
   },
   btn1: {
     justifyContent: 'center',
@@ -131,7 +131,7 @@ const styles = StyleSheet.create({
 });
 
 class SelfiePage extends React.Component {
-  
+
   constructor() {
     super()
     var {height, width}= Dimensions.get('window')
@@ -182,14 +182,14 @@ class SelfiePage extends React.Component {
       for (var i=0; i<=snapshot; ++i) {
           var value = i/snapshot;
           var moveX;
-          
+
          moveX = Math.sin(value * Math.PI * 2) * radius; //clockwise
           //moveX = -Math.sin(value * Math.PI * 2) * radius; //counter-clockwise
 
           var moveY= -Math.cos(value * Math.PI * 2) * radius;
           moveX+=this.centerXOffset;
           moveY+=this.centerYOffset;
-          
+
           inputRange.push(value);
 
           outputRangeX.push(moveX);
@@ -209,12 +209,12 @@ class SelfiePage extends React.Component {
       let translateY = this.animated[index].interpolate({ inputRange, outputRange });
     return { transform: [{ translateY: translateY }, {translateX: translateX}] };
   }
-  
+
   animate() {
-    if(this.counterTurn){  
-      
+    if(this.counterTurn){
+
         for (let xX in this.startPositionR)
-        { 
+        {
           this.animatedR[xX].setValue(this.startPositionR[xX])
 
           Animated.timing(this.animatedR[xX], {
@@ -226,9 +226,9 @@ class SelfiePage extends React.Component {
         }
       }
       else {
-        
+
         for (let xX in this.startPosition)
-        {  
+        {
             this.animated[xX].setValue(this.startPosition[xX])
 
             Animated.timing(this.animated[xX], {
@@ -238,26 +238,26 @@ class SelfiePage extends React.Component {
             if(this.startPosition[xX]<=.125)this.startPosition[xX]=1
                 else this.startPosition[xX]-=.125;
           }
-          
+
       }
       //console.log(this.startPosition);
     }
     satUsers(translateStyles,styles,index)
     {
         return(
-          
-          <Animated.View key = {index} style={[ translateStyles ]} onPress={() => { 
+
+          <Animated.View key = {index} style={[ translateStyles ]} onPress={() => {
             //console.log("Pressed")
-          //this.animate()  
+          //this.animate()
       }}>
-            <TouchableOpacity style={styles}onPress={() => { 
+            <TouchableOpacity style={styles}onPress={() => {
               this.currentName=this.generatedUsers[index]
               //console.log("Start Position: "+this.startPosition[index])
               //console.log("Name: "+this.generatedUsers[index])
               //console.log("Current Name: "+this.currentName)
               this.setModalVisible(true);
               //if(this.startPosition[index]!=.75)
-                //this.animate()  
+                //this.animate()
           }}>
               <Hello user = {this.generatedUsers[index]} image={this.generatedImages[index]}>
               </Hello>
@@ -281,8 +281,8 @@ class SelfiePage extends React.Component {
 
           colors={['#18cdf6', '#43218c']}
           style={{flex:1}}
-        >           
-        <ImageBackground source={require('/Users/Drew/Documents/blindlyDateRMK/assets/Assets_V1/Butterfly_Background/butterflyBackground.png')} style={styles.backgroundImage}>
+        >
+        <ImageBackground source={require('../../assets/Assets_V1/Butterfly_Background/butterflyBackground.png')} style={styles.backgroundImage}>
 
         <ScrollView>
         <Text style={{fontSize:60,top:height*.3,left:width/3,color:'white', alignSelf:"center"}}>
@@ -292,7 +292,7 @@ class SelfiePage extends React.Component {
             Matches
           </Text>
           <Text style={{fontSize:18,top:height*.3,left:width/3,color:'white', alignSelf:"center"}}>
-            {numOfNewMatches} new 
+            {numOfNewMatches} new
           </Text>
           <TouchableOpacity style={{backgroundColor:'#ff2ae8',top: -75,width:"25%",alignSelf:"center",borderRadius:25,borderColor:"white",borderWidth:1}}>
           <Button  onPress={() =>{ this.animate();}} color="white"title="SPIN" type="solid" />
@@ -308,8 +308,8 @@ class SelfiePage extends React.Component {
             borderRadius={0}
             zIndex={-10}
           />
-           
-        { 
+
+        {
           this.generatedUsers.map((user, index)=>{
            if(index==0) return this.satUsers(this.translateStyle(index), styles.btn0,index)
            else if(index==1) return this.satUsers(this.translateStyle(index), styles.btn1,index)
@@ -321,8 +321,8 @@ class SelfiePage extends React.Component {
            else if(index==7) return this.satUsers(this.translateStyle(index), styles.btn7,index)
           }
         )}
-        
-        
+
+
         </ScrollView>
         </ImageBackground>
 
@@ -338,19 +338,19 @@ class SelfiePage extends React.Component {
             <View style={{fontSize:24,color:'white',top: 0, height:50,backgroundColor:"#63289a",alignSelf:"center",width:"100%",
             borderTopEndRadius:13,borderTopStartRadius:13}}>
               <Text style={{fontSize:24,color:'white',top: "15%",alignSelf:"center"}}>CHAT</Text>
-              
-              
+
+
             </View>
             <Text style={{fontSize:16,color:'black',top: "10%",alignSelf:"center",textAlign:"center"}}>
             Would you like to ask {this.currentName} to chat?
             </Text>
-              
+
               <TouchableHighlight style={{backgroundColor:'#ff2ae8',left:"-30%",top: 50,width:"30%",alignSelf:"center",borderRadius:25,borderColor:"black",borderWidth:1}}>
-                <Button  onPress={() => 
+                <Button  onPress={() =>
                 { this.setModalVisible(!this.state.modalVisible);}} color="white"title="YES" type="solid" />
               </TouchableHighlight>
               <TouchableHighlight style={{backgroundColor:'#ff2ae8',left:"30%",top: 10,width:"30%",alignSelf:"center",borderRadius:25,borderColor:"black",borderWidth:1}}>
-                <Button  onPress={() => 
+                <Button  onPress={() =>
                 { this.setModalVisible(!this.state.modalVisible);}} color="white"title="NO" type="solid" />
               </TouchableHighlight>
           </View>
