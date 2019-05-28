@@ -1,5 +1,5 @@
 import React from 'react';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ScrollView, StyleSheet, Text, View, Button } from 'react-native';
 import { ExpoLinksView } from '@expo/samples';
 import ProfilePage from './SignUpFlow/ProfilePage'
 import MatchesPage from './SignUpFlow/Matches'
@@ -14,6 +14,7 @@ import GhostingOthers from './ChatFlow/GhostingOthers'
 import GotGhosted from './ChatFlow/GotGhosted'
 import GotLucky from './ChatFlow/GotLuckyGoToChat'
 import ChatPage from './ChatFlow/chatMain'
+import firebase from '../utils/mainFire'
 
 import t from 'tcomb-form-native';
 const Form = t.form.Form;
@@ -86,10 +87,23 @@ export default class LinksScreen extends React.Component {
     } else if(this._form.getValue().Component === 'sViewReply'){
       this.props.navigation.navigate('ViewQuestionaire');
     }
+  }
 
+  storeHighScore = (userId, score) => {
+  firebase.database().ref('messages/' + userId).set({
+    highscore: score
+  });
+}
+
+  getData = (userId) => {
+  firebase.database().ref('users/' + 'fun@mailcom').on('value', (snapshot) => {
+    const highscore = snapshot.val().highscore;
+    console.log("New high score: " + highscore);
+  });
   }
 
   render() {
+    this.storeHighScore('fun@mailcom', 200)
     let CurrentScreen = this.state.CurrentScreen
     return (
       <ScrollView style={styles.container}>
@@ -99,6 +113,11 @@ export default class LinksScreen extends React.Component {
             ref={d => this._form = d}
             onChange={this.handleChange}
         />
+        <Button
+          title={'Press me'}
+          onPress={this.getData}
+        />
+
 
       </ScrollView>
     );

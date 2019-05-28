@@ -107,30 +107,20 @@ export default class Chat extends React.Component {
             />
             <Image
               style={{left:45,top:-30,width:this.state.maxVal*2,height:10}}
-<<<<<<< HEAD
               source={require('../../assets/Assets_V1/greybar.jpg')}
-=======
-              source={require("../../assets/Assets_V1/greybar.jpg")}
->>>>>>> 362499ed769bc6acff71beeba80208b2f028ee7a
+
             />
             <Image
               style={{left:45,top:-40,width:this.state.currentSlider*2,height:10}}
-<<<<<<< HEAD
               source={require('../../assets/Assets_V1/bluebar.jpg')}
-=======
-              source={require("../../assets/Assets_V1/bluebar.jpg")}
->>>>>>> 362499ed769bc6acff71beeba80208b2f028ee7a
+
             />
             <Text  style={{left:45,top:-40, color:"#18cdf6"}} >
                 {Math.ceil(this.state.currentTime)} sec left
               </Text>
             <Image
               style={{left:width*.775,top:height*.525, width:80,height:80,borderRadius:40}}
-<<<<<<< HEAD
               source={require('../../assets/Assets_V1/Ghost/Ghost Pink/Ghosty_Pink@1.png')}
-=======
-              source={require("../../assets/Assets_V1/Ghost/Ghost Pink/Ghosty_Pink@1.png")}
->>>>>>> 362499ed769bc6acff71beeba80208b2f028ee7a
             />
                         <FlatList data={this.props.messages} renderItem={this.renderItem} />
 

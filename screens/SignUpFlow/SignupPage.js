@@ -15,6 +15,8 @@ const Form = t.form.Form;
 import t from 'tcomb-form-native';
 import { connect } from 'react-redux'
 import SetProfilePersonalAction from '../../storage/actions/SetProfilePersonalAction'
+import firebase from '../../utils/mainFire'
+
 
 var Positive = t.refinement(t.Number, function (n) {
   return n >= 18;
@@ -45,10 +47,21 @@ class SignupPage extends React.Component {
     this.props.navigation.navigate('SignIn')
   }
 
+  SignUpToDatabase = ({ age, email, gender, name, password }) => {
+    let userId = email.split('.').join()
+    firebase.database().ref('users/' + userId).set({
+      age:age,
+      email:email,
+      gender:gender,
+      name:name,
+      password:password
+    });
+  }
+
   handleSubmit = () => {
     const value = this._form.getValue();
 
-
+    console.log(value)
     const nullCheck = (value) => {
         if(value !== null){
           return true
@@ -64,7 +77,7 @@ class SignupPage extends React.Component {
         if(checkAT > 0 && checkCOM > 0 && email.length > 4){
           return true
         }
-      alert("Please Properly insert a email with a '@' & a '.com'")
+      console.log("Please Properly insert a email with a '@' & a '.com'")
       return false
     }
 
@@ -80,6 +93,7 @@ class SignupPage extends React.Component {
       for(let key in value){
         value[key] = JSON.stringify(value[key])
       }
+      this.SignUpToDatabase(value)
       this.props.SetProfilePersonalAction(value)
       this.props.navigation.navigate('Registration');
     }

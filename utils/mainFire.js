@@ -1,8 +1,21 @@
 import firebase from 'firebase'  // Should not be used elsewhere in the project
+import '@firebase/firestore';
+
+
+
+//
 
  firebase.initializeApp(Expo.Constants.manifest.extra.firebase);
 
 // export default firebase;
+
+const dbh = firebase.firestore();
+
+dbh.collection("characters").doc("mario").set({
+  employment: "plumber",
+  outfitColor: "red",
+  specialAttack: "fireball"
+})
 
 
 
