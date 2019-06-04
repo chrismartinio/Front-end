@@ -38,17 +38,24 @@ export default class HomeScreen extends React.Component {
 
 
   handleEmailAndPasswordSignin = () => {
+
+    // check for front end value here
     const value = this._form.getValue();
 
     // front end check:
     console.log('value: ', value);
+    let user = firebase.auth().currentUser
+
+    let anwser = db.collection("stories").where("author", "==", user.uid).get()
     // axios request here:
 
-
+    console.log(anwser)
     // use action to send data to store.
 
 
     // send email and password to redux:
+
+
 
 
     this.props.navigation.navigate('Chat');
