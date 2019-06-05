@@ -17,7 +17,7 @@ import t from 'tcomb-form-native';
 import axios from 'axios'
 import { signInWithFacebook } from '../utils/auth.js'
 
-import { Constants } from 'expo';
+import { Constants, Location, Permissions } from 'expo';
 const { manifest } = Constants;
 
 const Form = t.form.Form;
@@ -32,6 +32,34 @@ const User = t.struct({
 export default class HomeScreen extends React.Component {
   static navigationOptions = {
     header: null,
+  };
+
+  state = {
+    location: null,
+    errorMessage: null,
+  };
+
+  componentWillMount() {
+    if (Platform.OS === 'android' && !Constants.isDevice) {
+      this.setState({
+        errorMessage: 'Oops, this will not work on Sketch in an Android emulator. Try it on your device!',
+      });
+    } else {
+      this._getLocationAsync();
+    }
+  }
+
+  _getLocationAsync = async () => {
+    let { status } = await Permissions.askAsync(Permissions.LOCATION);
+    if (status !== 'granted') {
+      this.setState({
+        errorMessage: 'Permission to access location was denied',
+      });
+    }
+
+    let location = await Location.getCurrentPositionAsync({});
+    console.log(location)
+    this.setState({ location });
   };
 
 
@@ -105,6 +133,7 @@ export default class HomeScreen extends React.Component {
   }
 
   render() {
+
     return (
       <View style={styles.container}>
         <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
@@ -134,6 +163,8 @@ export default class HomeScreen extends React.Component {
           color='blue'
           key='100'
         />
+        <Text>
+        </Text>
       </View>
 
         <Button
