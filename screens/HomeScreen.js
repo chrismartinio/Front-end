@@ -72,7 +72,7 @@ export default class HomeScreen extends React.Component {
 
     // front end check:
     console.log('value: ', value);
-    let user = firebase.auth().currentUser
+    let user = Firebase.auth().currentUser
 
     let anwser = db.collection("stories").where("author", "==", user.uid).get()
     // axios request here:
