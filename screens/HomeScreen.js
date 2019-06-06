@@ -39,28 +39,30 @@ export default class HomeScreen extends React.Component {
     errorMessage: null,
   };
 
-  componentWillMount() {
-    if (Platform.OS === 'android' && !Constants.isDevice) {
-      this.setState({
-        errorMessage: 'Oops, this will not work on Sketch in an Android emulator. Try it on your device!',
-      });
-    } else {
-      this._getLocationAsync();
-    }
-  }
 
-  _getLocationAsync = async () => {
-    let { status } = await Permissions.askAsync(Permissions.LOCATION);
-    if (status !== 'granted') {
-      this.setState({
-        errorMessage: 'Permission to access location was denied',
-      });
-    }
+// Aysnc problems
+  // componentWillMount() {
+  //   if (Platform.OS === 'android' && !Constants.isDevice) {
+  //     this.setState({
+  //       errorMessage: 'Oops, this will not work on Sketch in an Android emulator. Try it on your device!',
+  //     });
+  //   } else {
+  //     this._getLocationAsync();
+  //   }
+  // }
 
-    let location = await Location.getCurrentPositionAsync({});
-    console.log(location)
-    this.setState({ location });
-  };
+  // _getLocationAsync = async () => {
+  //   let { status } = await Permissions.askAsync(Permissions.LOCATION);
+  //   if (status !== 'granted') {
+  //     this.setState({
+  //       errorMessage: 'Permission to access location was denied',
+  //     });
+  //   }
+
+  //   let location = await Location.getCurrentPositionAsync({});
+  //   console.log(location)
+  //   this.setState({ location });
+  // };
 
 
 
@@ -72,12 +74,12 @@ export default class HomeScreen extends React.Component {
 
     // front end check:
     console.log('value: ', value);
-    let user = Firebase.auth().currentUser
+    //let user = Firebase.auth().currentUser
 
-    let anwser = db.collection("stories").where("author", "==", user.uid).get()
+    //let anwser = db.collection("stories").where("author", "==", user.uid).get()
     // axios request here:
 
-    console.log(anwser)
+    //console.log(anwser)
     // use action to send data to store.
 
 
