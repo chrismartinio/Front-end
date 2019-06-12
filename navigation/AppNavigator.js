@@ -31,7 +31,8 @@ const TestStack = createStackNavigator({
   TestChatPage: ChatPage,
   TestPhotoReview: PhotoReview,
   TestScreen: TestScreen,
-  TestMatches: MatchesPage
+  TestMatches: MatchesPage,
+  TestAboutUs: ProfilePage
 })
 
 

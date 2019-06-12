@@ -120,7 +120,7 @@ export default class Chat extends React.Component {
               </Text>
             <Image
               style={{left:width*.775,top:height*.525, width:80,height:80,borderRadius:40}}
-              source={require('../../assets/Assets_V1/Ghost/Ghost Pink/Ghosty_Pink@1.png')}
+              source={require('../../assets/Assets_V1/Ghost/Ghost_Pink/Ghosty_Pink@1.png')}
             />
                         <FlatList data={this.props.messages} renderItem={this.renderItem} />
 
@@ -169,7 +169,7 @@ export default class Chat extends React.Component {
       ? 'current_user_username'
       : 'other_user_username';
 
-    alert('line 81, item:',item);
+    //alert('line 81, item:',item);
     return (
       <View key={item.key} style={styles.msg}>
         <View style={styles.msg_wrapper}>

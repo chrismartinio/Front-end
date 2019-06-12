@@ -13,7 +13,7 @@ const instanceLocatorId = "0c189a30-bee2-488b-a6db-6797b29c25f2";
     const tokenProvider = new TokenProvider({
       url: `https://us1.pusherplatform.io/services/chatkit_token_provider/v1/${instanceLocatorId}/token`
     });
-    const chatServer = "http://192.168.1.73:3000/users";
+    const chatServer = "http://74.80.250.210:3000/users";
 
 export default class App extends React.Component {
   state = {
