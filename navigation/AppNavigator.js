@@ -19,6 +19,7 @@ import GotGhosted from '../screens/ChatFlow/GotGhosted';
 import CreateQuestionaire from '../screens/FindMatchFlow/matchCreateQuestionaire';
 import ReplyQuestionaire from '../screens/FindMatchFlow/matchCreateReply';
 import ViewQuestionaire from '../screens/FindMatchFlow/matchViewReply';
+import WouldRather from '../screens/SignUpFlow/WouldRather';
 
 
 
@@ -40,7 +41,8 @@ const AuthStack = createStackNavigator({
   SignUp: SignupPage,
   Registration: RegistrationPage,
   Selfie: SelfiePage,
-  Profile: ProfilePage
+  Profile: ProfilePage,
+  WouldRather: WouldRather
 })
 
 const ChatStack = createStackNavigator({

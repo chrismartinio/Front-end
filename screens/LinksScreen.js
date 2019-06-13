@@ -15,6 +15,7 @@ import GotGhosted from "./ChatFlow/GotGhosted";
 import GotLucky from "./ChatFlow/GotLuckyGoToChat";
 import ChatPage from "./ChatFlow/chatMain";
 import firebase from "../utils/mainFire";
+import WouldRather from "./SignUpFlow/WouldRather"
 
 import t from "tcomb-form-native";
 const Form = t.form.Form;
@@ -68,7 +69,8 @@ export default class LinksScreen extends React.Component {
       "CreateQuestionaire",
       "ReplyQuestionaire",
       "ViewQuestionaire",
-      "TestAboutUs"
+      "TestAboutUs",
+      "WouldRather"
     ];
   }
 
