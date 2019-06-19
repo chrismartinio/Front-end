@@ -70,34 +70,34 @@ class Welcome extends Component {
       return false
     }
     console.log(nullCheck(value))
-  //   const emailCheck = (email) =>{
+    const emailCheck = (email) =>{
 
-  //     // email validty check?
-  //     const checkAT = email.indexOf('@')
-  //     const checkCOM = email.indexOf('.com')
-  //       if(checkAT > 0 && checkCOM > 0 && email.length > 4){
-  //         return true
-  //       }
-  //     console.log("Please Properly insert a email with a '@' & a '.com'")
-  //     return false
-  //   }
+      // email validty check?
+      const checkAT = email.indexOf('@')
+      const checkCOM = email.indexOf('.com')
+        if(checkAT > 0 && checkCOM > 0 && email.length > 4){
+          return true
+        }
+      console.log("Please Properly insert a email with a '@' & a '.com'")
+      return false
+    }
 
-  //   const passwordCheck = (password) => {
-  //     if(password.length > 6 ){
-  //       return true
-  //     }
+    const passwordCheck = (password) => {
+      if(password.length > 6 ){
+        return true
+      }
 
-  //     return false
-  //   }
+      return false
+    }
 
-  //   if(nullCheck(value) && emailCheck(value.email) && passwordCheck(value.password)){
-  //     for(let key in value){
-  //       value[key] = JSON.stringify(value[key])
-  //     }
-  //     this.SignUpToDatabase(value)
-  //     this.props.SetProfilePersonalAction(value)
-  //     this.props.navigation.navigate('Registration');
-  //   }
+    if(nullCheck(value) && emailCheck(value) && passwordCheck(this.state.password)){
+      // for(let key in value){
+      //   value[key] = JSON.stringify(value[key])
+      // }
+      // this.SignUpToDatabase(value)
+      // this.props.SetProfilePersonalAction(value)
+      // this.props.navigation.navigate('Registration');
+    }
   }
     render() {
         return (
