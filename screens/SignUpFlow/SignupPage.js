@@ -60,6 +60,7 @@ class Welcome extends Component {
   handleSubmit = () => {
     
     const value = this.state.email;
+    const password = this.state.password;
     //console.log(nullCheck)//this.nullCheck(value);
     //console.log(value)
     const nullCheck = (value) => {
@@ -90,7 +91,7 @@ class Welcome extends Component {
       return false
     }
 
-    if(nullCheck(value) && emailCheck(value) && passwordCheck(this.state.password)){
+    if(nullCheck(value) && emailCheck(value) && passwordCheck(password)){
       console.log("yay")
       // for(let key in value){
       //   value[key] = JSON.stringify(value[key])
