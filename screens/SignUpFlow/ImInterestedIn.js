@@ -9,8 +9,8 @@ import {
   View,
   Button,
   Picker,
-  TextInput,
-  ImageBackground
+  TextInput, 
+  Dimensions
 } from 'react-native';
 import { LinearGradient } from 'expo';
 // import Categories from '../../components/SignUpFlow/Categories'
@@ -18,7 +18,7 @@ import t from 'tcomb-form-native';
 import { connect } from 'react-redux'
 import SetProfilePersonalAction from '../../storage/actions/SetProfilePersonalAction'
 import firebase from '../../utils/mainFire'
-
+import Slider from './CSlider'
 
 
 
@@ -52,7 +52,9 @@ class SignupPage extends React.Component {
   handleBackToSignIn = () => {
     this.props.navigation.navigate('SignIn')
   }
-
+  handleListener = (arg) => {
+    //console.log(arg)
+  }
   SignUpToDatabase = ({ age, email, gender, name, password }) => {
     let userId = email.split('.').join()
     firebase.database().ref('users/' + userId).set({
@@ -65,6 +67,7 @@ class SignupPage extends React.Component {
   }
 
   handleSubmit = () => {
+    return;
     const value = this._form.getValue();
 
     console.log(value)
@@ -108,58 +111,76 @@ class SignupPage extends React.Component {
   render(){
     //console.log(this.state.text)
     return(
-      <View  style={{flex:1}}pickerContainer={{margin:100}}>
+      
+      <View  style={styles.container}>
 
         <LinearGradient
           textStyle={{ color: '#fff' }}colors={['#18cdf6', '#43218c']}
           style={{flex:1}}
         >
-        <ImageBackground source={require('../../assets/Assets_V1/Butterfly_Background/butterflyBackground.png')} style={styles.backgroundImage}>
 
 
         <ScrollView >
           <Text style={styles.titleText}>
-            Sign Up
+            I'm interested in...
           </Text>
-
+          <View alignItems= 'center'>
+          <Text style={styles.text}>
+            Pick one or both
+          </Text>
+          </View>
           <View style={{margin:10, color: '#fff',width: "80%",left:"10%"}}>
-          <TextInput
-                style={styles._textInput}
-                placeholder="email"
-                placeholderTextColor="#fff"
-                onChangeText={(email) => this.setState({email})}
-                //value={this.state.email}
-                
-              />
-              <TextInput
-                style={styles._textInput}
-                placeholder="confirm email"
-                placeholderTextColor="#fff"
-                onChangeText={(emailCheck) => this.setState({emailCheck})}
+          <View alignItems= 'center'>
+              <TouchableOpacity style={styles.button2}onPress={this.handlPress}>
+               
+              <Text style={styles.button}>Men</Text>
+              
+              </TouchableOpacity>
+          </View>
+          <View alignItems= 'center' top={25}>
+              <TouchableOpacity style={styles.button2}onPress={this.handlPress}>
+               
+              <Text style={styles.button}>Women</Text>
+              
+              </TouchableOpacity>
+          </View>
 
-              />
-              <TextInput
-                style={styles._textInput}
-                placeholder="password"
-                placeholderTextColor="#fff"
-                onChangeText={(password) => this.setState({password})}
-
-              />
-              <TextInput
-                style={styles._textInput}
-                placeholder="confrim password"
-                placeholderTextColor="#fff"
-                onChangeText={(passwordCheck) => this.setState({passwordCheck})}
-
-              />
-              <Text style={styles.smallText}>
-            *all fields required
+          <Text style={styles.titleText2}>
+            Set your preferences
           </Text>
+          <Text style={styles.textTop}>Preferred age range</Text>
+
+         <View style={styles.slider1}>
+           <Slider
+             functionListener={this.handleListener}
+             leftBound={'18'}
+             rightBound={'110'}
+            />
+         </View>
+         <Text style={styles.textTop2}>Preferred match radius (miles)</Text>
+
+         <View style={styles.slider2}>
+           <Slider
+             functionListener={this.handleListener}
+             leftBound={'0'}
+             rightBound={'110'}
+            />
+         </View>
+
+         
           
+          
+
+          <View alignItems= 'center' top={100}>
+              <TouchableOpacity style={styles.button2}onPress={this.handlPress}>
+               
+              <Text style={styles.button}>Next</Text>
+              
+              </TouchableOpacity>
+          </View>
           </View>
 
         </ScrollView>
-        </ImageBackground>
 
 
         </LinearGradient>
@@ -168,6 +189,7 @@ class SignupPage extends React.Component {
   }
 
 }
+const {height, width } = Dimensions.get('window')
 
 const styles = StyleSheet.create({
   container: {
@@ -178,6 +200,14 @@ const styles = StyleSheet.create({
     margin:10, 
     color: '#fff',
     fontSize:48,
+    textAlign:"center",
+    fontWeight:"100"
+  },
+  titleText2:{
+    margin:10, 
+    color: '#fff',
+    fontSize:48,
+    top:25,
     textAlign:"center",
     fontWeight:"100"
   },
@@ -194,10 +224,46 @@ smallText:{
   color: '#fff',
   fontSize:10
 },
-backgroundImage: {
-  height: '100%',
-  width: '100%',
-  flex: 1,
+text:{
+  margin:10, 
+  color: '#fff',
+  fontSize:20,
+  textAlign:'center'
+},
+textTop:{
+  top:40,
+  margin:10, 
+  color: '#fff',
+  fontSize:20,
+  textAlign:'center'
+},
+textTop2:{
+  top:60,
+  margin:10, 
+  color: '#fff',
+  fontSize:20,
+  textAlign:'center'
+},button:{
+  color: '#fff',
+  fontSize:20
+},
+button2: {
+  alignItems: 'center',
+  //backgroundColor: '#fff',
+  padding: 10,
+  borderRadius: 40,
+  borderWidth: 2,
+  borderColor: '#fff',
+  width:'55%'
+},
+slider1:{
+ top: 60
+},
+slider2:{
+  top: 80
+},
+slider3: {
+  top:15
 }
 });
 const mapStateToProps = (state) => ({

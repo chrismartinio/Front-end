@@ -101,12 +101,12 @@ class SelfiePage extends React.Component {
           <View style={{top:height/20,height:height/1.65, backgroundColor:'white'}}>
           <Camera/>
           </View>
-          {/* <View style={{top:35,width:'50%', backgroundColor:'white', right:'-25%'}}>
+          {<View style={{top:35,width:'50%', backgroundColor:'white', right:'-25%'}}>
           <Button
             title='Submit selfie'
             onPress={this.handleSelfieSubmit}
           />
-          </View> */}
+          </View> }
         </ScrollView>
         </LinearGradient>
       </View>

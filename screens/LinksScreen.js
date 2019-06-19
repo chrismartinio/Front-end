@@ -6,6 +6,7 @@ import MatchesPage from './SignUpFlow/Matches'
 import RegistrationPage from './SignUpFlow/RegistrationPage'
 import SelfiePage from './SignUpFlow/SelfiePage'
 import SignupPage from './SignUpFlow/SignupPage'
+import ImInterestedIn from '../screens/SignUpFlow/ImInterestedIn';
 import PhotoReview from './SignUpFlow/PhotoReview'
 import MatchBackground from '../components/ChatFlow/MatchBackground';
 import InitialMatchChoice from './ChatFlow/InitialMatchChoice'
@@ -22,12 +23,16 @@ const Form = t.form.Form;
 
 var Component = t.enums({
   sCurrTest: 'Current Test Screen',
+  sImInterestedIn: 'SignupFlow/ImInterestedIn',
+  sSpendWeekend: 'SignupFlow/SpendWeekend',
   sPROFILE: 'SignupFlow/ProfilePage',
   sMATCHES: 'SignupFlow/Matches',
   sChatPage: 'ChatFlow/chatMain',
   sSELFIE: 'SignupFlow/SelfiePage',
 sREGISTRATION: 'SignupFlow/RegistrationPage',
   sSIGNUP: 'SignupFlow/SignupPage',
+  
+
   sPHOTOREVIEW: 'SignupFlow/PhotoReview',
   sSelection: 'ChatFlow/Selection',
   sGhostingOthers:'ChatFlow/GhostOthers',
@@ -86,6 +91,10 @@ export default class LinksScreen extends React.Component {
       this.props.navigation.navigate('ReplyQuestionaire');
     } else if(this._form.getValue().Component === 'sViewReply'){
       this.props.navigation.navigate('ViewQuestionaire');
+    }else if(this._form.getValue().Component === 'sImInterestedIn'){
+      this.props.navigation.navigate('TestImInterestedIn'); 
+    }else if(this._form.getValue().Component === 'sSpendWeekend'){
+      this.props.navigation.navigate('TestSpendWeekend'); 
     }
   }
 
