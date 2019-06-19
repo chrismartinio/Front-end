@@ -22,7 +22,7 @@ import { connect } from 'react-redux'
 
 
 //front end variables
-var {height, width}= Dimensions.get('window')
+var {height, width} = Dimensions.get('window')
 
 var numOfMatches=8;
 var numOfNewMatches=3;

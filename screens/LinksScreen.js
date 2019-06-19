@@ -17,7 +17,7 @@ import GotLucky from './ChatFlow/GotLuckyGoToChat'
 import ChatPage from './ChatFlow/chatMain'
 import firebase from '../utils/mainFire'
 
-import t from 'tcomb-form-native';
+import t from "tcomb-form-native";
 const Form = t.form.Form;
 
 
@@ -47,18 +47,34 @@ var details = t.struct({
   Component: Component
 });
 
-
 export default class LinksScreen extends React.Component {
   static navigationOptions = {
-    title: 'Testing Screen',
+    title: "Testing Screen"
   };
-  constructor(props){
-    super(props)
+  constructor(props) {
+    super(props);
     this.state = {
       CurrentScreen: ProfilePage
-    }
+    };
+    this.buttonAry = [
+      "TestProfile",
+      "TestMatches",
+      "TestRegistration",
+      "TestSelfie",
+      "TestSignUp",
+      "TestPhotoReview",
+      "TestScreen",
+      "Selection",
+      "GhostingOthers",
+      "GotGhosted",
+      "GotLucky",
+      "CreateQuestionaire",
+      "ReplyQuestionaire",
+      "ViewQuestionaire",
+      "TestAboutUs",
+      "WouldRather"
+    ];
   }
-
 
   handleChange = () => {
     if(this._form.getValue().Component === 'sPROFILE'){
@@ -96,27 +112,48 @@ export default class LinksScreen extends React.Component {
     }else if(this._form.getValue().Component === 'sSpendWeekend'){
       this.props.navigation.navigate('TestSpendWeekend'); 
     }
+  };
+
+  /*
+  handleClick = (page) => {
+    this.props.navigation.navigate(page)
   }
+  */
 
   storeHighScore = (userId, score) => {
-  firebase.database().ref('messages/' + userId).set({
-    highscore: score
-  });
-}
+    firebase
+      .database()
+      .ref("messages/" + userId)
+      .set({
+        highscore: score
+      });
+  };
 
-  getData = (userId) => {
-  firebase.database().ref('users/' + 'fun@mailcom').on('value', (snapshot) => {
-    const highscore = snapshot.val().highscore;
-    console.log("New high score: " + highscore);
-  });
-  }
+  getData = userId => {
+    firebase
+      .database()
+      .ref("users/" + "fun@mailcom")
+      .on("value", snapshot => {
+        const highscore = snapshot.val().highscore;
+        console.log("New high score: " + highscore);
+      });
+  };
 
   render() {
-    this.storeHighScore('fun@mailcom', 200)
-    let CurrentScreen = this.state.CurrentScreen
+    this.storeHighScore("fun@mailcom", 200);
+    let CurrentScreen = this.state.CurrentScreen;
+    let displayButton = this.buttonAry.map((e, index = 0) => {
+      return (
+        <Button
+          key={index++}
+          title={e}
+          onPress={() => this.props.navigation.navigate(e)}
+        />
+      );
+    });
     return (
       <ScrollView style={styles.container}>
-        <Form
+        {/*<Form
             style={{color:'black'}}
             type={details}
             ref={d => this._form = d}
@@ -125,9 +162,9 @@ export default class LinksScreen extends React.Component {
         <Button
           title={'Press me'}
           onPress={this.getData}
-        />
+        />*/}
 
-
+        {displayButton}
       </ScrollView>
     );
   }
@@ -136,6 +173,6 @@ export default class LinksScreen extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-  },
+    backgroundColor: "#fff"
+  }
 });
