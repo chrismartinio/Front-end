@@ -10,7 +10,8 @@ import {
   Button,
   Picker,
   TextInput,
-  ImageBackground
+  ImageBackground,
+  KeyboardAvoidingView
 } from 'react-native';
 import { LinearGradient } from 'expo';
 // import Categories from '../../components/SignUpFlow/Categories'
@@ -108,21 +109,24 @@ class SignupPage extends React.Component {
   render(){
     //console.log(this.state.text)
     return(
-      <View  style={{flex:1}}pickerContainer={{margin:100}}>
+      <View  style={{flex:1}}>
 
         <LinearGradient
           textStyle={{ color: '#fff' }}colors={['#18cdf6', '#43218c']}
           style={{flex:1}}
         >
         <ImageBackground source={require('../../assets/Assets_V1/Butterfly_Background/butterflyBackground.png')} style={styles.backgroundImage}>
-
+        <KeyboardAvoidingView
+          behavior={Platform.OS === "ios" ? "padding" : null}
+          style={{ flex: 1 }}
+        >
 
         <ScrollView >
           <Text style={styles.titleText}>
             Sign Up
           </Text>
 
-          <View style={{margin:10, color: '#fff',width: "80%",left:"10%"}}>
+          <View style={{justifyContent: "flex-end",margin:10, color: '#fff',width: "80%",left:"10%"}}>
           <TextInput
                 style={styles._textInput}
                 placeholder="email"
@@ -159,6 +163,7 @@ class SignupPage extends React.Component {
           </View>
 
         </ScrollView>
+        </KeyboardAvoidingView>
         </ImageBackground>
 
 
@@ -173,6 +178,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
+  },
+  inner: {
+      padding: 24,
+      flex: 1,
+      justifyContent: "flex-end",
   },
   titleText:{
     margin:10, 

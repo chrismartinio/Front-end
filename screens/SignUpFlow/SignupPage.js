@@ -1,29 +1,37 @@
-import React from 'react'
-import {
-  Image,
-  Platform,
-  ScrollView,
+import React, { Component } from "react";
+import { 
+  Button, 
+  Keyboard, 
+  KeyboardAvoidingView, 
+  Platform, 
+  SafeAreaView, 
   StyleSheet,
-  Text,
-  TouchableOpacity,
+  Text, 
+  TextInput, 
+  TouchableWithoutFeedback, 
   View,
-  Button,
-  Picker,
-  TextInput,
-  ImageBackground
-} from 'react-native';
+  Image,
+  ScrollView,
+  TouchableOpacity,
+  ImageBackground,
+} from "react-native";
 import { LinearGradient } from 'expo';
-// import Categories from '../../components/SignUpFlow/Categories'
-import t from 'tcomb-form-native';
 import { connect } from 'react-redux'
 import SetProfilePersonalAction from '../../storage/actions/SetProfilePersonalAction'
 import firebase from '../../utils/mainFire'
 
-
-
-
-
-class SignupPage extends React.Component {
+class Welcome extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { 
+      email:'email',
+      emailCheck:'email',
+      password:'password',
+      passwordCheck:'password' };
+  }
+  handleBackToSignIn = () => {
+    this.props.navigation.navigate('SignIn')
+  }
   static navigationOptions = {
     //header: null,
     //title: 'Match Chat',
@@ -39,20 +47,6 @@ class SignupPage extends React.Component {
       fontSize:24
     },
   };
-
-  //having null header means no back  button is present!
-  constructor(props) {
-    super(props);
-    this.state = { 
-      email:'email',
-      emailCheck:'email',
-      password:'password',
-      passwordCheck:'password' };
-  }
-  handleBackToSignIn = () => {
-    this.props.navigation.navigate('SignIn')
-  }
-
   SignUpToDatabase = ({ age, email, gender, name, password }) => {
     let userId = email.split('.').join()
     firebase.database().ref('users/' + userId).set({
@@ -62,68 +56,68 @@ class SignupPage extends React.Component {
       name:name,
       password:password
     });
-  }
-
+  };
   handleSubmit = () => {
-    const value = this._form.getValue();
-
+    
+    const value = this.state.email;
+    //console.log(nullCheck)//this.nullCheck(value);
     console.log(value)
     const nullCheck = (value) => {
-        if(value !== null){
+        if(value !== 'email'&&value!==""){
+          
           return true
         }
       return false
     }
+    console.log(nullCheck(value))
+  //   const emailCheck = (email) =>{
 
-    const emailCheck = (email) =>{
+  //     // email validty check?
+  //     const checkAT = email.indexOf('@')
+  //     const checkCOM = email.indexOf('.com')
+  //       if(checkAT > 0 && checkCOM > 0 && email.length > 4){
+  //         return true
+  //       }
+  //     console.log("Please Properly insert a email with a '@' & a '.com'")
+  //     return false
+  //   }
 
-      // email validty check?
-      const checkAT = email.indexOf('@')
-      const checkCOM = email.indexOf('.com')
-        if(checkAT > 0 && checkCOM > 0 && email.length > 4){
-          return true
-        }
-      console.log("Please Properly insert a email with a '@' & a '.com'")
-      return false
-    }
+  //   const passwordCheck = (password) => {
+  //     if(password.length > 6 ){
+  //       return true
+  //     }
 
-    const passwordCheck = (password) => {
-      if(password.length > 6 ){
-        return true
-      }
+  //     return false
+  //   }
 
-      return false
-    }
-
-    if(nullCheck(value) && emailCheck(value.email) && passwordCheck(value.password)){
-      for(let key in value){
-        value[key] = JSON.stringify(value[key])
-      }
-      this.SignUpToDatabase(value)
-      this.props.SetProfilePersonalAction(value)
-      this.props.navigation.navigate('Registration');
-    }
+  //   if(nullCheck(value) && emailCheck(value.email) && passwordCheck(value.password)){
+  //     for(let key in value){
+  //       value[key] = JSON.stringify(value[key])
+  //     }
+  //     this.SignUpToDatabase(value)
+  //     this.props.SetProfilePersonalAction(value)
+  //     this.props.navigation.navigate('Registration');
+  //   }
   }
-
-  render(){
-    //console.log(this.state.text)
-    return(
-      <View  style={{flex:1}}pickerContainer={{margin:100}}>
-
-        <LinearGradient
+    render() {
+        return (
+          
+            <KeyboardAvoidingView
+                behavior={Platform.OS === "ios" ? "padding" : null}
+                style={{ flex: 1 }}
+            >
+            <LinearGradient
           textStyle={{ color: '#fff' }}colors={['#18cdf6', '#43218c']}
           style={{flex:1}}
         >
-        <ImageBackground source={require('../../assets/Assets_V1/Butterfly_Background/butterflyBackground.png')} style={styles.backgroundImage}>
-
-
-        <ScrollView >
-          <Text style={styles.titleText}>
-            Sign Up
-          </Text>
-
-          <View style={{margin:10, color: '#fff',width: "80%",left:"10%"}}>
-          <TextInput
+                <SafeAreaView style={styles.container}>
+                    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                        <View style={styles.inner}>
+                        
+                        <Text style={styles.titleText}>
+                          Sign Up
+                        </Text>
+                <TextInput
                 style={styles._textInput}
                 placeholder="email"
                 placeholderTextColor="#fff"
@@ -152,27 +146,66 @@ class SignupPage extends React.Component {
                 onChangeText={(passwordCheck) => this.setState({passwordCheck})}
 
               />
-              <Text style={styles.smallText}>
+          <Text style={styles.smallText}>
             *all fields required
           </Text>
-          
-          </View>
-
-        </ScrollView>
-        </ImageBackground>
-
-
-        </LinearGradient>
-      </View>
-      )
-  }
-
+          <Text></Text>
+          <View alignItems= 'center' >
+                    <TouchableOpacity style={styles.button2}onPress={this.handleSubmit}>
+                      <Text style={styles.button}>Next</Text>
+                    </TouchableOpacity>
+                  </View>
+                            <View style={{ flex : 1 }} />
+                        </View>
+                    </TouchableWithoutFeedback>
+                    
+                </SafeAreaView>
+                  
+                </LinearGradient>
+            </KeyboardAvoidingView>
+        );
+    }
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
+    container: {
+        flex: 1,
+    },
+    inner: {
+        padding: 24,
+        flex: 1,
+        justifyContent: "flex-end",
+    },
+    header: {
+        fontSize: 36,
+        marginBottom: 48,
+    },
+    input: {
+        height: 40,
+        borderColor: "#000000",
+        borderBottomWidth: 1,
+        marginBottom: 36,
+    },
+    btnContainer: {
+        backgroundColor: "white",
+        marginTop: 12,
+    },
+    button:{
+      color: '#fff',
+      fontSize:20
+    },
+    _textInput:{
+      color: '#fff',
+      fontSize: 20,
+      textAlign: 'left',
+      paddingTop: '20%',
+      borderBottomWidth: 1,
+      borderColor: '#fff',
+  },
+  smallText:{
+    margin:10, 
+    color: '#fff',
+    fontSize:10
   },
   titleText:{
     margin:10, 
@@ -181,31 +214,20 @@ const styles = StyleSheet.create({
     textAlign:"center",
     fontWeight:"100"
   },
-  _textInput:{
-    color: '#fff',
-    fontSize: 20,
-    textAlign: 'left',
-    paddingTop: '20%',
-    borderBottomWidth: 1,
+  button2: {
+    alignItems: 'center',
+    //backgroundColor: '#fff',
+    padding: 10,
+    borderRadius: 40,
+    borderWidth: 2,
     borderColor: '#fff',
-},
-smallText:{
-  margin:10, 
-  color: '#fff',
-  fontSize:10
-},
-backgroundImage: {
-  height: '100%',
-  width: '100%',
-  flex: 1,
-}
+    width:'55%'
+  },
+  backgroundImage: {
+    height: '100%',
+    width: '100%',
+    flex: 1,
+  }
 });
-const mapStateToProps = (state) => ({
-  ...state
-})
-const mapDispatchToProps = (dispatch) => ({
-  SetProfilePersonalAction: (payload) => dispatch(SetProfilePersonalAction(payload))
-})
 
-export default connect(mapStateToProps, mapDispatchToProps)(SignupPage);
-
+export default Welcome;
