@@ -44,7 +44,7 @@ const AuthStack = createStackNavigator({
   Registration: RegistrationPage,
   Selfie: SelfiePage,
   Profile: ProfilePage,
-  WouldRather: WouldRather
+  //WouldRather: WouldRather
 })
 
 const ChatStack = createStackNavigator({
