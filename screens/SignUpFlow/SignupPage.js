@@ -61,7 +61,7 @@ class Welcome extends Component {
     
     const value = this.state.email;
     //console.log(nullCheck)//this.nullCheck(value);
-    console.log(value)
+    //console.log(value)
     const nullCheck = (value) => {
         if(value !== 'email'&&value!==""){
           
@@ -69,7 +69,7 @@ class Welcome extends Component {
         }
       return false
     }
-    console.log(nullCheck(value))
+    //console.log(nullCheck(value))
     const emailCheck = (email) =>{
 
       // email validty check?
@@ -91,6 +91,7 @@ class Welcome extends Component {
     }
 
     if(nullCheck(value) && emailCheck(value) && passwordCheck(this.state.password)){
+      console.log("yay")
       // for(let key in value){
       //   value[key] = JSON.stringify(value[key])
       // }
@@ -122,6 +123,9 @@ class Welcome extends Component {
                 placeholder="email"
                 placeholderTextColor="#fff"
                 onChangeText={(email) => this.setState({email})}
+                autoCompleteType={false}
+                autoCapitalize="none"
+                autoCorrect={false}
                 //value={this.state.email}
                 
               />
@@ -130,21 +134,29 @@ class Welcome extends Component {
                 placeholder="confirm email"
                 placeholderTextColor="#fff"
                 onChangeText={(emailCheck) => this.setState({emailCheck})}
-
+                autoCompleteType={false}
+                autoCapitalize="none"
+                autoCorrect={false}
               />
               <TextInput
                 style={styles._textInput}
                 placeholder="password"
                 placeholderTextColor="#fff"
                 onChangeText={(password) => this.setState({password})}
-
+                autoCompleteType={false}
+                autoCapitalize="none"
+                autoCorrect={false}
+                secureTextEntry={true}
               />
               <TextInput
                 style={styles._textInput}
                 placeholder="confrim password"
                 placeholderTextColor="#fff"
                 onChangeText={(passwordCheck) => this.setState({passwordCheck})}
-
+                autoCompleteType={false}
+                autoCapitalize="none"
+                secureTextEntry={true}
+                autoCorrect={false}
               />
           <Text style={styles.smallText}>
             *all fields required
