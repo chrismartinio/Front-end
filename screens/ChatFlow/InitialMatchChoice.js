@@ -122,26 +122,19 @@ class InitialMatch extends Component{
         colors={['#FFFFFF','#18cdf6', '#43218c']}
       >
         <ScrollView style={styles.container}>
-
-
           <View style={styles.MatchHeader}>
             <MatchHeader title={'CONGRATS'} text={'You and Taylor must like each other. You have had a 90 second chat'}/>
           </View>
-
         <View style={styles.TimerContainer}>
           <CircularTimer percent={this.state.currentTime} />
           <Text style={styles.timerText}>
            { this.state.currentTime } sec left
           </Text>
         </View>
-
           <View style={styles.TextHeader}>
             <InfoText title={'Taylor Swift'} text={'CA, 91741'}/>
           </View>
-
           <View style={styles.DecisionContainer}>
-
-
             <View style={styles.Icons}>
               <TouchableOpacity onPress={this.handleGhost}>
                 <Image
@@ -153,8 +146,6 @@ class InitialMatch extends Component{
                 </Text>
               </TouchableOpacity>
             </View>
-
-
             <View style={styles.Icons}>
               <TouchableOpacity onPress={this.handleLike}>
                 <Image
