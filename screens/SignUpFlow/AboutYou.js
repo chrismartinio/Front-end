@@ -11,7 +11,8 @@ import {
   TextInput,
   Picker,
   DatePickerIOS,
-  TouchableHighlight
+  TouchableHighlight,
+  KeyboardAvoidingView
 } from "react-native";
 import { LinearGradient } from "expo";
 import DatePicker from "react-native-datepicker";
@@ -50,9 +51,9 @@ class AboutYou extends React.Component {
 
   maxDate = () => {
     let d = new Date();
-    //User has to be at least 17 year olds
-    //Current Year - 17
-    let year = d.getFullYear() - 17;
+    //User has to be at least 18 year olds
+    //Current Year - 18
+    let year = d.getFullYear() - 18;
     let month = d.getMonth() + 1;
     let day = d.getDate();
     return year.toString() + "-" + month.toString() + "-" + day.toString();
@@ -91,7 +92,6 @@ class AboutYou extends React.Component {
       passed = false;
     }
 
-
     //check zipCode
     if (this.checkZipCode(this.state.zipCode) === false) {
       passed = false;
@@ -124,125 +124,120 @@ class AboutYou extends React.Component {
       <View style={{ flex: 1 }}>
         <LinearGradient colors={["#18cdf6", "#43218c"]} style={{ flex: 1 }}>
           <ScrollView>
-            <View
-              style={{
-                marginLeft: "10%",
-                marginRight: "10%",
-                marginTop: "40%",
-                marginBottom: "10%"
-              }}
-            >
-              {/**About You Text */}
-              <View style={styles.aboutMeTextWrap}>
-                <Text style={styles.aboutMeText}>About You</Text>
-              </View>
-              {/**firstName */}
-              <View style={styles.firstNameInputWrap}>
-                <View style={{ width: "100%" }}>
-                  <TextInput
-                    style={styles.nameInputBox}
-                    placeholder="first name"
-                    onChangeText={firstName => this.setState({ firstName })}
-                    placeholderTextColor="#fff"
-                  />
+            <KeyboardAvoidingView behavior="height" enabled>
+              <View style={styles.wholeWrap}>
+                {/**About You Text */}
+                <View style={styles.aboutMeTextWrap}>
+                  <Text style={styles.aboutMeText}>About You</Text>
                 </View>
-              </View>
-              {/**lastName */}
-              <View style={styles.lastNameInputWrap}>
-                <View style={{ width: "100%" }}>
-                  <TextInput
-                    style={styles.nameInputBox}
-                    placeholder="last name"
-                    onChangeText={lastName => this.setState({ lastName })}
-                    placeholderTextColor="#fff"
-                  />
+                {/**firstName */}
+                <View style={styles.firstNameInputWrap}>
+                  <View style={{ width: "100%" }}>
+                    <TextInput
+                      style={styles.nameInputBox}
+                      placeholder="first name"
+                      onChangeText={firstName => this.setState({ firstName })}
+                      placeholderTextColor="#fff"
+                    />
+                  </View>
                 </View>
-              </View>
-              {/**birth and gender Wrap */}
-              <View style={styles.birthdateAndGenderWrap}>
-                {/**birth */}
-                <View style={styles.birthdatePicker}>
-                  <DatePicker
-                    style={{ width: "90%" }}
-                    date={
-                      this.state.clicked === false
-                        ? this.state.clicked
-                        : this.state.date
-                    }
-                    mode="date"
-                    placeholder="birthdate"
-                    format="YYYY-MM-DD"
-                    minDate={this.minDate()}
-                    maxDate={this.maxDate()}
-                    confirmBtnText="Confirm"
-                    cancelBtnText="Cancel"
-                    customStyles={birthdatePickerCustom}
-                    onDateChange={date => {
-                      this.setState({ date: date, clicked: true });
-                    }}
-                  />
+                {/**lastName */}
+                <View style={styles.lastNameInputWrap}>
+                  <View style={{ width: "100%" }}>
+                    <TextInput
+                      style={styles.nameInputBox}
+                      placeholder="last name"
+                      onChangeText={lastName => this.setState({ lastName })}
+                      placeholderTextColor="#fff"
+                    />
+                  </View>
                 </View>
-                {/**Gender */}
-                <View style={styles.genderpPickerWrap}>
-                  <RNPickerSelect
-                    style={genderPicker}
-                    placeholder={{
-                      label: "gender",
-                      value: null
-                    }}
-                    items={genders}
-                    onValueChange={value => {
-                      this.setState({
-                        gender: value
-                      });
-                    }}
-                    value={this.state.gender}
-                    ref={el => {
-                      this.inputRefs.picker = el;
-                    }}
-                  />
+                {/**birth and gender Wrap */}
+                <View style={styles.birthdateAndGenderWrap}>
+                  {/**birth */}
+                  <View style={styles.birthdatePicker}>
+                    <DatePicker
+                      style={{ width: "90%" }}
+                      date={
+                        this.state.clicked === false
+                          ? this.state.clicked
+                          : this.state.date
+                      }
+                      mode="date"
+                      placeholder="birthdate"
+                      format="YYYY-MM-DD"
+                      minDate={this.minDate()}
+                      maxDate={this.maxDate()}
+                      confirmBtnText="Confirm"
+                      cancelBtnText="Cancel"
+                      customStyles={birthdatePickerCustom}
+                      onDateChange={date => {
+                        this.setState({ date: date, clicked: true });
+                      }}
+                    />
+                  </View>
+                  {/**Gender */}
+                  <View style={styles.genderpPickerWrap}>
+                    <RNPickerSelect
+                      style={genderPicker}
+                      placeholder={{
+                        label: "gender",
+                        value: null
+                      }}
+                      items={genders}
+                      onValueChange={value => {
+                        this.setState({
+                          gender: value
+                        });
+                      }}
+                      value={this.state.gender}
+                      ref={el => {
+                        this.inputRefs.picker = el;
+                      }}
+                    />
+                  </View>
                 </View>
-              </View>
-              {/**Country and ZipCode Wrap */}
-              <View style={styles.countryAndZipCodeWrap}>
-                {/**country */}
-                <View style={styles.countryPickerWrap}>
-                  <RNPickerSelect
-                    style={countryPicker}
-                    placeholder={{
-                      label: "Country",
-                      value: null
-                    }}
-                    items={countries}
-                    onValueChange={value => {
-                      this.setState({
-                        country: value
-                      });
-                    }}
-                    value={this.state.country}
-                    ref={el => {
-                      this.inputRefs.picker = el;
-                    }}
-                  />
+                {/**Country and ZipCode Wrap */}
+                <View style={styles.countryAndZipCodeWrap}>
+                  {/**country */}
+                  <View style={styles.countryPickerWrap}>
+                    <RNPickerSelect
+                      style={countryPicker}
+                      placeholder={{
+                        label: "Country",
+                        value: null
+                      }}
+                      items={countries}
+                      onValueChange={value => {
+                        this.setState({
+                          country: value
+                        });
+                      }}
+                      value={this.state.country}
+                      ref={el => {
+                        this.inputRefs.picker = el;
+                      }}
+                    />
+                  </View>
+                  {/**zip */}
+                  <View style={styles.zipCodeInputWrap}>
+                    <TextInput
+                      style={styles.zipCodeInput}
+                      placeholder="zip code"
+                      name="zipCode"
+                      onChangeText={zipCode => this.setState({ zipCode })}
+                      value={this.state.zipCode}
+                      placeholderTextColor="#fff"
+                    />
+                  </View>
                 </View>
-                {/**zip */}
-                <View style={styles.zipCodeInputWrap}>
-                  <TextInput
-                    style={styles.zipCodeInput}
-                    placeholder="zip code"
-                    name="zipCode"
-                    onChangeText={zipCode => this.setState({ zipCode })}
-                    value={this.state.zipCode}
-                    placeholderTextColor="#fff"
-                  />
+                <View>
+                  {this.state.passed === false ? (
+                    <Text style={styles.warningText}>*All field Required</Text>
+                  ) : (
+                    <View style={styles.warningText} />
+                  )}
                 </View>
-              </View>
-              <View>
-                {this.state.passed === false ? (
-                  <Text style={styles.warningText}>*All field Required</Text>
-                ) : (
-                  <View style={styles.warningText} />
-                )}
               </View>
               <View alignItems="center" top={"30%"}>
                 <TouchableOpacity
@@ -252,7 +247,7 @@ class AboutYou extends React.Component {
                   <Text style={{ color: "#fff" }}>Next</Text>
                 </TouchableOpacity>
               </View>
-            </View>
+            </KeyboardAvoidingView>
           </ScrollView>
         </LinearGradient>
       </View>
@@ -343,6 +338,12 @@ const styles = StyleSheet.create({
   warningText: {
     color: "#fff",
     fontSize: 8
+  },
+  wholeWrap: {
+    marginLeft: "10%",
+    marginRight: "10%",
+    marginTop: "40%",
+    marginBottom: "10%"
   }
 });
 

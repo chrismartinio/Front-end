@@ -24,17 +24,24 @@ class TellUsMore extends React.Component {
   }
 
   render() {
+    let displaylikes = likes.map((e, index = 0) => {
+      return (
+        <TouchableOpacity
+          key={index++}
+          style={styles.likeButtonWrap}
+          onPress={this.handlPress}
+        >
+          <Text style={styles.likeButton}>{e}</Text>
+        </TouchableOpacity>
+      );
+    });
+
     return (
       <View style={{ flex: 1 }}>
         <LinearGradient colors={["#18cdf6", "#43218c"]} style={{ flex: 1 }}>
           <ScrollView>
             <View
-              style={{
-                marginLeft: "5%",
-                marginRight: "5%",
-                marginTop: "40%",
-                marginBottom: "10%"
-              }}
+              style={styles.wholeWrap}
             >
               {/**Tell Us More Text */}
               <View style={styles.tellUsMoreTextWrap}>
@@ -44,98 +51,23 @@ class TellUsMore extends React.Component {
                   What are you into?
                 </Text>
               </View>
-              {/*First 3 likes*/}
               <View
-                style={{
-                  alignItems: "center",
-                  marginTop: "15%",
-                }}
+                style={styles.likeWrapCenter}
               >
-                <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
-                  <TouchableOpacity
-                    style={styles.likeButtonWrap}
-                    onPress={this.handlPress}
-                  >
-                    <Text style={styles.likeButton}>Food</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    style={styles.likeButtonWrap}
-                    onPress={this.handlPress}
-                  >
-                    <Text style={styles.likeButton}>Dancing</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    style={styles.likeButtonWrap}
-                    onPress={this.handlPress}
-                  >
-                    <Text style={styles.likeButton}>Pets</Text>
-                  </TouchableOpacity>
-                </View>
-              </View>
-              {/*Second 3 likes*/}
-              <View
-                style={{
-                  alignItems: "center",
-                  marginTop: "5%",
-                }}
-              >
-                <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
-                  <TouchableOpacity
-                    style={styles.likeButtonWrap}
-                    onPress={this.handlPress}
-                  >
-                    <Text style={styles.likeButton}>Gym</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    style={styles.likeButtonWrap}
-                    onPress={this.handlPress}
-                  >
-                    <Text style={styles.likeButton}>Shopping</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    style={styles.likeButtonWrap}
-                    onPress={this.handlPress}
-                  >
-                    <Text style={styles.likeButton}>Sports</Text>
-                  </TouchableOpacity>
-                </View>
-              </View>
-              {/*Thir 3 likes*/}
-              <View
-                style={{
-                  alignItems: "center",
-                  marginTop: "5%",
-                }}
-              >
-                <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
-                  <TouchableOpacity
-                    style={styles.likeButtonWrap}
-                    onPress={this.handlPress}
-                  >
-                    <Text style={styles.likeButton}>Hiking</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    style={styles.likeButtonWrap}
-                    onPress={this.handlPress}
-                  >
-                    <Text style={styles.likeButton}>Music</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    style={styles.likeButtonWrap}
-                    onPress={this.handlPress}
-                  >
-                    <Text style={styles.likeButton}>Travel</Text>
-                  </TouchableOpacity>
-                </View>
-              </View>
-              <View alignItems="center" top={"30%"}>
-                <TouchableOpacity
-                  style={styles.button}
-                  onPress={this.handleSubmit}
+                <View
+                  style={styles.likesWrap}
                 >
-                  <Text style={{ color: "#fff" }}>Next</Text>
-                </TouchableOpacity>
+                  {displaylikes}
+                </View>
               </View>
+            </View>
+            <View alignItems="center" top={"30%"}>
+              <TouchableOpacity
+                style={styles.button}
+                onPress={this.handleSubmit}
+              >
+                <Text style={{ color: "#fff" }}>Next</Text>
+              </TouchableOpacity>
             </View>
           </ScrollView>
         </LinearGradient>
@@ -175,7 +107,6 @@ const styles = StyleSheet.create({
   },
   button: {
     alignItems: "center",
-    //backgroundColor: '#fff',
     padding: 10,
     borderRadius: 40,
     borderWidth: 2,
@@ -183,11 +114,28 @@ const styles = StyleSheet.create({
     width: "70%"
   },
   buttonText: {
-    padding: 10,
     color: "white",
     fontWeight: "bold",
     fontSize: 20
   },
+  likesWrap: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "center"
+  },
+  likeWrapCenter: {
+    alignItems: "center",
+    marginTop: "15%"
+  },
+  wholeWrap: {
+    //borderRadius: 4,
+    //borderWidth: 0.5,
+    //borderColor: "#d6d7da",
+    marginLeft: "5%",
+    marginRight: "5%",
+    marginTop: "40%",
+    marginBottom: "10%"
+  }
 });
 
 const likes = [
