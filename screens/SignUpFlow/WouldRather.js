@@ -47,16 +47,16 @@ class WouldRather extends React.Component {
               <View style={styles.V2}>
                 <Slider
                   functionListener={this.handleListener}
-                  leftBound={'Books'}
-                  rightBound={'Movie'}
+                  leftBound={'Wine'}
+                  rightBound={'Beer'}
                  />
               </View>
 
               <View style={styles.V3}>
                 <Slider
                   functionListener={this.handleListener}
-                  leftBound={'Books'}
-                  rightBound={'Movie'}
+                  leftBound={'Beach'}
+                  rightBound={'Mountains'}
                  />
               </View>
             </View>

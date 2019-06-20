@@ -31,7 +31,7 @@ var Component = t.enums({
   sSELFIE: 'SignupFlow/SelfiePage',
 sREGISTRATION: 'SignupFlow/RegistrationPage',
   sSIGNUP: 'SignupFlow/SignupPage',
-  
+
 
   sPHOTOREVIEW: 'SignupFlow/PhotoReview',
   sSelection: 'ChatFlow/Selection',
@@ -72,7 +72,11 @@ export default class LinksScreen extends React.Component {
       "ReplyQuestionaire",
       "ViewQuestionaire",
       "TestAboutUs",
-      "TestTellUsMore"
+
+      "TestImInterestedIn",
+      "TestSpendWeekend",
+      "WouldRather"
+
     ];
   }
 
@@ -108,9 +112,11 @@ export default class LinksScreen extends React.Component {
     } else if(this._form.getValue().Component === 'sViewReply'){
       this.props.navigation.navigate('ViewQuestionaire');
     }else if(this._form.getValue().Component === 'sImInterestedIn'){
-      this.props.navigation.navigate('TestImInterestedIn'); 
+      this.props.navigation.navigate('TestImInterestedIn');
     }else if(this._form.getValue().Component === 'sSpendWeekend'){
-      this.props.navigation.navigate('TestSpendWeekend'); 
+      this.props.navigation.navigate('TestSpendWeekend');
+    } else if(this._form.getValue().Component === 'sSpendWeekend'){
+      this.props.navigation.navigate('TestSpendWeekend');
     }
   };
 
