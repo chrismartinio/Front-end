@@ -1,52 +1,52 @@
-import React from 'react'
-import {
-  Image,
-  Platform,
-  ScrollView,
+import React, { Component } from "react";
+import { 
+  Button, 
+  Keyboard, 
+  KeyboardAvoidingView, 
+  Platform, 
+  SafeAreaView, 
   StyleSheet,
-  Text,
-  TouchableOpacity,
+  Text, 
+  TextInput, 
+  TouchableWithoutFeedback, 
   View,
-  Button
-} from 'react-native';
+  Image,
+  ScrollView,
+  TouchableOpacity,
+  ImageBackground,
+} from "react-native";
 import { LinearGradient } from 'expo';
-// import Categories from '../../components/SignUpFlow/Categories'
-const Form = t.form.Form;
-import t from 'tcomb-form-native';
 import { connect } from 'react-redux'
 import SetProfilePersonalAction from '../../storage/actions/SetProfilePersonalAction'
 import firebase from '../../utils/mainFire'
 
-
-var Positive = t.refinement(t.Number, function (n) {
-  return n >= 18;
-});
-
-var Gender = t.enums({
-  M: 'Male',
-  F: 'Female',
-  T: 'Trans/CIS',
-  U: 'Unidentified'
-},'Gender');
-
-var details = t.struct({
-  name: t.String,
-  email: t.String,
-  password: t.String,
-  age: Positive, // refinement
-  gender: Gender
-});
-class SignupPage extends React.Component {
-  // static navigationOptions = {
-  //   header: null,
-  // };
-
-  //having null header means no back  button is present!
-
+class Welcome extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { 
+      email:'email',
+      emailCheck:'email',
+      password:'password',
+      passwordCheck:'password' };
+  }
   handleBackToSignIn = () => {
     this.props.navigation.navigate('SignIn')
   }
-
+  static navigationOptions = {
+    //header: null,
+    //title: 'Match Chat',
+    headerStyle: {
+      backgroundColor: '#18cdf6',
+    },
+    footerStyle: {
+      backgroundColor: '#fff',
+    },
+    headerTintColor: '#fff',
+    headerTitleStyle: {
+      fontWeight: 'bold',
+      fontSize:24
+    },
+  };
   SignUpToDatabase = ({ age, email, gender, name, password }) => {
     let userId = email.split('.').join()
     firebase.database().ref('users/' + userId).set({
@@ -56,19 +56,21 @@ class SignupPage extends React.Component {
       name:name,
       password:password
     });
-  }
-
+  };
   handleSubmit = () => {
-    const value = this._form.getValue();
-
-    console.log(value)
+    
+    const value = this.state.email;
+    const password = this.state.password;
+    //console.log(nullCheck)//this.nullCheck(value);
+    //console.log(value)
     const nullCheck = (value) => {
-        if(value !== null){
+        if(value !== 'email'&&value!==""){
+          
           return true
         }
       return false
     }
-
+    //console.log(nullCheck(value))
     const emailCheck = (email) =>{
 
       // email validty check?
@@ -89,167 +91,156 @@ class SignupPage extends React.Component {
       return false
     }
 
-    if(nullCheck(value) && emailCheck(value.email) && passwordCheck(value.password)){
-      for(let key in value){
-        value[key] = JSON.stringify(value[key])
-      }
-      this.SignUpToDatabase(value)
-      this.props.SetProfilePersonalAction(value)
-      this.props.navigation.navigate('Registration');
+    if(nullCheck(value) && emailCheck(value) && passwordCheck(password)){
+      console.log("yay")
+      // for(let key in value){
+      //   value[key] = JSON.stringify(value[key])
+      // }
+      // this.SignUpToDatabase(value)
+      // this.props.SetProfilePersonalAction(value)
+      // this.props.navigation.navigate('Registration');
     }
   }
-
-  render(){
-    return(
-      <View  textStyle={{ color: '#fff' }}style={{flex:1}}pickerContainer={{margin:100}}>
-
-        <LinearGradient
+    render() {
+        return (
+          
+            <KeyboardAvoidingView
+                behavior={Platform.OS === "ios" ? "padding" : null}
+                style={{ flex: 1 }}
+            >
+            <LinearGradient
           textStyle={{ color: '#fff' }}colors={['#18cdf6', '#43218c']}
           style={{flex:1}}
         >
-
-
-        <ScrollView >
-
-          <Text textStyle={{ color: '#fff' }}style={{margin:10}}>
-            Passwords must be greater than 6 characters
-            emails must include a '@' & '.com'
+                <SafeAreaView style={styles.container}>
+                    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                        <View style={styles.inner}>
+                        
+                        <Text style={styles.titleText}>
+                          Sign Up
+                        </Text>
+                <TextInput
+                style={styles._textInput}
+                placeholder="email"
+                placeholderTextColor="#fff"
+                onChangeText={(email) => this.setState({email})}
+                autoCompleteType={false}
+                autoCapitalize="none"
+                autoCorrect={false}
+                //value={this.state.email}
+                
+              />
+              <TextInput
+                style={styles._textInput}
+                placeholder="confirm email"
+                placeholderTextColor="#fff"
+                onChangeText={(emailCheck) => this.setState({emailCheck})}
+                autoCompleteType={false}
+                autoCapitalize="none"
+                autoCorrect={false}
+              />
+              <TextInput
+                style={styles._textInput}
+                placeholder="password"
+                placeholderTextColor="#fff"
+                onChangeText={(password) => this.setState({password})}
+                autoCompleteType={false}
+                autoCapitalize="none"
+                autoCorrect={false}
+                secureTextEntry={true}
+              />
+              <TextInput
+                style={styles._textInput}
+                placeholder="confrim password"
+                placeholderTextColor="#fff"
+                onChangeText={(passwordCheck) => this.setState({passwordCheck})}
+                autoCompleteType={false}
+                autoCapitalize="none"
+                secureTextEntry={true}
+                autoCorrect={false}
+              />
+          <Text style={styles.smallText}>
+            *all fields required
           </Text>
-
-          <View textStyle={{ color: '#fff' }}style={{margin:10}}>
-          <Form
-                  style={{color:'black'}}
-                  type={details}
-                  ref={d => this._form = d}
-                />
-          </View>
-
-          <View textStyle={{ color: '#fff' }}style={{width:'50%', backgroundColor:'white', right:'-25%',color:'black'}}>
-            <Button
-              onPress={this.handleSubmit}
-              title='Continue'
-              color='blue'
-            />
-          </View>
-
-          <View textStyle={{ color: '#fff' }}style={{width:'50%', backgroundColor:'white', right:'-25%',color:'black'}}>
-            <Button
-              onPress={this.handleBackToSignIn}
-              title='Back To Main Page'
-              color='blue'
-            />
-          </View>
-
-
-        </ScrollView>
-
-
-        </LinearGradient>
-      </View>
-      )
-  }
-
+          <Text></Text>
+          <View alignItems= 'center' >
+                    <TouchableOpacity style={styles.button2}onPress={this.handleSubmit}>
+                      <Text style={styles.button}>Next</Text>
+                    </TouchableOpacity>
+                  </View>
+                            <View style={{ flex : 1 }} />
+                        </View>
+                    </TouchableWithoutFeedback>
+                    
+                </SafeAreaView>
+                  
+                </LinearGradient>
+            </KeyboardAvoidingView>
+        );
+    }
 }
+
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
+    container: {
+        flex: 1,
+    },
+    inner: {
+        padding: 24,
+        flex: 1,
+        justifyContent: "flex-end",
+    },
+    header: {
+        fontSize: 36,
+        marginBottom: 48,
+    },
+    input: {
+        height: 40,
+        borderColor: "#000000",
+        borderBottomWidth: 1,
+        marginBottom: 36,
+    },
+    btnContainer: {
+        backgroundColor: "white",
+        marginTop: 12,
+    },
+    button:{
+      color: '#fff',
+      fontSize:20
+    },
+    _textInput:{
+      color: '#fff',
+      fontSize: 20,
+      textAlign: 'left',
+      paddingTop: '20%',
+      borderBottomWidth: 1,
+      borderColor: '#fff',
   },
-  formContainer: {
-    justifyContent: 'center',
-    marginTop: 0,
+  smallText:{
+    margin:10, 
+    color: '#fff',
+    fontSize:10
+  },
+  titleText:{
+    margin:10, 
+    color: '#fff',
+    fontSize:48,
+    textAlign:"center",
+    fontWeight:"100"
+  },
+  button2: {
+    alignItems: 'center',
+    //backgroundColor: '#fff',
     padding: 10,
-    backgroundColor: '#ffffff',
+    borderRadius: 40,
+    borderWidth: 2,
+    borderColor: '#fff',
+    width:'55%'
   },
-  developmentModeText: {
-    marginBottom: 20,
-    color: 'rgba(0,0,0,0.4)',
-    fontSize: 14,
-    lineHeight: 19,
-    textAlign: 'center',
-  },
-  contentContainer: {
-    paddingTop: 0,
-  },
-  welcomeContainer: {
-    alignItems: 'center',
-    marginTop: 10,
-    marginBottom: 10,
-  },
-  welcomeImage: {
-    width: 400,
-    height: 250,
-    resizeMode: 'contain',
-    marginTop: 3,
-    marginLeft: -10,
-  },
-  getStartedContainer: {
-    alignItems: 'center',
-    marginHorizontal: 50,
-  },
-  homeScreenFilename: {
-    marginVertical: 7,
-  },
-  codeHighlightText: {
-    color: 'rgba(96,100,109, 0.8)',
-  },
-  codeHighlightContainer: {
-    backgroundColor: 'rgba(0,0,0,0.05)',
-    borderRadius: 3,
-    paddingHorizontal: 4,
-  },
-  getStartedText: {
-    fontSize: 17,
-    color: 'rgba(96,100,109, 1)',
-    lineHeight: 24,
-    textAlign: 'center',
-  },
-  tabBarInfoContainer: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    ...Platform.select({
-      ios: {
-        shadowColor: 'black',
-        shadowOffset: { height: -3 },
-        shadowOpacity: 0.1,
-        shadowRadius: 3,
-      },
-      android: {
-        elevation: 20,
-      },
-    }),
-    alignItems: 'center',
-    backgroundColor: '#fbfbfb',
-    paddingVertical: 20,
-  },
-  tabBarInfoText: {
-    fontSize: 17,
-    color: 'rgba(96,100,109, 1)',
-    textAlign: 'center',
-  },
-  navigationFilename: {
-    marginTop: 5,
-  },
-  helpContainer: {
-    marginTop: 15,
-    alignItems: 'center',
-  },
-  helpLink: {
-    paddingVertical: 15,
-  },
-  helpLinkText: {
-    fontSize: 14,
-    color: '#2e78b7',
+  backgroundImage: {
+    height: '100%',
+    width: '100%',
+    flex: 1,
   }
 });
-const mapStateToProps = (state) => ({
-  ...state
-})
-const mapDispatchToProps = (dispatch) => ({
-  SetProfilePersonalAction: (payload) => dispatch(SetProfilePersonalAction(payload))
-})
 
-export default connect(mapStateToProps, mapDispatchToProps)(SignupPage);
-
+export default Welcome;

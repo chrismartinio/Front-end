@@ -19,8 +19,11 @@ import GotGhosted from '../screens/ChatFlow/GotGhosted';
 import CreateQuestionaire from '../screens/FindMatchFlow/matchCreateQuestionaire';
 import ReplyQuestionaire from '../screens/FindMatchFlow/matchCreateReply';
 import ViewQuestionaire from '../screens/FindMatchFlow/matchViewReply';
-import AboutYou from '../screens/SignUpFlow/AboutYou';
-import TellUsMore from '../screens/SignUpFlow/TellUsMore';
+
+import ImInterestedIn from '../screens/SignUpFlow/ImInterestedIn';
+import SpendWeekend from '../screens/SignUpFlow/SpendAWeekend';
+
+
 
 
 const TestStack = createStackNavigator({
@@ -35,6 +38,7 @@ const TestStack = createStackNavigator({
   TestMatches: MatchesPage,
   TestAboutUs: AboutYou,
   TestTellUsMore: TellUsMore
+
 })
 
 
@@ -42,7 +46,8 @@ const AuthStack = createStackNavigator({
   SignUp: SignupPage,
   Registration: RegistrationPage,
   Selfie: SelfiePage,
-  Profile: ProfilePage
+  Profile: ProfilePage,
+  //WouldRather: WouldRather
 })
 
 const ChatStack = createStackNavigator({
