@@ -10,6 +10,10 @@ class WouldRather extends React.Component {
     header: null,
   }
 
+  handlePress = () => {
+    this.props.navigation.navigate('SpendWeekend');
+  }
+
   handleListener = (arg) => {
     console.log(arg)
   }
@@ -63,7 +67,7 @@ class WouldRather extends React.Component {
 
 
             <View style={styles.buttonStyle}>
-              <TouchableOpacity style={styles.button2} onPress={this.handlPress}>
+              <TouchableOpacity style={styles.button2} onPress={this.handlePress}>
 
                 <Text style={{color:'white'}}>Next</Text>
 
