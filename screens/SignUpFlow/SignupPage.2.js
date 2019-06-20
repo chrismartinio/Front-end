@@ -9,8 +9,8 @@ import {
   View,
   Button,
   Picker,
-  TextInput, 
-  Dimensions
+  TextInput,
+  Slider
 } from 'react-native';
 import { LinearGradient } from 'expo';
 // import Categories from '../../components/SignUpFlow/Categories'
@@ -18,27 +18,15 @@ import t from 'tcomb-form-native';
 import { connect } from 'react-redux'
 import SetProfilePersonalAction from '../../storage/actions/SetProfilePersonalAction'
 import firebase from '../../utils/mainFire'
-import Slider from './CSlider'
+import CSlider from './CSlider'
 
 
 
 
 class SignupPage extends React.Component {
-  static navigationOptions = {
-    //header: null,
-    //title: 'Match Chat',
-    headerStyle: {
-      backgroundColor: '#18cdf6',
-    },
-    footerStyle: {
-      backgroundColor: '#fff',
-    },
-    headerTintColor: '#fff',
-    headerTitleStyle: {
-      fontWeight: 'bold',
-      fontSize:24
-    },
-  };
+  // static navigationOptions = {
+  //   header: null,
+  // };
 
   //having null header means no back  button is present!
   constructor(props) {
@@ -52,9 +40,7 @@ class SignupPage extends React.Component {
   handleBackToSignIn = () => {
     this.props.navigation.navigate('SignIn')
   }
-  handleListener = (arg) => {
-    //console.log(arg)
-  }
+
   SignUpToDatabase = ({ age, email, gender, name, password }) => {
     let userId = email.split('.').join()
     firebase.database().ref('users/' + userId).set({
@@ -122,74 +108,42 @@ class SignupPage extends React.Component {
 
         <ScrollView >
           <Text style={styles.titleText}>
-            Spend a weekend
+            I'm interested in...
           </Text>
           <View alignItems= 'center'>
           <Text style={styles.text}>
-            based on your location...
+            Pick one or both
           </Text>
           </View>
           <View style={{margin:10, color: '#fff',width: "80%",left:"10%"}}>
-          <View alignItems= 'center' >
-              <TouchableOpacity style={styles.button1}onPress={this.handlPress}>
-               
-              <Text style={styles.button}>San Francisco</Text>
-              
-              </TouchableOpacity>
-              <Text></Text>
-          </View>
-          <View style={{ flexDirection: 'row',alignItems:'center',alignContent:'center' }}>
+          <View alignItems= 'center'>
               <TouchableOpacity style={styles.button2}onPress={this.handlPress}>
                
-              <Text style={styles.button}>Tahoe</Text>
-              
-              </TouchableOpacity>
-              <Text> </Text>
-              <TouchableOpacity style={styles.button2}onPress={this.handlPress}>
-               
-              <Text style={styles.button}>Monterey</Text>
-              
-              </TouchableOpacity>
-              
-          </View>
-          <Text></Text>
-          <View style={{ flexDirection: 'row',alignItems:'center',alignContent:'center' }}>
-              <TouchableOpacity style={styles.button2}onPress={this.handlPress}>
-               
-              <Text style={styles.button}>Big Sur</Text>
-              
-              </TouchableOpacity>
-              <Text> </Text>
-              <TouchableOpacity style={styles.button2}onPress={this.handlPress}>
-               
-              <Text style={styles.button}>Napa</Text>
+              <Text style={styles.button}>Men</Text>
               
               </TouchableOpacity>
           </View>
-          <Text></Text>
-          <View style={{ flexDirection: 'row',alignItems:'center',alignContent:'center' }}>
+          <View alignItems= 'center' top={25}>
               <TouchableOpacity style={styles.button2}onPress={this.handlPress}>
                
-              <Text style={styles.button}>Santa Cruz</Text>
-              
-              </TouchableOpacity>
-              <Text> </Text>
-              <TouchableOpacity style={styles.button2}onPress={this.handlPress}>
-               
-              <Text style={styles.button}>Yosemite</Text>
+              <Text style={styles.button}>Women</Text>
               
               </TouchableOpacity>
           </View>
-          <Text></Text>
-          <View alignItems= 'center' >
-              <TouchableOpacity style={styles.button1}onPress={this.handlPress}>
-               
-              <Text style={styles.button}>Morro Bay</Text>
-              
-              </TouchableOpacity>
-          </View>
-          <View alignItems= 'center' top={75}>
-              <TouchableOpacity style={styles.button1}onPress={this.handlPress}>
+
+          <Text style={styles.titleText2}>
+            Set your preferences
+          </Text>
+          <Text style={styles.textTop}>Preferred age range</Text>
+          <Slider style={styles.slider}></Slider>
+          <Text style={styles.text}>18                                110</Text>
+
+          <Text style={styles.text}>Preferred match radius</Text>
+          <CSlider style={styles.slider}></CSlider>
+          <Text style={styles.text}>0                                110</Text>
+
+          <View alignItems= 'center' top={25}>
+              <TouchableOpacity style={styles.button2}onPress={this.handlPress}>
                
               <Text style={styles.button}>Next</Text>
               
@@ -206,7 +160,6 @@ class SignupPage extends React.Component {
   }
 
 }
-const {height, width } = Dimensions.get('window')
 
 const styles = StyleSheet.create({
   container: {
@@ -217,8 +170,7 @@ const styles = StyleSheet.create({
     margin:10, 
     color: '#fff',
     fontSize:48,
-    textAlign:"center",
-    fontWeight:"100"
+    textAlign:"center"
   },
   titleText2:{
     margin:10, 
@@ -247,14 +199,7 @@ text:{
   textAlign:'center'
 },
 textTop:{
-  top:40,
-  margin:10, 
-  color: '#fff',
-  fontSize:20,
-  textAlign:'center'
-},
-textTop2:{
-  top:60,
+  top:25,
   margin:10, 
   color: '#fff',
   fontSize:20,
@@ -263,30 +208,17 @@ textTop2:{
   color: '#fff',
   fontSize:20
 },
-button1: {
-  alignItems: 'center',
-  padding: 10,
-  borderRadius: 40,
-  borderWidth: 2,
-  borderColor: '#fff',
-  width:'65%'
-},
 button2: {
   alignItems: 'center',
+  //backgroundColor: '#fff',
   padding: 10,
   borderRadius: 40,
   borderWidth: 2,
   borderColor: '#fff',
-  width:'45%'
+  width:'55%'
 },
-slider1:{
- top: 60
-},
-slider2:{
-  top: 80
-},
-slider3: {
-  top:15
+slider:{
+  top:12
 }
 });
 const mapStateToProps = (state) => ({

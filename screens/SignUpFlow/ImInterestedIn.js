@@ -122,74 +122,57 @@ class SignupPage extends React.Component {
 
         <ScrollView >
           <Text style={styles.titleText}>
-            Spend a weekend
+            I'm interested in...
           </Text>
           <View alignItems= 'center'>
           <Text style={styles.text}>
-            based on your location...
+            Pick one or both
           </Text>
           </View>
           <View style={{margin:10, color: '#fff',width: "80%",left:"10%"}}>
-          <View alignItems= 'center' >
-              <TouchableOpacity style={styles.button1}onPress={this.handlPress}>
-               
-              <Text style={styles.button}>San Francisco</Text>
-              
-              </TouchableOpacity>
-              <Text></Text>
-          </View>
-          <View style={{ flexDirection: 'row',alignItems:'center',alignContent:'center' }}>
+          <View alignItems= 'center'>
               <TouchableOpacity style={styles.button2}onPress={this.handlPress}>
                
-              <Text style={styles.button}>Tahoe</Text>
-              
-              </TouchableOpacity>
-              <Text> </Text>
-              <TouchableOpacity style={styles.button2}onPress={this.handlPress}>
-               
-              <Text style={styles.button}>Monterey</Text>
-              
-              </TouchableOpacity>
-              
-          </View>
-          <Text></Text>
-          <View style={{ flexDirection: 'row',alignItems:'center',alignContent:'center' }}>
-              <TouchableOpacity style={styles.button2}onPress={this.handlPress}>
-               
-              <Text style={styles.button}>Big Sur</Text>
-              
-              </TouchableOpacity>
-              <Text> </Text>
-              <TouchableOpacity style={styles.button2}onPress={this.handlPress}>
-               
-              <Text style={styles.button}>Napa</Text>
+              <Text style={styles.button}>Men</Text>
               
               </TouchableOpacity>
           </View>
-          <Text></Text>
-          <View style={{ flexDirection: 'row',alignItems:'center',alignContent:'center' }}>
+          <View alignItems= 'center' top={25}>
               <TouchableOpacity style={styles.button2}onPress={this.handlPress}>
                
-              <Text style={styles.button}>Santa Cruz</Text>
-              
-              </TouchableOpacity>
-              <Text> </Text>
-              <TouchableOpacity style={styles.button2}onPress={this.handlPress}>
-               
-              <Text style={styles.button}>Yosemite</Text>
+              <Text style={styles.button}>Women</Text>
               
               </TouchableOpacity>
           </View>
-          <Text></Text>
-          <View alignItems= 'center' >
-              <TouchableOpacity style={styles.button1}onPress={this.handlPress}>
-               
-              <Text style={styles.button}>Morro Bay</Text>
-              
-              </TouchableOpacity>
-          </View>
-          <View alignItems= 'center' top={75}>
-              <TouchableOpacity style={styles.button1}onPress={this.handlPress}>
+
+          <Text style={styles.titleText2}>
+            Set your preferences
+          </Text>
+          <Text style={styles.textTop}>Preferred age range</Text>
+
+         <View style={styles.slider1}>
+           <Slider
+             functionListener={this.handleListener}
+             leftBound={'18'}
+             rightBound={'110'}
+            />
+         </View>
+         <Text style={styles.textTop2}>Preferred match radius (miles)</Text>
+
+         <View style={styles.slider2}>
+           <Slider
+             functionListener={this.handleListener}
+             leftBound={'0'}
+             rightBound={'110'}
+            />
+         </View>
+
+         
+          
+          
+
+          <View alignItems= 'center' top={100}>
+              <TouchableOpacity style={styles.button2}onPress={this.handlPress}>
                
               <Text style={styles.button}>Next</Text>
               
@@ -225,7 +208,8 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize:48,
     top:25,
-    textAlign:"center"
+    textAlign:"center",
+    fontWeight:"100"
   },
   _textInput:{
     color: '#fff',
@@ -263,21 +247,14 @@ textTop2:{
   color: '#fff',
   fontSize:20
 },
-button1: {
-  alignItems: 'center',
-  padding: 10,
-  borderRadius: 40,
-  borderWidth: 2,
-  borderColor: '#fff',
-  width:'65%'
-},
 button2: {
   alignItems: 'center',
+  //backgroundColor: '#fff',
   padding: 10,
   borderRadius: 40,
   borderWidth: 2,
   borderColor: '#fff',
-  width:'45%'
+  width:'55%'
 },
 slider1:{
  top: 60

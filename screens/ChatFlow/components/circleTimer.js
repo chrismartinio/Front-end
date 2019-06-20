@@ -10,7 +10,7 @@ import { ProfilePicture } from '../../../components/SignUpFlow/ProfilePicture'
   }
 
   const renderThirdLayer = (percent) => {
-    console.log('tthis is the percent:',percent)
+    //console.log('tthis is the percent:',percent)
     if(percent > 50){
 
       return <View style={[styles.secondProgressLayer,propStyle((percent - 50), 45) ]}></View>
