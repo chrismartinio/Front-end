@@ -98,7 +98,7 @@ class Welcome extends Component {
       // }
       // this.SignUpToDatabase(value)
       // this.props.SetProfilePersonalAction(value)
-      this.props.navigation.navigate('Registration');
+      this.props.navigation.navigate('TestAboutUs');
     }
   }
     render() {

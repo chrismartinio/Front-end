@@ -22,6 +22,9 @@ class TellUsMore extends React.Component {
     super(props);
     this.inputRefs = {};
   }
+  handleSubmit = () => {
+    this.props.navigation.navigate('ImInterestedIn');
+  }
 
   render() {
     let displaylikes = likes.map((e, index = 0) => {
