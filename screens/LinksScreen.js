@@ -68,7 +68,8 @@ export default class LinksScreen extends React.Component {
       "CreateQuestionaire",
       "ReplyQuestionaire",
       "ViewQuestionaire",
-      "TestAboutUs"
+      "TestAboutUs",
+      "TestTellUsMore"
     ];
   }
 
@@ -144,6 +145,7 @@ export default class LinksScreen extends React.Component {
       );
     });
     return (
+
       <ScrollView style={styles.container}>
         {/*<Form
             style={{color:'black'}}
