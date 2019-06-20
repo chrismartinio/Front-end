@@ -9,7 +9,7 @@ import {
   View,
   Button,
   Picker,
-  TextInput, 
+  TextInput,
   Dimensions
 } from 'react-native';
 import { LinearGradient } from 'expo';
@@ -43,7 +43,7 @@ class SignupPage extends React.Component {
   //having null header means no back  button is present!
   constructor(props) {
     super(props);
-    this.state = { 
+    this.state = {
       email:'email',
       emailCheck:'email',
       password:'password',
@@ -111,7 +111,7 @@ class SignupPage extends React.Component {
   render(){
     //console.log(this.state.text)
     return(
-      
+
       <View  style={styles.container}>
 
         <LinearGradient
@@ -132,67 +132,67 @@ class SignupPage extends React.Component {
           <View style={{margin:10, color: '#fff',width: "80%",left:"10%"}}>
           <View alignItems= 'center' >
               <TouchableOpacity style={styles.button1}onPress={this.handlPress}>
-               
+
               <Text style={styles.button}>San Francisco</Text>
-              
+
               </TouchableOpacity>
               <Text></Text>
           </View>
           <View style={{ flexDirection: 'row',alignItems:'center',alignContent:'center' }}>
               <TouchableOpacity style={styles.button2}onPress={this.handlPress}>
-               
+
               <Text style={styles.button}>Tahoe</Text>
-              
+
               </TouchableOpacity>
               <Text> </Text>
               <TouchableOpacity style={styles.button2}onPress={this.handlPress}>
-               
+
               <Text style={styles.button}>Monterey</Text>
-              
+
               </TouchableOpacity>
-              
+
           </View>
           <Text></Text>
           <View style={{ flexDirection: 'row',alignItems:'center',alignContent:'center' }}>
               <TouchableOpacity style={styles.button2}onPress={this.handlPress}>
-               
+
               <Text style={styles.button}>Big Sur</Text>
-              
+
               </TouchableOpacity>
               <Text> </Text>
               <TouchableOpacity style={styles.button2}onPress={this.handlPress}>
-               
+
               <Text style={styles.button}>Napa</Text>
-              
+
               </TouchableOpacity>
           </View>
           <Text></Text>
           <View style={{ flexDirection: 'row',alignItems:'center',alignContent:'center' }}>
               <TouchableOpacity style={styles.button2}onPress={this.handlPress}>
-               
+
               <Text style={styles.button}>Santa Cruz</Text>
-              
+
               </TouchableOpacity>
               <Text> </Text>
               <TouchableOpacity style={styles.button2}onPress={this.handlPress}>
-               
+
               <Text style={styles.button}>Yosemite</Text>
-              
+
               </TouchableOpacity>
           </View>
           <Text></Text>
           <View alignItems= 'center' >
               <TouchableOpacity style={styles.button1}onPress={this.handlPress}>
-               
+
               <Text style={styles.button}>Morro Bay</Text>
-              
+
               </TouchableOpacity>
           </View>
           <View alignItems= 'center' top={75}>
               <TouchableOpacity style={styles.button1}onPress={this.handlPress}>
-               
+
               <Text style={styles.button}>Next</Text>
-              
+
               </TouchableOpacity>
           </View>
           </View>
@@ -214,14 +214,14 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   titleText:{
-    margin:10, 
+    margin:10,
     color: '#fff',
     fontSize:48,
     textAlign:"center",
     fontWeight:"100"
   },
   titleText2:{
-    margin:10, 
+    margin:10,
     color: '#fff',
     fontSize:48,
     top:25,
@@ -236,26 +236,26 @@ const styles = StyleSheet.create({
     borderColor: '#fff',
 },
 smallText:{
-  margin:10, 
+  margin:10,
   color: '#fff',
   fontSize:10
 },
 text:{
-  margin:10, 
+  margin:10,
   color: '#fff',
   fontSize:20,
   textAlign:'center'
 },
 textTop:{
   top:40,
-  margin:10, 
+  margin:10,
   color: '#fff',
   fontSize:20,
   textAlign:'center'
 },
 textTop2:{
   top:60,
-  margin:10, 
+  margin:10,
   color: '#fff',
   fontSize:20,
   textAlign:'center'

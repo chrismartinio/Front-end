@@ -1,14 +1,14 @@
 import React, { Component } from "react";
-import { 
-  Button, 
-  Keyboard, 
-  KeyboardAvoidingView, 
-  Platform, 
-  SafeAreaView, 
+import {
+  Button,
+  Keyboard,
+  KeyboardAvoidingView,
+  Platform,
+  SafeAreaView,
   StyleSheet,
-  Text, 
-  TextInput, 
-  TouchableWithoutFeedback, 
+  Text,
+  TextInput,
+  TouchableWithoutFeedback,
   View,
   Image,
   ScrollView,
@@ -23,7 +23,7 @@ import firebase from '../../utils/mainFire'
 class Welcome extends Component {
   constructor(props) {
     super(props);
-    this.state = { 
+    this.state = {
       email:'email',
       emailCheck:'email',
       password:'password',
@@ -58,14 +58,14 @@ class Welcome extends Component {
     });
   };
   handleSubmit = () => {
-    
+
     const value = this.state.email;
     const password = this.state.password;
     //console.log(nullCheck)//this.nullCheck(value);
     //console.log(value)
     const nullCheck = (value) => {
         if(value !== 'email'&&value!==""){
-          
+
           return true
         }
       return false
@@ -98,12 +98,12 @@ class Welcome extends Component {
       // }
       // this.SignUpToDatabase(value)
       // this.props.SetProfilePersonalAction(value)
-      // this.props.navigation.navigate('Registration');
+      this.props.navigation.navigate('TestAboutUs');
     }
   }
     render() {
         return (
-          
+
             <KeyboardAvoidingView
                 behavior={Platform.OS === "ios" ? "padding" : null}
                 style={{ flex: 1 }}
@@ -115,7 +115,7 @@ class Welcome extends Component {
                 <SafeAreaView style={styles.container}>
                     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                         <View style={styles.inner}>
-                        
+
                         <Text style={styles.titleText}>
                           Sign Up
                         </Text>
@@ -128,7 +128,7 @@ class Welcome extends Component {
                 autoCapitalize="none"
                 autoCorrect={false}
                 //value={this.state.email}
-                
+
               />
               <TextInput
                 style={styles._textInput}
@@ -171,9 +171,9 @@ class Welcome extends Component {
                             <View style={{ flex : 1 }} />
                         </View>
                     </TouchableWithoutFeedback>
-                    
+
                 </SafeAreaView>
-                  
+
                 </LinearGradient>
             </KeyboardAvoidingView>
         );
@@ -216,12 +216,12 @@ const styles = StyleSheet.create({
       borderColor: '#fff',
   },
   smallText:{
-    margin:10, 
+    margin:10,
     color: '#fff',
     fontSize:10
   },
   titleText:{
-    margin:10, 
+    margin:10,
     color: '#fff',
     fontSize:48,
     textAlign:"center",

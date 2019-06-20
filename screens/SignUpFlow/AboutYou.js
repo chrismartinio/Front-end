@@ -101,11 +101,11 @@ class AboutYou extends React.Component {
     if (passed === false) {
       this.setState({
         passed: false
-      });
-    } else {
+        })} else {
       //if meet all the requirement, then undisplay the warning text
       //pass values to redux store
       //navigate to next page
+      this.props.navigation.navigate('TestTellUsMore');
       this.setState(
         {
           passed: true

@@ -9,7 +9,7 @@ import {
   View,
   Button,
   Picker,
-  TextInput, 
+  TextInput,
   Dimensions
 } from 'react-native';
 import { LinearGradient } from 'expo';
@@ -43,7 +43,7 @@ class SignupPage extends React.Component {
   //having null header means no back  button is present!
   constructor(props) {
     super(props);
-    this.state = { 
+    this.state = {
       email:'email',
       emailCheck:'email',
       password:'password',
@@ -67,6 +67,8 @@ class SignupPage extends React.Component {
   }
 
   handleSubmit = () => {
+    this.props.navigation.navigate('WouldRather');
+
     return;
     const value = this._form.getValue();
 
@@ -104,14 +106,14 @@ class SignupPage extends React.Component {
       }
       this.SignUpToDatabase(value)
       this.props.SetProfilePersonalAction(value)
-      this.props.navigation.navigate('Registration');
+
     }
   }
 
   render(){
     //console.log(this.state.text)
     return(
-      
+
       <View  style={styles.container}>
 
         <LinearGradient
@@ -132,16 +134,16 @@ class SignupPage extends React.Component {
           <View style={{margin:10, color: '#fff',width: "80%",left:"10%"}}>
           <View alignItems= 'center'>
               <TouchableOpacity style={styles.button2}onPress={this.handlPress}>
-               
+
               <Text style={styles.button}>Men</Text>
-              
+
               </TouchableOpacity>
           </View>
           <View alignItems= 'center' top={25}>
               <TouchableOpacity style={styles.button2}onPress={this.handlPress}>
-               
+
               <Text style={styles.button}>Women</Text>
-              
+
               </TouchableOpacity>
           </View>
 
@@ -167,15 +169,15 @@ class SignupPage extends React.Component {
             />
          </View>
 
-         
-          
-          
+
+
+
 
           <View alignItems= 'center' top={100}>
-              <TouchableOpacity style={styles.button2}onPress={this.handlPress}>
-               
+              <TouchableOpacity style={styles.button2}onPress={this.handleSubmit}>
+
               <Text style={styles.button}>Next</Text>
-              
+
               </TouchableOpacity>
           </View>
           </View>
@@ -197,14 +199,14 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   titleText:{
-    margin:10, 
+    margin:10,
     color: '#fff',
     fontSize:48,
     textAlign:"center",
     fontWeight:"100"
   },
   titleText2:{
-    margin:10, 
+    margin:10,
     color: '#fff',
     fontSize:48,
     top:25,
@@ -220,26 +222,26 @@ const styles = StyleSheet.create({
     borderColor: '#fff',
 },
 smallText:{
-  margin:10, 
+  margin:10,
   color: '#fff',
   fontSize:10
 },
 text:{
-  margin:10, 
+  margin:10,
   color: '#fff',
   fontSize:20,
   textAlign:'center'
 },
 textTop:{
   top:40,
-  margin:10, 
+  margin:10,
   color: '#fff',
   fontSize:20,
   textAlign:'center'
 },
 textTop2:{
   top:60,
-  margin:10, 
+  margin:10,
   color: '#fff',
   fontSize:20,
   textAlign:'center'
