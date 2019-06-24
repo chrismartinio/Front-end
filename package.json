@@ -31,6 +31,7 @@
     "react-native": "https://github.com/expo/react-native/archive/sdk-32.0.0.tar.gz",
     "react-native-circular-progress": "^1.1.0",
     "react-native-datepicker": "^1.7.2",
+    "react-native-fa-icons": "^4.1.1",
     "react-native-gifted-chat": "^0.7.2",
     "react-native-keyboard-aware-scroll-view": "^0.8.0",
     "react-native-picker-select": "^6.2.0",

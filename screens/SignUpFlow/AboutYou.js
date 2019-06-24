@@ -22,6 +22,7 @@ import firebase from "../../utils/mainFire";
 import DatePicker from "react-native-datepicker";
 import RNPickerSelect from "react-native-picker-select";
 import { countries, genders } from "./someData.js";
+import Icon from "react-native-fa-icons";
 
 class AboutYou extends Component {
   constructor(props) {
@@ -238,6 +239,8 @@ class AboutYou extends Component {
                 <View style={styles.aboutMeTextWrap}>
                   <Text style={styles.aboutMeText}>About You</Text>
                 </View>
+                <Text />
+                <Text />
                 {/**firstName */}
                 <View style={{ width: "100%" }}>
                   <TextInput
@@ -246,7 +249,7 @@ class AboutYou extends Component {
                         ? styles.nameInputBox
                         : styles.nameInputBoxWarning
                     }
-                    placeholder="first name"
+                    placeholder={"first name "}
                     onChangeText={firstName => this.setState({ firstName })}
                     placeholderTextColor="#fff"
                   />

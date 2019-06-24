@@ -17,6 +17,7 @@ import {
 import { LinearGradient } from "expo";
 import DatePicker from "react-native-datepicker";
 import RNPickerSelect from "react-native-picker-select";
+import { connect } from "react-redux";
 import SetProfileLikesAction from "../../storage/actions/SetProfileLikesAction";
 import SetProfileFirstLike from "../../storage/actions/SetProfileFirstLike";
 
@@ -30,7 +31,21 @@ class TellUsMore extends React.Component {
   };
 
   handleRedux = name => {
-    console.log(name);
+    const likes = this.props.CreateProfileReducer.likes;
+    //console.log(name);
+
+    // replacing initial state
+    if (likes[0] === null) {
+      return this.props.SetProfileFirstLike(name);
+    }
+    // blocks duplicates
+    for (let i = 0; i < likes.length; i++) {
+      if (likes[i] === name) {
+        return;
+      }
+    }
+    this.props.SetProfileLikesAction(name);
+
     //after clicked, gray the buttons
     //copy categories.js
   };
@@ -154,4 +169,18 @@ const likes = [
   "Travel"
 ];
 
-export default TellUsMore;
+const mapStateToProps = state => {
+  return { ...state };
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    SetProfileLikesAction: payload => dispatch(SetProfileLikesAction(payload)),
+    SetProfileFirstLike: payload => dispatch(SetProfileFirstLike(payload))
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(TellUsMore);
