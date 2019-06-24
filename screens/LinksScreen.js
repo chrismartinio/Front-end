@@ -72,7 +72,7 @@ export default class LinksScreen extends React.Component {
       "ReplyQuestionaire",
       "ViewQuestionaire",
       "TestAboutUs",
-
+      "TestTellUsMore",
       "TestImInterestedIn",
       "TestSpendWeekend",
       "WouldRather"
