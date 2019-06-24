@@ -11,11 +11,14 @@ import {
   TextInput,
   Picker,
   DatePickerIOS,
-  TouchableHighlight
+  TouchableHighlight,
+  SafeAreaView
 } from "react-native";
 import { LinearGradient } from "expo";
 import DatePicker from "react-native-datepicker";
 import RNPickerSelect from "react-native-picker-select";
+import SetProfileLikesAction from "../../storage/actions/SetProfileLikesAction";
+import SetProfileFirstLike from "../../storage/actions/SetProfileFirstLike";
 
 class TellUsMore extends React.Component {
   constructor(props) {
@@ -23,8 +26,14 @@ class TellUsMore extends React.Component {
     this.inputRefs = {};
   }
   handleSubmit = () => {
-    this.props.navigation.navigate('ImInterestedIn');
-  }
+    this.props.navigation.navigate("ImInterestedIn");
+  };
+
+  handleRedux = name => {
+    console.log(name);
+    //after clicked, gray the buttons
+    //copy categories.js
+  };
 
   render() {
     let displaylikes = likes.map((e, index = 0) => {
@@ -32,7 +41,7 @@ class TellUsMore extends React.Component {
         <TouchableOpacity
           key={index++}
           style={styles.likeButtonWrap}
-          onPress={this.handlPress}
+          onPress={() => this.handleRedux(e)}
         >
           <Text style={styles.likeButton}>{e}</Text>
         </TouchableOpacity>
@@ -42,10 +51,8 @@ class TellUsMore extends React.Component {
     return (
       <View style={{ flex: 1 }}>
         <LinearGradient colors={["#18cdf6", "#43218c"]} style={{ flex: 1 }}>
-          <ScrollView>
-            <View
-              style={styles.wholeWrap}
-            >
+          <SafeAreaView style={{ flex: 1 }}>
+            <View style={styles.wholeWrap}>
               {/**Tell Us More Text */}
               <View style={styles.tellUsMoreTextWrap}>
                 <Text style={styles.tellUsMoreText}>Tell Us More</Text>
@@ -54,17 +61,11 @@ class TellUsMore extends React.Component {
                   What are you into?
                 </Text>
               </View>
-              <View
-                style={styles.likeWrapCenter}
-              >
-                <View
-                  style={styles.likesWrap}
-                >
-                  {displaylikes}
-                </View>
+              <View style={styles.likeWrapCenter}>
+                <View style={styles.likesWrap}>{displaylikes}</View>
               </View>
             </View>
-            <View alignItems="center" top={"30%"}>
+            <View alignItems="center" top={"20%"}>
               <TouchableOpacity
                 style={styles.button}
                 onPress={this.handleSubmit}
@@ -72,7 +73,7 @@ class TellUsMore extends React.Component {
                 <Text style={{ color: "#fff" }}>Next</Text>
               </TouchableOpacity>
             </View>
-          </ScrollView>
+          </SafeAreaView>
         </LinearGradient>
       </View>
     );
@@ -82,7 +83,8 @@ class TellUsMore extends React.Component {
 const styles = StyleSheet.create({
   tellUsMoreText: {
     color: "#fff",
-    fontSize: 45
+    fontSize: 45,
+    fontWeight: "100"
   },
   whatAreYouIntoText: {
     color: "#fff",
@@ -136,8 +138,7 @@ const styles = StyleSheet.create({
     //borderColor: "#d6d7da",
     marginLeft: "5%",
     marginRight: "5%",
-    marginTop: "40%",
-    marginBottom: "10%"
+    marginTop: "40%"
   }
 });
 
