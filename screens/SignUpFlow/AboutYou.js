@@ -245,13 +245,15 @@ class AboutYou extends Component {
                 <View style={{ width: "100%" }}>
                   <TextInput
                     style={
-                      this.state.firstNameWarning === false
+                      !this.state.firstNameWarning
                         ? styles.nameInputBox
                         : styles.nameInputBoxWarning
                     }
-                    placeholder={"first name "}
+                    placeholder="first name "
                     onChangeText={firstName => this.setState({ firstName })}
-                    placeholderTextColor="#fff"
+                    placeholderTextColor={
+                      !this.state.firstNameWarning ? "#fff" : "red"
+                    }
                   />
                 </View>
                 <Text />
@@ -260,13 +262,15 @@ class AboutYou extends Component {
                 <View style={{ width: "100%" }}>
                   <TextInput
                     style={
-                      this.state.lastNameWarning === false
+                      !this.state.lastNameWarning
                         ? styles.nameInputBox
                         : styles.nameInputBoxWarning
                     }
                     placeholder="last name"
                     onChangeText={lastName => this.setState({ lastName })}
-                    placeholderTextColor="#fff"
+                    placeholderTextColor={
+                      !this.state.lastNameWarning ? "#fff" : "red"
+                    }
                   />
                 </View>
                 <Text />
@@ -286,7 +290,7 @@ class AboutYou extends Component {
                       confirmBtnText="Confirm"
                       cancelBtnText="Cancel"
                       customStyles={
-                        this.state.birthDateWarning === false
+                        !this.state.birthDateWarning
                           ? birthdatePickerCustom
                           : birthdatePickerCustomWarning
                       }
@@ -299,7 +303,7 @@ class AboutYou extends Component {
                   <View style={styles.genderpPickerWrap}>
                     <RNPickerSelect
                       style={
-                        this.state.genderWarning === false
+                        !this.state.genderWarning
                           ? genderPicker
                           : genderPickerWarning
                       }
@@ -323,7 +327,7 @@ class AboutYou extends Component {
                   <View style={styles.countryPickerWrap}>
                     <RNPickerSelect
                       style={
-                        this.state.countryWarning === false
+                        !this.state.countryWarning
                           ? countryPicker
                           : countryPickerWarning
                       }
@@ -344,7 +348,7 @@ class AboutYou extends Component {
                   <View style={styles.zipCodeInputWrap}>
                     <TextInput
                       style={
-                        this.state.zipCodeWarning === false
+                        !this.state.zipCodeWarning
                           ? styles.zipCodeInput
                           : styles.zipCodeInputWarning
                       }
@@ -352,7 +356,9 @@ class AboutYou extends Component {
                       name="zipCode"
                       onChangeText={zipCode => this.setState({ zipCode })}
                       value={this.state.zipCode}
-                      placeholderTextColor="#fff"
+                      placeholderTextColor={
+                        !this.state.zipCodeWarning ? "#fff" : "red"
+                      }
                       autoCompleteType={false}
                       autoCapitalize="none"
                       autoCorrect={false}
@@ -520,7 +526,7 @@ const genderPicker = {
 
 const genderPickerWarning = {
   inputIOS: {
-    color: "#fff",
+    color: "red",
     borderBottomWidth: 1,
     borderColor: "red",
     fontSize: 15,
@@ -528,7 +534,7 @@ const genderPickerWarning = {
     paddingVertical: 10.5
   },
   placeholder: {
-    color: "#fff",
+    color: "red",
     fontWeight: "100"
   }
 };
@@ -572,14 +578,14 @@ const birthdatePickerCustomWarning = {
     borderColor: "red"
   },
   dateText: {
-    color: "#fff",
+    color: "red",
     fontSize: 13,
     position: "absolute",
     left: "0%",
     fontWeight: "100"
   },
   placeholderText: {
-    color: "#fff",
+    color: "red",
     fontSize: 15,
     position: "absolute",
     left: "0%",
@@ -607,7 +613,7 @@ const countryPicker = {
 const countryPickerWarning = {
   inputIOS: {
     width: "90%",
-    color: "#fff",
+    color: "red",
     borderBottomWidth: 1,
     borderColor: "red",
     fontSize: 15,
@@ -615,7 +621,7 @@ const countryPickerWarning = {
     paddingVertical: 9
   },
   placeholder: {
-    color: "#fff",
+    color: "red",
     fontWeight: "100",
     paddingVertical: 9
   }
