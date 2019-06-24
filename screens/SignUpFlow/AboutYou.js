@@ -22,7 +22,6 @@ import firebase from "../../utils/mainFire";
 import DatePicker from "react-native-datepicker";
 import RNPickerSelect from "react-native-picker-select";
 import { countries, genders } from "./someData.js";
-import Icon from "react-native-fa-icons";
 
 class AboutYou extends Component {
   constructor(props) {
