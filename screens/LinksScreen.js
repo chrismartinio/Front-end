@@ -73,8 +73,8 @@ export default class LinksScreen extends React.Component {
       "ViewQuestionaire",
       "TestAboutUs",
       "TestTellUsMore",
-      "TestImInterestedIn",
-      "TestSpendWeekend",
+      "ImInterestedIn",
+      "SpendWeekend",
       "WouldRather"
 
     ];
@@ -115,9 +115,7 @@ export default class LinksScreen extends React.Component {
       this.props.navigation.navigate('TestImInterestedIn');
     }else if(this._form.getValue().Component === 'sSpendWeekend'){
       this.props.navigation.navigate('TestSpendWeekend');
-    } else if(this._form.getValue().Component === 'sSpendWeekend'){
-      this.props.navigation.navigate('TestSpendWeekend');
-    }
+    } 
   };
 
   /*

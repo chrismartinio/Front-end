@@ -12,6 +12,8 @@ class CSlider extends React.Component {
    this.state = {
      leftBound: 'Daryl in Tank Top',
      rightBound: 'Daryl in Polo',
+     minimumValue:-50,
+      maximumValue:50,
      value: 0
    }
  }
@@ -53,8 +55,8 @@ class CSlider extends React.Component {
        <Slider
          style={styles.slider}
          value={0}
-         minimumValue={-50}
-         maximumValue={50}
+         minimumValue={this.props.minimumValue}
+         maximumValue={this.props.maximumValue}
          minimumTrackTintColor={'grey'}
          maximumTrackTintColor={'grey'}
          onSlidingComplete={(value)=>{
