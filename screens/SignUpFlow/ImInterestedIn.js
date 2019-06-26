@@ -19,9 +19,13 @@ import { connect } from 'react-redux'
 import SetProfilePersonalAction from '../../storage/actions/SetProfilePersonalAction'
 import firebase from '../../utils/mainFire'
 import Slider from './CSlider'
+import { Math } from 'core-js';
 
+let pickedMen=false;
+let pickedWomen=false;
 
-
+let bkgMen='transparent';
+let bkgWomen='transparent';
 
 class SignupPage extends React.Component {
   static navigationOptions = {
@@ -44,10 +48,10 @@ class SignupPage extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      email:'email',
-      emailCheck:'email',
-      password:'password',
-      passwordCheck:'password' };
+      pickedMen:'transparent',
+      pickedWomen:'transparent',
+      ageRange:18,
+      distanceRange:0 };
   }
   handleBackToSignIn = () => {
     this.props.navigation.navigate('SignIn')
@@ -55,63 +59,42 @@ class SignupPage extends React.Component {
   handleListener = (arg) => {
     //console.log(arg)
   }
-  SignUpToDatabase = ({ age, email, gender, name, password }) => {
-    let userId = email.split('.').join()
-    firebase.database().ref('users/' + userId).set({
-      age:age,
-      email:email,
-      gender:gender,
-      name:name,
-      password:password
-    });
+  setAgeRange = (arg) => {
+    
+    this.setState({
+      ageRange:arg
+    })
+    //console.log(this.state.ageRange)
   }
+  setDistanceRange = (arg) => {
+    this.setState({
+      distanceRange:arg
+    })
+    //console.log(this.state.distanceRange)
+  }
+  pickedMen = () => {
+    pickedMen=!pickedMen;
+    if(pickedMen===true)this.setState({pickedMen:'green'})
+    else this.setState({pickedMen:'transparent'})
+  }
+  pickedWomen = () => {
+    pickedWomen=!pickedWomen;
+    if(pickedWomen===true)this.setState({pickedWomen:'green'})
+    else this.setState({pickedWomen:'transparent'})
+  }
+  
 
   handleSubmit = () => {
     this.props.navigation.navigate('WouldRather');
 
     return;
-    const value = this._form.getValue();
-
-    console.log(value)
-    const nullCheck = (value) => {
-        if(value !== null){
-          return true
-        }
-      return false
-    }
-
-    const emailCheck = (email) =>{
-
-      // email validty check?
-      const checkAT = email.indexOf('@')
-      const checkCOM = email.indexOf('.com')
-        if(checkAT > 0 && checkCOM > 0 && email.length > 4){
-          return true
-        }
-      console.log("Please Properly insert a email with a '@' & a '.com'")
-      return false
-    }
-
-    const passwordCheck = (password) => {
-      if(password.length > 6 ){
-        return true
-      }
-
-      return false
-    }
-
-    if(nullCheck(value) && emailCheck(value.email) && passwordCheck(value.password)){
-      for(let key in value){
-        value[key] = JSON.stringify(value[key])
-      }
-      this.SignUpToDatabase(value)
-      this.props.SetProfilePersonalAction(value)
-
-    }
+    
   }
 
   render(){
-    //console.log(this.state.text)
+    if(pickedMen==true)bkgMen='green'
+    else bkgMen='transparent'
+    console.log(this.state)
     return(
 
       <View  style={styles.container}>
@@ -133,14 +116,26 @@ class SignupPage extends React.Component {
           </View>
           <View style={{margin:10, color: '#fff',width: "80%",left:"10%"}}>
           <View alignItems= 'center'>
-              <TouchableOpacity style={styles.button2}onPress={this.handlPress}>
+              <TouchableOpacity style={{alignItems: 'center',
+                                        padding: 10,
+                                        borderRadius: 40,
+                                        borderWidth: 2,
+                                        borderColor: '#fff',
+                                        width:'55%',
+                                        backgroundColor:this.state.pickedMen}} onPress={this.pickedMen}>
 
               <Text style={styles.button}>Men</Text>
 
               </TouchableOpacity>
           </View>
           <View alignItems= 'center' top={25}>
-              <TouchableOpacity style={styles.button2}onPress={this.handlPress}>
+          <TouchableOpacity style={{alignItems: 'center',
+                                        padding: 10,
+                                        borderRadius: 40,
+                                        borderWidth: 2,
+                                        borderColor: '#fff',
+                                        width:'55%',
+                                        backgroundColor:this.state.pickedWomen}} onPress={this.pickedWomen}>
 
               <Text style={styles.button}>Women</Text>
 
@@ -154,7 +149,9 @@ class SignupPage extends React.Component {
 
          <View style={styles.slider1}>
            <Slider
-             functionListener={this.handleListener}
+             functionListener={this.setAgeRange}
+             minimumValue={18}
+            maximumValue={110}
              leftBound={'18'}
              rightBound={'110'}
             />
@@ -163,8 +160,10 @@ class SignupPage extends React.Component {
 
          <View style={styles.slider2}>
            <Slider
-             functionListener={this.handleListener}
-             leftBound={'0'}
+             functionListener={this.setDistanceRange}
+             minimumValue={0}
+            maximumValue={110}
+            leftBound={'0'}
              rightBound={'110'}
             />
          </View>
@@ -251,7 +250,23 @@ textTop2:{
 },
 button2: {
   alignItems: 'center',
-  //backgroundColor: '#fff',
+  padding: 10,
+  borderRadius: 40,
+  borderWidth: 2,
+  borderColor: '#fff',
+  width:'55%'
+},
+buttonMen: {
+  alignItems: 'center',
+  // backgroundColor: bkgMen,
+  padding: 10,
+  borderRadius: 40,
+  borderWidth: 2,
+  borderColor: '#fff',
+  width:'55%'
+},buttonWomen: {
+  alignItems: 'center',
+  backgroundColor: bkgWomen,
   padding: 10,
   borderRadius: 40,
   borderWidth: 2,
