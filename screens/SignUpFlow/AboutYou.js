@@ -37,7 +37,7 @@ class AboutYou extends Component {
       firstName: "",
       lastName: "",
       zipCode: "",
-      empty: true,
+      empty: false,
       passed: true,
       firstNameWarning: false,
       lastNameWarning: false,
@@ -232,6 +232,16 @@ class AboutYou extends Component {
           passed: true
         },
         () => {
+          //console.log("data here")
+          //console.log(this.props.CreateProfileReducer.data)
+          this.props.SetProfilePersonalAction({
+            firstName: this.state.firstName,
+            lastName: this.state.lastName,
+            birthDate: this.state.birthDate,
+            gender: this.state.gender,
+            country: this.state.country,
+            zipCode: this.state.zipCode
+          });
           this.props.navigation.navigate("TestTellUsMore");
         }
       );
@@ -256,12 +266,28 @@ class AboutYou extends Component {
           <SafeAreaView style={styles.container}>
             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
               <View style={styles.wholeWrap}>
+                {/*Spaces*/}
+                <View
+                  style={{
+                    padding: "30%",
+                    //borderRadius: 4,
+                    //borderWidth: 0.5,
+                    //borderColor: "#d6d7da"
+                  }}
+                />
                 {/**About You Text */}
                 <View style={styles.aboutMeTextWrap}>
                   <Text style={styles.aboutMeText}>About You</Text>
                 </View>
                 {/*Spaces*/}
-                <View style={{ padding: "5%" }} />
+                <View
+                  style={{
+                    padding: "5%",
+                    //borderRadius: 4,
+                    //borderWidth: 0.5,
+                    //borderColor: "#d6d7da"
+                  }}
+                />
 
                 {/**firstName */}
                 <View style={{ width: "100%" }}>
@@ -274,7 +300,14 @@ class AboutYou extends Component {
                 </View>
                 {this.state.firstNameWarning && invalidDataWarning}
                 {/*Spaces*/}
-                <View style={{ padding: "3%" }} />
+                <View
+                  style={{
+                    padding: "5%",
+                    //borderRadius: 4,
+                    //borderWidth: 0.5,
+                    //borderColor: "#d6d7da"
+                  }}
+                />
 
                 {/**lastName */}
                 <View style={{ width: "100%" }}>
@@ -286,8 +319,14 @@ class AboutYou extends Component {
                   />
                 </View>
                 {this.state.lastNameWarning && invalidDataWarning}
-                {/*Spaces*/}
-                <View style={{ padding: "3%" }} />
+                <View
+                  style={{
+                    padding: "5%",
+                    //borderRadius: 4,
+                    //borderWidth: 0.5,
+                    //borderColor: "#d6d7da"
+                  }}
+                />
 
                 {/**birth and gender Wrap */}
                 <View style={styles.birthdateAndGenderWrap}>
@@ -370,8 +409,6 @@ class AboutYou extends Component {
                     {this.state.zipCodeWarning && invalidDataWarning}
                   </View>
                 </View>
-                {/*Spaces*/}
-                <View style={{ padding: "3%" }} />
 
                 {/*Empty Data exist*/}
                 <View>
@@ -382,7 +419,14 @@ class AboutYou extends Component {
                   )}
                 </View>
                 {/*Spaces*/}
-                <View style={{ padding: "10%" }} />
+                <View
+                  style={{
+                    padding: "20%",
+                    //borderRadius: 4,
+                    //borderWidth: 0.5,
+                    //borderColor: "#d6d7da"
+                  }}
+                />
 
                 {/*Next Button*/}
                 <View
@@ -412,12 +456,11 @@ const styles = StyleSheet.create({
     flex: 1
   },
   wholeWrap: {
-    padding: 24,
     flex: 1,
     justifyContent: "flex-end",
-    marginTop: "40%",
-    marginLeft: "5%",
-    marginRight: "5%"
+    marginBottom: "5%",
+    marginLeft: "10%",
+    marginRight: "10%",
     //borderRadius: 4,
     //borderWidth: 0.5,
     //borderColor: "#d6d7da"
@@ -494,7 +537,8 @@ const styles = StyleSheet.create({
   },
   warningText: {
     color: "#fff",
-    fontSize: 8
+    fontSize: 8,
+    paddingTop: "3%"
   }
 });
 
@@ -557,4 +601,18 @@ const countryPicker = {
   }
 };
 
-export default AboutYou;
+const mapStateToProps = state => {
+  return { ...state };
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    SetProfilePersonalAction: payload =>
+      dispatch(SetProfilePersonalAction(payload))
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(AboutYou);

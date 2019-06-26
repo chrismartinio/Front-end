@@ -1,7 +1,7 @@
-const SetProfilePersonalAction = (data) => (dispatch)=> {
+const SetProfilePersonalAction = (profData) => (dispatch)=> {
   dispatch({
     type: 'ADD_PROFILE_DATA',
-    PAYLOAD: data
+    PAYLOAD: profData
   })
 }
 

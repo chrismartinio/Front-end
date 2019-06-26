@@ -1,9 +1,9 @@
-const CreateProfileReducer = (state ={profImage: null, data: null, likes:[null]}, action) => {
+const CreateProfileReducer = (state ={profImage: null, profData: null, likes:[null]}, action) => {
   switch(action.type){
     case 'ADD_PROFILE_PICTURE':
       return {...state, profImage: action.PAYLOAD};
     case 'ADD_PROFILE_DATA':
-      return {...state, data: action.PAYLOAD};
+      return {...state, profData: action.PAYLOAD};
     case 'ADD_LIKES':
       return {...state,
         likes:[...state.likes, action.PAYLOAD]
