@@ -249,8 +249,17 @@ class AboutYou extends Component {
   };
 
   render() {
-    let invalidDataWarning = (
-      <Text style={styles.warningText}>* Invalid Data</Text>
+    let invalidFirstNameLastNameWarning = (
+      <Text style={styles.warningText}>* Only Accept Letters and Spaces. </Text>
+    );
+    let invalidBirthDateWarning = (
+      <Text style={styles.warningText}>* You MUST be at least 18!</Text>
+    );
+    let invalidGenderCountryWarning = (
+      <Text style={styles.warningText}>* Field cannot be empty!</Text>
+    );
+    let invalidZipCodeWarning = (
+      <Text style={styles.warningText}>* Zip code MUST be 5 digits</Text>
     );
 
     return (
@@ -298,7 +307,7 @@ class AboutYou extends Component {
                     placeholderTextColor="#fff"
                   />
                 </View>
-                {this.state.firstNameWarning && invalidDataWarning}
+                {this.state.firstNameWarning && invalidFirstNameLastNameWarning}
                 {/*Spaces*/}
                 <View
                   style={{
@@ -318,7 +327,7 @@ class AboutYou extends Component {
                     placeholderTextColor="#fff"
                   />
                 </View>
-                {this.state.lastNameWarning && invalidDataWarning}
+                {this.state.lastNameWarning && invalidFirstNameLastNameWarning}
                 <View
                   style={{
                     padding: "5%",
@@ -347,7 +356,7 @@ class AboutYou extends Component {
                         this.setState({ birthDate: date });
                       }}
                     />
-                    {this.state.birthDateWarning && invalidDataWarning}
+                    {this.state.birthDateWarning && invalidBirthDateWarning}
                   </View>
 
                   {/**Gender */}
@@ -366,7 +375,7 @@ class AboutYou extends Component {
                       }}
                       value={this.state.gender}
                     />
-                    {this.state.genderWarning && invalidDataWarning}
+                    {this.state.genderWarning && invalidGenderCountryWarning}
                   </View>
                 </View>
 
@@ -388,7 +397,7 @@ class AboutYou extends Component {
                       }}
                       value={this.state.country}
                     />
-                    {this.state.countryWarning && invalidDataWarning}
+                    {this.state.countryWarning && invalidGenderCountryWarning}
                   </View>
 
                   {/**zip */}
@@ -406,14 +415,14 @@ class AboutYou extends Component {
                       keyboardType="numeric"
                       maxLength={5}
                     />
-                    {this.state.zipCodeWarning && invalidDataWarning}
+                    {this.state.zipCodeWarning && invalidZipCodeWarning}
                   </View>
                 </View>
 
                 {/*Empty Data exist*/}
                 <View>
                   {this.state.empty === true ? (
-                    <Text style={styles.warningText}>*All field Required</Text>
+                    <Text style={styles.warningText}>* all field Required</Text>
                   ) : (
                     <View style={styles.warningText} />
                   )}
