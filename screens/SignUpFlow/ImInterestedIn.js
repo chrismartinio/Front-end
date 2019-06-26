@@ -60,7 +60,7 @@ class SignupPage extends React.Component {
     //console.log(arg)
   }
   setAgeRange = (arg) => {
-    
+
     this.setState({
       ageRange:arg
     })
@@ -82,13 +82,13 @@ class SignupPage extends React.Component {
     if(pickedWomen===true)this.setState({pickedWomen:'green'})
     else this.setState({pickedWomen:'transparent'})
   }
-  
+
 
   handleSubmit = () => {
-    this.props.navigation.navigate('WouldRather');
+    this.props.navigation.navigate('TestWouldRather');
 
     return;
-    
+
   }
 
   render(){

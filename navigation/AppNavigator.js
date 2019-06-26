@@ -43,7 +43,6 @@ const TestStack = createStackNavigator({
   TestWouldRather: WouldRather,
   TestSpendWeekend:SpendWeekend,
   TestImInterestedIn:ImInterestedIn
-
 })
 
 
