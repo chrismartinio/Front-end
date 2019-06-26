@@ -1,47 +1,47 @@
-import React from 'react';
-import { ScrollView, StyleSheet, Text, View, Button } from 'react-native';
-import { ExpoLinksView } from '@expo/samples';
-import ProfilePage from './SignUpFlow/ProfilePage'
-import MatchesPage from './SignUpFlow/Matches'
-import RegistrationPage from './SignUpFlow/RegistrationPage'
-import SelfiePage from './SignUpFlow/SelfiePage'
-import SignupPage from './SignUpFlow/SignupPage'
-import ImInterestedIn from '../screens/SignUpFlow/ImInterestedIn';
-import PhotoReview from './SignUpFlow/PhotoReview'
-import MatchBackground from '../components/ChatFlow/MatchBackground';
-import InitialMatchChoice from './ChatFlow/InitialMatchChoice'
-import Selection from './ChatFlow/Selection'
-import GhostingOthers from './ChatFlow/GhostingOthers'
-import GotGhosted from './ChatFlow/GotGhosted'
-import GotLucky from './ChatFlow/GotLuckyGoToChat'
-import ChatPage from './ChatFlow/chatMain'
-import firebase from '../utils/mainFire'
+import React from "react";
+import { ScrollView, StyleSheet, Text, View, Button } from "react-native";
+import { ExpoLinksView } from "@expo/samples";
+import ProfilePage from "./SignUpFlow/ProfilePage";
+import MatchesPage from "./SignUpFlow/Matches";
+import RegistrationPage from "./SignUpFlow/RegistrationPage";
+import SelfiePage from "./SignUpFlow/SelfiePage";
+import SignupPage from "./SignUpFlow/SignupPage";
+import ImInterestedIn from "../screens/SignUpFlow/ImInterestedIn";
+import PhotoReview from "./SignUpFlow/PhotoReview";
+import MatchBackground from "../components/ChatFlow/MatchBackground";
+import InitialMatchChoice from "./ChatFlow/InitialMatchChoice";
+import Selection from "./ChatFlow/Selection";
+import GhostingOthers from "./ChatFlow/GhostingOthers";
+import GotGhosted from "./ChatFlow/GotGhosted";
+import GotLucky from "./ChatFlow/GotLuckyGoToChat";
+import ChatPage from "./ChatFlow/chatMain";
+import firebase from "../utils/mainFire";
 
 import t from "tcomb-form-native";
 const Form = t.form.Form;
 
-
-var Component = t.enums({
-  sCurrTest: 'Current Test Screen',
-  sImInterestedIn: 'SignupFlow/ImInterestedIn',
-  sSpendWeekend: 'SignupFlow/SpendWeekend',
-  sPROFILE: 'SignupFlow/ProfilePage',
-  sMATCHES: 'SignupFlow/Matches',
-  sChatPage: 'ChatFlow/chatMain',
-  sSELFIE: 'SignupFlow/SelfiePage',
-sREGISTRATION: 'SignupFlow/RegistrationPage',
-  sSIGNUP: 'SignupFlow/SignupPage',
-
-
-  sPHOTOREVIEW: 'SignupFlow/PhotoReview',
-  sSelection: 'ChatFlow/Selection',
-  sGhostingOthers:'ChatFlow/GhostOthers',
-  sGotGhosted: 'ChatFlow/GotGhosted',
-  sGotLucky: 'ChatFlowGotLucky',
-  sCreateQuestionaire:'MatchFlow/CreateQuestionaire',
-  sCreateReply: 'MatchFlow/ReplyQuestionaire',
-  sViewReply:'MatchFlow/ViewQuestionnaire'
-},'Component');
+var Component = t.enums(
+  {
+    sCurrTest: "Current Test Screen",
+    sImInterestedIn: "SignupFlow/ImInterestedIn",
+    sSpendWeekend: "SignupFlow/SpendWeekend",
+    sPROFILE: "SignupFlow/ProfilePage",
+    sMATCHES: "SignupFlow/Matches",
+    sChatPage: "ChatFlow/chatMain",
+    sSELFIE: "SignupFlow/SelfiePage",
+    sREGISTRATION: "SignupFlow/RegistrationPage",
+    sSIGNUP: "SignupFlow/SignupPage",
+    sPHOTOREVIEW: "SignupFlow/PhotoReview",
+    sSelection: "ChatFlow/Selection",
+    sGhostingOthers: "ChatFlow/GhostOthers",
+    sGotGhosted: "ChatFlow/GotGhosted",
+    sGotLucky: "ChatFlowGotLucky",
+    sCreateQuestionaire: "MatchFlow/CreateQuestionaire",
+    sCreateReply: "MatchFlow/ReplyQuestionaire",
+    sViewReply: "MatchFlow/ViewQuestionnaire"
+  },
+  "Component"
+);
 
 var details = t.struct({
   Component: Component
@@ -73,10 +73,9 @@ export default class LinksScreen extends React.Component {
       "ViewQuestionaire",
       "TestAboutUs",
       "TestTellUsMore",
-      "ImInterestedIn",
-      "SpendWeekend",
-      "WouldRather"
-
+      "TestImInterestedIn",
+      "TestSpendWeekend",
+      "TestWouldRather"
     ];
   }
 
@@ -156,7 +155,6 @@ export default class LinksScreen extends React.Component {
       );
     });
     return (
-
       <ScrollView style={styles.container}>
         {/*<Form
             style={{color:'black'}}
