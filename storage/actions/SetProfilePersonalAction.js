@@ -1,8 +1,8 @@
-const SetProfilePersonalAction = (data) => (dispatch)=> {
+const setProfilePersonalAction = (profData) => (dispatch)=> {
   dispatch({
     type: 'ADD_PROFILE_DATA',
-    PAYLOAD: data
+    PAYLOAD: profData
   })
 }
 
-export default SetProfilePersonalAction;
+export default setProfilePersonalAction;
