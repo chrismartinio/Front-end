@@ -95,7 +95,7 @@ class AboutYou extends React.Component {
     //check zipCode
     if (this.checkZipCode(this.state.zipCode) === false) {
       passed = false;
-    }
+    }a
 
     //if all meet the requirement, then display the warning text
     if (passed === false) {
