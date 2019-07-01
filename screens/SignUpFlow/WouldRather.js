@@ -10,6 +10,9 @@ class WouldRather extends React.Component {
     header: null,
   }
 
+
+
+
   handlePress = () => {
     this.props.navigation.navigate('TestSpendWeekend');
   }
@@ -17,6 +20,7 @@ class WouldRather extends React.Component {
   handleListener = (arg) => {
     console.log(arg)
   }
+
 
   render(){
     return(

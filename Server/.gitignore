@@ -1,5 +1,5 @@
 Skip to content
- 
+
 Search or jump to…
 
 Pull requests
@@ -14,12 +14,14 @@ blindly/.gitignore
 ee901aa  on Nov 29, 2018
 @glenncariaga glenncariaga added raml files and adding node express server new
 @djq99 @glenncariaga
-     
+
 432 lines (311 sloc)  8.07 KB
 
 # Created by https://www.gitignore.io/api/node,xcode,gradle,reactnative,visualstudiocode
 # Edit at https://www.gitignore.io/?templates=node,xcode,gradle,reactnative,visualstudiocode
 
+
+server/config/main.js
 ### Node ###
 # Logs
 logs

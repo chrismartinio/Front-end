@@ -21,16 +21,32 @@ function setUserInfo(request) {
         username: request.username
     };
 }
+
+function setLogin(request){
+  return {
+      username: request.body.username,
+  }
+}
 //========================================
 // Login Route
 //========================================
 exports.login = function (req, res, next) {
-    let userInfo = setUserInfo(req.user);
+    let userInfo = setLogin(req);
+      User.findOne({"username":userInfo.username}, function(err, result){
+        if(err){
+            return err
+        } else {
 
-    res.status(200).json({
-        token: 'JWT ' + generateToken(userInfo),
-        user: userInfo
-    });
+        if(result !== null){
+            res.status(200).json({
+              token: 'JWT ' + generateToken(userInfo),
+              user: userInfo
+          })
+        } else {
+          res.status(422).send({error:'Invalid Username'})
+        }
+      }
+  })
 }
 
 
@@ -39,6 +55,11 @@ exports.login = function (req, res, next) {
 //========================================
 exports.register = function (req, res, next) {
     // Check for registration errors
+
+
+    // registration will need multiple handlers
+    // need to handle range of having one data, or all data
+
     const email = req.body.email;
     const dateOfBirth = req.body.dateOfBirth;
     const password = req.body.password;
@@ -69,6 +90,8 @@ exports.register = function (req, res, next) {
     User.findOne({ email: email }, function (err, existingEmail) {
         if (err) { return next(err); }
         // If email is not unique, return error
+
+        // do a check here for updating email
         if (existingEmail) {
             return res.status(422).send({ error: 'That email address is already in use.' });
         }
