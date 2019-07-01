@@ -13,7 +13,7 @@ class PhotoReview extends React.Component {
 
         <View style={styles.flexContainer}>
           <ImageBackground source={{uri: 'https://facebook.github.io/react-native/docs/assets/favicon.png'}} style={{width: '100%', height: '100%'}}>
-            <Text>Inside</Text>
+            <Text>Inside kjdfhv</Text>
           </ImageBackground>
           </View>
 
