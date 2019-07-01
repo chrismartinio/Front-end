@@ -1,38 +1,50 @@
-import React from "react";
+import React, { Component } from "react";
 import {
-  Image,
+  Button,
+  Keyboard,
+  KeyboardAvoidingView,
   Platform,
-  ScrollView,
+  SafeAreaView,
   StyleSheet,
   Text,
-  TouchableOpacity,
-  View,
-  Button,
   TextInput,
-  Picker,
-  DatePickerIOS,
-  TouchableHighlight,
-  KeyboardAvoidingView
+  TouchableWithoutFeedback,
+  View,
+  Image,
+  ScrollView,
+  TouchableOpacity,
+  ImageBackground
 } from "react-native";
 import { LinearGradient } from "expo";
+import { connect } from "react-redux";
+import SetProfilePersonalAction from "../../storage/actions/SetProfilePersonalAction";
+import firebase from "../../utils/mainFire";
 import DatePicker from "react-native-datepicker";
 import RNPickerSelect from "react-native-picker-select";
 import { countries, genders } from "./someData.js";
 
-class AboutYou extends React.Component {
+class AboutYou extends Component {
   constructor(props) {
     super(props);
-    this.inputRefs = {};
+    //this.firstNameInputRef = React.createRef();
+    //this.lastNameInputRef = React.createRef();
+    //this.genderPickerRef = React.createRef();
 
     this.state = {
-      date: "",
-      clicked: false,
+      birthDate: "",
       gender: "",
       country: "",
       firstName: "",
       lastName: "",
       zipCode: "",
-      passed: true
+      empty: false,
+      passed: true,
+      firstNameWarning: false,
+      lastNameWarning: false,
+      genderWarning: false,
+      countryWarning: false,
+      zipCodeWarning: false,
+      birthDateWarning: false
     };
   }
 
@@ -43,7 +55,8 @@ class AboutYou extends React.Component {
   checkName = string => {
     //Have atleast one character
     //maybe? a user would like to have number in their name ??
-    if (/^[a-zA-Z]+$/.test(string)) {
+    let regExp = /^[a-zA-Z\s]*$/;
+    if (regExp.test(string)) {
       return true;
     }
     return false;
@@ -51,9 +64,7 @@ class AboutYou extends React.Component {
 
   maxDate = () => {
     let d = new Date();
-    //User has to be at least 18 year olds
-    //Current Year - 18
-    let year = d.getFullYear() - 18;
+    let year = d.getFullYear();
     let month = d.getMonth() + 1;
     let day = d.getDate();
     return year.toString() + "-" + month.toString() + "-" + day.toString();
@@ -62,107 +73,278 @@ class AboutYou extends React.Component {
   minDate = () => {
     let d = new Date();
     //assume 120 year olds
-    let year = d.getFullYear() - 120;
+    let year = d.getFullYear() - 150;
     let month = d.getMonth() + 1;
     let day = d.getDate();
     return year.toString() + "-" + month.toString() + "-" + day.toString();
   };
 
+  checkage = birthdate => {
+    let byear = parseInt(birthdate.slice(0, 4));
+    let bmonth = parseInt(birthdate.slice(5, 7));
+    let bday = parseInt(birthdate.slice(8, 10));
+
+    let d = new Date();
+    let age = d.getFullYear() - byear;
+    let month = d.getMonth() + 1 - bmonth;
+    if (month < 0 || (month === 0 && d.getDate() < bday)) {
+      age--;
+    }
+
+    if (age < 18) {
+      return false;
+    }
+
+    return true;
+  };
+
   handleSubmit = evt => {
-    let passed = true;
-    //check if it's empty
+    let firstName = false,
+      lastName = false,
+      birthDate = false,
+      gender = false,
+      country = false,
+      zipCode = false;
+
     if (
-      this.state.gender === "" ||
-      this.state.country === "" ||
       this.state.firstName === "" ||
       this.state.lastName === "" ||
+      this.state.birthDate === "" ||
+      this.state.gender === "" ||
+      this.state.country === "" ||
       this.state.zipCode === ""
     ) {
-      passed = false;
+      this.setState({
+        empty: true
+      });
+    } else {
+      this.setState({
+        empty: false
+      });
     }
 
-    //checkName
-
-    if (
-      !(
-        this.checkName(this.state.firstName) &&
-        this.checkName(this.state.lastName)
-      )
-    ) {
-      passed = false;
+    //checkFirstName
+    if (this.state.firstName !== "" && this.checkName(this.state.firstName)) {
+      //if not empty and passed the checkName(), set firstName = true
+      firstName = true;
+      /*
+      this.firstNameInputRef.current.setNativeProps({
+        style: { borderColor: "#fff" }
+      });
+      */
+      this.setState({
+        firstNameWarning: false
+      });
+    } else {
+      console.log("Invalid FirstName");
+      this.setState({
+        firstNameWarning: true
+      });
+      //console.log(this.inputRefs.current.props.style)
+      /*
+      this.firstNameInputRef.current.setNativeProps({
+        style: { borderColor: "red" }
+      });
+      */
     }
 
-    //check zipCode
-    if (this.checkZipCode(this.state.zipCode) === false) {
-      passed = false;
-    }a
+    //checkLastName
+    if (this.state.lastName !== "" && this.checkName(this.state.lastName)) {
+      //if not empty and passed the checkName(), set lastName = true
+      lastName = true;
+      this.setState({
+        lastNameWarning: false
+      });
+    } else {
+      console.log("Invalid LastName");
+      this.setState({
+        lastNameWarning: true
+      });
+    }
 
-    //if all meet the requirement, then display the warning text
-    if (passed === false) {
+    //checkBirth
+    if (this.state.birthDate !== "" && this.checkage(this.state.birthDate)) {
+      //if not empty, set birthDate = true
+      birthDate = true;
+      this.setState({
+        birthDateWarning: false
+      });
+    } else {
+      console.log("Invalid birthDate");
+      this.setState({
+        birthDateWarning: true
+      });
+    }
+
+    //checkGender
+    if (this.state.gender !== "") {
+      //if not empty, set gender = true
+      gender = true;
+      this.setState({
+        genderWarning: false
+      });
+    } else {
+      this.setState({
+        genderWarning: true
+      });
+    }
+
+    //checkCountry
+    if (this.state.country !== "") {
+      //if not empty, set country = true
+      country = true;
+      this.setState({
+        countryWarning: false
+      });
+    } else {
+      console.log("Invalid country");
+      this.setState({
+        countryWarning: true
+      });
+    }
+
+
+    //checkZipCode
+    if (this.state.zipCode !== "" && this.checkZipCode(this.state.zipCode)) {
+      //if not empty, set zipCode = true
+      zipCode = true;
+      this.setState({
+        zipCodeWarning: false
+      });
+    } else {
+      console.log("Invalid zipCode");
+      this.setState({
+        zipCodeWarning: true
+      });
+    }
+
+    //if all tests passed, set passed to true and navigate to next screen
+    if (!(firstName && lastName && birthDate && gender && country && zipCode)) {
+      //passed is set to true by default
+      //When user first click, and doesn't meet all requirement, set passed to false
+      //purpose of this is to not display "all field required" for first time
       this.setState({
         passed: false
-        })} else {
-      //if meet all the requirement, then undisplay the warning text
-      //pass values to redux store
-      //navigate to next page
-      this.props.navigation.navigate('TestTellUsMore');
+      });
+    } else {
+      //if all tests passed, set passed to true and navigate to next screen
       this.setState(
         {
           passed: true
         },
         () => {
-          //this.props.navigate("")
-          /*redux store here
-           */
+          //console.log("data here")
+          //console.log(this.props.CreateProfileReducer.data)
+          this.props.SetProfilePersonalAction({
+            firstName: this.state.firstName,
+            lastName: this.state.lastName,
+            birthDate: this.state.birthDate,
+            gender: this.state.gender,
+            country: this.state.country,
+            zipCode: this.state.zipCode
+          });
+          this.props.navigation.navigate("TestTellUsMore");
         }
       );
     }
   };
 
   render() {
+    let invalidFirstNameLastNameWarning = (
+      <Text style={styles.warningText}>* Only Accept Letters and Spaces. </Text>
+    );
+    let invalidBirthDateWarning = (
+      <Text style={styles.warningText}>* You MUST be at least 18!</Text>
+    );
+    let invalidGenderCountryWarning = (
+      <Text style={styles.warningText}>* Field cannot be empty!</Text>
+    );
+    let invalidZipCodeWarning = (
+      <Text style={styles.warningText}>* Zip code MUST be 5 digits</Text>
+    );
+
     return (
-      <View style={{ flex: 1 }}>
-        <LinearGradient colors={["#18cdf6", "#43218c"]} style={{ flex: 1 }}>
-          <ScrollView>
-            <KeyboardAvoidingView behavior="height" enabled>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : null}
+        style={{ flex: 1 }}
+      >
+        <LinearGradient
+          textStyle={{ color: "#fff" }}
+          colors={["#18cdf6", "#43218c"]}
+          style={{ flex: 1 }}
+        >
+          <SafeAreaView style={styles.container}>
+            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
               <View style={styles.wholeWrap}>
+                {/*Spaces*/}
+                <View
+                  style={{
+                    padding: "30%",
+                    //borderRadius: 4,
+                    //borderWidth: 0.5,
+                    //borderColor: "#d6d7da"
+                  }}
+                />
                 {/**About You Text */}
                 <View style={styles.aboutMeTextWrap}>
                   <Text style={styles.aboutMeText}>About You</Text>
                 </View>
+                {/*Spaces*/}
+                <View
+                  style={{
+                    padding: "5%",
+                    //borderRadius: 4,
+                    //borderWidth: 0.5,
+                    //borderColor: "#d6d7da"
+                  }}
+                />
+
                 {/**firstName */}
-                <View style={styles.firstNameInputWrap}>
-                  <View style={{ width: "100%" }}>
-                    <TextInput
-                      style={styles.nameInputBox}
-                      placeholder="first name"
-                      onChangeText={firstName => this.setState({ firstName })}
-                      placeholderTextColor="#fff"
-                    />
-                  </View>
+                <View style={{ width: "100%" }}>
+                  <TextInput
+                    style={styles.nameInputBox}
+                    placeholder="first name "
+                    onChangeText={firstName => this.setState({ firstName })}
+                    placeholderTextColor="#fff"
+                  />
                 </View>
+                {this.state.firstNameWarning && invalidFirstNameLastNameWarning}
+                {/*Spaces*/}
+                <View
+                  style={{
+                    padding: "5%",
+                    //borderRadius: 4,
+                    //borderWidth: 0.5,
+                    //borderColor: "#d6d7da"
+                  }}
+                />
+
                 {/**lastName */}
-                <View style={styles.lastNameInputWrap}>
-                  <View style={{ width: "100%" }}>
-                    <TextInput
-                      style={styles.nameInputBox}
-                      placeholder="last name"
-                      onChangeText={lastName => this.setState({ lastName })}
-                      placeholderTextColor="#fff"
-                    />
-                  </View>
+                <View style={{ width: "100%" }}>
+                  <TextInput
+                    style={styles.nameInputBox}
+                    placeholder="last name"
+                    onChangeText={lastName => this.setState({ lastName })}
+                    placeholderTextColor="#fff"
+                  />
                 </View>
+                {this.state.lastNameWarning && invalidFirstNameLastNameWarning}
+                <View
+                  style={{
+                    padding: "5%",
+                    //borderRadius: 4,
+                    //borderWidth: 0.5,
+                    //borderColor: "#d6d7da"
+                  }}
+                />
+
                 {/**birth and gender Wrap */}
                 <View style={styles.birthdateAndGenderWrap}>
                   {/**birth */}
                   <View style={styles.birthdatePicker}>
                     <DatePicker
                       style={{ width: "90%" }}
-                      date={
-                        this.state.clicked === false
-                          ? this.state.clicked
-                          : this.state.date
-                      }
+                      date={this.state.birthDate}
                       mode="date"
                       placeholder="birthdate"
                       format="YYYY-MM-DD"
@@ -172,10 +354,12 @@ class AboutYou extends React.Component {
                       cancelBtnText="Cancel"
                       customStyles={birthdatePickerCustom}
                       onDateChange={date => {
-                        this.setState({ date: date, clicked: true });
+                        this.setState({ birthDate: date });
                       }}
                     />
+                    {this.state.birthDateWarning && invalidBirthDateWarning}
                   </View>
+
                   {/**Gender */}
                   <View style={styles.genderpPickerWrap}>
                     <RNPickerSelect
@@ -191,12 +375,11 @@ class AboutYou extends React.Component {
                         });
                       }}
                       value={this.state.gender}
-                      ref={el => {
-                        this.inputRefs.picker = el;
-                      }}
                     />
+                    {this.state.genderWarning && invalidGenderCountryWarning}
                   </View>
                 </View>
+
                 {/**Country and ZipCode Wrap */}
                 <View style={styles.countryAndZipCodeWrap}>
                   {/**country */}
@@ -214,11 +397,10 @@ class AboutYou extends React.Component {
                         });
                       }}
                       value={this.state.country}
-                      ref={el => {
-                        this.inputRefs.picker = el;
-                      }}
                     />
+                    {this.state.countryWarning && invalidGenderCountryWarning}
                   </View>
+
                   {/**zip */}
                   <View style={styles.zipCodeInputWrap}>
                     <TextInput
@@ -228,57 +410,100 @@ class AboutYou extends React.Component {
                       onChangeText={zipCode => this.setState({ zipCode })}
                       value={this.state.zipCode}
                       placeholderTextColor="#fff"
+                      autoCompleteType={false}
+                      autoCapitalize="none"
+                      autoCorrect={false}
+                      keyboardType="numeric"
+                      maxLength={5}
                     />
+                    {this.state.zipCodeWarning && invalidZipCodeWarning}
                   </View>
                 </View>
+
+                {/*Empty Data exist*/}
                 <View>
-                  {this.state.passed === false ? (
-                    <Text style={styles.warningText}>*All field Required</Text>
+                  {this.state.empty === true ? (
+                    <Text style={styles.warningText}>* all field Required</Text>
                   ) : (
                     <View style={styles.warningText} />
                   )}
                 </View>
-              </View>
-              <View alignItems="center" top={"30%"}>
-                <TouchableOpacity
-                  style={styles.button}
-                  onPress={this.handleSubmit}
+                {/*Spaces*/}
+                <View
+                  style={{
+                    padding: "20%",
+                    //borderRadius: 4,
+                    //borderWidth: 0.5,
+                    //borderColor: "#d6d7da"
+                  }}
+                />
+
+                {/*Next Button*/}
+                <View
+                  style={{
+                    alignItems: "center"
+                  }}
                 >
-                  <Text style={{ color: "#fff" }}>Next</Text>
-                </TouchableOpacity>
+                  <TouchableOpacity
+                    style={styles.button}
+                    onPress={this.handleSubmit}
+                  >
+                    <Text style={{ color: "#fff" }}>Next</Text>
+                  </TouchableOpacity>
+                </View>
+                <View style={{ flex: 1 }} />
               </View>
-            </KeyboardAvoidingView>
-          </ScrollView>
+            </TouchableWithoutFeedback>
+          </SafeAreaView>
         </LinearGradient>
-      </View>
+      </KeyboardAvoidingView>
     );
   }
 }
+
 const styles = StyleSheet.create({
+  container: {
+    flex: 1
+  },
+  wholeWrap: {
+    flex: 1,
+    justifyContent: "flex-end",
+    marginBottom: "5%",
+    marginLeft: "10%",
+    marginRight: "10%",
+    //borderRadius: 4,
+    //borderWidth: 0.5,
+    //borderColor: "#d6d7da"
+  },
+
+  button: {
+    alignItems: "center",
+    //backgroundColor: '#fff',
+    padding: 10,
+    borderRadius: 40,
+    borderWidth: 2,
+    borderColor: "#fff",
+    width: "70%"
+  },
   aboutMeText: {
     color: "#fff",
-    fontSize: 45
+    fontSize: 45,
+    fontWeight: "100"
   },
   aboutMeTextWrap: {
     alignItems: "center"
   },
   nameInputBox: {
-    color: "#fff",
+    color: "white",
     fontSize: 15,
     textAlign: "left",
     borderBottomWidth: 1,
     borderColor: "#fff",
-    fontWeight: "bold",
+    fontWeight: "100",
     paddingVertical: 9
-  },
-  firstNameInputWrap: {
-    alignItems: "center",
-    paddingTop: "10%"
-  },
-  lastNameInputWrap: {
-    alignItems: "center",
-    paddingTop: "5%",
-    paddingBottom: "10%"
+    //borderRadius: 4,
+    //borderWidth: 0.5,
+    //borderColor: "#d6d7da"
   },
   birthdatePicker: {
     width: "45%",
@@ -294,7 +519,7 @@ const styles = StyleSheet.create({
   birthdateAndGenderWrap: {
     flexDirection: "row",
     flexWrap: "wrap",
-    paddingBottom: "20%"
+    marginBottom: "20%"
   },
   countryPickerWrap: {
     width: "45%",
@@ -307,7 +532,7 @@ const styles = StyleSheet.create({
     textAlign: "left",
     borderBottomWidth: 1,
     borderColor: "#fff",
-    fontWeight: "bold",
+    fontWeight: "100",
     paddingVertical: 9
   },
   zipCodeInputWrap: {
@@ -318,32 +543,12 @@ const styles = StyleSheet.create({
   countryAndZipCodeWrap: {
     flexDirection: "row",
     flexWrap: "wrap",
-    paddingBottom: "15%"
-  },
-  button: {
-    alignItems: "center",
-    //backgroundColor: '#fff',
-    padding: 10,
-    borderRadius: 40,
-    borderWidth: 2,
-    borderColor: "#fff",
-    width: "70%"
-  },
-  buttonText: {
-    padding: 10,
-    color: "white",
-    fontWeight: "bold",
-    fontSize: 20
+    marginBottom: "15%"
   },
   warningText: {
     color: "#fff",
-    fontSize: 8
-  },
-  wholeWrap: {
-    marginLeft: "10%",
-    marginRight: "10%",
-    marginTop: "40%",
-    marginBottom: "10%"
+    fontSize: 8,
+    paddingTop: "3%"
   }
 });
 
@@ -353,12 +558,12 @@ const genderPicker = {
     borderBottomWidth: 1,
     borderColor: "#fff",
     fontSize: 15,
-    fontWeight: "bold",
+    fontWeight: "100",
     paddingVertical: 10.5
   },
   placeholder: {
     color: "#fff",
-    fontWeight: "bold"
+    fontWeight: "100"
   }
 };
 
@@ -378,32 +583,46 @@ const birthdatePickerCustom = {
     fontSize: 13,
     position: "absolute",
     left: "0%",
-    fontWeight: "bold"
+    fontWeight: "100"
   },
   placeholderText: {
     color: "#fff",
     fontSize: 15,
     position: "absolute",
     left: "0%",
-    fontWeight: "bold"
+    fontWeight: "100"
   }
 };
 
 const countryPicker = {
   inputIOS: {
-    width: 120,
+    width: "90%",
     color: "#fff",
     borderBottomWidth: 1,
     borderColor: "#fff",
     fontSize: 15,
-    fontWeight: "bold",
+    fontWeight: "100",
     paddingVertical: 9
   },
   placeholder: {
     color: "#fff",
-    fontWeight: "bold",
+    fontWeight: "100",
     paddingVertical: 9
   }
 };
 
-export default AboutYou;
+const mapStateToProps = state => {
+  return { ...state };
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    SetProfilePersonalAction: payload =>
+      dispatch(SetProfilePersonalAction(payload))
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(AboutYou);

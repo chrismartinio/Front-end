@@ -14,7 +14,7 @@ class WouldRather extends React.Component {
 
 
   handlePress = () => {
-    this.props.navigation.navigate('SpendWeekend');
+    this.props.navigation.navigate('TestSpendWeekend');
   }
 
   handleListener = (arg) => {
