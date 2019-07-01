@@ -38,7 +38,7 @@ const TestStack = createStackNavigator({
   TestPhotoReview: PhotoReview,
   TestScreen: TestScreen,
   TestMatches: MatchesPage,
-  TestAboutUs: AboutYou,
+  TestAboutYou: AboutYou,
   TestTellUsMore: TellUsMore,
   TestWouldRather: WouldRather,
   TestSpendWeekend:SpendWeekend,

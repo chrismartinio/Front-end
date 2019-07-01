@@ -103,7 +103,7 @@ class Welcome extends Component {
         email: this.state.email,
         password: this.state.password
       });
-      this.props.navigation.navigate("TestAboutUs");
+      this.props.navigation.navigate("TestAboutYou");
     }
   };
   render() {
