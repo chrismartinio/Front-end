@@ -203,6 +203,7 @@ class AboutYou extends Component {
       });
     }
 
+
     //checkZipCode
     if (this.state.zipCode !== "" && this.checkZipCode(this.state.zipCode)) {
       //if not empty, set zipCode = true
