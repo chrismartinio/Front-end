@@ -4,7 +4,8 @@ const AuthenticationController = require('./controllers/authentication'),
     express = require('express'),
     passportService = require('./config/passport'),
     passport = require('passport'),
-    s3Controller = require('./controllers/S3');
+    s3Controller = require('./controllers/S3'),
+    OnboardingController = require('./controllers/onboarding');
 
 // Middleware to require login/auth
 const requireAuth = passport.authenticate('jwt', { session: false });
@@ -15,7 +16,9 @@ module.exports = function (app) {
     const apiRoutes = express.Router(),
         authRoutes = express.Router(),
         chatRoutes = express.Router(),
+        onboardingRoutes = express.Router();
         S3 = express.Router();
+
 
     //=========================
     // Auth Routes
@@ -29,6 +32,12 @@ module.exports = function (app) {
 
     // Login route
     authRoutes.post('/login', AuthenticationController.login);
+
+    // set auth midddleware for onboarding
+    apiRoutes.use('/onboarding', onboardingRoutes);
+
+    // gather data for spendweekend
+    onboardingRoutes.post('/spendAWeekend', OnboardingController.spendAWeekend)
 
     // Set chat routes as a subgroup/middleware to apiRoutes
     apiRoutes.use('/chat', chatRoutes);
