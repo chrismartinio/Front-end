@@ -89,8 +89,10 @@ class SignupPage extends React.Component {
       interestedGender = "both";
     } else if (pickedMen) {
       interestedGender = "men";
-    } else {
+    } else if (pickedWomen){
       interestedGender = "female";
+    } else {
+      interestedGender = "neither"
     }
 
     this.props.SetInterestedDataAction({

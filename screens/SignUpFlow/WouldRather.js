@@ -30,11 +30,7 @@ class WouldRather extends React.Component {
     this.s3r2 = 50.0;
   }
 
-
-
-
   handlePress = () => {
-
     this.props.SetWouldRatherDataAction({
       s1r1: this.s1r1,
       s1r2: this.s1r2,
@@ -69,7 +65,6 @@ class WouldRather extends React.Component {
 
   render() {
     return (
-
       <View style={styles.parent}>
         <LinearGradient
           textStyle={{ color: "#fff" }}

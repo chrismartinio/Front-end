@@ -41,91 +41,40 @@ class SignupPage extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      email: "email",
-      emailCheck: "email",
-      password: "password",
-      passwordCheck: "password",
       location: ""
     };
   }
+
+  //header : navigate to sign in screen
   handleBackToSignIn = () => {
     this.props.navigation.navigate("SignIn");
   };
-  handleListener = arg => {
-    //console.log(arg)
-  };
-  SignUpToDatabase = ({ age, email, gender, name, password }) => {
-    let userId = email.split(".").join();
-    firebase
-      .database()
-      .ref("users/" + userId)
-      .set({
-        age: age,
-        email: email,
-        gender: gender,
-        name: name,
-        password: password
-      });
-  };
 
+  //Location Button
   handlPress = location => {
     this.setState({
       location: location
     });
   };
 
+  //Next Button
   handlSubmit = () => {
-    this.props.SetWeekendLocationDataAction({ location: this.state.location });
-    //this.props.navigation.navigate("TestSignUp");
-  };
+    if (this.state.location !== "") {
+      //Assign to Redux Store
+      this.props.SetWeekendLocationDataAction({
+        location: this.state.location
+      });
 
-  handleSubmit = () => {
-    return;
-    const value = this._form.getValue();
-
-    console.log(value);
-    const nullCheck = value => {
-      if (value !== null) {
-        return true;
-      }
-      return false;
-    };
-
-    const emailCheck = email => {
-      // email validty check?
-      const checkAT = email.indexOf("@");
-      const checkCOM = email.indexOf(".com");
-      if (checkAT > 0 && checkCOM > 0 && email.length > 4) {
-        return true;
-      }
-      console.log("Please Properly insert a email with a '@' & a '.com'");
-      return false;
-    };
-
-    const passwordCheck = password => {
-      if (password.length > 6) {
-        return true;
-      }
-
-      return false;
-    };
-
-    if (
-      nullCheck(value) &&
-      emailCheck(value.email) &&
-      passwordCheck(value.password)
-    ) {
-      for (let key in value) {
-        value[key] = JSON.stringify(value[key]);
-      }
-      this.SignUpToDatabase(value);
-      this.props.SetProfilePersonalAction(value);
-      this.props.navigation.navigate("Registration");
+      //Navigate to Next Screen
+      //this.props.navigation.navigate("TestSignUp");
+    } else {
+      //Add Warning here?
+      console.log("empty location")
+      return
     }
   };
 
   render() {
-    //console.log(this.state.text)
     return (
       <View style={styles.container}>
         <LinearGradient
