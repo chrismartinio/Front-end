@@ -24,6 +24,7 @@ import ImInterestedIn from '../screens/SignUpFlow/ImInterestedIn';
 import SpendWeekend from '../screens/SignUpFlow/SpendAWeekend';
 import WouldRather from '../screens/SignUpFlow/WouldRather';
 import TellUsMore from '../screens/SignUpFlow/TellUsMore';
+import Collapsible from '../screens/SignUpFlow/Collapsible';
 
 
 
@@ -38,11 +39,12 @@ const TestStack = createStackNavigator({
   TestPhotoReview: PhotoReview,
   TestScreen: TestScreen,
   TestMatches: MatchesPage,
-  TestAboutUs: AboutYou,
+  TestAboutYou: AboutYou,
   TestTellUsMore: TellUsMore,
-  TestWouldRather: WouldRather,
-  TestSpendWeekend:SpendWeekend,
-  TestImInterestedIn:ImInterestedIn
+  WouldRather: WouldRather,
+  SpendWeekend:SpendWeekend,
+  ImInterestedIn:ImInterestedIn,
+  Collapsible:Collapsible
 })
 
 

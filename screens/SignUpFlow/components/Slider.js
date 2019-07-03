@@ -164,11 +164,11 @@ class CSlider extends React.Component {
       //   value:value
       // })
 
-      this.setState({
-        currValue:value,
-        leftPercentage: -1 * (-50 + Math.floor(value)),
-        rightPercentage: Math.floor(value) + 50
-      })
+      // this.setState({
+      //   currValue:value,
+      //   leftPercentage: -1 * (-50 + Math.floor(value)),
+      //   rightPercentage: Math.floor(value) + 50
+      // })
 
 }
 
@@ -200,7 +200,7 @@ class CSlider extends React.Component {
          onSlidingComplete={(value)=>{
            //this.handleCallbackListener(value)
          }}
-         onValueChange={(value)=>{
+         onSlidingComplete={(value)=>{
           this.handleRealTimeUpdate(value)
         }}
        />
