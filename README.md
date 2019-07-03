@@ -27,4 +27,7 @@ Project Start:
   $ yarn start
 
 
+  **** WHEN FETCHING DATA: CHANGE "LOCALHOST" TO YOUR PHYSICAL IP ADDRESS ****
+
+
 

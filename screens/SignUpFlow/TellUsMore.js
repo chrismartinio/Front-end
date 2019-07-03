@@ -27,7 +27,7 @@ class TellUsMore extends React.Component {
     this.inputRefs = {};
   }
   handleSubmit = () => {
-    this.props.navigation.navigate("ImInterestedIn");
+    this.props.navigation.navigate("TestImInterestedIn");
   };
 
   handleRedux = name => {
