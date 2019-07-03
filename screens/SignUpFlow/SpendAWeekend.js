@@ -41,11 +41,12 @@ class SignupPage extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      email: "email",
-      emailCheck: "email",
-      password: "password",
-      passwordCheck: "password",
-      location: ""
+      email:'email',
+      emailCheck:'email',
+      password:'password',
+      passwordCheck:'password',
+      places:['loading','loading','loading','loading','loading','loading','loading']
+
     };
   }
   handleBackToSignIn = () => {
@@ -53,31 +54,49 @@ class SignupPage extends React.Component {
   };
   handleListener = arg => {
     //console.log(arg)
-  };
-  SignUpToDatabase = ({ age, email, gender, name, password }) => {
-    let userId = email.split(".").join();
-    firebase
-      .database()
-      .ref("users/" + userId)
-      .set({
-        age: age,
-        email: email,
-        gender: gender,
-        name: name,
-        password: password
-      });
+
+  }
+
+
+    componentDidMount(){
+      this.getData()
+    }
+
+   getData = async () => {
+    try{
+      let data = await fetch('http://10.0.0.246:3000/api/onboarding/spendAWeekend', {
+        method: 'POST',
+        mode:'cors',
+        credentials: "same-origin",
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+        password: 'password',
+        username: 'name'
+      })})
+
+      let jsonData = await data.json()
+      this.setState({
+        places: jsonData
+      })
+    } catch(e){
+      console.log('failed toload data',e)
+    }
+  }
+   
+   handlSubmit = () => {
+    this.props.SetWeekendLocationDataAction({ location: this.state.location });
+    //this.props.navigation.navigate("TestSignUp");
   };
 
-  handlPress = location => {
+    handlPress = location => {
     this.setState({
       location: location
     });
   };
 
-  handlSubmit = () => {
-    this.props.SetWeekendLocationDataAction({ location: this.state.location });
-    //this.props.navigation.navigate("TestSignUp");
-  };
 
   handleSubmit = () => {
     return;
@@ -90,6 +109,7 @@ class SignupPage extends React.Component {
       }
       return false;
     };
+
 
     const emailCheck = email => {
       // email validty check?
