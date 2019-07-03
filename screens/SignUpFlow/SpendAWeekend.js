@@ -47,7 +47,9 @@ class SignupPage extends React.Component {
       email:'email',
       emailCheck:'email',
       password:'password',
-      passwordCheck:'password' };
+      passwordCheck:'password',
+      places:['loading','loading','loading','loading','loading','loading','loading']
+    };
   }
   handleBackToSignIn = () => {
     this.props.navigation.navigate('SignIn')
@@ -55,15 +57,34 @@ class SignupPage extends React.Component {
   handleListener = (arg) => {
     //console.log(arg)
   }
-  SignUpToDatabase = ({ age, email, gender, name, password }) => {
-    let userId = email.split('.').join()
-    firebase.database().ref('users/' + userId).set({
-      age:age,
-      email:email,
-      gender:gender,
-      name:name,
-      password:password
-    });
+
+
+    componentDidMount(){
+      this.getData()
+    }
+
+   getData = async () => {
+    try{
+      let data = await fetch('http://10.0.0.246:3000/api/onboarding/spendAWeekend', {
+        method: 'POST',
+        mode:'cors',
+        credentials: "same-origin",
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+        password: 'password',
+        username: 'name'
+      })})
+
+      let jsonData = await data.json()
+      this.setState({
+        places: jsonData
+      })
+    } catch(e){
+      console.log('failed toload data',e)
+    }
   }
 
   handleSubmit = () => {
@@ -80,7 +101,6 @@ class SignupPage extends React.Component {
 
     const emailCheck = (email) =>{
 
-      // email validty check?
       const checkAT = email.indexOf('@')
       const checkCOM = email.indexOf('.com')
         if(checkAT > 0 && checkCOM > 0 && email.length > 4){
