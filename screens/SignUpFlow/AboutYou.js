@@ -39,19 +39,21 @@ class AboutYou extends Component {
       zipCode: "",
       empty: false,
       passed: true,
-      firstNameWarning: false,
-      lastNameWarning: false,
-      genderWarning: false,
-      countryWarning: false,
-      zipCodeWarning: false,
-      birthDateWarning: false
+      firstNameWarning: "",
+      lastNameWarning: "",
+      genderWarning: "",
+      countryWarning: "",
+      zipCodeWarning: "",
+      birthDateWarning: ""
     };
   }
 
+  //return true/false for valid zipcode
   checkZipCode = zipcode => {
     return /^\d{5}(-\d{4})?$/.test(zipcode);
   };
 
+  //return true/false for valid first name and last name
   checkName = string => {
     //Have atleast one character
     //maybe? a user would like to have number in their name ??
@@ -62,6 +64,7 @@ class AboutYou extends Component {
     return false;
   };
 
+  //date picker method : return maximun date (current date) that user can pick
   maxDate = () => {
     let d = new Date();
     let year = d.getFullYear();
@@ -70,6 +73,7 @@ class AboutYou extends Component {
     return year.toString() + "-" + month.toString() + "-" + day.toString();
   };
 
+  //date picker method : return minimum date (current date - 150) that user can pick
   minDate = () => {
     let d = new Date();
     //assume 120 year olds
@@ -79,6 +83,7 @@ class AboutYou extends Component {
     return year.toString() + "-" + month.toString() + "-" + day.toString();
   };
 
+  //return true/false for valid birthdate (over 18)
   checkage = birthdate => {
     let byear = parseInt(birthdate.slice(0, 4));
     let bmonth = parseInt(birthdate.slice(5, 7));
@@ -98,6 +103,7 @@ class AboutYou extends Component {
     return true;
   };
 
+  //next button : valid all input fields
   handleSubmit = evt => {
     let firstName = false,
       lastName = false,
@@ -106,6 +112,105 @@ class AboutYou extends Component {
       country = false,
       zipCode = false;
 
+    //check invalid/empty firstName
+    if (this.state.firstName === "") {
+      firstName = false;
+      this.setState({
+        firstNameWarning: "empty"
+      });
+    } else if (!this.checkName(this.state.firstName)) {
+      firstName = false;
+      this.setState({
+        firstNameWarning: "invalid"
+      });
+    } else {
+      firstName = true;
+      this.setState({
+        firstNameWarning: ""
+      });
+    }
+
+    //check invalid/empty lastName
+    if (this.state.lastName === "") {
+      lastName = false;
+      this.setState({
+        lastNameWarning: "empty"
+      });
+    } else if (!this.checkName(this.state.lastName)) {
+      lastName = false;
+      this.setState({
+        lastNameWarning: "invalid"
+      });
+    } else {
+      lastName = true;
+      this.setState({
+        lastNameWarning: ""
+      });
+    }
+
+    //check invalid/empty birthDate
+    if (this.state.birthDate === "") {
+      birthDate = false;
+      this.setState({
+        birthDateWarning: "empty"
+      });
+    } else if (!this.checkage(this.state.birthDate)) {
+      birthDate = false;
+      this.setState({
+        birthDateWarning: "invalid"
+      });
+    } else {
+      birthDate = true;
+      this.setState({
+        birthDateWarning: ""
+      });
+    }
+
+    //check invalid/empty gender
+    if (this.state.gender === "") {
+      gender = false;
+      this.setState({
+        genderWarning: "empty"
+      });
+    } else {
+      gender = true;
+      this.setState({
+        genderWarning: ""
+      });
+    }
+
+    //check invalid/empty country
+    if (this.state.country === "") {
+      country = false;
+      this.setState({
+        countryWarning: "empty"
+      });
+    } else {
+      country = true;
+      this.setState({
+        countryWarning: ""
+      });
+    }
+
+    //check invalid/empty zipCode
+    if (this.state.zipCode === "") {
+      zipCode = false;
+      this.setState({
+        zipCodeWarning: "empty"
+      });
+    } else if (!this.checkZipCode(this.state.zipCode)) {
+      zipCode = false;
+      this.setState({
+        zipCodeWarning: "invalid"
+      });
+    } else {
+      zipCode = true;
+      this.setState({
+        zipCodeWarning: ""
+      });
+    }
+
+    //check input field empty
     if (
       this.state.firstName === "" ||
       this.state.lastName === "" ||
@@ -123,106 +228,10 @@ class AboutYou extends Component {
       });
     }
 
-    //checkFirstName
-    if (this.state.firstName !== "" && this.checkName(this.state.firstName)) {
-      //if not empty and passed the checkName(), set firstName = true
-      firstName = true;
-      /*
-      this.firstNameInputRef.current.setNativeProps({
-        style: { borderColor: "#fff" }
-      });
-      */
-      this.setState({
-        firstNameWarning: false
-      });
-    } else {
-      console.log("Invalid FirstName");
-      this.setState({
-        firstNameWarning: true
-      });
-      //console.log(this.inputRefs.current.props.style)
-      /*
-      this.firstNameInputRef.current.setNativeProps({
-        style: { borderColor: "red" }
-      });
-      */
-    }
-
-    //checkLastName
-    if (this.state.lastName !== "" && this.checkName(this.state.lastName)) {
-      //if not empty and passed the checkName(), set lastName = true
-      lastName = true;
-      this.setState({
-        lastNameWarning: false
-      });
-    } else {
-      console.log("Invalid LastName");
-      this.setState({
-        lastNameWarning: true
-      });
-    }
-
-    //checkBirth
-    if (this.state.birthDate !== "" && this.checkage(this.state.birthDate)) {
-      //if not empty, set birthDate = true
-      birthDate = true;
-      this.setState({
-        birthDateWarning: false
-      });
-    } else {
-      console.log("Invalid birthDate");
-      this.setState({
-        birthDateWarning: true
-      });
-    }
-
-    //checkGender
-    if (this.state.gender !== "") {
-      //if not empty, set gender = true
-      gender = true;
-      this.setState({
-        genderWarning: false
-      });
-    } else {
-      this.setState({
-        genderWarning: true
-      });
-    }
-
-    //checkCountry
-    if (this.state.country !== "") {
-      //if not empty, set country = true
-      country = true;
-      this.setState({
-        countryWarning: false
-      });
-    } else {
-      console.log("Invalid country");
-      this.setState({
-        countryWarning: true
-      });
-    }
-
-
-    //checkZipCode
-    if (this.state.zipCode !== "" && this.checkZipCode(this.state.zipCode)) {
-      //if not empty, set zipCode = true
-      zipCode = true;
-      this.setState({
-        zipCodeWarning: false
-      });
-    } else {
-      console.log("Invalid zipCode");
-      this.setState({
-        zipCodeWarning: true
-      });
-    }
-
-    //if all tests passed, set passed to true and navigate to next screen
     if (!(firstName && lastName && birthDate && gender && country && zipCode)) {
       //passed is set to true by default
       //When user first click, and doesn't meet all requirement, set passed to false
-      //purpose of this is to not display "all field required" for first time
+      //purpose of this is to not display "all field required" for user first time visit this screen
       this.setState({
         passed: false
       });
@@ -250,6 +259,8 @@ class AboutYou extends Component {
   };
 
   render() {
+    let passed = <View style={styles.warningText} />;
+
     let invalidFirstNameLastNameWarning = (
       <Text style={styles.warningText}>* Only Accept Letters and Spaces. </Text>
     );
@@ -262,6 +273,7 @@ class AboutYou extends Component {
     let invalidZipCodeWarning = (
       <Text style={styles.warningText}>* Zip code MUST be 5 digits</Text>
     );
+    let empty = <Text style={styles.warningText}>* Empty field</Text>;
 
     return (
       <View>
@@ -273,7 +285,7 @@ class AboutYou extends Component {
                 {/*Spaces*/}
                 <View
                   style={{
-                    padding: "30%",
+                    padding: "30%"
                     //borderRadius: 4,
                     //borderWidth: 0.5,
                     //borderColor: "#d6d7da"
@@ -286,7 +298,7 @@ class AboutYou extends Component {
                 {/*Spaces*/}
                 <View
                   style={{
-                    padding: "5%",
+                    padding: "5%"
                     //borderRadius: 4,
                     //borderWidth: 0.5,
                     //borderColor: "#d6d7da"
@@ -302,11 +314,14 @@ class AboutYou extends Component {
                     placeholderTextColor="#fff"
                   />
                 </View>
-                {this.state.firstNameWarning && invalidFirstNameLastNameWarning}
+                {this.state.firstNameWarning === "empty" && empty}
+                {this.state.firstNameWarning === "invalid" &&
+                  invalidFirstNameLastNameWarning}
+
                 {/*Spaces*/}
                 <View
                   style={{
-                    padding: "5%",
+                    padding: "5%"
                     //borderRadius: 4,
                     //borderWidth: 0.5,
                     //borderColor: "#d6d7da"
@@ -322,10 +337,13 @@ class AboutYou extends Component {
                     placeholderTextColor="#fff"
                   />
                 </View>
-                {this.state.lastNameWarning && invalidFirstNameLastNameWarning}
+                {this.state.lastNameWarning === "empty" && empty}
+                {this.state.lastNameWarning === "invalid" &&
+                  invalidFirstNameLastNameWarning}
+
                 <View
                   style={{
-                    padding: "5%",
+                    padding: "5%"
                     //borderRadius: 4,
                     //borderWidth: 0.5,
                     //borderColor: "#d6d7da"
@@ -351,7 +369,9 @@ class AboutYou extends Component {
                         this.setState({ birthDate: date });
                       }}
                     />
-                    {this.state.birthDateWarning && invalidBirthDateWarning}
+                    {this.state.birthDateWarning === "empty" && empty}
+                    {this.state.birthDateWarning === "invalid" &&
+                      invalidBirthDateWarning}
                   </View>
 
                   {/**Gender */}
@@ -370,7 +390,9 @@ class AboutYou extends Component {
                       }}
                       value={this.state.gender}
                     />
-                    {this.state.genderWarning && invalidGenderCountryWarning}
+                    {this.state.genderWarning === "empty" && empty}
+                    {this.state.genderWarning === "invalid" &&
+                      invalidGenderCountryWarning}
                   </View>
                 </View>
 
@@ -392,7 +414,9 @@ class AboutYou extends Component {
                       }}
                       value={this.state.country}
                     />
-                    {this.state.countryWarning && invalidGenderCountryWarning}
+                    {this.state.countryWarning === "empty" && empty}
+                    {this.state.countryWarning === "invalid" &&
+                      invalidGenderCountryWarning}
                   </View>
 
                   {/**zip */}
@@ -410,20 +434,44 @@ class AboutYou extends Component {
                       keyboardType="numeric"
                       maxLength={5}
                     />
-                    {this.state.zipCodeWarning && invalidZipCodeWarning}
+                    {this.state.zipCodeWarning === "empty" && empty}
+                    {this.state.zipCodeWarning === "invalid" &&
+                      invalidZipCodeWarning}
                   </View>
                 </View>
 
                 {/*Empty Data exist*/}
                 <View>
-                  {this.state.empty === true ? (
+                  {this.state.empty ? (
                     <Text style={styles.warningText}>* all field Required</Text>
                   ) : (
                     <View style={styles.warningText} />
                   )}
                 </View>
-                <Text />
-                
+
+                {/*Spaces*/}
+                <View
+                  style={{
+                    padding: "20%"
+                    //borderRadius: 4,
+                    //borderWidth: 0.5,
+                    //borderColor: "#d6d7da"
+                  }}
+                />
+
+                {/*Next Button*/}
+                <View
+                  style={{
+                    alignItems: "center"
+                  }}
+                >
+                  <TouchableOpacity
+                    style={styles.button}
+                    onPress={this.handleSubmit}
+                  >
+                    <Text style={{ color: "#fff" }}>Next</Text>
+                  </TouchableOpacity>
+                </View>
                 <View style={{ flex: 1 }} />
               </View>
             </TouchableWithoutFeedback>
@@ -447,8 +495,14 @@ const styles = StyleSheet.create({
   wholeWrap: {
     flex: 1,
     justifyContent: "flex-end",
-    marginLeft: "5%",
-    marginRight: "5%"
+
+    marginBottom: "5%",
+    marginLeft: "10%",
+    marginRight: "10%"
+    //borderRadius: 4,
+    //borderWidth: 0.5,
+    //borderColor: "#d6d7da"
+
   },
 
   button: {
