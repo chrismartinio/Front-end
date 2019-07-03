@@ -11,41 +11,15 @@ class WouldRather extends React.Component {
   }
 
   handlePress = () => {
+    this.props.navigation.navigate('SpendWeekend');
+  }
 
-    this.props.SetWouldRatherDataAction({
-      s1r1: this.s1r1,
-      s1r2: this.s1r2,
-      s2r1: this.s2r1,
-      s2r2: this.s2r2,
-      s3r1: this.s3r1,
-      s3r2: this.s3r2
-    });
-    this.props.navigation.navigate("TestSpendWeekend");
-  };
+  handleListener = (arg) => {
+    console.log(arg)
+  }
 
-  handleListener1 = arg => {
-    console.log("field1");
-    console.log(arg);
-    this.s1r1 = 50 - arg;
-    this.s1r2 = 50 + arg;
-  };
-
-  handleListener2 = arg => {
-    console.log("field2");
-    console.log(arg);
-    this.s2r1 = 50 - arg;
-    this.s2r2 = 50 + arg;
-  };
-
-  handleListener3 = arg => {
-    console.log("field3");
-    console.log(arg);
-    this.s3r1 = 50 - arg;
-    this.s3r2 = 50 + arg;
-  };
-
-  render() {
-    return (
+  render(){
+    return(
       <View style={styles.parent}>
 
         <LinearGradient

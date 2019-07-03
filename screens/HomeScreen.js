@@ -64,31 +64,7 @@ export default class HomeScreen extends React.Component {
   //   this.setState({ location });
   // };
 
-  componentDidMount(){
 
-  }
-
-   getData = async (name, password) => {
-    try{
-      let data = await fetch('https://localhost:3000/api/auth/login', {
-        method: 'POST',
-        mode:'cors',
-        credentials: "same-origin",
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-        password: password,
-        username: name
-      })})
-
-      let jsonData = await data.json()
-      console.log(jsonData)
-    } catch(e){
-      console.log('failed toload data',e)
-    }
-  }
 
 
 

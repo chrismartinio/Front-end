@@ -22,7 +22,7 @@ import firebase from "../../utils/mainFire";
 import DatePicker from "react-native-datepicker";
 import RNPickerSelect from "react-native-picker-select";
 import { countries, genders } from "./someData.js";
-
+ 
 class AboutYou extends Component {
   constructor(props) {
     super(props);
@@ -276,16 +276,10 @@ class AboutYou extends Component {
     let empty = <Text style={styles.warningText}>* Empty field</Text>;
 
     return (
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : null}
-        style={{ flex: 1 }}
-      >
-        <LinearGradient
-          textStyle={{ color: "#fff" }}
-          colors={["#18cdf6", "#43218c"]}
-          style={{ flex: 1 }}
-        >
+      <View>
+       
           <SafeAreaView style={styles.container}>
+          
             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
               <View style={styles.wholeWrap}>
                 {/*Spaces*/}
@@ -454,6 +448,7 @@ class AboutYou extends Component {
                     <View style={styles.warningText} />
                   )}
                 </View>
+
                 {/*Spaces*/}
                 <View
                   style={{
@@ -481,8 +476,7 @@ class AboutYou extends Component {
               </View>
             </TouchableWithoutFeedback>
           </SafeAreaView>
-        </LinearGradient>
-      </KeyboardAvoidingView>
+      </View>
     );
   }
 }
@@ -491,15 +485,24 @@ const styles = StyleSheet.create({
   container: {
     flex: 1
   },
+  titleText:{
+    margin:10,
+    color: '#fff',
+    fontSize:48,
+    textAlign:"center",
+    fontWeight:"100"
+  },
   wholeWrap: {
     flex: 1,
     justifyContent: "flex-end",
+
     marginBottom: "5%",
     marginLeft: "10%",
     marginRight: "10%"
     //borderRadius: 4,
     //borderWidth: 0.5,
     //borderColor: "#d6d7da"
+
   },
 
   button: {

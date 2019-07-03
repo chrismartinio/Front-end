@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
   View,
   Button,
-  Picker,
+  Picker, 
   TextInput,
   Dimensions
 } from "react-native";
@@ -204,7 +204,7 @@ const { height, width } = Dimensions.get("window");
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff"
+    ///backgroundColor: '#fff',
   },
   titleText: {
     margin: 10,
@@ -213,13 +213,12 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontWeight: "100"
   },
-  titleText2: {
-    margin: 10,
-    color: "#fff",
-    fontSize: 48,
-    top: 25,
-    textAlign: "center",
-    fontWeight: "100"
+  titleText2:{
+    margin:10,
+    color: '#fff',
+    fontSize:24,
+    top:25,
+    textAlign:"center",
   },
   _textInput: {
     color: "#fff",

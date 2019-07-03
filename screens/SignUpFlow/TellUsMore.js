@@ -65,7 +65,6 @@ class TellUsMore extends React.Component {
 
     return (
       <View style={{ flex: 1 }}>
-        <LinearGradient colors={["#18cdf6", "#43218c"]} style={{ flex: 1 }}>
           <SafeAreaView style={{ flex: 1 }}>
             <View style={styles.wholeWrap}>
               {/**Tell Us More Text */}
@@ -80,16 +79,14 @@ class TellUsMore extends React.Component {
                 <View style={styles.likesWrap}>{displaylikes}</View>
               </View>
             </View>
-            <View alignItems="center" top={"20%"}>
-              <TouchableOpacity
-                style={styles.button}
-                onPress={this.handleSubmit}
-              >
-                <Text style={{ color: "#fff" }}>Next</Text>
-              </TouchableOpacity>
+            
+            <View style={styles.buttonStyle}>
+            <Text style={styles.whatAreYouIntoText}></Text>
+            <Text style={styles.whatAreYouIntoText}></Text>
+            <Text style={styles.whatAreYouIntoText}></Text>
+            
             </View>
           </SafeAreaView>
-        </LinearGradient>
       </View>
     );
   }
@@ -145,7 +142,7 @@ const styles = StyleSheet.create({
   },
   likeWrapCenter: {
     alignItems: "center",
-    marginTop: "15%"
+    //marginTop: "15%"
   },
   wholeWrap: {
     //borderRadius: 4,
@@ -153,7 +150,7 @@ const styles = StyleSheet.create({
     //borderColor: "#d6d7da",
     marginLeft: "5%",
     marginRight: "5%",
-    marginTop: "40%"
+    //marginTop: "40%"
   }
 });
 

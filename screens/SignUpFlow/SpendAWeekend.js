@@ -41,7 +41,12 @@ class SignupPage extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      location: ""
+      location: "",
+      email:'email',
+      emailCheck:'email',
+      password:'password',
+      passwordCheck:'password',
+      places:['loading','loading','loading','loading','loading','loading','loading']
     };
   }
 
@@ -50,14 +55,47 @@ class SignupPage extends React.Component {
     this.props.navigation.navigate("SignIn");
   };
 
-  //Location Button
+  handleListener = arg => {
+    //console.log(arg)
+
+  }
+
+
+    componentDidMount(){
+      this.getData()
+    }
+
+   getData = async () => {
+    try{
+      let data = await fetch('http://10.0.0.246:3000/api/onboarding/spendAWeekend', {
+        method: 'POST',
+        mode:'cors',
+        credentials: "same-origin",
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+        password: 'password',
+        username: 'name'
+      })})
+
+      let jsonData = await data.json()
+      this.setState({
+        places: jsonData
+      })
+    } catch(e){
+      console.log('failed toload data',e)
+    }
+  }
+
   handlPress = location => {
     this.setState({
       location: location
     });
   };
 
-  //Next Button
+
   handlSubmit = () => {
     if (this.state.location !== "") {
       //Assign to Redux Store
@@ -193,7 +231,6 @@ const { height, width } = Dimensions.get("window");
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff"
   },
   titleText: {
     margin: 10,
