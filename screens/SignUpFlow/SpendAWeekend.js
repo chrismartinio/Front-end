@@ -114,10 +114,7 @@ class SignupPage extends React.Component {
 
       <View  style={styles.container}>
 
-        <LinearGradient
-          textStyle={{ color: '#fff' }}colors={['#18cdf6', '#43218c']}
-          style={{flex:1}}
-        >
+        
 
 
         <ScrollView >
@@ -200,7 +197,6 @@ class SignupPage extends React.Component {
         </ScrollView>
 
 
-        </LinearGradient>
       </View>
       )
   }
@@ -211,7 +207,6 @@ const {height, width } = Dimensions.get('window')
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
   },
   titleText:{
     margin:10,

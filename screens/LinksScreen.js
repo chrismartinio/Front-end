@@ -74,6 +74,7 @@ export default class LinksScreen extends React.Component {
       "TestAboutUs",
       "TestTellUsMore",
       "ImInterestedIn",
+      "Collapsible",
       "SpendWeekend",
       "WouldRather"
 

@@ -22,7 +22,7 @@ import firebase from "../../utils/mainFire";
 import DatePicker from "react-native-datepicker";
 import RNPickerSelect from "react-native-picker-select";
 import { countries, genders } from "./someData.js";
-
+ 
 class AboutYou extends Component {
   constructor(props) {
     super(props);
@@ -222,16 +222,10 @@ class AboutYou extends Component {
 
   render() {
     return (
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : null}
-        style={{ flex: 1 }}
-      >
-        <LinearGradient
-          textStyle={{ color: "#fff" }}
-          colors={["#18cdf6", "#43218c"]}
-          style={{ flex: 1 }}
-        >
+      <View>
+       
           <SafeAreaView style={styles.container}>
+          
             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
               <View style={styles.wholeWrap}>
                 {/**About You Text */}
@@ -374,27 +368,12 @@ class AboutYou extends Component {
                   )}
                 </View>
                 <Text />
-                <Text />
-                <Text />
-                <Text />
-                <View
-                  style={{
-                    alignItems: "center"
-                  }}
-                >
-                  <TouchableOpacity
-                    style={styles.button}
-                    onPress={this.handleSubmit}
-                  >
-                    <Text style={{ color: "#fff" }}>Next</Text>
-                  </TouchableOpacity>
-                </View>
+                
                 <View style={{ flex: 1 }} />
               </View>
             </TouchableWithoutFeedback>
           </SafeAreaView>
-        </LinearGradient>
-      </KeyboardAvoidingView>
+      </View>
     );
   }
 }
@@ -403,11 +382,17 @@ const styles = StyleSheet.create({
   container: {
     flex: 1
   },
+  titleText:{
+    margin:10,
+    color: '#fff',
+    fontSize:48,
+    textAlign:"center",
+    fontWeight:"100"
+  },
   wholeWrap: {
     padding: 24,
     flex: 1,
     justifyContent: "flex-end",
-    marginTop: "40%",
     marginLeft: "5%",
     marginRight: "5%"
   },

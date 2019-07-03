@@ -99,10 +99,7 @@ class SignupPage extends React.Component {
 
       <View  style={styles.container}>
 
-        <LinearGradient
-          textStyle={{ color: '#fff' }}colors={['#18cdf6', '#43218c']}
-          style={{flex:1}}
-        >
+
 
 
         <ScrollView >
@@ -115,7 +112,7 @@ class SignupPage extends React.Component {
           </Text>
           </View>
           <View style={{margin:10, color: '#fff',width: "80%",left:"10%"}}>
-          <View alignItems= 'center'>
+          <View alignItems= 'center' flexDirection= 'row' left='-5%'>
               <TouchableOpacity style={{alignItems: 'center',
                                         padding: 10,
                                         borderRadius: 40,
@@ -127,9 +124,7 @@ class SignupPage extends React.Component {
               <Text style={styles.button}>Men</Text>
 
               </TouchableOpacity>
-          </View>
-          <View alignItems= 'center' top={25}>
-          <TouchableOpacity style={{alignItems: 'center',
+               <TouchableOpacity style={{alignItems: 'center',
                                         padding: 10,
                                         borderRadius: 40,
                                         borderWidth: 2,
@@ -141,6 +136,7 @@ class SignupPage extends React.Component {
 
               </TouchableOpacity>
           </View>
+          
 
           <Text style={styles.titleText2}>
             Set your preferences
@@ -180,11 +176,12 @@ class SignupPage extends React.Component {
               </TouchableOpacity>
           </View>
           </View>
-
+          <Text ></Text>
+<Text ></Text>
+<Text ></Text>
         </ScrollView>
 
 
-        </LinearGradient>
       </View>
       )
   }
@@ -195,7 +192,7 @@ const {height, width } = Dimensions.get('window')
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    ///backgroundColor: '#fff',
   },
   titleText:{
     margin:10,
@@ -207,10 +204,9 @@ const styles = StyleSheet.create({
   titleText2:{
     margin:10,
     color: '#fff',
-    fontSize:48,
+    fontSize:24,
     top:25,
     textAlign:"center",
-    fontWeight:"100"
   },
   _textInput:{
     color: '#fff',

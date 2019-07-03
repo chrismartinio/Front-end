@@ -22,19 +22,16 @@ class WouldRather extends React.Component {
     return(
       <View style={styles.parent}>
 
-        <LinearGradient
-          textStyle={{ color: '#fff' }} colors={['#18cdf6', '#43218c']}
-          style={{flex:1}}
-        >
+        
 
          <ScrollView>
 
          <View style={styles.viewStyle}>
             <Text style={styles.textView}>
-              I WOULD RATHER...
+              I Would Rather...
             </Text>
             <Text style={styles.titleText2}>
-              BE HONEST
+              be honest
             </Text>
           </View>
 
@@ -67,15 +64,10 @@ class WouldRather extends React.Component {
 
 
             <View style={styles.buttonStyle}>
-              <TouchableOpacity style={styles.button2} onPress={this.handlePress}>
-
-                <Text style={{color:'white'}}>Next</Text>
-
-              </TouchableOpacity>
+             
             </View>
 
           </ScrollView>
-        </LinearGradient>
         </View>
       )
   }
@@ -89,18 +81,18 @@ const styles = StyleSheet.create({
     height:500
   },
   V1:{
-    top:height *(.3),
+    //top:height *(.3),
     left:width*(.1),
     width:'80%'
 
   },
   V2:{
-    top:height *(.35),
+    //top:height *(.35),
     left:width*(.1),
     width:'80%'
   },
   V3:{
-    top: height *(.4),
+    //top: height *(.4),
     left:width*(.1),
     width:'80%'
   },
@@ -120,7 +112,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   header:{
-    top:height *(1/3),
+    //top:height *(1/3),
     left: width * (1/2)
   },
   parent:{
@@ -140,7 +132,7 @@ const styles = StyleSheet.create({
   buttonStyle:{
     padding:10,
     alignItems:'center',
-    top:height*(.45)
+   // top:height*(.45)
   },
   textView:{
     margin:10,
@@ -156,7 +148,7 @@ const styles = StyleSheet.create({
     fontWeight:"100"
   },
   viewStyle:{
-    top:height * (.20)
+    //top:height * (.20)
   },
 
 })
