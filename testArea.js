@@ -100,3 +100,34 @@ const populateSelectedMatchesMedia = (arrayOfId) => {
 }
 
 console.log(gatherPersonalMatches(me, allRegionalMatches,100))
+
+//////////////////////////////////
+
+
+function getPermutations(string) {
+  let results = new Set()
+
+
+  const permutator = (arr, m = []) => {
+    if(typeof arr === 'string'){
+      arr = arr.slice()
+    }
+
+    if(arr.length === 0){
+      results.add(m)
+    } else {
+      for(let i = 0; i<= arr.length -1; i++){
+        let curr = arr.slice();
+        let next = curr.splice(i,1)
+
+        permutator(curr, m.concat(next))
+      }
+    }
+  }
+
+  permutator(string)
+  console.log(results)
+  return results
+}
+
+console.log(getPermutations('aba'))

@@ -27,4 +27,10 @@ Project Start:
   $ yarn start
 
 
+  **** WHEN FETCHING DATA: CHANGE "LOCALHOST" TO YOUR PHYSICAL IP ADDRESS ****
+*Look in homescreen inside this.handleEmailAndPassword for an example of using fetch to hit the data point line 72*
+
+
+
+
 

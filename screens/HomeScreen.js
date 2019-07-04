@@ -67,31 +67,33 @@ export default class HomeScreen extends React.Component {
 
 
 
-  handleEmailAndPasswordSignin = () => {
 
-    // check for front end value here
-    const value = this._form.getValue();
 
+  handleEmailAndPasswordSignin = async() => {
+
+    try{
+    const {username, password} = this._form.getValue();
     // front end check:
-    console.log('value: ', value);
-    //let user = Firebase.auth().currentUser
+        let data = await fetch('http://10.0.0.246:3000/api/auth/login', {
+          method: 'POST',
+          mode:'cors',
+          credentials: "same-origin",
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+          password: password,
+          username: username
+        })})
 
-    //let anwser = db.collection("stories").where("author", "==", user.uid).get()
-    // axios request here:
-
-    //console.log(anwser)
-    // use action to send data to store.
-
-
-    // send email and password to redux:
-
-
-
-
-    this.props.navigation.navigate('Chat');
-    //if exists
-
-    //then navigate to next screen
+      let jsonData = await data.json()
+      console.log(jsonData)
+      //this.props.navigation.navigate('Chat');
+    } catch(e){
+      console.alert(e.error)
+      throw new Error(e)
+    }
   }
 
   handleSignUp = () => {
