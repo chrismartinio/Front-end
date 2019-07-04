@@ -17,11 +17,14 @@ import {
 } from "react-native";
 import { LinearGradient } from "expo";
 import { connect } from "react-redux";
-import SetProfilePersonalAction from "../../storage/actions/SetProfilePersonalAction";
-import firebase from "../../utils/mainFire";
+//import SetProfilePersonalAction from "../../storage/actions/SetProfilePersonalAction";
+import SetProfilePersonalAction from "../../../storage/actions/SetProfilePersonalAction";
+//import firebase from "../../utils/mainFire";
+import firebase from "../../../utils/mainFire";
 import DatePicker from "react-native-datepicker";
 import RNPickerSelect from "react-native-picker-select";
-import { countries, genders } from "./someData.js";
+//import { countries, genders } from "./someData.js";
+import { countries, genders } from "../someData.js";
 
 class AboutYou extends Component {
   constructor(props) {
@@ -276,172 +279,214 @@ class AboutYou extends Component {
     let empty = <Text style={styles.warningText}>* Empty field</Text>;
 
     return (
-      <View
-        style={{ marginBottom: "5%", marginLeft: "10%", marginRight: "10%" }}
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : null}
+        style={{ flex: 1 }}
       >
-        {/**About You Text */}
-        <View style={styles.aboutMeTextWrap}>
-          <Text style={styles.aboutMeText}>About You</Text>
-        </View>
-        {/*Spaces*/}
-        <View
-          style={{
-            padding: "5%"
-          }}
-        />
-
-        {/**firstName */}
-        <View style={{ width: "100%" }}>
-          <TextInput
-            style={styles.nameInputBox}
-            placeholder="first name "
-            onChangeText={firstName => this.setState({ firstName })}
-            placeholderTextColor="#fff"
-          />
-        </View>
-        {this.state.firstNameWarning === "empty" && empty}
-        {this.state.firstNameWarning === "invalid" &&
-          invalidFirstNameLastNameWarning}
-        {/*Spaces*/}
-        <View
-          style={{
-            padding: "5%"
-          }}
-        />
-
-        {/**lastName */}
-        <View style={{ width: "100%" }}>
-          <TextInput
-            style={styles.nameInputBox}
-            placeholder="last name"
-            onChangeText={lastName => this.setState({ lastName })}
-            placeholderTextColor="#fff"
-          />
-        </View>
-        {this.state.lastNameWarning === "empty" && empty}
-        {this.state.lastNameWarning === "invalid" &&
-          invalidFirstNameLastNameWarning}
-        <View
-          style={{
-            padding: "5%"
-          }}
-        />
-
-        {/**birth and gender Wrap */}
-        <View style={styles.birthdateAndGenderWrap}>
-          {/**birth */}
-          <View style={styles.birthdatePicker}>
-            <DatePicker
-              style={{ width: "90%" }}
-              date={this.state.birthDate}
-              mode="date"
-              placeholder="birthdate"
-              format="YYYY-MM-DD"
-              minDate={this.minDate()}
-              maxDate={this.maxDate()}
-              confirmBtnText="Confirm"
-              cancelBtnText="Cancel"
-              customStyles={birthdatePickerCustom}
-              onDateChange={date => {
-                this.setState({ birthDate: date });
-              }}
-            />
-            {this.state.birthDateWarning === "empty" && empty}
-            {this.state.birthDateWarning === "invalid" &&
-              invalidBirthDateWarning}
-          </View>
-
-          {/**Gender */}
-          <View style={styles.genderpPickerWrap}>
-            <RNPickerSelect
-              style={genderPicker}
-              placeholder={{
-                label: "gender",
-                value: null
-              }}
-              items={genders}
-              onValueChange={value => {
-                this.setState({
-                  gender: value
-                });
-              }}
-              value={this.state.gender}
-            />
-            {this.state.genderWarning === "empty" && empty}
-            {this.state.genderWarning === "invalid" &&
-              invalidGenderCountryWarning}
-          </View>
-        </View>
-
-        {/**Country and ZipCode Wrap */}
-        <View style={styles.countryAndZipCodeWrap}>
-          {/**country */}
-          <View style={styles.countryPickerWrap}>
-            <RNPickerSelect
-              style={countryPicker}
-              placeholder={{
-                label: "Country",
-                value: null
-              }}
-              items={countries}
-              onValueChange={value => {
-                this.setState({
-                  country: value
-                });
-              }}
-              value={this.state.country}
-            />
-            {this.state.countryWarning === "empty" && empty}
-            {this.state.countryWarning === "invalid" &&
-              invalidGenderCountryWarning}
-          </View>
-
-          {/**zip */}
-          <View style={styles.zipCodeInputWrap}>
-            <TextInput
-              style={styles.zipCodeInput}
-              placeholder="zip code"
-              name="zipCode"
-              onChangeText={zipCode => this.setState({ zipCode })}
-              value={this.state.zipCode}
-              placeholderTextColor="#fff"
-              autoCompleteType={false}
-              autoCapitalize="none"
-              autoCorrect={false}
-              keyboardType="numeric"
-              maxLength={5}
-            />
-            {this.state.zipCodeWarning === "empty" && empty}
-            {this.state.zipCodeWarning === "invalid" && invalidZipCodeWarning}
-          </View>
-        </View>
-
-        {/*Empty Data exist*/}
-        <View>
-          {this.state.empty ? (
-            <Text style={styles.warningText}>* all field Required</Text>
-          ) : (
-            <View style={styles.warningText} />
-          )}
-        </View>
-        {/*Spaces*/}
-        <View
-          style={{
-            padding: "10%"
-          }}
-        />
-
-        {/*Next Button*/}
-        <View
-          style={{
-            alignItems: "center"
-          }}
+        <LinearGradient
+          textStyle={{ color: "#fff" }}
+          colors={["#18cdf6", "#43218c"]}
+          style={{ flex: 1 }}
         >
-          <TouchableOpacity style={styles.button} onPress={this.handleSubmit}>
-            <Text style={{ color: "#fff" }}>Next</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
+          <SafeAreaView style={styles.container}>
+            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+              <View style={styles.wholeWrap}>
+                {/*Spaces*/}
+                <View
+                  style={{
+                    padding: "30%"
+                    //borderRadius: 4,
+                    //borderWidth: 0.5,
+                    //borderColor: "#d6d7da"
+                  }}
+                />
+                {/**About You Text */}
+                <View style={styles.aboutMeTextWrap}>
+                  <Text style={styles.aboutMeText}>About You</Text>
+                </View>
+                {/*Spaces*/}
+                <View
+                  style={{
+                    padding: "5%"
+                    //borderRadius: 4,
+                    //borderWidth: 0.5,
+                    //borderColor: "#d6d7da"
+                  }}
+                />
+
+                {/**firstName */}
+                <View style={{ width: "100%" }}>
+                  <TextInput
+                    style={styles.nameInputBox}
+                    placeholder="first name "
+                    onChangeText={firstName => this.setState({ firstName })}
+                    placeholderTextColor="#fff"
+                  />
+                </View>
+                {this.state.firstNameWarning === "empty" && empty}
+                {this.state.firstNameWarning === "invalid" &&
+                  invalidFirstNameLastNameWarning}
+
+                {/*Spaces*/}
+                <View
+                  style={{
+                    padding: "5%"
+                    //borderRadius: 4,
+                    //borderWidth: 0.5,
+                    //borderColor: "#d6d7da"
+                  }}
+                />
+
+                {/**lastName */}
+                <View style={{ width: "100%" }}>
+                  <TextInput
+                    style={styles.nameInputBox}
+                    placeholder="last name"
+                    onChangeText={lastName => this.setState({ lastName })}
+                    placeholderTextColor="#fff"
+                  />
+                </View>
+                {this.state.lastNameWarning === "empty" && empty}
+                {this.state.lastNameWarning === "invalid" &&
+                  invalidFirstNameLastNameWarning}
+
+                <View
+                  style={{
+                    padding: "5%"
+                    //borderRadius: 4,
+                    //borderWidth: 0.5,
+                    //borderColor: "#d6d7da"
+                  }}
+                />
+
+                {/**birth and gender Wrap */}
+                <View style={styles.birthdateAndGenderWrap}>
+                  {/**birth */}
+                  <View style={styles.birthdatePicker}>
+                    <DatePicker
+                      style={{ width: "90%" }}
+                      date={this.state.birthDate}
+                      mode="date"
+                      placeholder="birthdate"
+                      format="YYYY-MM-DD"
+                      minDate={this.minDate()}
+                      maxDate={this.maxDate()}
+                      confirmBtnText="Confirm"
+                      cancelBtnText="Cancel"
+                      customStyles={birthdatePickerCustom}
+                      onDateChange={date => {
+                        this.setState({ birthDate: date });
+                      }}
+                    />
+                    {this.state.birthDateWarning === "empty" && empty}
+                    {this.state.birthDateWarning === "invalid" &&
+                      invalidBirthDateWarning}
+                  </View>
+
+                  {/**Gender */}
+                  <View style={styles.genderpPickerWrap}>
+                    <RNPickerSelect
+                      style={genderPicker}
+                      placeholder={{
+                        label: "gender",
+                        value: null
+                      }}
+                      items={genders}
+                      onValueChange={value => {
+                        this.setState({
+                          gender: value
+                        });
+                      }}
+                      value={this.state.gender}
+                    />
+                    {this.state.genderWarning === "empty" && empty}
+                    {this.state.genderWarning === "invalid" &&
+                      invalidGenderCountryWarning}
+                  </View>
+                </View>
+
+                {/**Country and ZipCode Wrap */}
+                <View style={styles.countryAndZipCodeWrap}>
+                  {/**country */}
+                  <View style={styles.countryPickerWrap}>
+                    <RNPickerSelect
+                      style={countryPicker}
+                      placeholder={{
+                        label: "Country",
+                        value: null
+                      }}
+                      items={countries}
+                      onValueChange={value => {
+                        this.setState({
+                          country: value
+                        });
+                      }}
+                      value={this.state.country}
+                    />
+                    {this.state.countryWarning === "empty" && empty}
+                    {this.state.countryWarning === "invalid" &&
+                      invalidGenderCountryWarning}
+                  </View>
+
+                  {/**zip */}
+                  <View style={styles.zipCodeInputWrap}>
+                    <TextInput
+                      style={styles.zipCodeInput}
+                      placeholder="zip code"
+                      name="zipCode"
+                      onChangeText={zipCode => this.setState({ zipCode })}
+                      value={this.state.zipCode}
+                      placeholderTextColor="#fff"
+                      autoCompleteType={false}
+                      autoCapitalize="none"
+                      autoCorrect={false}
+                      keyboardType="numeric"
+                      maxLength={5}
+                    />
+                    {this.state.zipCodeWarning === "empty" && empty}
+                    {this.state.zipCodeWarning === "invalid" &&
+                      invalidZipCodeWarning}
+                  </View>
+                </View>
+
+                {/*Empty Data exist*/}
+                <View>
+                  {this.state.empty ? (
+                    <Text style={styles.warningText}>* all field Required</Text>
+                  ) : (
+                    <View style={styles.warningText} />
+                  )}
+                </View>
+
+                {/*Spaces*/}
+                <View
+                  style={{
+                    padding: "20%"
+                    //borderRadius: 4,
+                    //borderWidth: 0.5,
+                    //borderColor: "#d6d7da"
+                  }}
+                />
+
+                {/*Next Button*/}
+                <View
+                  style={{
+                    alignItems: "center"
+                  }}
+                >
+                  <TouchableOpacity
+                    style={styles.button}
+                    onPress={this.handleSubmit}
+                  >
+                    <Text style={{ color: "#fff" }}>Next</Text>
+                  </TouchableOpacity>
+                </View>
+                <View style={{ flex: 1 }} />
+              </View>
+            </TouchableWithoutFeedback>
+          </SafeAreaView>
+        </LinearGradient>
+      </KeyboardAvoidingView>
     );
   }
 }
