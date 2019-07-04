@@ -41,32 +41,53 @@ class SignupPage extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      email: "email",
-      emailCheck: "email",
-      password: "password",
-      passwordCheck: "password",
-      location: ""
+      location: "",
+      email:'email',
+      emailCheck:'email',
+      password:'password',
+      passwordCheck:'password',
+      places:['loading','loading','loading','loading','loading','loading','loading']
     };
   }
+
+  //header : navigate to sign in screen
   handleBackToSignIn = () => {
     this.props.navigation.navigate("SignIn");
   };
+
   handleListener = arg => {
     //console.log(arg)
-  };
-  SignUpToDatabase = ({ age, email, gender, name, password }) => {
-    let userId = email.split(".").join();
-    firebase
-      .database()
-      .ref("users/" + userId)
-      .set({
-        age: age,
-        email: email,
-        gender: gender,
-        name: name,
-        password: password
-      });
-  };
+
+  }
+
+
+    componentDidMount(){
+      this.getData()
+    }
+
+   getData = async () => {
+    try{
+      let data = await fetch('http://10.0.0.246:3000/api/onboarding/spendAWeekend', {
+        method: 'POST',
+        mode:'cors',
+        credentials: "same-origin",
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+        password: 'password',
+        username: 'name'
+      })})
+
+      let jsonData = await data.json()
+      this.setState({
+        places: jsonData
+      })
+    } catch(e){
+      console.log('failed toload data',e)
+    }
+  }
 
   handlPress = location => {
     this.setState({
@@ -74,145 +95,133 @@ class SignupPage extends React.Component {
     });
   };
 
+
   handlSubmit = () => {
-    this.props.SetWeekendLocationDataAction({ location: this.state.location });
-    //this.props.navigation.navigate("TestSignUp");
-  };
+    if (this.state.location !== "") {
+      //Assign to Redux Store
+      this.props.SetWeekendLocationDataAction({
+        location: this.state.location
+      });
 
-  handleSubmit = () => {
-    return;
-    const value = this._form.getValue();
-
-    console.log(value);
-    const nullCheck = value => {
-      if (value !== null) {
-        return true;
-      }
-      return false;
-    };
-
-    const emailCheck = email => {
-      // email validty check?
-      const checkAT = email.indexOf("@");
-      const checkCOM = email.indexOf(".com");
-      if (checkAT > 0 && checkCOM > 0 && email.length > 4) {
-        return true;
-      }
-      console.log("Please Properly insert a email with a '@' & a '.com'");
-      return false;
-    };
-
-    const passwordCheck = password => {
-      if (password.length > 6) {
-        return true;
-      }
-
-      return false;
-    };
-
-    if (
-      nullCheck(value) &&
-      emailCheck(value.email) &&
-      passwordCheck(value.password)
-    ) {
-      for (let key in value) {
-        value[key] = JSON.stringify(value[key]);
-      }
-      this.SignUpToDatabase(value);
-      this.props.SetProfilePersonalAction(value);
-      this.props.navigation.navigate("Registration");
+      //Navigate to Next Screen
+      //this.props.navigation.navigate("TestSignUp");
+    } else {
+      //Add Warning here?
+      console.log("empty location")
+      return
     }
   };
 
   render() {
-    //console.log(this.state.text)
-    return(
-
-      <View  >
-
-        
-
-
-        <ScrollView >
-          <Text style={styles.titleText}>
-            Spend a weekend
-          </Text>
-          <View alignItems= 'center'>
-          <Text style={styles.text}>
-            based on your location...
-          </Text>
-          </View>
-          <View style={{margin:10, color: '#fff',width: "80%",left:"10%"}}>
-          <View alignItems= 'center' >
-              <TouchableOpacity style={styles.button1}onPress={this.handlPress}>
-
-              <Text style={styles.button}>San Francisco</Text>
-
-              </TouchableOpacity>
-              <Text></Text>
-          </View>
-          <View style={{ flexDirection: 'row',alignItems:'center',alignContent:'center' }}>
-              <TouchableOpacity style={styles.button2}onPress={this.handlPress}>
-
-              <Text style={styles.button}>Tahoe</Text>
-
-              </TouchableOpacity>
-              <Text> </Text>
-              <TouchableOpacity style={styles.button2}onPress={this.handlPress}>
-
-              <Text style={styles.button}>Monterey</Text>
-
-              </TouchableOpacity>
-
-          </View>
-          <Text></Text>
-          <View style={{ flexDirection: 'row',alignItems:'center',alignContent:'center' }}>
-              <TouchableOpacity style={styles.button2}onPress={this.handlPress}>
-
-              <Text style={styles.button}>Big Sur</Text>
-
-              </TouchableOpacity>
-              <Text> </Text>
-              <TouchableOpacity style={styles.button2}onPress={this.handlPress}>
-
-              <Text style={styles.button}>Napa</Text>
-
-              </TouchableOpacity>
-          </View>
-          <Text></Text>
-          <View style={{ flexDirection: 'row',alignItems:'center',alignContent:'center' }}>
-              <TouchableOpacity style={styles.button2}onPress={this.handlPress}>
-
-              <Text style={styles.button}>Santa Cruz</Text>
-
-              </TouchableOpacity>
-              <Text> </Text>
-              <TouchableOpacity style={styles.button2}onPress={this.handlPress}>
-
-              <Text style={styles.button}>Yosemite</Text>
-
-              </TouchableOpacity>
-          </View>
-          <Text></Text>
-          <View alignItems= 'center' >
-              <TouchableOpacity style={styles.button1}onPress={this.handlPress}>
-
-              <Text style={styles.button}>Morro Bay</Text>
-
-              </TouchableOpacity>
-          </View>
-          <View alignItems= 'center' top={75}>
-              <TouchableOpacity style={styles.button1}onPress={this.handlPress}>
-
-              <Text style={styles.button}>Next</Text>
-
-              </TouchableOpacity>
-          </View>
-          </View>
-
-        </ScrollView>
-
-
+    return (
+      <View style={styles.container}>
+        <LinearGradient
+          textStyle={{ color: "#fff" }}
+          colors={["#18cdf6", "#43218c"]}
+          style={{ flex: 1 }}
+        >
+          <ScrollView>
+            <Text style={styles.titleText}>Spend a weekend</Text>
+            <View alignItems="center">
+              <Text style={styles.text}>based on your location...</Text>
+            </View>
+            <View
+              style={{ margin: 10, color: "#fff", width: "80%", left: "10%" }}
+            >
+              <View alignItems="center">
+                <TouchableOpacity
+                  style={styles.button1}
+                  onPress={() => this.handlPress("San Francisco")}
+                >
+                  <Text style={styles.button}>San Francisco</Text>
+                </TouchableOpacity>
+                <Text />
+              </View>
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  alignContent: "center"
+                }}
+              >
+                <TouchableOpacity
+                  style={styles.button2}
+                  onPress={() => this.handlPress("Tahoe")}
+                >
+                  <Text style={styles.button}>Tahoe</Text>
+                </TouchableOpacity>
+                <Text> </Text>
+                <TouchableOpacity
+                  style={styles.button2}
+                  onPress={() => this.handlPress("Monterey")}
+                >
+                  <Text style={styles.button}>Monterey</Text>
+                </TouchableOpacity>
+              </View>
+              <Text />
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  alignContent: "center"
+                }}
+              >
+                <TouchableOpacity
+                  style={styles.button2}
+                  onPress={() => this.handlPress("Big Sur")}
+                >
+                  <Text style={styles.button}>Big Sur</Text>
+                </TouchableOpacity>
+                <Text> </Text>
+                <TouchableOpacity
+                  style={styles.button2}
+                  onPress={() => this.handlPress("Napa")}
+                >
+                  <Text style={styles.button}>Napa</Text>
+                </TouchableOpacity>
+              </View>
+              <Text />
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  alignContent: "center"
+                }}
+              >
+                <TouchableOpacity
+                  style={styles.button2}
+                  onPress={() => this.handlPress("Santa Cruz")}
+                >
+                  <Text style={styles.button}>Santa Cruz</Text>
+                </TouchableOpacity>
+                <Text> </Text>
+                <TouchableOpacity
+                  style={styles.button2}
+                  onPress={() => this.handlPress("Yosemite")}
+                >
+                  <Text style={styles.button}>Yosemite</Text>
+                </TouchableOpacity>
+              </View>
+              <Text />
+              <View alignItems="center">
+                <TouchableOpacity
+                  style={styles.button1}
+                  onPress={() => this.handlPress("Morro Bay")}
+                >
+                  <Text style={styles.button}>Morro Bay</Text>
+                </TouchableOpacity>
+              </View>
+              <View alignItems="center" top={75}>
+                <TouchableOpacity
+                  style={styles.button1}
+                  onPress={this.handlSubmit}
+                >
+                  <Text style={styles.button}>Next</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </ScrollView>
+        </LinearGradient>
       </View>
     );
   }
