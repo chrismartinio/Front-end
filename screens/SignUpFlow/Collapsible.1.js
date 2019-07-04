@@ -23,6 +23,7 @@ import { connect } from 'react-redux'
 import SetProfilePersonalAction from '../../storage/actions/SetProfilePersonalAction'
 import firebase from '../../utils/mainFire'
 import Slider from './CSlider'
+import Collapsible from 'react-native-collapsible';
 import SignupPage from './SignupPageC';
 import AboutYou from './AboutYou';
 import ImInterestedIn from './ImInterestedIn';
@@ -53,14 +54,8 @@ class OnBoarding extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      signUpSize:0,
-      aboutYouSize:0,
-      imInterestedInSize:0,
-      tellUsMoreSize:0,
-      iWouldRatherSize:0,
-      spendWeekendSize:0,
-       spendWeekendSize:0,
-     isCollapsed:true,
+     
+      isCollapsed:true,
       aboutYouCollapsed:true,
       imInterestedInCollapsed:true,
       tellUsMoreCollapsed:true,
@@ -70,166 +65,170 @@ class OnBoarding extends React.Component {
     };
   }
   collapseSignUp = () => {
-    if(this.state.signUpSize===0)
+    if(this.state.isCollapsed===true)
     {
       this.setState({
-        signUpSize:"75%",
-        aboutYouSize:0,
-      imInterestedInSize:0,
-      tellUsMoreSize:0,
-      iWouldRatherSize:0,
-      spendWeekendSize:0,
-       spendWeekendSize:0,
+        isCollapsed:false,
+        aboutYouCollapsed:true,
+        imInterestedInCollapsed:true,
+        tellUsMoreCollapsed:true,
+        iWouldRatherCollapsed:true,
+        spendWeekendCollapsed:true,
+        flexSetting:"flex-end"
       })
 
     }
     else {
       this.setState({
-        signUpSize:0,
-        aboutYouSize:0,
-      imInterestedInSize:0,
-      tellUsMoreSize:0,
-      iWouldRatherSize:0,
-      spendWeekendSize:0,
-       spendWeekendSize:0,
+        isCollapsed:true,
+        aboutYouCollapsed:true,
+        imInterestedInCollapsed:true,
+        tellUsMoreCollapsed:true,
+        iWouldRatherCollapsed:true,
+        spendWeekendCollapsed:true,
+        flexSetting:"flex-start"
       })
     }
-  }
+  };
   collapseAboutYou = () => {
-    if(this.state.aboutYouSize===0)
+    if(this.state.aboutYouCollapsed===true)
     {
       this.setState({
-        signUpSize:0,
-        aboutYouSize:"75%",
-      imInterestedInSize:0,
-      tellUsMoreSize:0,
-      iWouldRatherSize:0,
-      spendWeekendSize:0,
-       spendWeekendSize:0,
+        isCollapsed:true,
+        aboutYouCollapsed:false,
+        imInterestedInCollapsed:true,
+        tellUsMoreCollapsed:true,
+        iWouldRatherCollapsed:true,
+        spendWeekendCollapsed:true,
+        flexSetting:"flex-end"
       })
 
     }
     else {
       this.setState({
-        signUpSize:0,
-        aboutYouSize:0,
-      imInterestedInSize:0,
-      tellUsMoreSize:0,
-      iWouldRatherSize:0,
-      spendWeekendSize:0,
-       spendWeekendSize:0,
+        isCollapsed:true,
+        aboutYouCollapsed:true,
+        imInterestedInCollapsed:true,
+        tellUsMoreCollapsed:true,
+        iWouldRatherCollapsed:true,
+        spendWeekendCollapsed:true,
+        flexSetting:"flex-start"
       })
     }
-  }
+  };
+
   collapseImInterestedIn = () => {
-    if(this.state.imInterestedInSize===0)
+    if(this.state.imInterestedInCollapsed===true)
     {
+      //console.log("collapseImInterestedIn")
       this.setState({
-        signUpSize:0,
-        aboutYouSize:0,
-      imInterestedInSize:"75%",
-      tellUsMoreSize:0,
-      iWouldRatherSize:0,
-      spendWeekendSize:0,
-       spendWeekendSize:0,
+        isCollapsed:true,
+        aboutYouCollapsed:true,
+        imInterestedInCollapsed:false,
+        tellUsMoreCollapsed:true,
+        iWouldRatherCollapsed:true,
+        spendWeekendCollapsed:true,
+        flexSetting:"flex-end"
       })
 
     }
     else {
       this.setState({
-        signUpSize:0,
-        aboutYouSize:0,
-      imInterestedInSize:0,
-      tellUsMoreSize:0,
-      iWouldRatherSize:0,
-      spendWeekendSize:0,
-       spendWeekendSize:0,
+        isCollapsed:true,
+        aboutYouCollapsed:true,
+        imInterestedInCollapsed:true,
+        tellUsMoreCollapsed:true,
+        iWouldRatherCollapsed:true,
+        spendWeekendCollapsed:true,
+        flexSetting:"flex-start"
       })
     }
-  }
+  };
+  
   collapseTellUsMore = () => {
-    if(this.state.tellUsMoreSize===0)
+    if(this.state.tellUsMoreCollapsed===true)
     {
       this.setState({
-        signUpSize:0,
-        aboutYouSize:0,
-      imInterestedInSize:0,
-      tellUsMoreSize:"75%",
-      iWouldRatherSize:0,
-      spendWeekendSize:0,
-       spendWeekendSize:0,
+        isCollapsed:true,
+        aboutYouCollapsed:true,
+        imInterestedInCollapsed:true,
+        tellUsMoreCollapsed:false,
+        iWouldRatherCollapsed:true,
+        spendWeekendCollapsed:true,
+        flexSetting:"flex-end"
       })
 
     }
     else {
       this.setState({
-        signUpSize:0,
-        aboutYouSize:0,
-      imInterestedInSize:0,
-      tellUsMoreSize:0,
-      iWouldRatherSize:0,
-      spendWeekendSize:0,
-       spendWeekendSize:0,
+        isCollapsed:true,
+        aboutYouCollapsed:true,
+        imInterestedInCollapsed:true,
+        tellUsMoreCollapsed:true,
+        iWouldRatherCollapsed:true,
+        spendWeekendCollapsed:true,
+        flexSetting:"flex-start"
       })
     }
-  }
+  };
+
+
   collapseIWouldRather = () => {
-    if(this.state.iWouldRatherSize===0)
+    if(this.state.iWouldRatherCollapsed===true)
     {
       this.setState({
-        signUpSize:0,
-        aboutYouSize:0,
-      imInterestedInSize:0,
-      tellUsMoreSize:0,
-      iWouldRatherSize:"75%",
-      spendWeekendSize:0,
+        isCollapsed:true,
+        aboutYouCollapsed:true,
+        imInterestedInCollapsed:true,
+        tellUsMoreCollapsed:true,
+        iWouldRatherCollapsed:false,
+        spendWeekendCollapsed:true,
+        flexSetting:"flex-end"
       })
 
     }
     else {
       this.setState({
-        signUpSize:0,
-        aboutYouSize:0,
-      imInterestedInSize:0,
-      tellUsMoreSize:0,
-      iWouldRatherSize:0,
-      spendWeekendSize:0,
+        isCollapsed:true,
+        aboutYouCollapsed:true,
+        imInterestedInCollapsed:true,
+        tellUsMoreCollapsed:true,
+        iWouldRatherCollapsed:true,
+        spendWeekendCollapsed:true,
+        flexSetting:"flex-start"
       })
     }
-  }
+  };
+
+
   collapseSpendWeekend = () => {
-    if(this.state.spendWeekendSize===0)
+    if(this.state.spendWeekendCollapsed===true)
     {
       this.setState({
-        signUpSize:0,
-        aboutYouSize:0,
-      imInterestedInSize:0,
-      tellUsMoreSize:0,
-      iWouldRatherSize:0,
-      spendWeekendSize:"75%",
+        isCollapsed:true,
+        aboutYouCollapsed:true,
+        imInterestedInCollapsed:true,
+        tellUsMoreCollapsed:true,
+        iWouldRatherCollapsed:true,
+        spendWeekendCollapsed:false,
+        flexSetting:"flex-end"
       })
 
     }
     else {
       this.setState({
-        signUpSize:0,
-        aboutYouSize:0,
-      imInterestedInSize:0,
-      tellUsMoreSize:0,
-      iWouldRatherSize:0,
-      spendWeekendSize:0,
+        isCollapsed:true,
+        aboutYouCollapsed:true,
+        imInterestedInCollapsed:true,
+        tellUsMoreCollapsed:true,
+        iWouldRatherCollapsed:true,
+        spendWeekendCollapsed:true,
+        flexSetting:"flex-start"
       })
     }
-  }
-  render(){
-    const Opened=(this.state.signUpSize === "75%") && <View><SignupPage/></View>
-    const SignUpOpened=(this.state.signUpSize === "75%") && <View><SignupPage/></View>
-    const AboutYouOpened=(this.state.aboutYouSize === "75%") && <View><AboutYou/></View>
-    const ImInterestedInOpened=(this.state.imInterestedInSize === "75%") && <View><ImInterestedIn/></View>
-    const TellUsMoreOpened=(this.state.tellUsMoreSize === "75%") && <View><TellUsMore/></View>
-    const WouldRatherOpened=(this.state.iWouldRatherSize === "75%") && <View><WouldRather/></View>
-    const SpendWeekendOpened=(this.state.spendWeekendSize === "75%") && <View><SpendWeekend/></View>
+  };
 
+  render(){
     //console.log(this.state.text)
     return(
 
@@ -252,9 +251,9 @@ class OnBoarding extends React.Component {
                         </TouchableOpacity>
                       </View>
 
-                   <View style={{height:this.state.signUpSize}}>
-                     {SignUpOpened}
-                   </View>
+                    <Collapsible collapsed={this.state.isCollapsed}>
+                        <SignupPage/>
+                    </Collapsible>
 
 
 
@@ -263,10 +262,10 @@ class OnBoarding extends React.Component {
                           <Text style={styles.button}>About You</Text>
                         </TouchableOpacity>
                       </View>
-                      <View style={{height:this.state.aboutYouSize}}>
-                     {AboutYouOpened}
-                   </View>
-                    
+
+                    <Collapsible collapsed={this.state.aboutYouCollapsed}>
+                        <AboutYou/>
+                    </Collapsible>
 
 
                     <View alignItems= 'center' >
@@ -274,10 +273,10 @@ class OnBoarding extends React.Component {
                           <Text style={styles.button}>I'm Interested In</Text>
                         </TouchableOpacity>
                       </View>
-                      <View style={{height:this.state.imInterestedInSize}}>
-                     {ImInterestedInOpened}
-                   </View>
-                    
+
+                    <Collapsible collapsed={this.state.imInterestedInCollapsed}>
+                        <ImInterestedIn/>
+                    </Collapsible>
                   
                     <View alignItems= 'center' >
                         <TouchableOpacity style={styles.button2}onPress={this.collapseTellUsMore}>
@@ -285,9 +284,9 @@ class OnBoarding extends React.Component {
                         </TouchableOpacity>
                       </View>
 
-                      <View style={{height:this.state.tellUsMoreSize}}>
-                     {TellUsMoreOpened}
-                   </View>
+                    <Collapsible collapsed={this.state.tellUsMoreCollapsed}>
+                        <TellUsMore/>
+                    </Collapsible>
                   
 
                     <View alignItems= 'center' >
@@ -295,10 +294,10 @@ class OnBoarding extends React.Component {
                           <Text style={styles.button}>I Would Rather</Text>
                         </TouchableOpacity>
                       </View>
-                      <View style={{height:this.state.iWouldRatherSize}}>
-                     {WouldRatherOpened}
-                   </View>
-                   
+
+                    <Collapsible collapsed={this.state.iWouldRatherCollapsed}>
+                        <WouldRather/>
+                    </Collapsible>
                   
 
                     <View alignItems= 'center' >
@@ -306,10 +305,10 @@ class OnBoarding extends React.Component {
                           <Text style={styles.button}>Spend A Weekend</Text>
                         </TouchableOpacity>
                       </View>
-                      <View style={{height:this.state.spendWeekendSize}}>
-                     {SpendWeekendOpened}
-                   </View>
-                   
+
+                    <Collapsible collapsed={this.state.spendWeekendCollapsed}>
+                        <SpendWeekend/>
+                    </Collapsible>
                   
 
 

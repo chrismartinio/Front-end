@@ -128,7 +128,7 @@ class SignupPage extends React.Component {
     //console.log(this.state.text)
     return(
 
-      <View  style={styles.container}>
+      <View  >
 
         
 
@@ -257,14 +257,14 @@ const styles = StyleSheet.create({
     textAlign: "center"
   },
   textTop: {
-    top: 40,
+    //top: 40,
     margin: 10,
     color: "#fff",
     fontSize: 20,
     textAlign: "center"
   },
   textTop2: {
-    top: 60,
+   // top: 60,
     margin: 10,
     color: "#fff",
     fontSize: 20,

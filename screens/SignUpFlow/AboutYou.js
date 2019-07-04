@@ -266,14 +266,13 @@ class AboutYou extends Component {
     return (
       <View>
        
-          <SafeAreaView style={styles.container}>
+          <SafeAreaView >
           
             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-              <View style={styles.wholeWrap}>
+              <View >
                 {/*Spaces*/}
                 <View
                   style={{
-                    padding: "30%",
                     //borderRadius: 4,
                     //borderWidth: 0.5,
                     //borderColor: "#d6d7da"
@@ -446,7 +445,7 @@ const styles = StyleSheet.create({
   },
   wholeWrap: {
     flex: 1,
-    justifyContent: "flex-end",
+    justifyContent: "flex-start",
     marginLeft: "5%",
     marginRight: "5%"
   },
