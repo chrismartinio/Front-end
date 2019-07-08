@@ -13,12 +13,12 @@ import {
   TouchableOpacity
 } from "react-native";
 import { LinearGradient } from "expo";
-import SignUpPage from "./CollapsibleTesting/SignUpPage.js";
-import AboutYou from "./CollapsibleTesting/AboutYou.js";
-import WouldRather from "./CollapsibleTesting/WouldRather.js";
-import TellUsMore from "./CollapsibleTesting/TellUsMore.js";
-import SpendAWeekend from "./CollapsibleTesting/SpendAWeekend.js";
-import ImInterestedIn from "./CollapsibleTesting/ImInterestedIn.js";
+import SignUpPage from "./CollapsibleTesting_KaChi/SignUpPage.js";
+import AboutYou from "./CollapsibleTesting_KaChi/AboutYou.js";
+import WouldRather from "./CollapsibleTesting_KaChi/WouldRather.js";
+import TellUsMore from "./CollapsibleTesting_KaChi/TellUsMore.js";
+import SpendAWeekend from "./CollapsibleTesting_KaChi/SpendAWeekend.js";
+import ImInterestedIn from "./CollapsibleTesting_KaChi/ImInterestedIn.js";
 
 class Welcome extends Component {
   constructor(props) {

@@ -6,7 +6,6 @@ import MatchesPage from "./SignUpFlow/Matches";
 import RegistrationPage from "./SignUpFlow/RegistrationPage";
 import SelfiePage from "./SignUpFlow/SelfiePage";
 import SignupPage from "./SignUpFlow/SignupPage";
-import ImInterestedIn from "../screens/SignUpFlow/ImInterestedIn";
 import PhotoReview from "./SignUpFlow/PhotoReview";
 import MatchBackground from "../components/ChatFlow/MatchBackground";
 import InitialMatchChoice from "./ChatFlow/InitialMatchChoice";
@@ -61,7 +60,6 @@ export default class LinksScreen extends React.Component {
       "TestMatches",
       "TestRegistration",
       "TestSelfie",
-      "TestSignUp",
       "TestPhotoReview",
       "TestScreen",
       "Selection",
@@ -71,12 +69,6 @@ export default class LinksScreen extends React.Component {
       "CreateQuestionaire",
       "ReplyQuestionaire",
       "ViewQuestionaire",
-      "TestCollapsible",
-      "TestAboutYou",
-      "TestTellUsMore",
-      "TestImInterestedIn",
-      "TestSpendWeekend",
-      "TestWouldRather"
     ];
   }
 

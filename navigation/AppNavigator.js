@@ -5,15 +5,19 @@ import {
   createStackNavigator
 } from "react-navigation";
 
+//Navigator
 import MainTabNavigator from "./MainTabNavigator";
-import SignupPage from "../screens/SignUpFlow/SignupPage";
+
+//MainScreen
+import mainSignInPage from "../screens/HomeScreen";
+
+//Other Screens
 import MatchesPage from "../screens/SignUpFlow/Matches";
 import RegistrationPage from "../screens/SignUpFlow/RegistrationPage";
 import SelfiePage from "../screens/SignUpFlow/SelfiePage";
 import PhotoReview from "../screens/SignUpFlow/PhotoReview";
 import ProfilePage from "../screens/SignUpFlow/ProfilePage";
 import ChatPage from "../screens/ChatFlow/chatMain";
-import mainSignInPage from "../screens/HomeScreen";
 import TestScreen from "../screens/ChatFlow/InitialMatchChoice";
 import GhostingOthersScreen from "../screens/ChatFlow/GhostingOthers";
 import GotLucky from "../screens/ChatFlow/GotLuckyGoToChat";
@@ -23,14 +27,18 @@ import GotGhosted from "../screens/ChatFlow/GotGhosted";
 import CreateQuestionaire from "../screens/FindMatchFlow/matchCreateQuestionaire";
 import ReplyQuestionaire from "../screens/FindMatchFlow/matchCreateReply";
 import ViewQuestionaire from "../screens/FindMatchFlow/matchViewReply";
-//import AboutYou from "../screens/SignUpFlow/AboutYou";
+
+//On Boarding Sreen
+import SignupPage from "../screens/SignUpFlow/IndividualScreensBackUp/SignupPage";
 import AboutYou from "../screens/SignUpFlow/IndividualScreensBackUp/AboutYou";
-import ImInterestedIn from "../screens/SignUpFlow/ImInterestedIn";
-import SpendWeekend from "../screens/SignUpFlow/SpendAWeekend";
-import WouldRather from "../screens/SignUpFlow/WouldRather";
-import TellUsMore from "../screens/SignUpFlow/TellUsMore";
-import Collapsible from "../screens/SignUpFlow/Collapsible_Copy";
-import LinksScreen from "../screens/LinksScreen";
+import ImInterestedIn from "../screens/SignUpFlow/IndividualScreensBackUp/ImInterestedIn";
+import SpendWeekend from "../screens/SignUpFlow/IndividualScreensBackUp/SpendAWeekend";
+import WouldRather from "../screens/SignUpFlow/IndividualScreensBackUp/WouldRather";
+import TellUsMore from "../screens/SignUpFlow/IndividualScreensBackUp/TellUsMore";
+//import Collapsible from "../screens/SignUpFlow/Collapsible_KaChi";
+import Collapsible from "../screens/SignUpFlow/Collapsible_Drew";
+//import LinksScreen from "../screens/LinksScreen";
+import LinksScreen from "../screens/LinksScreen_OnBoarding";
 
 const TestStack = createStackNavigator({
   TestLinksScreen: LinksScreen,
