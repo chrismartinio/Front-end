@@ -29,7 +29,7 @@ import ImInterestedIn from "../screens/SignUpFlow/ImInterestedIn";
 import SpendWeekend from "../screens/SignUpFlow/SpendAWeekend";
 import WouldRather from "../screens/SignUpFlow/WouldRather";
 import TellUsMore from "../screens/SignUpFlow/TellUsMore";
-import Collapsible from "../screens/SignUpFlow/Collapsible";
+import Collapsible from "../screens/SignUpFlow/Collapsible_Copy";
 import LinksScreen from "../screens/LinksScreen";
 
 const TestStack = createStackNavigator({
