@@ -23,12 +23,12 @@ import { connect } from "react-redux";
 import SetProfilePersonalAction from "../../storage/actions/SetProfilePersonalAction";
 import firebase from "../../utils/mainFire";
 import Slider from "./CSlider";
-import SignupPage from "./SignupPageC";
-import AboutYou from "./AboutYou";
-import ImInterestedIn from "./ImInterestedIn";
-import TellUsMore from "./TellUsMore";
-import WouldRather from "./WouldRather";
-import SpendWeekend from "./SpendAWeekend";
+import SignupPage from "./CollapsibleTesting_Drew/SignupPage";
+import AboutYou from "./CollapsibleTesting_Drew/AboutYou";
+import ImInterestedIn from "./CollapsibleTesting_Drew/ImInterestedIn";
+import TellUsMore from "./CollapsibleTesting_Drew/TellUsMore";
+import WouldRather from "./CollapsibleTesting_Drew/WouldRather";
+import SpendWeekend from "./CollapsibleTesting_Drew/SpendAWeekend";
 
 class OnBoarding extends React.Component {
   static navigationOptions = {
@@ -342,7 +342,7 @@ class OnBoarding extends React.Component {
   }
 }
 const { height, width } = Dimensions.get("window");
-let flexSetting = "flex-start";
+let flexSetting = "flex-end";
 const styles = StyleSheet.create({
   container: {
     flex: 1,

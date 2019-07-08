@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
   View,
   Button,
-  Picker, 
+  Picker,
   TextInput,
   Dimensions
 } from "react-native";
@@ -16,9 +16,9 @@ import { LinearGradient } from "expo";
 // import Categories from '../../components/SignUpFlow/Categories'
 import t from "tcomb-form-native";
 import { connect } from "react-redux";
-import SetInterestedDataAction from "../../storage/actions/SetInterestedDataAction";
-import firebase from "../../utils/mainFire";
-import Slider from "./CSlider";
+import SetInterestedDataAction from "../../../storage/actions/SetInterestedDataAction";
+import firebase from "../../../utils/mainFire";
+import Slider from "../CSlider";
 import { Math } from "core-js";
 
 let pickedMen = false;

@@ -17,8 +17,8 @@ import {
 } from "react-native";
 import { LinearGradient } from "expo";
 import { connect } from "react-redux";
-import SetUserDataAction from "../../storage/actions/SetUserDataAction";
-import firebase from "../../utils/mainFire";
+import SetUserDataAction from "../../../storage/actions/SetUserDataAction";
+import firebase from "../../../utils/mainFire";
 
 class Welcome extends Component {
   constructor(props) {

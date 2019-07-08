@@ -18,8 +18,8 @@ import { LinearGradient } from "expo";
 import DatePicker from "react-native-datepicker";
 import RNPickerSelect from "react-native-picker-select";
 import { connect } from "react-redux";
-import SetProfileLikesAction from "../../storage/actions/SetProfileLikesAction";
-import SetProfileFirstLike from "../../storage/actions/SetProfileFirstLike";
+import SetProfileLikesAction from "../../../storage/actions/SetProfileLikesAction";
+import SetProfileFirstLike from "../../../storage/actions/SetProfileFirstLike";
 
 class TellUsMore extends React.Component {
   constructor(props) {

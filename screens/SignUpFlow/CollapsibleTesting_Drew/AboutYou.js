@@ -17,11 +17,11 @@ import {
 } from "react-native";
 import { LinearGradient } from "expo";
 import { connect } from "react-redux";
-import SetProfilePersonalAction from "../../storage/actions/SetProfilePersonalAction";
-import firebase from "../../utils/mainFire";
+import SetProfilePersonalAction from "../../../storage/actions/SetProfilePersonalAction";
+import firebase from "../../../utils/mainFire";
 import DatePicker from "react-native-datepicker";
 import RNPickerSelect from "react-native-picker-select";
-import { countries, genders } from "./someData.js";
+import { countries, genders } from "../someData.js";
 
 class AboutYou extends Component {
   constructor(props) {
@@ -277,14 +277,7 @@ class AboutYou extends Component {
 
     return (
       <View
-        style={{
-          marginBottom: "5%",
-          marginLeft: "10%",
-          marginRight: "10%",
-          padding: 24,
-          flex: 1,
-          justifyContent: "flex-end"
-        }}
+        style={{ marginBottom: "5%", marginLeft: "10%", marginRight: "10%" }}
       >
         {/**About You Text */}
         <View style={styles.aboutMeTextWrap}>

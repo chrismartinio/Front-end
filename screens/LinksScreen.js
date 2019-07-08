@@ -61,7 +61,6 @@ export default class LinksScreen extends React.Component {
       "TestMatches",
       "TestRegistration",
       "TestSelfie",
-      "TestSignUp",
       "TestPhotoReview",
       "TestScreen",
       "Selection",
@@ -71,12 +70,6 @@ export default class LinksScreen extends React.Component {
       "CreateQuestionaire",
       "ReplyQuestionaire",
       "ViewQuestionaire",
-      "TestCollapsible",
-      "TestAboutYou",
-      "TestTellUsMore",
-      "TestImInterestedIn",
-      "TestSpendWeekend",
-      "TestWouldRather"
     ];
   }
 
