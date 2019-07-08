@@ -342,7 +342,7 @@ class OnBoarding extends React.Component {
   }
 }
 const { height, width } = Dimensions.get("window");
-let flexSetting = "flex-end";
+let flexSetting = "flex-start";
 const styles = StyleSheet.create({
   container: {
     flex: 1,

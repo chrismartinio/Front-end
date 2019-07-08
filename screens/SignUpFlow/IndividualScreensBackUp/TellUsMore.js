@@ -18,8 +18,10 @@ import { LinearGradient } from "expo";
 import DatePicker from "react-native-datepicker";
 import RNPickerSelect from "react-native-picker-select";
 import { connect } from "react-redux";
-import SetProfileLikesAction from "../../storage/actions/SetProfileLikesAction";
-import SetProfileFirstLike from "../../storage/actions/SetProfileFirstLike";
+//import SetProfileLikesAction from "../../storage/actions/SetProfileLikesAction";
+//import SetProfileFirstLike from "../../storage/actions/SetProfileFirstLike";
+import SetProfileLikesAction from "../../../storage/actions/SetProfileLikesAction";
+import SetProfileFirstLike from "../../../storage/actions/SetProfileFirstLike";
 
 class TellUsMore extends React.Component {
   constructor(props) {
@@ -64,45 +66,60 @@ class TellUsMore extends React.Component {
     });
 
     return (
-      <View style={styles.wholeWrap}>
-        {/**Tell Us More Text */}
-        <View style={styles.tellUsMoreTextWrap}>
-          <Text style={styles.tellUsMoreText}>Tell Us More</Text>
-          {/*Spaces*/}
+      <View style={{ flex: 1 }}>
+        <LinearGradient
+          textStyle={{ color: "#fff" }}
+          colors={["#18cdf6", "#43218c"]}
+          style={{ flex: 1 }}
+        >
+          <View style={styles.wholeWrap}>
+            {/*Spaces*/}
+            <View
+              style={{
+                padding: "20%"
+                //borderRadius: 4,
+                //borderWidth: 0.5,
+                //borderColor: "#d6d7da"
+              }}
+            />
+            {/**Tell Us More Text */}
+            <View style={styles.tellUsMoreTextWrap}>
+              <Text style={styles.tellUsMoreText}>Tell Us More</Text>
+              {/** What are you into? Text*/}
+              <Text style={styles.whatAreYouIntoText}>What are you into?</Text>
+              {/*Spaces*/}
+              <View
+                style={{
+                  padding: "10%"
+                  //borderRadius: 4,
+                  //borderWidth: 0.5,
+                  //borderColor: "#d6d7da"
+                }}
+              />
+            </View>
+            <View style={styles.likeWrapCenter}>
+              <View style={styles.likesWrap}>{displaylikes}</View>
+            </View>
+          </View>
           <View
             style={{
-              padding: "3%"
+              padding: "10%"
+              //borderRadius: 4,
+              //borderWidth: 0.5,
+              //borderColor: "#d6d7da"
             }}
           />
-          {/** What are you into? Text*/}
-          <Text style={styles.whatAreYouIntoText}>What are you into?</Text>
-        </View>
-        {/*Spaces*/}
-        <View
-          style={{
-            padding: "3%"
-          }}
-        />
-        <View style={styles.likeWrapCenter}>
-          <View style={styles.likesWrap}>{displaylikes}</View>
-        </View>
-        {/*Spaces*/}
-        <View
-          style={{
-            padding: "5%"
-          }}
-        />
-
-        {/*Next Button*/}
-        <View
-          style={{
-            alignItems: "center"
-          }}
-        >
-          <TouchableOpacity style={styles.button} onPress={this.handleSubmit}>
-            <Text style={{ color: "#fff" }}>Next</Text>
-          </TouchableOpacity>
-        </View>
+          {/*Next Button*/}
+          <View
+            style={{
+              alignItems: "center"
+            }}
+          >
+            <TouchableOpacity style={styles.button} onPress={this.handleSubmit}>
+              <Text style={{ color: "#fff" }}>Next</Text>
+            </TouchableOpacity>
+          </View>
+        </LinearGradient>
       </View>
     );
   }
