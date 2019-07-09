@@ -101,6 +101,7 @@ class SignupPage extends React.Component {
       interestedGender: interestedGender
     });
 
+    console.log("Passed")
     this.props.navigation.navigate("TestWouldRather");
 
     return;

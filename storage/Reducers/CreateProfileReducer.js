@@ -5,7 +5,7 @@ const CreateProfileReducer = (
     profData: null,
     likes: [null],
     interestedData: null,
-    weekendLocationData: null
+    weekendLocation: [null]
   },
   action
 ) => {
@@ -21,7 +21,9 @@ const CreateProfileReducer = (
     case "ADD_WOULDRATHER_DATA":
       return { ...state, wouldRatherData: action.PAYLOAD };
     case "ADD_WEEKEND_LOCATION_DATA":
-      return { ...state, weekendLocationData: action.PAYLOAD };
+      return { ...state, weekendLocation: [action.PAYLOAD] };
+    case "REMOVE_WEEKEND_LOCATION_DATA":
+      return { ...state, weekendLocation: [] };
     case "ADD_LIKES":
       return { ...state, likes: [...state.likes, action.PAYLOAD] };
     case "REMOVE_LIKES":

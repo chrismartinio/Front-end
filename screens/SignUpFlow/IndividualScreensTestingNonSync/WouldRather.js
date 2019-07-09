@@ -38,6 +38,7 @@ class WouldRather extends React.Component {
       s3r2: this.s3r2
     });
     this.props.navigation.navigate("TestSpendWeekend");
+    console.log("Passed")
   };
 
   handleListener1 = arg => {

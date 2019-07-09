@@ -1,7 +1,7 @@
-const setWeekendLocationDataAction = (weekendLocationData) => (dispatch)=> {
+const setWeekendLocationDataAction = (weekendLocation) => (dispatch)=> {
   dispatch({
     type: 'ADD_WEEKEND_LOCATION_DATA',
-    PAYLOAD: weekendLocationData
+    PAYLOAD: weekendLocation
   })
 }
 
