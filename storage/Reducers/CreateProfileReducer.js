@@ -24,6 +24,12 @@ const CreateProfileReducer = (
       return { ...state, weekendLocationData: action.PAYLOAD };
     case "ADD_LIKES":
       return { ...state, likes: [...state.likes, action.PAYLOAD] };
+    case "REMOVE_LIKES":
+      let index = state.likes.indexOf(action.PAYLOAD);
+      return {
+        ...state,
+        likes: [...state.likes.slice(0, index), ...state.likes.slice(index + 1)]
+      };
     case "SET_FIRST_LIKE":
       return {
         ...state,

@@ -29,12 +29,12 @@ import ReplyQuestionaire from "../screens/FindMatchFlow/matchCreateReply";
 import ViewQuestionaire from "../screens/FindMatchFlow/matchViewReply";
 
 //On Boarding Sreen
-import SignupPage from "../screens/SignUpFlow/IndividualScreensBackUp/SignupPage";
-import AboutYou from "../screens/SignUpFlow/IndividualScreensBackUp/AboutYou";
-import ImInterestedIn from "../screens/SignUpFlow/IndividualScreensBackUp/ImInterestedIn";
-import SpendWeekend from "../screens/SignUpFlow/IndividualScreensBackUp/SpendAWeekend";
-import WouldRather from "../screens/SignUpFlow/IndividualScreensBackUp/WouldRather";
-import TellUsMore from "../screens/SignUpFlow/IndividualScreensBackUp/TellUsMore";
+import SignupPage from "../screens/SignUpFlow/IndividualScreensTestingNonSync/SignupPage";
+import AboutYou from "../screens/SignUpFlow/IndividualScreensTestingNonSync/AboutYou";
+import ImInterestedIn from "../screens/SignUpFlow/IndividualScreensTestingNonSync/ImInterestedIn";
+import SpendWeekend from "../screens/SignUpFlow/IndividualScreensTestingNonSync/SpendAWeekend";
+import WouldRather from "../screens/SignUpFlow/IndividualScreensTestingNonSync/WouldRather";
+import TellUsMore from "../screens/SignUpFlow/IndividualScreensTestingNonSync/TellUsMore";
 //import Collapsible from "../screens/SignUpFlow/Collapsible_KaChi";
 import Collapsible from "../screens/SignUpFlow/Collapsible_Drew";
 //import LinksScreen from "../screens/LinksScreen";
