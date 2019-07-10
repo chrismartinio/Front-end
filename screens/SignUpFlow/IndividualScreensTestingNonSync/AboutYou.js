@@ -294,6 +294,10 @@ class AboutYou extends Component {
     return (
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : null}
+        keyboardVerticalOffset={Platform.select({
+          ios: () => -100,
+          android: () => 200
+        })()}
         style={{ flex: 1 }}
       >
         <LinearGradient
@@ -307,7 +311,7 @@ class AboutYou extends Component {
                 {/*Spaces*/}
                 <View
                   style={{
-                    padding: "30%"
+                    padding: "20%"
                     //borderRadius: 4,
                     //borderWidth: 0.5,
                     //borderColor: "#d6d7da"
@@ -320,7 +324,7 @@ class AboutYou extends Component {
                 {/*Spaces*/}
                 <View
                   style={{
-                    padding: "5%"
+                    padding: "10%"
                     //borderRadius: 4,
                     //borderWidth: 0.5,
                     //borderColor: "#d6d7da"
@@ -344,6 +348,9 @@ class AboutYou extends Component {
                     }}
                     onChangeText={firstName => this.setState({ firstName })}
                   />
+                  {this.state.firstNameWarning === "empty" && empty}
+                  {this.state.firstNameWarning === "invalid" &&
+                    invalidFirstNameLastNameWarning}
                 </View>
 
                 {/*Spaces*/}
@@ -373,6 +380,9 @@ class AboutYou extends Component {
                     }}
                     onChangeText={lastName => this.setState({ lastName })}
                   />
+                  {this.state.lastNameWarning === "empty" && empty}
+                  {this.state.lastNameWarning === "invalid" &&
+                    invalidFirstNameLastNameWarning}
                 </View>
 
                 <View
@@ -410,6 +420,9 @@ class AboutYou extends Component {
                         this.setState({ birthDate: date });
                       }}
                     />
+                    {this.state.birthDateWarning === "empty" && empty}
+                    {this.state.birthDateWarning === "invalid" &&
+                      invalidBirthDateWarning}
                   </View>
 
                   {/**Gender */}
@@ -437,6 +450,9 @@ class AboutYou extends Component {
                         );
                       }}
                     />
+                    {this.state.genderWarning === "empty" && empty}
+                    {this.state.genderWarning === "invalid" &&
+                      invalidGenderCountryWarning}
                   </View>
                 </View>
 
@@ -467,6 +483,9 @@ class AboutYou extends Component {
                         );
                       }}
                     />
+                    {this.state.countryWarning === "empty" && empty}
+                    {this.state.countryWarning === "invalid" &&
+                      invalidGenderCountryWarning}
                   </View>
 
                   {/**zip */}
@@ -491,22 +510,16 @@ class AboutYou extends Component {
                       }}
                       onChangeText={zipCode => this.setState({ zipCode })}
                     />
+                    {this.state.zipCodeWarning === "empty" && empty}
+                    {this.state.zipCodeWarning === "invalid" &&
+                      invalidZipCodeWarning}
                   </View>
-                </View>
-
-                {/*Empty Data exist*/}
-                <View>
-                  {this.state.empty ? (
-                    <Text style={styles.warningText}>* all field Required</Text>
-                  ) : (
-                    <View style={styles.warningText} />
-                  )}
                 </View>
 
                 {/*Spaces*/}
                 <View
                   style={{
-                    padding: "20%"
+                    padding: "25%"
                     //borderRadius: 4,
                     //borderWidth: 0.5,
                     //borderColor: "#d6d7da"
@@ -526,7 +539,6 @@ class AboutYou extends Component {
                     <Text style={{ color: "#fff" }}>Next</Text>
                   </TouchableOpacity>
                 </View>
-                <View style={{ flex: 1 }} />
               </View>
             </TouchableWithoutFeedback>
           </SafeAreaView>
