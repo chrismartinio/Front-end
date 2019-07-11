@@ -19,6 +19,8 @@ import { LinearGradient } from "expo";
 import { connect } from "react-redux";
 import SetUserDataAction from "../../../storage/actions/SetUserDataAction";
 import firebase from "../../../utils/mainFire";
+import { Icon, Input } from "react-native-elements";
+import { Chevron } from "react-native-shapes";
 
 class Welcome extends Component {
   static navigationOptions = {
@@ -44,8 +46,10 @@ class Welcome extends Component {
       confirmEmail: "",
       password: "",
       confrimPassword: "",
-      emailWarning: "",
-      passwordWarning: ""
+      emailWarning: "empty",
+      confirmEmailWarning: "empty",
+      passwordWarning: "empty",
+      confirmPasswordWarning: "empty"
     };
   }
   handleBackToSignIn = () => {
@@ -63,11 +67,41 @@ class Welcome extends Component {
   };
 
   passwordCheck = password => {
-    if (password.length > 6) {
-      return true;
+    if (!(password.length >= 8)) {
+      console.log("password less than 8")
+      return false;
     }
 
-    return false;
+    // use positive look ahead to see if at least one lower case letter exists
+    //let regExp = /(?=.*[a-z])/;
+    let regExp = /^(?=.*[a-z])/;
+    if (!regExp.test(password)) {
+      console.log("no lower case exist")
+      return false;
+    }
+
+    // use positive look ahead to see if at least one upper case letter exists
+    regExp = /^(?=.*[A-Z])/;
+    if (!regExp.test(password)) {
+      console.log("no upper case exist")
+      return false;
+    }
+
+    // use positive look ahead to see if at least one digit exists
+    regExp = /^(?=.*[0-9])/;
+    if (!regExp.test(password)) {
+      console.log("no at least one digit exist")
+      return false;
+    }
+
+    // use positive look ahead to see if at least one non-word character exists
+    regExp = /^(?=.*\W)/;
+    if (!regExp.test(password)) {
+      console.log("no at least one symbol exist")
+      return false;
+    }
+
+    return true;
   };
 
   nullCheck = value => {
@@ -94,16 +128,25 @@ class Welcome extends Component {
       this.setState({
         emailWarning: "invalid"
       });
+    } else if (!this.nullCheck(this.state.confirmEmail)) {
+      console.log("Empty Confirm Email");
+      email = false;
+      this.setState({
+        emailWarning: "",
+        confirmEmailWarning: "empty"
+      });
     } else if (this.state.email !== this.state.confirmEmail) {
       console.log("Email and Confirm Email not match");
       email = false;
       this.setState({
-        emailWarning: "notmatch"
+        emailWarning: "",
+        confirmEmailWarning: "notmatch"
       });
     } else {
       email = true;
       this.setState({
-        emailWarning: ""
+        emailWarning: "",
+        confirmEmailWarning: ""
       });
     }
 
@@ -120,16 +163,25 @@ class Welcome extends Component {
       this.setState({
         passwordWarning: "invalid"
       });
+    } else if (!this.nullCheck(this.state.confirmPassword)) {
+      console.log("Empty Confirm Password");
+      password = false;
+      this.setState({
+        passwordWarning: "",
+        confirmPasswordWarning: "empty"
+      });
     } else if (this.state.password !== this.state.confirmPassword) {
       console.log("Password and Confirm Password not match");
       password = false;
       this.setState({
-        passwordWarning: "notmatch"
+        passwordWarning: "",
+        confirmPasswordWarning: "notmatch"
       });
     } else {
       password = true;
       this.setState({
-        passwordWarning: ""
+        passwordWarning: "",
+        confirmPasswordWarning: ""
       });
     }
 
@@ -144,6 +196,30 @@ class Welcome extends Component {
     }
   };
   render() {
+    let empty = <Text style={styles.warningText}>error: empty field</Text>;
+
+    let invalidEmailWarning = (
+      <Text style={styles.warningText}>* error: invalid Email</Text>
+    );
+
+    let invalidConfirmEmailWarning = (
+      <Text style={styles.warningText}>* error: emails don't match</Text>
+    );
+
+    let invalidPasswordWarning = (
+      <Text style={styles.warningText}>* error: invalid Password</Text>
+    );
+
+    let invalidConfirmPasswordWarning = (
+      <Text style={styles.warningText}>* error: passwords don't match</Text>
+    );
+
+    let allEmptyWarning =
+      this.state.emailWarning === "empty" ||
+      this.state.confirmEmailWarning === "empty" ||
+      this.state.passwordWarning === "empty" ||
+      this.state.confirmPasswordWarning === "empty";
+
     return (
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : null}
@@ -158,48 +234,123 @@ class Welcome extends Component {
             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
               <View style={styles.inner}>
                 <Text style={styles.titleText}>Sign Up</Text>
-                <TextInput
-                  style={styles._textInput}
-                  placeholder="email"
-                  placeholderTextColor="#fff"
-                  onChangeText={email => this.setState({ email })}
-                  autoCompleteType={false}
-                  autoCapitalize="none"
-                  autoCorrect={false}
-                  //value={this.state.email}
+                {/*Spaces*/}
+                <View
+                  style={{
+                    padding: "20%"
+                    //borderRadius: 4,
+                    //borderWidth: 0.5,
+                    //borderColor: "#d6d7da"
+                  }}
                 />
-                <TextInput
-                  style={styles._textInput}
-                  placeholder="confirm email"
-                  placeholderTextColor="#fff"
-                  onChangeText={confirmEmail => this.setState({ confirmEmail })}
-                  autoCompleteType={false}
-                  autoCapitalize="none"
-                  autoCorrect={false}
-                />
-                <TextInput
-                  style={styles._textInput}
-                  placeholder="password"
-                  placeholderTextColor="#fff"
-                  onChangeText={password => this.setState({ password })}
-                  autoCompleteType={false}
-                  autoCapitalize="none"
-                  autoCorrect={false}
-                  secureTextEntry={true}
-                />
-                <TextInput
-                  style={styles._textInput}
-                  placeholder="confrim password"
-                  placeholderTextColor="#fff"
-                  onChangeText={confirmPassword =>
-                    this.setState({ confirmPassword })
-                  }
-                  autoCompleteType={false}
-                  autoCapitalize="none"
-                  secureTextEntry={true}
-                  autoCorrect={false}
-                />
-                <Text style={styles.smallText}>*all fields required</Text>
+                {/**email */}
+                <View style={{ width: "100%" }}>
+                  <Input
+                    placeholder="email"
+                    placeholderTextColor="#fff"
+                    containerStyle={styles.inputContainerStyle}
+                    inputStyle={styles.inputStyle}
+                    rightIcon={{
+                      type: "font-awesome",
+                      name:
+                        this.state.emailWarning === ""
+                          ? "check"
+                          : "exclamation",
+                      color: "#fff"
+                    }}
+                    autoCompleteType={false}
+                    autoCapitalize="none"
+                    autoCorrect={false}
+                    onChangeText={email => this.setState({ email })}
+                  />
+                  {this.state.emailWarning === "empty" && empty}
+                  {this.state.emailWarning === "invalid" && invalidEmailWarning}
+                </View>
+
+                {/**confirm email*/}
+                <View>
+                  <Input
+                    placeholder="confirm email"
+                    placeholderTextColor="#fff"
+                    containerStyle={styles.inputContainerStyle}
+                    inputStyle={styles.inputStyle}
+                    rightIcon={{
+                      type: "font-awesome",
+                      name:
+                        this.state.confirmEmailWarning === ""
+                          ? "check"
+                          : "exclamation",
+                      color: "#fff"
+                    }}
+                    autoCompleteType={false}
+                    autoCapitalize="none"
+                    autoCorrect={false}
+                    onChangeText={confirmEmail =>
+                      this.setState({ confirmEmail })
+                    }
+                  />
+                  {this.state.confirmEmailWarning === "empty" && empty}
+                  {this.state.confirmEmailWarning === "notmatch" &&
+                    invalidConfirmEmailWarning}
+                </View>
+
+                {/**password*/}
+                <View>
+                  <Input
+                    placeholder="password"
+                    placeholderTextColor="#fff"
+                    containerStyle={styles.inputContainerStyle}
+                    inputStyle={styles.inputStyle}
+                    rightIcon={{
+                      type: "font-awesome",
+                      name:
+                        this.state.passwordWarning === ""
+                          ? "check"
+                          : "exclamation",
+                      color: "#fff"
+                    }}
+                    autoCompleteType={false}
+                    autoCapitalize="none"
+                    autoCorrect={false}
+                    secureTextEntry={true}
+                    onChangeText={password => this.setState({ password })}
+                  />
+                  {this.state.passwordWarning === "empty" && empty}
+                  {this.state.passwordWarning === "invalid" &&
+                    invalidPasswordWarning}
+                </View>
+
+                {/**confirm password*/}
+                <View>
+                  <Input
+                    placeholder="confirmPassword"
+                    placeholderTextColor="#fff"
+                    containerStyle={styles.inputContainerStyle}
+                    inputStyle={styles.inputStyle}
+                    rightIcon={{
+                      type: "font-awesome",
+                      name:
+                        this.state.confirmPasswordWarning === ""
+                          ? "check"
+                          : "exclamation",
+                      color: "#fff"
+                    }}
+                    autoCompleteType={false}
+                    autoCapitalize="none"
+                    autoCorrect={false}
+                    secureTextEntry={true}
+                    onChangeText={confirmPassword =>
+                      this.setState({ confirmPassword })
+                    }
+                  />
+                  {this.state.confirmPasswordWarning === "empty" && empty}
+                  {this.state.confirmPasswordWarning === "notmatch" &&
+                    invalidConfirmPasswordWarning}
+                </View>
+
+                {allEmptyWarning && (
+                  <Text style={styles.warningText}>*all fields required</Text>
+                )}
                 <Text />
                 <View alignItems="center">
                   <TouchableOpacity
@@ -279,6 +430,24 @@ const styles = StyleSheet.create({
     height: "100%",
     width: "100%",
     flex: 1
+  },
+  inputContainerStyle: {
+    borderTopWidth: 0,
+    borderLeftWidth: 0,
+    borderRightWidth: 0,
+    borderBottomWidth: 1,
+    borderColor: "#fff"
+  },
+  inputStyle: {
+    color: "#fff",
+    fontSize: 15,
+    fontWeight: "100"
+  },
+  warningText: {
+    color: "red",
+    fontSize: 10,
+    paddingTop: "3%",
+    fontWeight: "bold"
   }
 });
 

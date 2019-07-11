@@ -278,18 +278,18 @@ class AboutYou extends Component {
     let passed = <View style={styles.warningText} />;
 
     let invalidFirstNameLastNameWarning = (
-      <Text style={styles.warningText}>* Only Accept Letters and Spaces. </Text>
+      <Text style={styles.warningText}>error: only Accept Letters and Spaces. </Text>
     );
     let invalidBirthDateWarning = (
-      <Text style={styles.warningText}>* You MUST be at least 18!</Text>
+      <Text style={styles.warningText}>error: You MUST be at least 18!</Text>
     );
     let invalidGenderCountryWarning = (
-      <Text style={styles.warningText}>* Field cannot be empty!</Text>
+      <Text style={styles.warningText}>error: field cannot be empty!</Text>
     );
     let invalidZipCodeWarning = (
-      <Text style={styles.warningText}>* Zip code MUST be 5 digits</Text>
+      <Text style={styles.warningText}>error: Zip code MUST be 5 digits</Text>
     );
-    let empty = <Text style={styles.warningText}>* Empty field</Text>;
+    let empty = <Text style={styles.warningText}>error: empty field</Text>;
 
     return (
       <KeyboardAvoidingView
@@ -654,9 +654,10 @@ const styles = StyleSheet.create({
     marginBottom: "15%"
   },
   warningText: {
-    color: "#fff",
-    fontSize: 8,
-    paddingTop: "3%"
+    color: "red",
+    fontSize: 10,
+    paddingTop: "3%",
+    fontWeight: "bold"
   }
 });
 
