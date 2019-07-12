@@ -22,7 +22,7 @@ import firebase from "../../utils/mainFire";
 import DatePicker from "react-native-datepicker";
 import RNPickerSelect from "react-native-picker-select";
 import { countries, genders } from "./someData.js";
- 
+
 class AboutYou extends Component {
   constructor(props) {
     super(props);
@@ -276,10 +276,10 @@ class AboutYou extends Component {
     let empty = <Text style={styles.warningText}>* Empty field</Text>;
 
     return (
-      <View>
-       
+      <View >
+
           <SafeAreaView style={styles.container}>
-          
+
             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
               <View style={styles.wholeWrap}>
                 {/*Spaces*/}
@@ -487,7 +487,7 @@ const styles = StyleSheet.create({
   },
   titleText:{
     margin:10,
-    color: '#fff',
+    color: 'black',
     fontSize:48,
     textAlign:"center",
     fontWeight:"100"
@@ -515,7 +515,7 @@ const styles = StyleSheet.create({
     width: "70%"
   },
   aboutMeText: {
-    color: "#fff",
+    color: "black",
     fontSize: 45,
     fontWeight: "100"
   },
