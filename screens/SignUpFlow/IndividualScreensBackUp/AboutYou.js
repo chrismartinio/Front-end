@@ -23,8 +23,12 @@ import SetProfilePersonalAction from "../../../storage/actions/SetProfilePersona
 import firebase from "../../../utils/mainFire";
 import DatePicker from "react-native-datepicker";
 import RNPickerSelect from "react-native-picker-select";
+<<<<<<< HEAD:screens/SignUpFlow/AboutYou.js
+import { countries, genders } from "./someData.js";
+=======
 //import { countries, genders } from "./someData.js";
 import { countries, genders } from "../someData.js";
+>>>>>>> 9a8044f056b2b5a10cc0836611bccdf63f28de67:screens/SignUpFlow/IndividualScreensBackUp/AboutYou.js
 
 class AboutYou extends Component {
   constructor(props) {
@@ -279,6 +283,12 @@ class AboutYou extends Component {
     let empty = <Text style={styles.warningText}>* Empty field</Text>;
 
     return (
+<<<<<<< HEAD:screens/SignUpFlow/AboutYou.js
+      <View >
+
+          <SafeAreaView style={styles.container}>
+
+=======
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : null}
         style={{ flex: 1 }}
@@ -289,6 +299,7 @@ class AboutYou extends Component {
           style={{ flex: 1 }}
         >
           <SafeAreaView style={styles.container}>
+>>>>>>> 9a8044f056b2b5a10cc0836611bccdf63f28de67:screens/SignUpFlow/IndividualScreensBackUp/AboutYou.js
             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
               <View style={styles.wholeWrap}>
                 {/*Spaces*/}
@@ -495,12 +506,21 @@ const styles = StyleSheet.create({
   container: {
     flex: 1
   },
+<<<<<<< HEAD:screens/SignUpFlow/AboutYou.js
+  titleText:{
+    margin:10,
+    color: 'black',
+    fontSize:48,
+    textAlign:"center",
+    fontWeight:"100"
+=======
   titleText: {
     margin: 10,
     color: "#fff",
     fontSize: 48,
     textAlign: "center",
     fontWeight: "100"
+>>>>>>> 9a8044f056b2b5a10cc0836611bccdf63f28de67:screens/SignUpFlow/IndividualScreensBackUp/AboutYou.js
   },
   wholeWrap: {
     flex: 1,
@@ -524,7 +544,7 @@ const styles = StyleSheet.create({
     width: "70%"
   },
   aboutMeText: {
-    color: "#fff",
+    color: "black",
     fontSize: 45,
     fontWeight: "100"
   },
