@@ -36,7 +36,7 @@ import SpendWeekend from "../screens/SignUpFlow/IndividualScreensTestingNonSync/
 import WouldRather from "../screens/SignUpFlow/IndividualScreensTestingNonSync/WouldRather";
 import TellUsMore from "../screens/SignUpFlow/IndividualScreensTestingNonSync/TellUsMore";
 //import Collapsible from "../screens/SignUpFlow/Collapsible_KaChi";
-import Collapsible from "../screens/SignUpFlow/Collapsible_Drew";
+import Collapsible from "../screens/SignUpFlow/Collapsible";
 //import LinksScreen from "../screens/LinksScreen";
 import LinksScreen from "../screens/LinksScreen_OnBoarding";
 
