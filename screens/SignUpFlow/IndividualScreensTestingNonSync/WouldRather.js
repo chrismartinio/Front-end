@@ -38,6 +38,7 @@ class WouldRather extends React.Component {
       s3r2: this.s3r2
     });
     this.props.navigation.navigate("TestSpendWeekend");
+    console.log("Passed")
   };
 
   handleListener1 = arg => {
@@ -78,7 +79,7 @@ class WouldRather extends React.Component {
             <View style={styles.sliderContainer}>
               <View style={styles.V1}>
                 <Slider
-                  functionListener={this.handleListener}
+                  functionListener={this.handleListener1}
                   leftBound={"Books"}
                   rightBound={"Movie"}
                 />
@@ -86,7 +87,7 @@ class WouldRather extends React.Component {
 
               <View style={styles.V2}>
                 <Slider
-                  functionListener={this.handleListener}
+                  functionListener={this.handleListener2}
                   leftBound={"Wine"}
                   rightBound={"Beer"}
                 />
@@ -94,7 +95,7 @@ class WouldRather extends React.Component {
 
               <View style={styles.V3}>
                 <Slider
-                  functionListener={this.handleListener}
+                  functionListener={this.handleListener3}
                   leftBound={"Beach"}
                   rightBound={"Mountains"}
                 />
