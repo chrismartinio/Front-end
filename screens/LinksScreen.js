@@ -6,7 +6,6 @@ import MatchesPage from "./SignUpFlow/Matches";
 import RegistrationPage from "./SignUpFlow/RegistrationPage";
 import SelfiePage from "./SignUpFlow/SelfiePage";
 import SignupPage from "./SignUpFlow/SignupPage";
-import ImInterestedIn from "../screens/SignUpFlow/ImInterestedIn";
 import PhotoReview from "./SignUpFlow/PhotoReview";
 import MatchBackground from "../components/ChatFlow/MatchBackground";
 import InitialMatchChoice from "./ChatFlow/InitialMatchChoice";
@@ -61,7 +60,6 @@ export default class LinksScreen extends React.Component {
       "TestMatches",
       "TestRegistration",
       "TestSelfie",
-      "TestSignUp",
       "TestPhotoReview",
       "TestScreen",
       "Selection",
@@ -71,51 +69,44 @@ export default class LinksScreen extends React.Component {
       "CreateQuestionaire",
       "ReplyQuestionaire",
       "ViewQuestionaire",
-      "TestAboutYou",
-      "TestTellUsMore",
-      "ImInterestedIn",
-      "Collapsible",
-      "SpendWeekend",
-      "WouldRather"
-
     ];
   }
 
   handleChange = () => {
-    if(this._form.getValue().Component === 'sPROFILE'){
-      this.props.navigation.navigate('TestProfile');
-    } else if(this._form.getValue().Component === 'sMATCHES'){
-      this.props.navigation.navigate('TestMatches');
-    }else if(this._form.getValue().Component === 'sChatPage'){
-      this.props.navigation.navigate('TestChatPage');
-    }else if(this._form.getValue().Component === 'sREGISTRATION'){
-      this.props.navigation.navigate('TestRegistration');
-    }  else if(this._form.getValue().Component === 'sSELFIE'){
-      this.props.navigation.navigate('TestSelfie');
-    } else if(this._form.getValue().Component === 'sSIGNUP'){
-      this.props.navigation.navigate('TestSignUp');
-    } else if(this._form.getValue().Component === 'sPHOTOREVIEW'){
-      this.props.navigation.navigate('TestPhotoReview');
-    }  else if(this._form.getValue().Component === 'sCurrTest'){
-      this.props.navigation.navigate('TestScreen');
-    } else if(this._form.getValue().Component === 'sSelection'){
-      this.props.navigation.navigate('Selection');
-    } else if(this._form.getValue().Component === 'sGhostingOthers'){
-      this.props.navigation.navigate('GhostingOthers');
-    } else if(this._form.getValue().Component === 'sGotGhosted'){
-      this.props.navigation.navigate('GotGhosted');
-    } else if(this._form.getValue().Component === 'sGotLucky'){
-      this.props.navigation.navigate('GotLucky');
-    } else if(this._form.getValue().Component === 'sCreateQuestionaire'){
-      this.props.navigation.navigate('CreateQuestionaire');
-    } else if(this._form.getValue().Component === 'sCreateReply'){
-      this.props.navigation.navigate('ReplyQuestionaire');
-    } else if(this._form.getValue().Component === 'sViewReply'){
-      this.props.navigation.navigate('ViewQuestionaire');
-    }else if(this._form.getValue().Component === 'sImInterestedIn'){
-      this.props.navigation.navigate('TestImInterestedIn');
-    }else if(this._form.getValue().Component === 'sSpendWeekend'){
-      this.props.navigation.navigate('TestSpendWeekend');
+    if (this._form.getValue().Component === "sPROFILE") {
+      this.props.navigation.navigate("TestProfile");
+    } else if (this._form.getValue().Component === "sMATCHES") {
+      this.props.navigation.navigate("TestMatches");
+    } else if (this._form.getValue().Component === "sChatPage") {
+      this.props.navigation.navigate("TestChatPage");
+    } else if (this._form.getValue().Component === "sREGISTRATION") {
+      this.props.navigation.navigate("TestRegistration");
+    } else if (this._form.getValue().Component === "sSELFIE") {
+      this.props.navigation.navigate("TestSelfie");
+    } else if (this._form.getValue().Component === "sSIGNUP") {
+      this.props.navigation.navigate("TestSignUp");
+    } else if (this._form.getValue().Component === "sPHOTOREVIEW") {
+      this.props.navigation.navigate("TestPhotoReview");
+    } else if (this._form.getValue().Component === "sCurrTest") {
+      this.props.navigation.navigate("TestScreen");
+    } else if (this._form.getValue().Component === "sSelection") {
+      this.props.navigation.navigate("Selection");
+    } else if (this._form.getValue().Component === "sGhostingOthers") {
+      this.props.navigation.navigate("GhostingOthers");
+    } else if (this._form.getValue().Component === "sGotGhosted") {
+      this.props.navigation.navigate("GotGhosted");
+    } else if (this._form.getValue().Component === "sGotLucky") {
+      this.props.navigation.navigate("GotLucky");
+    } else if (this._form.getValue().Component === "sCreateQuestionaire") {
+      this.props.navigation.navigate("CreateQuestionaire");
+    } else if (this._form.getValue().Component === "sCreateReply") {
+      this.props.navigation.navigate("ReplyQuestionaire");
+    } else if (this._form.getValue().Component === "sViewReply") {
+      this.props.navigation.navigate("ViewQuestionaire");
+    } else if (this._form.getValue().Component === "sImInterestedIn") {
+      this.props.navigation.navigate("TestImInterestedIn");
+    } else if (this._form.getValue().Component === "sSpendWeekend") {
+      this.props.navigation.navigate("TestSpendWeekend");
     }
   };
 

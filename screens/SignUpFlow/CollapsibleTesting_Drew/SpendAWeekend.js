@@ -16,9 +16,9 @@ import { LinearGradient } from "expo";
 // import Categories from '../../components/SignUpFlow/Categories'
 import t from "tcomb-form-native";
 import { connect } from "react-redux";
-import SetWeekendLocationDataAction from "../../storage/actions/setWeekendLocationDataAction";
-import firebase from "../../utils/mainFire";
-import Slider from "./CSlider";
+import SetWeekendLocationDataAction from "../../../storage/actions/setWeekendLocationDataAction";
+import firebase from "../../../utils/mainFire";
+import Slider from "../CSlider";
 
 class SignupPage extends React.Component {
   static navigationOptions = {
@@ -266,14 +266,14 @@ const styles = StyleSheet.create({
     textAlign: "center"
   },
   textTop: {
-    top: 40,
+    //top: 40,
     margin: 10,
     color: "#fff",
     fontSize: 20,
     textAlign: "center"
   },
   textTop2: {
-    top: 60,
+   // top: 60,
     margin: 10,
     color: "#fff",
     fontSize: 20,

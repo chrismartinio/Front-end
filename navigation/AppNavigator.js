@@ -1,36 +1,48 @@
-import React from 'react';
-import { createAppContainer, createSwitchNavigator, createStackNavigator } from 'react-navigation';
+import React from "react";
+import {
+  createAppContainer,
+  createSwitchNavigator,
+  createStackNavigator
+} from "react-navigation";
 
-import MainTabNavigator from './MainTabNavigator';
-import SignupPage from '../screens/SignUpFlow/SignupPage';
-import MatchesPage from '../screens/SignUpFlow/Matches';
-import RegistrationPage from '../screens/SignUpFlow/RegistrationPage';
-import SelfiePage from '../screens/SignUpFlow/SelfiePage';
-import PhotoReview from '../screens/SignUpFlow/PhotoReview';
-import ProfilePage from '../screens/SignUpFlow/ProfilePage';
-import ChatPage from '../screens/ChatFlow/chatMain';
-import mainSignInPage from '../screens/HomeScreen';
-import TestScreen from '../screens/ChatFlow/InitialMatchChoice';
-import GhostingOthersScreen from '../screens/ChatFlow/GhostingOthers';
-import GotLucky from '../screens/ChatFlow/GotLuckyGoToChat';
-import InitialMatchChoice from '../screens/ChatFlow/InitialMatchChoice';
-import Selection from '../screens/ChatFlow/Selection';
-import GotGhosted from '../screens/ChatFlow/GotGhosted';
-import CreateQuestionaire from '../screens/FindMatchFlow/matchCreateQuestionaire';
-import ReplyQuestionaire from '../screens/FindMatchFlow/matchCreateReply';
-import ViewQuestionaire from '../screens/FindMatchFlow/matchViewReply';
-import AboutYou from '../screens/SignUpFlow/AboutYou';
-import ImInterestedIn from '../screens/SignUpFlow/ImInterestedIn';
-import SpendWeekend from '../screens/SignUpFlow/SpendAWeekend';
-import WouldRather from '../screens/SignUpFlow/WouldRather';
-import TellUsMore from '../screens/SignUpFlow/TellUsMore';
-import Collapsible from '../screens/SignUpFlow/Collapsible';
+//Navigator
+import MainTabNavigator from "./MainTabNavigator";
 
+//MainScreen
+import mainSignInPage from "../screens/HomeScreen";
 
+//Other Screens
+import MatchesPage from "../screens/SignUpFlow/Matches";
+import RegistrationPage from "../screens/SignUpFlow/RegistrationPage";
+import SelfiePage from "../screens/SignUpFlow/SelfiePage";
+import PhotoReview from "../screens/SignUpFlow/PhotoReview";
+import ProfilePage from "../screens/SignUpFlow/ProfilePage";
+import ChatPage from "../screens/ChatFlow/chatMain";
+import TestScreen from "../screens/ChatFlow/InitialMatchChoice";
+import GhostingOthersScreen from "../screens/ChatFlow/GhostingOthers";
+import GotLucky from "../screens/ChatFlow/GotLuckyGoToChat";
+import InitialMatchChoice from "../screens/ChatFlow/InitialMatchChoice";
+import Selection from "../screens/ChatFlow/Selection";
+import GotGhosted from "../screens/ChatFlow/GotGhosted";
+import CreateQuestionaire from "../screens/FindMatchFlow/matchCreateQuestionaire";
+import ReplyQuestionaire from "../screens/FindMatchFlow/matchCreateReply";
+import ViewQuestionaire from "../screens/FindMatchFlow/matchViewReply";
 
+//On Boarding Sreen
+import SignupPage from "../screens/SignUpFlow/IndividualScreensBackUp/SignupPage";
+import AboutYou from "../screens/SignUpFlow/IndividualScreensBackUp/AboutYou";
+import ImInterestedIn from "../screens/SignUpFlow/IndividualScreensBackUp/ImInterestedIn";
+import SpendWeekend from "../screens/SignUpFlow/IndividualScreensBackUp/SpendAWeekend";
+import WouldRather from "../screens/SignUpFlow/IndividualScreensBackUp/WouldRather";
+import TellUsMore from "../screens/SignUpFlow/IndividualScreensBackUp/TellUsMore";
+//import Collapsible from "../screens/SignUpFlow/Collapsible_KaChi";
+import Collapsible from "../screens/SignUpFlow/Collapsible_Drew";
+//import LinksScreen from "../screens/LinksScreen";
+import LinksScreen from "../screens/LinksScreen_OnBoarding";
 
 const TestStack = createStackNavigator({
-  TestScreen: CreateQuestionaire,
+  TestLinksScreen: LinksScreen,
+  TestQuestionaries: CreateQuestionaire,
   TestSignUp: SignupPage,
   TestRegistration: RegistrationPage,
   TestSelfie: SelfiePage,
@@ -41,37 +53,37 @@ const TestStack = createStackNavigator({
   TestMatches: MatchesPage,
   TestAboutYou: AboutYou,
   TestTellUsMore: TellUsMore,
-  WouldRather: WouldRather,
-  SpendWeekend:SpendWeekend,
-  ImInterestedIn:ImInterestedIn,
-  Collapsible:Collapsible
-})
+  TestWouldRather: WouldRather,
+  TestSpendWeekend: SpendWeekend,
+  TestImInterestedIn: ImInterestedIn,
+  TestCollapsible: Collapsible,
 
+});
 
 const AuthStack = createStackNavigator({
   SignUp: SignupPage,
   Registration: RegistrationPage,
   Selfie: SelfiePage,
-  Profile: ProfilePage,
-})
+  Profile: ProfilePage
+});
 
 const ChatStack = createStackNavigator({
   Chat: ChatPage,
-  InitialMatchChoice:InitialMatchChoice,
+  InitialMatchChoice: InitialMatchChoice,
   GhostingOthers: GhostingOthersScreen,
   GotLucky: GotLucky,
   Selection: Selection,
   GotGhosted: GotGhosted
-})
+});
 
 const MatchStack = createStackNavigator({
   CreateQuestionaire: CreateQuestionaire,
   ViewQuestionaire: ViewQuestionaire,
   ReplyQuestionaire: ReplyQuestionaire
-})
+});
 
-export default createAppContainer(createSwitchNavigator(
-  {
+export default createAppContainer(
+  createSwitchNavigator({
     // You could add another route here for authentication.
     // Read more at https://reactnavigation.org/docs/en/auth-flow.html
     Main: MainTabNavigator,
@@ -80,5 +92,5 @@ export default createAppContainer(createSwitchNavigator(
     SignIn: mainSignInPage,
     Match: MatchStack,
     Test: TestStack
-  }
-));
+  })
+);

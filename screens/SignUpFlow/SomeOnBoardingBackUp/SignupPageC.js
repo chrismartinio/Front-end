@@ -34,7 +34,7 @@ class Welcome extends Component {
   }
   static navigationOptions = {
     header: null,
-    
+
   };
   SignUpToDatabase = ({ age, email, gender, name, password }) => {
     let userId = email.split('.').join()
