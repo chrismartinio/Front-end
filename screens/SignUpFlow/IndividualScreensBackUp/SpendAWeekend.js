@@ -16,7 +16,7 @@ import { LinearGradient } from "expo";
 // import Categories from '../../components/SignUpFlow/Categories'
 import t from "tcomb-form-native";
 import { connect } from "react-redux";
-import SetWeekendLocationDataAction from "../../../storage/actions/setWeekendLocationDataAction";
+import SetWeekendLocationDataAction from "../../../storage/actions/SetWeekendLocationDataAction";
 import firebase from "../../../utils/mainFire";
 import Slider from "../CSlider";
 
