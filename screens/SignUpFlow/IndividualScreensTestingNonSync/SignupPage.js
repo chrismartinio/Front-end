@@ -49,7 +49,10 @@ class Welcome extends Component {
       emailWarning: "empty",
       confirmEmailWarning: "empty",
       passwordWarning: "empty",
-      confirmPasswordWarning: "empty"
+      confirmPasswordWarning: "empty",
+      password_UpperLowerCaseWarning: false,
+      password_NumberSymbolWarning: false,
+      password_LengthWarning: false
     };
   }
   handleBackToSignIn = () => {
@@ -66,38 +69,49 @@ class Welcome extends Component {
     return false;
   };
 
-  passwordCheck = password => {
+  passwordLength = password => {
     if (!(password.length >= 8)) {
-      console.log("password less than 8")
+      console.log("password less than 8");
       return false;
     }
+    return true;
+  };
 
+  passworcdCase = password => {
     // use positive look ahead to see if at least one lower case letter exists
-    //let regExp = /(?=.*[a-z])/;
-    let regExp = /^(?=.*[a-z])/;
-    if (!regExp.test(password)) {
-      console.log("no lower case exist")
-      return false;
-    }
-
+    //let regExp = /^(?=.*[a-z])/;
     // use positive look ahead to see if at least one upper case letter exists
-    regExp = /^(?=.*[A-Z])/;
-    if (!regExp.test(password)) {
-      console.log("no upper case exist")
+    //regExp = /^(?=.*[A-Z])/;
+    if (!(/^(?=.*[a-z])/.test(password) && /^(?=.*[A-Z])/.test(password))) {
+      console.log("not including any lower and upper case");
       return false;
     }
+    return true;
+  };
 
+  passwordNonLetter = password => {
     // use positive look ahead to see if at least one digit exists
-    regExp = /^(?=.*[0-9])/;
-    if (!regExp.test(password)) {
-      console.log("no at least one digit exist")
+    //let regExp = /^(?=.*[0-9])/;
+    // use positive look ahead to see if at least one non-word character exists
+    //regExp = /^(?=.*\W)/;
+    if (!(/^(?=.*[0-9])/.test(password) || /^(?=.*\W)/.test(password))) {
+      console.log("not including at least one digit or symbol");
       return false;
     }
+    return true;
+  };
+  passwordCheck = password => {
+    let pLength = this.passwordLength(password);
+    let pCase = this.passworcdCase(password);
+    let pNonLetter = this.passwordNonLetter(password);
 
-    // use positive look ahead to see if at least one non-word character exists
-    regExp = /^(?=.*\W)/;
-    if (!regExp.test(password)) {
-      console.log("no at least one symbol exist")
+    if (pLength === false) {
+      return false;
+    }
+    if (pCase === false) {
+      return false;
+    }
+    if (pNonLetter === false) {
       return false;
     }
 
@@ -160,28 +174,43 @@ class Welcome extends Component {
     } else if (!this.passwordCheck(this.state.password)) {
       console.log("Invalid Password");
       password = false;
+      let pLength = !this.passwordLength(this.state.password);
+      let pLetterCase = !this.passworcdCase(this.state.password);
+      let pNonLetter = !this.passwordNonLetter(this.state.password);
       this.setState({
-        passwordWarning: "invalid"
+        passwordWarning: "invalid",
+        password_UpperLowerCaseWarning: pLetterCase,
+        password_NumberSymbolWarning: pNonLetter,
+        password_LengthWarning: pLength
       });
     } else if (!this.nullCheck(this.state.confirmPassword)) {
       console.log("Empty Confirm Password");
       password = false;
       this.setState({
         passwordWarning: "",
-        confirmPasswordWarning: "empty"
+        confirmPasswordWarning: "empty",
+        password_UpperLowerCaseWarning: false,
+        password_NumberSymbolWarning: false,
+        password_LengthWarning: false
       });
     } else if (this.state.password !== this.state.confirmPassword) {
       console.log("Password and Confirm Password not match");
       password = false;
       this.setState({
         passwordWarning: "",
-        confirmPasswordWarning: "notmatch"
+        confirmPasswordWarning: "notmatch",
+        password_UpperLowerCaseWarning: false,
+        password_NumberSymbolWarning: false,
+        password_LengthWarning: false
       });
     } else {
       password = true;
       this.setState({
         passwordWarning: "",
-        confirmPasswordWarning: ""
+        confirmPasswordWarning: "",
+        password_UpperLowerCaseWarning: false,
+        password_NumberSymbolWarning: false,
+        password_LengthWarning: false
       });
     }
 
@@ -346,6 +375,33 @@ class Welcome extends Component {
                   {this.state.confirmPasswordWarning === "empty" && empty}
                   {this.state.confirmPasswordWarning === "notmatch" &&
                     invalidConfirmPasswordWarning}
+                </View>
+
+                <View>
+                  <Text style={{ color: "#fff" }}>
+                    {this.state.password_UpperLowerCaseWarning
+                      ? "error"
+                      : "no-error"}
+                    : include upper and lower case
+                  </Text>
+                </View>
+
+                <View>
+                  <Text style={{ color: "#fff" }}>
+                    {this.state.password_NumberSymbolWarning
+                      ? "error"
+                      : "no-error"}
+                    : include at least one number or symbol
+                  </Text>
+                </View>
+
+                <View>
+                  <Text style={{ color: "#fff" }}>
+                    {this.state.password_LengthWarning
+                      ? "error"
+                      : "no-error"}
+                    : be at least 8 characters long
+                  </Text>
                 </View>
 
                 {allEmptyWarning && (
