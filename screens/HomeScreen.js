@@ -89,10 +89,37 @@ export default class HomeScreen extends React.Component {
 
       let jsonData = await data.json()
       console.log(jsonData)
-      //this.props.navigation.navigate('Chat');
+      this.props.navigation.navigate('Chat');
     } catch(e){
-      console.alert(e.error)
-      throw new Error(e)
+      console.log(e.error)
+
+    }
+  }
+
+
+    handleTestAddUser = async() => {
+    try{
+    const {username, password} = this._form.getValue();
+    // front end check:
+        let data = await fetch('http://10.0.0.246:3000/api/auth/login', {
+          method: 'POST',
+          mode:'cors',
+          credentials: "same-origin",
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+          password: password,
+          username: username
+        })})
+
+      let jsonData = await data.json()
+      console.log(jsonData)
+      this.props.navigation.navigate('Chat');
+    } catch(e){
+      console.log(e.error)
+
     }
   }
 

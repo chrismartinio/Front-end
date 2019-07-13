@@ -23,12 +23,10 @@ import SetProfilePersonalAction from "../../../storage/actions/SetProfilePersona
 import firebase from "../../../utils/mainFire";
 import DatePicker from "react-native-datepicker";
 import RNPickerSelect from "react-native-picker-select";
-<<<<<<< HEAD:screens/SignUpFlow/AboutYou.js
-import { countries, genders } from "./someData.js";
-=======
 //import { countries, genders } from "./someData.js";
 import { countries, genders } from "../someData.js";
->>>>>>> 9a8044f056b2b5a10cc0836611bccdf63f28de67:screens/SignUpFlow/IndividualScreensBackUp/AboutYou.js
+import { Icon, Input } from "react-native-elements";
+import { Chevron } from "react-native-shapes";
 
 class AboutYou extends Component {
   constructor(props) {
@@ -46,12 +44,12 @@ class AboutYou extends Component {
       zipCode: "",
       empty: false,
       passed: true,
-      firstNameWarning: "",
-      lastNameWarning: "",
-      genderWarning: "",
-      countryWarning: "",
-      zipCodeWarning: "",
-      birthDateWarning: ""
+      firstNameWarning: "empty",
+      lastNameWarning: "empty",
+      genderWarning: "empty",
+      countryWarning: "empty",
+      zipCodeWarning: "empty",
+      birthDateWarning: "empty"
     };
   }
 
@@ -121,11 +119,13 @@ class AboutYou extends Component {
 
     //check invalid/empty firstName
     if (this.state.firstName === "") {
+      console.log("Empty FirstName");
       firstName = false;
       this.setState({
         firstNameWarning: "empty"
       });
     } else if (!this.checkName(this.state.firstName)) {
+      console.log("Invalid FirstName");
       firstName = false;
       this.setState({
         firstNameWarning: "invalid"
@@ -139,11 +139,13 @@ class AboutYou extends Component {
 
     //check invalid/empty lastName
     if (this.state.lastName === "") {
+      console.log("Empty LastName");
       lastName = false;
       this.setState({
         lastNameWarning: "empty"
       });
     } else if (!this.checkName(this.state.lastName)) {
+      console.log("Invalid LastName");
       lastName = false;
       this.setState({
         lastNameWarning: "invalid"
@@ -157,11 +159,13 @@ class AboutYou extends Component {
 
     //check invalid/empty birthDate
     if (this.state.birthDate === "") {
+      console.log("Empty Birthdate");
       birthDate = false;
       this.setState({
         birthDateWarning: "empty"
       });
     } else if (!this.checkage(this.state.birthDate)) {
+      console.log("Invalid Birthdate");
       birthDate = false;
       this.setState({
         birthDateWarning: "invalid"
@@ -175,6 +179,7 @@ class AboutYou extends Component {
 
     //check invalid/empty gender
     if (this.state.gender === "") {
+      console.log("Empty Gender");
       gender = false;
       this.setState({
         genderWarning: "empty"
@@ -188,6 +193,7 @@ class AboutYou extends Component {
 
     //check invalid/empty country
     if (this.state.country === "") {
+      console.log("Empty Country");
       country = false;
       this.setState({
         countryWarning: "empty"
@@ -201,11 +207,13 @@ class AboutYou extends Component {
 
     //check invalid/empty zipCode
     if (this.state.zipCode === "") {
+      console.log("Empty ZipCode");
       zipCode = false;
       this.setState({
         zipCodeWarning: "empty"
       });
     } else if (!this.checkZipCode(this.state.zipCode)) {
+      console.log("Invalid ZipCode");
       zipCode = false;
       this.setState({
         zipCodeWarning: "invalid"
@@ -244,6 +252,7 @@ class AboutYou extends Component {
       });
     } else {
       //if all tests passed, set passed to true and navigate to next screen
+      console.log("Passed");
       this.setState(
         {
           passed: true
@@ -269,28 +278,26 @@ class AboutYou extends Component {
     let passed = <View style={styles.warningText} />;
 
     let invalidFirstNameLastNameWarning = (
-      <Text style={styles.warningText}>* Only Accept Letters and Spaces. </Text>
+      <Text style={styles.warningText}>error: only Accept Letters and Spaces. </Text>
     );
     let invalidBirthDateWarning = (
-      <Text style={styles.warningText}>* You MUST be at least 18!</Text>
+      <Text style={styles.warningText}>error: You MUST be at least 18!</Text>
     );
     let invalidGenderCountryWarning = (
-      <Text style={styles.warningText}>* Field cannot be empty!</Text>
+      <Text style={styles.warningText}>error: field cannot be empty!</Text>
     );
     let invalidZipCodeWarning = (
-      <Text style={styles.warningText}>* Zip code MUST be 5 digits</Text>
+      <Text style={styles.warningText}>error: Zip code MUST be 5 digits</Text>
     );
-    let empty = <Text style={styles.warningText}>* Empty field</Text>;
+    let empty = <Text style={styles.warningText}>error: empty field</Text>;
 
     return (
-<<<<<<< HEAD:screens/SignUpFlow/AboutYou.js
-      <View >
-
-          <SafeAreaView style={styles.container}>
-
-=======
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : null}
+        keyboardVerticalOffset={Platform.select({
+          ios: () => -100,
+          android: () => 200
+        })()}
         style={{ flex: 1 }}
       >
         <LinearGradient
@@ -299,13 +306,12 @@ class AboutYou extends Component {
           style={{ flex: 1 }}
         >
           <SafeAreaView style={styles.container}>
->>>>>>> 9a8044f056b2b5a10cc0836611bccdf63f28de67:screens/SignUpFlow/IndividualScreensBackUp/AboutYou.js
             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
               <View style={styles.wholeWrap}>
                 {/*Spaces*/}
                 <View
                   style={{
-                    padding: "30%"
+                    padding: "20%"
                     //borderRadius: 4,
                     //borderWidth: 0.5,
                     //borderColor: "#d6d7da"
@@ -318,7 +324,7 @@ class AboutYou extends Component {
                 {/*Spaces*/}
                 <View
                   style={{
-                    padding: "5%"
+                    padding: "10%"
                     //borderRadius: 4,
                     //borderWidth: 0.5,
                     //borderColor: "#d6d7da"
@@ -327,16 +333,25 @@ class AboutYou extends Component {
 
                 {/**firstName */}
                 <View style={{ width: "100%" }}>
-                  <TextInput
-                    style={styles.nameInputBox}
-                    placeholder="first name "
-                    onChangeText={firstName => this.setState({ firstName })}
+                  <Input
+                    placeholder="first name"
                     placeholderTextColor="#fff"
+                    containerStyle={styles.inputContainerStyle}
+                    inputStyle={styles.inputStyle}
+                    rightIcon={{
+                      type: "font-awesome",
+                      name:
+                        this.state.firstNameWarning === ""
+                          ? "check"
+                          : "exclamation",
+                      color: "#fff"
+                    }}
+                    onChangeText={firstName => this.setState({ firstName })}
                   />
+                  {this.state.firstNameWarning === "empty" && empty}
+                  {this.state.firstNameWarning === "invalid" &&
+                    invalidFirstNameLastNameWarning}
                 </View>
-                {this.state.firstNameWarning === "empty" && empty}
-                {this.state.firstNameWarning === "invalid" &&
-                  invalidFirstNameLastNameWarning}
 
                 {/*Spaces*/}
                 <View
@@ -350,16 +365,25 @@ class AboutYou extends Component {
 
                 {/**lastName */}
                 <View style={{ width: "100%" }}>
-                  <TextInput
-                    style={styles.nameInputBox}
+                  <Input
                     placeholder="last name"
-                    onChangeText={lastName => this.setState({ lastName })}
                     placeholderTextColor="#fff"
+                    containerStyle={styles.inputContainerStyle}
+                    inputStyle={styles.inputStyle}
+                    rightIcon={{
+                      type: "font-awesome",
+                      name:
+                        this.state.lastNameWarning === ""
+                          ? "check"
+                          : "exclamation",
+                      color: "#fff"
+                    }}
+                    onChangeText={lastName => this.setState({ lastName })}
                   />
+                  {this.state.lastNameWarning === "empty" && empty}
+                  {this.state.lastNameWarning === "invalid" &&
+                    invalidFirstNameLastNameWarning}
                 </View>
-                {this.state.lastNameWarning === "empty" && empty}
-                {this.state.lastNameWarning === "invalid" &&
-                  invalidFirstNameLastNameWarning}
 
                 <View
                   style={{
@@ -375,7 +399,7 @@ class AboutYou extends Component {
                   {/**birth */}
                   <View style={styles.birthdatePicker}>
                     <DatePicker
-                      style={{ width: "90%" }}
+                      style={{ width: "97%" }}
                       date={this.state.birthDate}
                       mode="date"
                       placeholder="birthdate"
@@ -384,6 +408,13 @@ class AboutYou extends Component {
                       maxDate={this.maxDate()}
                       confirmBtnText="Confirm"
                       cancelBtnText="Cancel"
+                      iconComponent={
+                        <Chevron
+                          size={1.5}
+                          style={{ top: 5, right: 15 }}
+                          color="#fff"
+                        />
+                      }
                       customStyles={birthdatePickerCustom}
                       onDateChange={date => {
                         this.setState({ birthDate: date });
@@ -409,6 +440,15 @@ class AboutYou extends Component {
                         });
                       }}
                       value={this.state.gender}
+                      Icon={() => {
+                        return (
+                          <Chevron
+                            size={1.5}
+                            style={{ top: 20, right: 15 }}
+                            color="#fff"
+                          />
+                        );
+                      }}
                     />
                     {this.state.genderWarning === "empty" && empty}
                     {this.state.genderWarning === "invalid" &&
@@ -433,6 +473,15 @@ class AboutYou extends Component {
                         });
                       }}
                       value={this.state.country}
+                      Icon={() => {
+                        return (
+                          <Chevron
+                            size={1.5}
+                            style={{ top: 20, right: 20 }}
+                            color="#fff"
+                          />
+                        );
+                      }}
                     />
                     {this.state.countryWarning === "empty" && empty}
                     {this.state.countryWarning === "invalid" &&
@@ -441,18 +490,25 @@ class AboutYou extends Component {
 
                   {/**zip */}
                   <View style={styles.zipCodeInputWrap}>
-                    <TextInput
-                      style={styles.zipCodeInput}
+                    <Input
                       placeholder="zip code"
-                      name="zipCode"
-                      onChangeText={zipCode => this.setState({ zipCode })}
-                      value={this.state.zipCode}
                       placeholderTextColor="#fff"
+                      containerStyle={styles.inputContainerStyle}
+                      inputStyle={styles.inputStyle}
                       autoCompleteType={false}
                       autoCapitalize="none"
                       autoCorrect={false}
                       keyboardType="numeric"
                       maxLength={5}
+                      rightIcon={{
+                        type: "font-awesome",
+                        name:
+                          this.state.zipCodeWarning === ""
+                            ? "check"
+                            : "exclamation",
+                        color: "#fff"
+                      }}
+                      onChangeText={zipCode => this.setState({ zipCode })}
                     />
                     {this.state.zipCodeWarning === "empty" && empty}
                     {this.state.zipCodeWarning === "invalid" &&
@@ -460,19 +516,10 @@ class AboutYou extends Component {
                   </View>
                 </View>
 
-                {/*Empty Data exist*/}
-                <View>
-                  {this.state.empty ? (
-                    <Text style={styles.warningText}>* all field Required</Text>
-                  ) : (
-                    <View style={styles.warningText} />
-                  )}
-                </View>
-
                 {/*Spaces*/}
                 <View
                   style={{
-                    padding: "20%"
+                    padding: "25%"
                     //borderRadius: 4,
                     //borderWidth: 0.5,
                     //borderColor: "#d6d7da"
@@ -492,7 +539,6 @@ class AboutYou extends Component {
                     <Text style={{ color: "#fff" }}>Next</Text>
                   </TouchableOpacity>
                 </View>
-                <View style={{ flex: 1 }} />
               </View>
             </TouchableWithoutFeedback>
           </SafeAreaView>
@@ -506,21 +552,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1
   },
-<<<<<<< HEAD:screens/SignUpFlow/AboutYou.js
-  titleText:{
-    margin:10,
-    color: 'black',
-    fontSize:48,
-    textAlign:"center",
-    fontWeight:"100"
-=======
   titleText: {
     margin: 10,
     color: "#fff",
     fontSize: 48,
     textAlign: "center",
     fontWeight: "100"
->>>>>>> 9a8044f056b2b5a10cc0836611bccdf63f28de67:screens/SignUpFlow/IndividualScreensBackUp/AboutYou.js
   },
   wholeWrap: {
     flex: 1,
@@ -544,12 +581,24 @@ const styles = StyleSheet.create({
     width: "70%"
   },
   aboutMeText: {
-    color: "black",
+    color: "#fff",
     fontSize: 45,
     fontWeight: "100"
   },
   aboutMeTextWrap: {
     alignItems: "center"
+  },
+  inputContainerStyle: {
+    borderTopWidth: 0,
+    borderLeftWidth: 0,
+    borderRightWidth: 0,
+    borderBottomWidth: 1,
+    borderColor: "#fff"
+  },
+  inputStyle: {
+    color: "#fff",
+    fontSize: 15,
+    fontWeight: "100"
   },
   nameInputBox: {
     color: "white",
@@ -582,7 +631,8 @@ const styles = StyleSheet.create({
   countryPickerWrap: {
     width: "45%",
     position: "absolute",
-    left: "0%"
+    left: "0%",
+    paddingTop: "4%"
   },
   zipCodeInput: {
     color: "#fff",
@@ -604,9 +654,10 @@ const styles = StyleSheet.create({
     marginBottom: "15%"
   },
   warningText: {
-    color: "#fff",
-    fontSize: 8,
-    paddingTop: "3%"
+    color: "red",
+    fontSize: 10,
+    paddingTop: "3%",
+    fontWeight: "bold"
   }
 });
 
@@ -617,7 +668,8 @@ const genderPicker = {
     borderColor: "#fff",
     fontSize: 15,
     fontWeight: "100",
-    paddingVertical: 10.5
+    paddingVertical: 10.5,
+    paddingHorizontal: 9
   },
   placeholder: {
     color: "#fff",
@@ -627,7 +679,7 @@ const genderPicker = {
 
 const birthdatePickerCustom = {
   dateIcon: {
-    display: "none"
+    //display: "none"
   },
   dateInput: {
     borderTopWidth: 0,
@@ -641,14 +693,16 @@ const birthdatePickerCustom = {
     fontSize: 13,
     position: "absolute",
     left: "0%",
-    fontWeight: "100"
+    fontWeight: "100",
+    paddingHorizontal: 9
   },
   placeholderText: {
     color: "#fff",
     fontSize: 15,
     position: "absolute",
     left: "0%",
-    fontWeight: "100"
+    fontWeight: "100",
+    paddingHorizontal: 9
   }
 };
 
@@ -660,7 +714,8 @@ const countryPicker = {
     borderColor: "#fff",
     fontSize: 15,
     fontWeight: "100",
-    paddingVertical: 9
+    paddingVertical: 9,
+    paddingHorizontal: 9
   },
   placeholder: {
     color: "#fff",

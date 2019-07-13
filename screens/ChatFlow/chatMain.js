@@ -6,7 +6,7 @@ import Login from "./Login";
 import Users from "./Users";
 import Chat from "./Chat";
 
-
+//this should be data sent from the back end
 const instanceLocatorId = "0c189a30-bee2-488b-a6db-6797b29c25f2";
     const presenceRoomId = '19385076'; // room ID of the general room created through the chatKit inspector
 
@@ -14,6 +14,8 @@ const instanceLocatorId = "0c189a30-bee2-488b-a6db-6797b29c25f2";
       url: `https://us1.pusherplatform.io/services/chatkit_token_provider/v1/${instanceLocatorId}/token`
     });
     const chatServer = "http://74.80.250.210:3000/users";
+
+//.....................................................................
 
 export default class App extends React.Component {
   state = {
@@ -37,6 +39,7 @@ export default class App extends React.Component {
     this.roomId = null;
     this.chatWithUser = null;
   }
+
   static navigationOptions = {
     //header: null,
     title: 'Chat',
@@ -49,6 +52,34 @@ export default class App extends React.Component {
       fontSize:24
     },
   };
+
+  componentDidMount(){
+    this.handleAsyncLoad()
+  }
+
+  handleAsyncLoad = async() => {
+    // need auth to get into homescreen
+
+
+    try{
+          let data = await fetch('http://10.0.0.246:3000/api/chat', {
+            method: 'GET',
+            mode:'cors',
+            credentials: "same-origin",
+            headers: {
+              Accept: 'application/json',
+              'Content-Type': 'application/json'
+            },
+          })
+
+        let jsonData = await data.json()
+        console.log(jsonData)
+        //this.props.navigation.navigate('Chat');
+    } catch(e){
+      console.log('we recieved an error:',e)
+    }
+  }
+
   render() {
     return (
       <View style={styles.container}>

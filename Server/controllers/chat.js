@@ -4,6 +4,7 @@ const Conversation = require('../models/conversation'),
   User = require('../models/users');
 
 exports.getConversations = function (req, res, next) {
+  console.log('were inside get conversations')
   // Only return one message from each conversation to display as snippet
   Conversation.find({ participants: req.user._id })
     .select('_id')
