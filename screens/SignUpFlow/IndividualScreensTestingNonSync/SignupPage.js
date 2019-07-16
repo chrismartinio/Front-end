@@ -174,6 +174,7 @@ class Welcome extends Component {
         password_NumberSymbolWarning: true,
         password_LengthWarning: true
       });
+      //purpose of double check because of setState bug; maybe there have a way to optimize this
     } else if (!this.passwordCheck(this.state.password)) {
       console.log("Invalid Password");
       password = false;

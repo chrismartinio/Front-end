@@ -52,18 +52,43 @@ class Welcome extends Component {
       confirmPasswordWarning: "empty",
       password_UpperLowerCaseWarning: true,
       password_NumberSymbolWarning: true,
-      password_LengthWarning: true
+      password_LengthWarning: true,
+      passed: false
     };
   }
   handleBackToSignIn = () => {
     this.props.navigation.navigate("SignIn");
   };
 
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    //if there have any udpate to the warnings by checking this.state and prevState
+    //then call the allChecker()
+    //allCheck will check if there any warnings
+    //If there have warnings: button show transparent (passed)
+    //If there have no warnings: button show green (passed)
+    if (
+      this.state.emailWarning !== prevState.emailWarning ||
+      this.state.confirmEmailWarning !== prevState.confirmEmailWarning ||
+      this.state.passwordWarning !== prevState.passwordWarning ||
+      this.state.confirmPasswordWarning !== prevState.confirmPasswordWarning
+    ) {
+      this.allChecker();
+    }
+  }
+
+  //format checkers below
   emailCheck = email => {
     // email validty check?
     const checkAT = email.indexOf("@");
     const checkCOM = email.indexOf(".com");
     if (checkAT > 0 && checkCOM > 0 && email.length > 4) {
+      return true;
+    }
+    return false;
+  };
+
+  nullCheck = value => {
+    if (value !== "") {
       return true;
     }
     return false;
@@ -83,7 +108,7 @@ class Welcome extends Component {
     // use positive look ahead to see if at least one upper case letter exists
     //regExp = /^(?=.*[A-Z])/;
     if (!(/^(?=.*[a-z])/.test(password) && /^(?=.*[A-Z])/.test(password))) {
-      console.log("not including any lower and upper case");
+      console.log("not including any lower and upper cases");
       return false;
     }
     return true;
@@ -100,6 +125,7 @@ class Welcome extends Component {
     }
     return true;
   };
+
   passwordCheck = password => {
     let pLength = this.passwordLength(password);
     let pCase = this.passworcdCase(password);
@@ -118,56 +144,48 @@ class Welcome extends Component {
     return true;
   };
 
-  nullCheck = value => {
-    if (value !== "") {
-      return true;
-    }
-    return false;
-  };
+  //format checkers above
 
-  handleSubmit = () => {
-    let email = false,
-      password = false;
-
-    //check Invalid/Empty/Confirm Email
+  //check email
+  emailChecker = () => {
     if (!this.nullCheck(this.state.email)) {
       console.log("Empty Email");
-      email = false;
       this.setState({
         emailWarning: "empty"
       });
     } else if (!this.emailCheck(this.state.email)) {
       console.log("Invalid Email");
-      email = false;
       this.setState({
         emailWarning: "invalid"
       });
-    } else if (!this.nullCheck(this.state.confirmEmail)) {
-      console.log("Empty Confirm Email");
-      email = false;
+    } else {
       this.setState({
-        emailWarning: "",
+        emailWarning: ""
+      });
+    }
+  };
+
+  confirmEmailChecker = () => {
+    if (!this.nullCheck(this.state.confirmEmail)) {
+      console.log("Empty Confirm Email");
+      this.setState({
         confirmEmailWarning: "empty"
       });
     } else if (this.state.email !== this.state.confirmEmail) {
       console.log("Email and Confirm Email not match");
-      email = false;
       this.setState({
-        emailWarning: "",
         confirmEmailWarning: "notmatch"
       });
     } else {
-      email = true;
       this.setState({
-        emailWarning: "",
         confirmEmailWarning: ""
       });
     }
+  };
 
-    //check Invalid/Empty/Confirm Password
+  passwordChecker = () => {
     if (!this.nullCheck(this.state.password)) {
       console.log("Empty Password");
-      password = false;
       this.setState({
         passwordWarning: "empty",
         password_UpperLowerCaseWarning: true,
@@ -176,7 +194,6 @@ class Welcome extends Component {
       });
     } else if (!this.passwordCheck(this.state.password)) {
       console.log("Invalid Password");
-      password = false;
       let pLength = !this.passwordLength(this.state.password);
       let pLetterCase = !this.passworcdCase(this.state.password);
       let pNonLetter = !this.passwordNonLetter(this.state.password);
@@ -186,47 +203,75 @@ class Welcome extends Component {
         password_NumberSymbolWarning: pNonLetter,
         password_LengthWarning: pLength
       });
-    } else if (!this.nullCheck(this.state.confirmPassword)) {
-      console.log("Empty Confirm Password");
-      password = false;
-      this.setState({
-        passwordWarning: "",
-        confirmPasswordWarning: "empty",
-        password_UpperLowerCaseWarning: false,
-        password_NumberSymbolWarning: false,
-        password_LengthWarning: false
-      });
-    } else if (this.state.password !== this.state.confirmPassword) {
-      console.log("Password and Confirm Password not match");
-      password = false;
-      this.setState({
-        passwordWarning: "",
-        confirmPasswordWarning: "notmatch",
-        password_UpperLowerCaseWarning: false,
-        password_NumberSymbolWarning: false,
-        password_LengthWarning: false
-      });
     } else {
-      password = true;
       this.setState({
         passwordWarning: "",
-        confirmPasswordWarning: "",
         password_UpperLowerCaseWarning: false,
         password_NumberSymbolWarning: false,
         password_LengthWarning: false
       });
     }
+  };
 
-    if (email && password) {
-      console.log("Passed");
+  confirmPasswordChecker = () => {
+    if (!this.nullCheck(this.state.confirmPassword)) {
+      console.log("Empty Confirm Password");
+      password = false;
+      this.setState({
+        confirmPasswordWarning: "empty"
+      });
+    } else if (this.state.password !== this.state.confirmPassword) {
+      console.log("Password and Confirm Password not match");
+      password = false;
+      this.setState({
+        confirmPasswordWarning: "notmatch"
+      });
+    } else {
+      password = true;
+      this.setState({
+        confirmPasswordWarning: ""
+      });
+    }
+  };
 
+  //control next button style and next screen
+  allChecker = () => {
+    if (
+      this.state.emailWarning === "" &&
+      this.state.confirmEmailWarning === "" &&
+      this.state.passwordWarning === "" &&
+      this.state.confirmPasswordWarning === ""
+    ) {
+      this.setState(
+        {
+          passed: true
+        },
+        () => {
+          console.log("passed");
+        }
+      );
+    } else {
+      this.setState(
+        {
+          passed: false
+        },
+        () => {
+          console.log("not passed");
+        }
+      );
+    }
+  };
+
+  handleSubmit = () => {
+    if(this.state.passed) {
       this.props.SetUserDataAction({
         email: this.state.email,
         password: this.state.password
       });
       this.props.navigation.navigate("TestAboutYou");
     }
-  };
+  }
+
   render() {
     let empty = <Text style={styles.warningText}>error: empty field</Text>;
 
@@ -298,7 +343,11 @@ class Welcome extends Component {
                     autoCompleteType={false}
                     autoCapitalize="none"
                     autoCorrect={false}
-                    onChangeText={email => this.setState({ email })}
+                    onChangeText={email =>
+                      this.setState({ email }, () => {
+                        this.emailChecker();
+                      })
+                    }
                   />
                   {this.state.emailWarning === "empty" && empty}
                   {this.state.emailWarning === "invalid" && invalidEmailWarning}
@@ -328,7 +377,9 @@ class Welcome extends Component {
                     autoCapitalize="none"
                     autoCorrect={false}
                     onChangeText={confirmEmail =>
-                      this.setState({ confirmEmail })
+                      this.setState({ confirmEmail }, () => {
+                        this.confirmEmailChecker();
+                      })
                     }
                   />
                   {this.state.confirmEmailWarning === "empty" && empty}
@@ -360,7 +411,11 @@ class Welcome extends Component {
                     autoCapitalize="none"
                     autoCorrect={false}
                     secureTextEntry={true}
-                    onChangeText={password => this.setState({ password })}
+                    onChangeText={password =>
+                      this.setState({ password }, () => {
+                        this.passwordChecker();
+                      })
+                    }
                   />
                   {this.state.passwordWarning === "empty" && empty}
                   {this.state.passwordWarning === "invalid" &&
@@ -392,7 +447,9 @@ class Welcome extends Component {
                     autoCorrect={false}
                     secureTextEntry={true}
                     onChangeText={confirmPassword =>
-                      this.setState({ confirmPassword })
+                      this.setState({ confirmPassword }, () => {
+                        this.confirmPasswordChecker();
+                      })
                     }
                   />
                   {this.state.confirmPasswordWarning === "empty" && empty}
@@ -489,7 +546,9 @@ class Welcome extends Component {
                 <Text />
                 <View alignItems="center">
                   <TouchableOpacity
-                    style={styles.button2}
+                    style={
+                      this.state.passed ? styles.passedButton2 : styles.button2
+                    }
                     onPress={this.handleSubmit}
                   >
                     <Text style={styles.button}>Next</Text>
@@ -555,6 +614,15 @@ const styles = StyleSheet.create({
   button2: {
     alignItems: "center",
     //backgroundColor: '#fff',
+    padding: 10,
+    borderRadius: 40,
+    borderWidth: 2,
+    borderColor: "#fff",
+    width: "55%"
+  },
+  passedButton2: {
+    alignItems: "center",
+    backgroundColor: "green",
     padding: 10,
     borderRadius: 40,
     borderWidth: 2,
