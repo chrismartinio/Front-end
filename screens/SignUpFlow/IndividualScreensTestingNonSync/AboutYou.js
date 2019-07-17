@@ -278,7 +278,9 @@ class AboutYou extends Component {
     let passed = <View style={styles.warningText} />;
 
     let invalidFirstNameLastNameWarning = (
-      <Text style={styles.warningText}>error: only Accept Letters and Spaces. </Text>
+      <Text style={styles.warningText}>
+        error: only Accept Letters and Spaces.{" "}
+      </Text>
     );
     let invalidBirthDateWarning = (
       <Text style={styles.warningText}>error: You MUST be at least 18!</Text>
@@ -338,14 +340,19 @@ class AboutYou extends Component {
                     placeholderTextColor="#fff"
                     containerStyle={styles.inputContainerStyle}
                     inputStyle={styles.inputStyle}
-                    rightIcon={{
-                      type: "font-awesome",
-                      name:
-                        this.state.firstNameWarning === ""
-                          ? "check"
-                          : "exclamation",
-                      color: "#fff"
-                    }}
+                    rightIcon={
+                      this.state.firstNameWarning === ""
+                        ? {
+                            type: "font-awesome",
+                            name: "check",
+                            color: "orange"
+                          }
+                        : {
+                            type: "font-awesome",
+                            name: "exclamation-circle",
+                            color: "#FF4500"
+                          }
+                    }
                     onChangeText={firstName => this.setState({ firstName })}
                   />
                   {this.state.firstNameWarning === "empty" && empty}
@@ -370,14 +377,19 @@ class AboutYou extends Component {
                     placeholderTextColor="#fff"
                     containerStyle={styles.inputContainerStyle}
                     inputStyle={styles.inputStyle}
-                    rightIcon={{
-                      type: "font-awesome",
-                      name:
-                        this.state.lastNameWarning === ""
-                          ? "check"
-                          : "exclamation",
-                      color: "#fff"
-                    }}
+                    rightIcon={
+                      this.state.lastNameWarning === ""
+                        ? {
+                            type: "font-awesome",
+                            name: "check",
+                            color: "orange"
+                          }
+                        : {
+                            type: "font-awesome",
+                            name: "exclamation-circle",
+                            color: "#FF4500"
+                          }
+                    }
                     onChangeText={lastName => this.setState({ lastName })}
                   />
                   {this.state.lastNameWarning === "empty" && empty}
@@ -409,11 +421,21 @@ class AboutYou extends Component {
                       confirmBtnText="Confirm"
                       cancelBtnText="Cancel"
                       iconComponent={
-                        <Chevron
-                          size={1.5}
-                          style={{ top: 5, right: 15 }}
-                          color="#fff"
-                        />
+                        this.state.birthDateWarning === "" ? (
+                          <Chevron
+                            size={1.5}
+                            style={{ top: 5, right: 15 }}
+                            color="#fff"
+                          />
+                        ) : (
+                          <Icon
+                            type="font-awesome"
+                            name="exclamation-circle"
+                            color="#FF4500"
+                            size={16}
+                            iconStyle={{ top: 0, right: 15 }}
+                          />
+                        )
                       }
                       customStyles={birthdatePickerCustom}
                       onDateChange={date => {
@@ -441,11 +463,19 @@ class AboutYou extends Component {
                       }}
                       value={this.state.gender}
                       Icon={() => {
-                        return (
+                        return this.state.genderWarning === "" ? (
                           <Chevron
                             size={1.5}
                             style={{ top: 20, right: 15 }}
                             color="#fff"
+                          />
+                        ) : (
+                          <Icon
+                            type="font-awesome"
+                            name="exclamation-circle"
+                            color="#FF4500"
+                            size={16}
+                            iconStyle={{ top: 13, right: 15 }}
                           />
                         );
                       }}
@@ -474,11 +504,19 @@ class AboutYou extends Component {
                       }}
                       value={this.state.country}
                       Icon={() => {
-                        return (
+                        return this.state.countryWarning === "" ? (
                           <Chevron
                             size={1.5}
                             style={{ top: 20, right: 20 }}
                             color="#fff"
+                          />
+                        ) : (
+                          <Icon
+                            type="font-awesome"
+                            name="exclamation-circle"
+                            color="#FF4500"
+                            size={16}
+                            iconStyle={{ top: 11, right: 19 }}
                           />
                         );
                       }}
@@ -500,14 +538,21 @@ class AboutYou extends Component {
                       autoCorrect={false}
                       keyboardType="numeric"
                       maxLength={5}
-                      rightIcon={{
-                        type: "font-awesome",
-                        name:
-                          this.state.zipCodeWarning === ""
-                            ? "check"
-                            : "exclamation",
-                        color: "#fff"
-                      }}
+                      rightIcon={
+                        this.state.zipCodeWarning === ""
+                          ? {
+                              type: "font-awesome",
+                              name: "check",
+                              color: "orange"
+                            }
+                          : {
+                              type: "font-awesome",
+                              name: "exclamation-circle",
+                              color: "#FF4500",
+                              size: 16,
+                              iconStyle: { top: 4, right: 5 }
+                            }
+                      }
                       onChangeText={zipCode => this.setState({ zipCode })}
                     />
                     {this.state.zipCodeWarning === "empty" && empty}
