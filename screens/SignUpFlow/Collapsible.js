@@ -142,7 +142,7 @@ class Welcome extends Component {
       </CollapseHeader>
       <CollapseBody>
           <AboutYou/>
-        
+
       </CollapseBody>
     </Collapse>
     <Collapse>
@@ -151,7 +151,7 @@ class Welcome extends Component {
       </CollapseHeader>
       <CollapseBody>
           <ImInterestedIn/>
-        
+
       </CollapseBody>
     </Collapse>
     <Collapse>
@@ -160,17 +160,17 @@ class Welcome extends Component {
       </CollapseHeader>
       <CollapseBody>
           <TellUsMore/>
-        
+
       </CollapseBody>
     </Collapse>
-  
+
     <Collapse>
       <CollapseHeader>
           <Text>WouldRather</Text>
       </CollapseHeader>
       <CollapseBody>
           <WouldRather/>
-        
+
       </CollapseBody>
     </Collapse>
 
@@ -180,11 +180,11 @@ class Welcome extends Component {
       </CollapseHeader>
       <CollapseBody>
           <SpendWeekend/>
-        
+
       </CollapseBody>
     </Collapse>
 
-  
+
   </View>
               </View>
             </TouchableWithoutFeedback>

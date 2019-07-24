@@ -11,8 +11,8 @@ export default class LinksScreen extends React.Component {
   constructor(props) {
     super(props);
     this.buttonAry = [
-      "TestSignUp",
       "TestCollapsible",
+      "TestSignUp",
       "TestAboutYou",
       "TestTellUsMore",
       "TestImInterestedIn",
