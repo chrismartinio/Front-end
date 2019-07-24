@@ -43,7 +43,7 @@ class AboutYou extends Component {
       lastName: "",
       zipCode: "",
       empty: false,
-      passed: true,
+      passed: false,
       firstNameWarning: "empty",
       lastNameWarning: "empty",
       genderWarning: "empty",
@@ -52,6 +52,26 @@ class AboutYou extends Component {
       birthDateWarning: "empty"
     };
   }
+
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    //if there have any udpate to the warnings by checking this.state and prevState
+    //then call the allChecker()
+    //allCheck will check if there any warnings
+    //If there have warnings: button show transparent (passed)
+    //If there have no warnings: button show green (passed)
+    if (
+      this.state.firstNameWarning !== prevState.firstNameWarning ||
+      this.state.lastNameWarning !== prevState.lastNameWarning ||
+      this.state.birthDateWarning !== prevState.birthDateWarning ||
+      this.state.genderWarning !== prevState.genderWarning ||
+      this.state.countryWarning !== prevState.countryWarning ||
+      this.state.zipCodeWarning !== prevState.zipCodeWarning
+    ) {
+      this.allChecker();
+    }
+  }
+
+  //format checker below
 
   //return true/false for valid zipcode
   checkZipCode = zipcode => {
@@ -107,17 +127,10 @@ class AboutYou extends Component {
 
     return true;
   };
+  //Format Checker above
 
-  //next button : valid all input fields
-  handleSubmit = evt => {
-    let firstName = false,
-      lastName = false,
-      birthDate = false,
-      gender = false,
-      country = false,
-      zipCode = false;
-
-    //check invalid/empty firstName
+  //checkers
+  firstNameChecker = () => {
     if (this.state.firstName === "") {
       console.log("Empty FirstName");
       firstName = false;
@@ -136,7 +149,9 @@ class AboutYou extends Component {
         firstNameWarning: ""
       });
     }
+  };
 
+  lastNameChecker = () => {
     //check invalid/empty lastName
     if (this.state.lastName === "") {
       console.log("Empty LastName");
@@ -156,55 +171,9 @@ class AboutYou extends Component {
         lastNameWarning: ""
       });
     }
+  };
 
-    //check invalid/empty birthDate
-    if (this.state.birthDate === "") {
-      console.log("Empty Birthdate");
-      birthDate = false;
-      this.setState({
-        birthDateWarning: "empty"
-      });
-    } else if (!this.checkage(this.state.birthDate)) {
-      console.log("Invalid Birthdate");
-      birthDate = false;
-      this.setState({
-        birthDateWarning: "invalid"
-      });
-    } else {
-      birthDate = true;
-      this.setState({
-        birthDateWarning: ""
-      });
-    }
-
-    //check invalid/empty gender
-    if (this.state.gender === "") {
-      console.log("Empty Gender");
-      gender = false;
-      this.setState({
-        genderWarning: "empty"
-      });
-    } else {
-      gender = true;
-      this.setState({
-        genderWarning: ""
-      });
-    }
-
-    //check invalid/empty country
-    if (this.state.country === "") {
-      console.log("Empty Country");
-      country = false;
-      this.setState({
-        countryWarning: "empty"
-      });
-    } else {
-      country = true;
-      this.setState({
-        countryWarning: ""
-      });
-    }
-
+  zipCodeChecker = () => {
     //check invalid/empty zipCode
     if (this.state.zipCode === "") {
       console.log("Empty ZipCode");
@@ -224,53 +193,105 @@ class AboutYou extends Component {
         zipCodeWarning: ""
       });
     }
+  };
 
-    //check input field empty
-    if (
-      this.state.firstName === "" ||
-      this.state.lastName === "" ||
-      this.state.birthDate === "" ||
-      this.state.gender === "" ||
-      this.state.country === "" ||
-      this.state.zipCode === ""
-    ) {
+  birthDateChecker = () => {
+    //check invalid/empty birthDate
+    if (this.state.birthDate === "") {
+      console.log("Empty Birthdate");
+      birthDate = false;
       this.setState({
-        empty: true
+        birthDateWarning: "empty"
+      });
+    } else if (!this.checkage(this.state.birthDate)) {
+      console.log("Invalid Birthdate");
+      birthDate = false;
+      this.setState({
+        birthDateWarning: "invalid"
       });
     } else {
+      birthDate = true;
       this.setState({
-        empty: false
+        birthDateWarning: ""
       });
     }
+  };
 
-    if (!(firstName && lastName && birthDate && gender && country && zipCode)) {
-      //passed is set to true by default
-      //When user first click, and doesn't meet all requirement, set passed to false
-      //purpose of this is to not display "all field required" for user first time visit this screen
+  genderChecker = () => {
+    //check invalid/empty gender
+    if (this.state.gender === "") {
+      console.log("Empty Gender");
+      gender = false;
       this.setState({
-        passed: false
+        genderWarning: "empty"
       });
     } else {
-      //if all tests passed, set passed to true and navigate to next screen
-      console.log("Passed");
+      gender = true;
+      this.setState({
+        genderWarning: ""
+      });
+    }
+  };
+
+  countryChecker = () => {
+    //check invalid/empty country
+    if (this.state.country === "") {
+      console.log("Empty Country");
+      country = false;
+      this.setState({
+        countryWarning: "empty"
+      });
+    } else {
+      country = true;
+      this.setState({
+        countryWarning: ""
+      });
+    }
+  };
+
+  allChecker = () => {
+    if (
+      this.state.firstNameWarning === "" &&
+      this.state.lastNameWarning === "" &&
+      this.state.birthDateWarning === "" &&
+      this.state.genderWarning === "" &&
+      this.state.countryWarning === "" &&
+      this.state.zipCodeWarning === ""
+    ) {
       this.setState(
         {
           passed: true
         },
         () => {
-          //console.log("data here")
-          //console.log(this.props.CreateProfileReducer.data)
-          this.props.SetProfilePersonalAction({
-            firstName: this.state.firstName,
-            lastName: this.state.lastName,
-            birthDate: this.state.birthDate,
-            gender: this.state.gender,
-            country: this.state.country,
-            zipCode: this.state.zipCode
-          });
-          this.props.navigation.navigate("TestTellUsMore");
+          console.log("passed");
         }
       );
+    } else {
+      this.setState(
+        {
+          passed: false
+        },
+        () => {
+          console.log("not passed");
+        }
+      );
+    }
+  };
+
+  //next button : valid all input fields
+  handleSubmit = evt => {
+    if (this.state.passed) {
+      //if all tests passed, set passed to true and navigate to next screen
+      console.log("Passed");
+      this.props.SetProfilePersonalAction({
+        firstName: this.state.firstName,
+        lastName: this.state.lastName,
+        birthDate: this.state.birthDate,
+        gender: this.state.gender,
+        country: this.state.country,
+        zipCode: this.state.zipCode
+      });
+      this.props.navigation.navigate("TestTellUsMore");
     }
   };
 
@@ -278,7 +299,9 @@ class AboutYou extends Component {
     let passed = <View style={styles.warningText} />;
 
     let invalidFirstNameLastNameWarning = (
-      <Text style={styles.warningText}>error: only Accept Letters and Spaces. </Text>
+      <Text style={styles.warningText}>
+        error: only Accept Letters and Spaces.{" "}
+      </Text>
     );
     let invalidBirthDateWarning = (
       <Text style={styles.warningText}>error: You MUST be at least 18!</Text>
@@ -290,6 +313,14 @@ class AboutYou extends Component {
       <Text style={styles.warningText}>error: Zip code MUST be 5 digits</Text>
     );
     let empty = <Text style={styles.warningText}>error: empty field</Text>;
+
+    let allEmptyWarning =
+      this.state.firstNameWarning === "empty" ||
+      this.state.lastNameWarning === "empty" ||
+      this.state.birthDateWarning === "empty" ||
+      this.state.genderWarning === "empty" ||
+      this.state.countryWarning === "empty" ||
+      this.state.zipCodeWarning === "empty";
 
     return (
       <KeyboardAvoidingView
@@ -338,15 +369,24 @@ class AboutYou extends Component {
                     placeholderTextColor="#fff"
                     containerStyle={styles.inputContainerStyle}
                     inputStyle={styles.inputStyle}
-                    rightIcon={{
-                      type: "font-awesome",
-                      name:
-                        this.state.firstNameWarning === ""
-                          ? "check"
-                          : "exclamation",
-                      color: "#fff"
-                    }}
-                    onChangeText={firstName => this.setState({ firstName })}
+                    rightIcon={
+                      this.state.firstNameWarning === ""
+                        ? {
+                            type: "font-awesome",
+                            name: "check",
+                            color: "orange"
+                          }
+                        : {
+                            type: "font-awesome",
+                            name: "exclamation-circle",
+                            color: "#FF4500"
+                          }
+                    }
+                    onChangeText={firstName =>
+                      this.setState({ firstName }, () => {
+                        this.firstNameChecker();
+                      })
+                    }
                   />
                   {this.state.firstNameWarning === "empty" && empty}
                   {this.state.firstNameWarning === "invalid" &&
@@ -370,15 +410,24 @@ class AboutYou extends Component {
                     placeholderTextColor="#fff"
                     containerStyle={styles.inputContainerStyle}
                     inputStyle={styles.inputStyle}
-                    rightIcon={{
-                      type: "font-awesome",
-                      name:
-                        this.state.lastNameWarning === ""
-                          ? "check"
-                          : "exclamation",
-                      color: "#fff"
-                    }}
-                    onChangeText={lastName => this.setState({ lastName })}
+                    rightIcon={
+                      this.state.lastNameWarning === ""
+                        ? {
+                            type: "font-awesome",
+                            name: "check",
+                            color: "orange"
+                          }
+                        : {
+                            type: "font-awesome",
+                            name: "exclamation-circle",
+                            color: "#FF4500"
+                          }
+                    }
+                    onChangeText={lastName =>
+                      this.setState({ lastName }, () => {
+                        this.lastNameChecker();
+                      })
+                    }
                   />
                   {this.state.lastNameWarning === "empty" && empty}
                   {this.state.lastNameWarning === "invalid" &&
@@ -409,15 +458,27 @@ class AboutYou extends Component {
                       confirmBtnText="Confirm"
                       cancelBtnText="Cancel"
                       iconComponent={
-                        <Chevron
-                          size={1.5}
-                          style={{ top: 5, right: 15 }}
-                          color="#fff"
-                        />
+                        this.state.birthDateWarning === "" ? (
+                          <Chevron
+                            size={1.5}
+                            style={{ top: 5, right: 15 }}
+                            color="#fff"
+                          />
+                        ) : (
+                          <Icon
+                            type="font-awesome"
+                            name="exclamation-circle"
+                            color="#FF4500"
+                            size={16}
+                            iconStyle={{ top: 0, right: 15 }}
+                          />
+                        )
                       }
                       customStyles={birthdatePickerCustom}
                       onDateChange={date => {
-                        this.setState({ birthDate: date });
+                        this.setState({ birthDate: date }, () => {
+                          this.birthDateChecker();
+                        });
                       }}
                     />
                     {this.state.birthDateWarning === "empty" && empty}
@@ -435,17 +496,30 @@ class AboutYou extends Component {
                       }}
                       items={genders}
                       onValueChange={value => {
-                        this.setState({
-                          gender: value
-                        });
+                        this.setState(
+                          {
+                            gender: value
+                          },
+                          () => {
+                            this.genderChecker();
+                          }
+                        );
                       }}
                       value={this.state.gender}
                       Icon={() => {
-                        return (
+                        return this.state.genderWarning === "" ? (
                           <Chevron
                             size={1.5}
                             style={{ top: 20, right: 15 }}
                             color="#fff"
+                          />
+                        ) : (
+                          <Icon
+                            type="font-awesome"
+                            name="exclamation-circle"
+                            color="#FF4500"
+                            size={16}
+                            iconStyle={{ top: 13, right: 15 }}
                           />
                         );
                       }}
@@ -468,17 +542,30 @@ class AboutYou extends Component {
                       }}
                       items={countries}
                       onValueChange={value => {
-                        this.setState({
-                          country: value
-                        });
+                        this.setState(
+                          {
+                            country: value
+                          },
+                          () => {
+                            this.countryChecker();
+                          }
+                        );
                       }}
                       value={this.state.country}
                       Icon={() => {
-                        return (
+                        return this.state.countryWarning === "" ? (
                           <Chevron
                             size={1.5}
                             style={{ top: 20, right: 20 }}
                             color="#fff"
+                          />
+                        ) : (
+                          <Icon
+                            type="font-awesome"
+                            name="exclamation-circle"
+                            color="#FF4500"
+                            size={16}
+                            iconStyle={{ top: 11, right: 19 }}
                           />
                         );
                       }}
@@ -500,21 +587,46 @@ class AboutYou extends Component {
                       autoCorrect={false}
                       keyboardType="numeric"
                       maxLength={5}
-                      rightIcon={{
-                        type: "font-awesome",
-                        name:
-                          this.state.zipCodeWarning === ""
-                            ? "check"
-                            : "exclamation",
-                        color: "#fff"
-                      }}
-                      onChangeText={zipCode => this.setState({ zipCode })}
+                      rightIcon={
+                        this.state.zipCodeWarning === ""
+                          ? {
+                              type: "font-awesome",
+                              name: "check",
+                              color: "orange"
+                            }
+                          : {
+                              type: "font-awesome",
+                              name: "exclamation-circle",
+                              color: "#FF4500",
+                              size: 16,
+                              iconStyle: { top: 4, right: 5 }
+                            }
+                      }
+                      onChangeText={zipCode =>
+                        this.setState({ zipCode }, () => {
+                          this.zipCodeChecker();
+                        })
+                      }
                     />
                     {this.state.zipCodeWarning === "empty" && empty}
                     {this.state.zipCodeWarning === "invalid" &&
                       invalidZipCodeWarning}
                   </View>
                 </View>
+
+                {/*Spaces*/}
+                <View
+                  style={{
+                    padding: "2%"
+                    //borderRadius: 4,
+                    //borderWidth: 0.5,
+                    //borderColor: "#d6d7da"
+                  }}
+                />
+
+                {allEmptyWarning && (
+                  <Text style={styles.warningText}>*all fields required</Text>
+                )}
 
                 {/*Spaces*/}
                 <View
@@ -533,7 +645,9 @@ class AboutYou extends Component {
                   }}
                 >
                   <TouchableOpacity
-                    style={styles.button}
+                    style={
+                      this.state.passed ? styles.passedButton : styles.button
+                    }
                     onPress={this.handleSubmit}
                   >
                     <Text style={{ color: "#fff" }}>Next</Text>
@@ -574,6 +688,15 @@ const styles = StyleSheet.create({
   button: {
     alignItems: "center",
     //backgroundColor: '#fff',
+    padding: 10,
+    borderRadius: 40,
+    borderWidth: 2,
+    borderColor: "#fff",
+    width: "70%"
+  },
+  passedButton: {
+    alignItems: "center",
+    backgroundColor: "green",
     padding: 10,
     borderRadius: 40,
     borderWidth: 2,

@@ -267,11 +267,7 @@ class SignupPage extends React.Component {
               </View>
               <View alignItems="center" top={75}>
                 <TouchableOpacity
-                  style={
-                    this.props.CreateProfileReducer.weekendLocation.length > 0
-                      ? styles.passedNextButton
-                      : styles.nextButton
-                  }
+                  style={styles.nextButton}
                   onPress={this.handlSubmit}
                 >
                   <Text style={styles.button}>Next</Text>
@@ -365,15 +361,6 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: "#fff",
     width: "65%"
-  },
-  passedNextButton: {
-    alignItems: "center",
-    padding: 10,
-    borderRadius: 40,
-    borderWidth: 2,
-    borderColor: "#fff",
-    width: "65%",
-    backgroundColor: "green"
   },
   button2: {
     alignItems: "center",

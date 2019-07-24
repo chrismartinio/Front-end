@@ -121,14 +121,7 @@ class TellUsMore extends React.Component {
               alignItems: "center"
             }}
           >
-            <TouchableOpacity
-              style={
-                this.props.CreateProfileReducer.likes.length < 3
-                  ? styles.button
-                  : styles.passedButton
-              }
-              onPress={this.handleSubmit}
-            >
+            <TouchableOpacity style={styles.button} onPress={this.handleSubmit}>
               <Text style={{ color: "#fff" }}>Next</Text>
             </TouchableOpacity>
           </View>
@@ -184,15 +177,6 @@ const styles = StyleSheet.create({
   button: {
     alignItems: "center",
     padding: 10,
-    borderRadius: 40,
-    borderWidth: 2,
-    borderColor: "#fff",
-    width: "70%"
-  },
-  passedButton: {
-    alignItems: "center",
-    padding: 10,
-    backgroundColor: "green",
     borderRadius: 40,
     borderWidth: 2,
     borderColor: "#fff",

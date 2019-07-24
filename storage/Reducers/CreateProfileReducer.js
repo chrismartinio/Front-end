@@ -5,7 +5,7 @@ const CreateProfileReducer = (
     profData: null,
     likes: [null],
     interestedData: null,
-    weekendLocation: [null]
+    weekendLocation: []
   },
   action
 ) => {
