@@ -20,24 +20,22 @@ import {
   ListItem
 } from "react-native";
 import { LinearGradient } from "expo";
-import { connect } from "react-redux";
-import SetUserDataAction from "../../storage/actions/SetUserDataAction";
-import firebase from "../../utils/mainFire";
 import {
   Collapse,
   CollapseHeader,
   CollapseBody
 } from "accordion-collapse-react-native";
-import SignupPage from "./AccordianCollapse_ScrollView/SignupPage";
-import AboutYou from "./AccordianCollapse_ScrollView/AboutYou";
-import ImInterestedIn from "./AccordianCollapse_ScrollView/ImInterestedIn";
-import TellUsMore from "./AccordianCollapse_ScrollView/TellUsMore";
-import WouldRather from "./AccordianCollapse_ScrollView/WouldRather";
-import SpendWeekend from "./AccordianCollapse_ScrollView/SpendAWeekend";
+import CreateAccount from "./Collapsible_ScrollView_Components/CreateAccount";
+import AboutYou from "./Collapsible_ScrollView_Components/AboutYou";
+import ImInterestedIn from "./Collapsible_ScrollView_Components/ImInterestedIn";
+import TellUsMore from "./Collapsible_ScrollView_Components/TellUsMore";
+import WouldRather from "./Collapsible_ScrollView_Components/WouldRather";
+import SpendWeekend from "./Collapsible_ScrollView_Components/SpendAWeekend";
 
 import { Chevron } from "react-native-shapes";
+import { Icon, Input } from "react-native-elements";
 
-class Welcome extends Component {
+class Collapsible_ScrollView extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -46,9 +44,20 @@ class Welcome extends Component {
       preferencesScreen: false,
       interestsScreen: false,
       wouldYouRatherScreen: false,
-      localDestinationsScreen: false
+      localDestinationsScreen: false,
+      createAccountPassed: false,
+      aboutYouPassed: false,
+      preferencesPassed: false,
+      interestsPassed: false,
+      wouldYouRatherPassed: false,
+      localDestinationsPassed: false
     };
   }
+
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    
+  }
+
   handleBackToSignIn = () => {
     this.props.navigation.navigate("SignIn");
   };
@@ -65,6 +74,28 @@ class Welcome extends Component {
     headerTitleStyle: {
       fontWeight: "bold",
       fontSize: 24
+    }
+  };
+
+  handleScreenPassed = (screenName, passed) => {
+    if (passed) {
+      this.setState(
+        {
+          [screenName]: true
+        },
+        () => {
+          console.log(screenName + " : " + this.state[screenName]);
+        }
+      );
+    } else {
+      this.setState(
+        {
+          [screenName]: false
+        },
+        () => {
+          console.log(screenName + " : " + this.state[screenName]);
+        }
+      );
     }
   };
 
@@ -110,17 +141,28 @@ class Welcome extends Component {
                         Create Account
                       </Text>
                       <View style={{ alignItems: "flex-end" }}>
-                        <Chevron
-                          size={2}
-                          rotate={this.state.createAccountScreen ? 0 : 270}
-                          style={{ bottom: 15, right: 5 }}
-                          color="#fff"
-                        />
+                        {this.state.createAccountPassed ? (
+                          <Icon
+                            type="font-awesome"
+                            name="check-circle"
+                            color="#fff"
+                            iconStyle={{ bottom: 23 }}
+                          />
+                        ) : (
+                          <Chevron
+                            size={2}
+                            rotate={this.state.createAccountScreen ? 0 : 270}
+                            style={{ bottom: 15, right: 5 }}
+                            color="#fff"
+                          />
+                        )}
                       </View>
                     </View>
                   </CollapseHeader>
                   <CollapseBody>
-                    <SignupPage />
+                    <CreateAccount
+                      handleScreenPassed={this.handleScreenPassed}
+                    />
                   </CollapseBody>
                 </Collapse>
                 {/*Spaces*/}
@@ -160,7 +202,7 @@ class Welcome extends Component {
                     </View>
                   </CollapseHeader>
                   <CollapseBody>
-                    <SignupPage />
+                    <AboutYou />
                   </CollapseBody>
                 </Collapse>
                 {/*Spaces*/}
@@ -200,7 +242,7 @@ class Welcome extends Component {
                     </View>
                   </CollapseHeader>
                   <CollapseBody>
-                    <SignupPage />
+                    <ImInterestedIn />
                   </CollapseBody>
                 </Collapse>
                 {/*Spaces*/}
@@ -240,7 +282,7 @@ class Welcome extends Component {
                     </View>
                   </CollapseHeader>
                   <CollapseBody>
-                    <SignupPage />
+                    <TellUsMore />
                   </CollapseBody>
                 </Collapse>
                 {/*Spaces*/}
@@ -282,7 +324,7 @@ class Welcome extends Component {
                     </View>
                   </CollapseHeader>
                   <CollapseBody>
-                    <SignupPage />
+                    <WouldRather />
                   </CollapseBody>
                 </Collapse>
                 {/*Spaces*/}
@@ -324,7 +366,7 @@ class Welcome extends Component {
                     </View>
                   </CollapseHeader>
                   <CollapseBody>
-                    <SignupPage />
+                    <SpendWeekend />
                   </CollapseBody>
                 </Collapse>
                 {/*Spaces*/}
@@ -418,17 +460,4 @@ const styles = StyleSheet.create({
   }
 });
 
-const mapStateToProps = state => {
-  return { ...state };
-};
-
-const mapDispatchToProps = dispatch => {
-  return {
-    SetUserDataAction: payload => dispatch(SetUserDataAction(payload))
-  };
-};
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Welcome);
+export default Collapsible_ScrollView;
