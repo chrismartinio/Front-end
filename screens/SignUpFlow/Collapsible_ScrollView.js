@@ -20,17 +20,7 @@ import {
   ListItem
 } from "react-native";
 import { LinearGradient } from "expo";
-import {
-  Collapse,
-  CollapseHeader,
-  CollapseBody
-} from "accordion-collapse-react-native";
-import CreateAccount from "./Collapsible_ScrollView_Components/CreateAccount";
-import AboutYou from "./Collapsible_ScrollView_Components/AboutYou";
-import ImInterestedIn from "./Collapsible_ScrollView_Components/ImInterestedIn";
-import TellUsMore from "./Collapsible_ScrollView_Components/TellUsMore";
-import WouldRather from "./Collapsible_ScrollView_Components/WouldRather";
-import SpendWeekend from "./Collapsible_ScrollView_Components/SpendAWeekend";
+import CollapseComponent from "./Collapsible_ScrollView_Components/TinyComponents/CollapseComponenet.js";
 
 import { Chevron } from "react-native-shapes";
 import { Icon, Input } from "react-native-elements";
@@ -39,12 +29,12 @@ class Collapsible_ScrollView extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      createAccountScreen: false,
-      aboutYouScreen: false,
-      preferencesScreen: false,
-      interestsScreen: false,
-      wouldYouRatherScreen: false,
-      localDestinationsScreen: false,
+      createAccountToggle: false,
+      aboutYouToggle: false,
+      preferencesToggle: false,
+      interestsToggle: false,
+      wouldYouRatherToggle: false,
+      localDestinationsToggle: false,
       createAccountPassed: false,
       aboutYouPassed: false,
       preferencesPassed: false,
@@ -52,10 +42,6 @@ class Collapsible_ScrollView extends Component {
       wouldYouRatherPassed: false,
       localDestinationsPassed: false
     };
-  }
-
-  componentDidUpdate(prevProps, prevState, snapshot) {
-    
   }
 
   handleBackToSignIn = () => {
@@ -77,25 +63,29 @@ class Collapsible_ScrollView extends Component {
     }
   };
 
-  handleScreenPassed = (screenName, passed) => {
-    if (passed) {
-      this.setState(
-        {
-          [screenName]: true
-        },
-        () => {
-          console.log(screenName + " : " + this.state[screenName]);
-        }
-      );
+  //When ComponentName/Arrow is pressed, Toggle its states
+  handleToggle = componentName => {
+    let toggle = componentName + "Toggle";
+    this.setState({
+      [toggle]: !this.state[toggle]
+    });
+  };
+
+  //Handle the status of component passing
+  //If true, give it a check mark
+  //If false, remove the check mark
+  handlePassed = (componentName, passed) => {
+    let passName = componentName + "Passed";
+    if(passed) {
+      this.setState({
+        [passName]: true
+      }, () => {
+        this.handleToggle(componentName)
+      });
     } else {
-      this.setState(
-        {
-          [screenName]: false
-        },
-        () => {
-          console.log(screenName + " : " + this.state[screenName]);
-        }
-      );
+      this.setState({
+        [passName]: false
+      });
     }
   };
 
@@ -117,267 +107,27 @@ class Collapsible_ScrollView extends Component {
                 <View
                   style={{
                     padding: "10%"
-                    //borderRadius: 4,
-                    //borderWidth: 0.5,
-                    //borderColor: "#d6d7da"
                   }}
                 />
 
                 {/*Create Account*/}
-                <Collapse
-                  isCollapsed={this.state.createAccountScreen}
-                  onToggle={createAccountScreen =>
-                    this.setState({ createAccountScreen: createAccountScreen })
-                  }
-                >
-                  >
-                  <CollapseHeader>
-                    <View
-                      style={{
-                        opacity: this.state.createAccountScreen ? 1 : 0.5
-                      }}
-                    >
-                      <Text style={{ color: "white", fontSize: 24 }}>
-                        Create Account
-                      </Text>
-                      <View style={{ alignItems: "flex-end" }}>
-                        {this.state.createAccountPassed ? (
-                          <Icon
-                            type="font-awesome"
-                            name="check-circle"
-                            color="#fff"
-                            iconStyle={{ bottom: 23 }}
-                          />
-                        ) : (
-                          <Chevron
-                            size={2}
-                            rotate={this.state.createAccountScreen ? 0 : 270}
-                            style={{ bottom: 15, right: 5 }}
-                            color="#fff"
-                          />
-                        )}
-                      </View>
-                    </View>
-                  </CollapseHeader>
-                  <CollapseBody>
-                    <CreateAccount
-                      handleScreenPassed={this.handleScreenPassed}
-                    />
-                  </CollapseBody>
-                </Collapse>
-                {/*Spaces*/}
-                <View
-                  style={{
-                    padding: "10%"
-                    //borderRadius: 4,
-                    //borderWidth: 0.5,
-                    //borderColor: "#d6d7da"
-                  }}
+                <CollapseComponent
+                  componentToggle={this.state.createAccountToggle}
+                  componentPassed={this.state.createAccountPassed}
+                  componentName={"createAccount"}
+                  handleToggle={this.handleToggle}
+                  handlePassed={this.handlePassed}
                 />
 
                 {/*About You*/}
-                <Collapse
-                  isCollapsed={this.state.aboutYouScreen}
-                  onToggle={aboutYouScreen =>
-                    this.setState({ aboutYouScreen: aboutYouScreen })
-                  }
-                >
-                  <CollapseHeader>
-                    <View
-                      style={{
-                        opacity: this.state.aboutYouScreen ? 1 : 0.5
-                      }}
-                    >
-                      <Text style={{ color: "white", fontSize: 24 }}>
-                        About you
-                      </Text>
-                      <View style={{ alignItems: "flex-end" }}>
-                        <Chevron
-                          size={2}
-                          style={{ bottom: 15, right: 5 }}
-                          rotate={this.state.aboutYouScreen ? 0 : 270}
-                          color="#fff"
-                        />
-                      </View>
-                    </View>
-                  </CollapseHeader>
-                  <CollapseBody>
-                    <AboutYou />
-                  </CollapseBody>
-                </Collapse>
-                {/*Spaces*/}
-                <View
-                  style={{
-                    padding: "10%"
-                    //borderRadius: 4,
-                    //borderWidth: 0.5,
-                    //borderColor: "#d6d7da"
-                  }}
+                <CollapseComponent
+                  componentToggle={this.state.aboutYouToggle}
+                  componentPassed={this.state.aboutYouPassed}
+                  componentName={"aboutYou"}
+                  handleToggle={this.handleToggle}
+                  handlePassed={this.handlePassed}
                 />
 
-                {/*Preferences*/}
-                <Collapse
-                  isCollapsed={this.state.preferencesScreen}
-                  onToggle={preferencesScreen =>
-                    this.setState({ preferencesScreen: preferencesScreen })
-                  }
-                >
-                  <CollapseHeader>
-                    <View
-                      style={{
-                        opacity: this.state.preferencesScreen ? 1 : 0.5
-                      }}
-                    >
-                      <Text style={{ color: "white", fontSize: 24 }}>
-                        Preferences
-                      </Text>
-                      <View style={{ alignItems: "flex-end" }}>
-                        <Chevron
-                          size={2}
-                          rotate={this.state.preferencesScreen ? 0 : 270}
-                          style={{ bottom: 15, right: 5 }}
-                          color="#fff"
-                        />
-                      </View>
-                    </View>
-                  </CollapseHeader>
-                  <CollapseBody>
-                    <ImInterestedIn />
-                  </CollapseBody>
-                </Collapse>
-                {/*Spaces*/}
-                <View
-                  style={{
-                    padding: "10%"
-                    //borderRadius: 4,
-                    //borderWidth: 0.5,
-                    //borderColor: "#d6d7da"
-                  }}
-                />
-
-                {/*Interests*/}
-                <Collapse
-                  isCollapsed={this.state.interestsScreen}
-                  onToggle={interestsScreen =>
-                    this.setState({ interestsScreen: interestsScreen })
-                  }
-                >
-                  <CollapseHeader>
-                    <View
-                      style={{
-                        opacity: this.state.interestsScreen ? 1 : 0.5
-                      }}
-                    >
-                      <Text style={{ color: "white", fontSize: 24 }}>
-                        Interests
-                      </Text>
-                      <View style={{ alignItems: "flex-end" }}>
-                        <Chevron
-                          size={2}
-                          rotate={this.state.interestsScreen ? 0 : 270}
-                          style={{ bottom: 15, right: 5 }}
-                          color="#fff"
-                        />
-                      </View>
-                    </View>
-                  </CollapseHeader>
-                  <CollapseBody>
-                    <TellUsMore />
-                  </CollapseBody>
-                </Collapse>
-                {/*Spaces*/}
-                <View
-                  style={{
-                    padding: "10%"
-                    //borderRadius: 4,
-                    //borderWidth: 0.5,
-                    //borderColor: "#d6d7da"
-                  }}
-                />
-
-                {/*Would You Rather*/}
-                <Collapse
-                  isCollapsed={this.state.wouldYouRatherScreen}
-                  onToggle={wouldYouRatherScreen =>
-                    this.setState({
-                      wouldYouRatherScreen: wouldYouRatherScreen
-                    })
-                  }
-                >
-                  <CollapseHeader>
-                    <View
-                      style={{
-                        opacity: this.state.wouldYouRatherScreen ? 1 : 0.5
-                      }}
-                    >
-                      <Text style={{ color: "white", fontSize: 24 }}>
-                        Would you rather
-                      </Text>
-                      <View style={{ alignItems: "flex-end" }}>
-                        <Chevron
-                          size={2}
-                          rotate={this.state.wouldYouRatherScreen ? 0 : 270}
-                          style={{ bottom: 15, right: 5 }}
-                          color="#fff"
-                        />
-                      </View>
-                    </View>
-                  </CollapseHeader>
-                  <CollapseBody>
-                    <WouldRather />
-                  </CollapseBody>
-                </Collapse>
-                {/*Spaces*/}
-                <View
-                  style={{
-                    padding: "10%"
-                    //borderRadius: 4,
-                    //borderWidth: 0.5,
-                    //borderColor: "#d6d7da"
-                  }}
-                />
-
-                {/*Local Destinations*/}
-                <Collapse
-                  isCollapsed={this.state.localDestinationsScreen}
-                  onToggle={localDestinationsScreen =>
-                    this.setState({
-                      localDestinationsScreen: localDestinationsScreen
-                    })
-                  }
-                >
-                  <CollapseHeader>
-                    <View
-                      style={{
-                        opacity: this.state.localDestinationsScreen ? 1 : 0.5
-                      }}
-                    >
-                      <Text style={{ color: "white", fontSize: 24 }}>
-                        Local Destinations
-                      </Text>
-                      <View style={{ alignItems: "flex-end" }}>
-                        <Chevron
-                          size={2}
-                          rotate={this.state.localDestinationsScreen ? 0 : 270}
-                          style={{ bottom: 15, right: 5 }}
-                          color="#fff"
-                        />
-                      </View>
-                    </View>
-                  </CollapseHeader>
-                  <CollapseBody>
-                    <SpendWeekend />
-                  </CollapseBody>
-                </Collapse>
-                {/*Spaces*/}
-                <View
-                  style={{
-                    padding: "10%"
-                    //borderRadius: 4,
-                    //borderWidth: 0.5,
-                    //borderColor: "#d6d7da"
-                  }}
-                />
               </View>
             </TouchableWithoutFeedback>
           </SafeAreaView>

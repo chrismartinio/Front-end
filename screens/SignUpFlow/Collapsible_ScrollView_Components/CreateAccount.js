@@ -73,6 +73,8 @@ class CreateAccount extends Component {
       this.state.confirmPasswordWarning !== prevState.confirmPasswordWarning
     ) {
       this.allChecker();
+      //any changes will remove the check mark from CollapsibleComponent CheckMark
+      this.props.handlePassed("createAccount", false);
     }
   }
 
@@ -269,9 +271,11 @@ class CreateAccount extends Component {
         password: this.state.password
       });
       //this.props.navigation.navigate("TestAboutYou");
-      this.props.handleScreenPassed("createAccountPassed", true)
+      //if successed to passed, it will put the check mark from CollapsibleComponent CheckMark
+      this.props.handlePassed("createAccount", true);
     } else {
-      this.props.handleScreenPassed("createAccountPassed", false)
+      //if failed to passed, it will remove the check mark from CollapsibleComponent CheckMark
+      this.props.handlePassed("createAccount", false);
     }
   };
 
@@ -563,6 +567,7 @@ class CreateAccount extends Component {
           <TouchableOpacity
             style={styles.nextButton}
             onPress={this.handleSubmit}
+            disabled={!this.state.passed}
           >
             <Text style={styles.button}>Next</Text>
           </TouchableOpacity>
