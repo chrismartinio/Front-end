@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
   View,
   Button,
-  Picker, 
+  Picker,
   TextInput,
   Dimensions
 } from "react-native";
@@ -20,7 +20,7 @@ import { connect } from "react-redux";
 //import firebase from "../../utils/mainFire";
 import Slider from ".././CSlider";
 import { Math } from "core-js";
-import MultiSlider from '@ptomasroos/react-native-multi-slider'
+import MultiSlider from "@ptomasroos/react-native-multi-slider";
 
 class TellUsMore extends React.Component {
   constructor(props) {
@@ -32,9 +32,9 @@ class TellUsMore extends React.Component {
       ageRange: 18,
       distanceRange: 0,
       sliderOneChanging: false,
-        sliderOneValue: [5],
-        multiSliderValue: [20, 108],
-        nonCollidingMultiSliderValue: [0, 100],
+      sliderOneValue: [5],
+      multiSliderValue: [20, 108],
+      nonCollidingMultiSliderValue: [0, 100]
     };
   }
   handleSubmit = () => {
@@ -108,54 +108,49 @@ class TellUsMore extends React.Component {
             padding: "5%"
           }}
         />
-<Text style={styles.titleText2}>Set your preferences</Text>
-              <Text style={styles.textTop}>Preferred age range</Text>
-              <View style={styles.flexContainer}>
-                        <Text style={styles.text2}> {this.state.multiSliderValue[0]}  </Text>
-                        <Text style={styles.text2}> {this.state.multiSliderValue[1]}  </Text>
-                      </View>
-              <View style={styles.slider1}>
-              <MultiSlider
-                  values={[
-                            this.state.multiSliderValue[0],
-                            this.state.multiSliderValue[1],
-                        ]}
-                  sliderLength={320}
-                  onValuesChange={this.multiSliderValuesChange}
-                  min={18}
-                  max={110}
-                  step={1}
-                  allowOverlap
-                  snapped
-                  trackStyle={{
-                    //height: 10,
-                    shadowColor: 'red',
-                }}
-                  
-                        />
-                      
-                {/* <Slider
+        <Text style={styles.titleText2}>Set your preferences</Text>
+        <Text style={styles.textTop}>Preferred age range</Text>
+        <View style={styles.flexContainer}>
+          <Text style={styles.text2}> {this.state.multiSliderValue[0]} </Text>
+          <Text style={styles.text2}> {this.state.multiSliderValue[1]} </Text>
+        </View>
+        <View style={styles.slider1}>
+          <MultiSlider
+            values={[
+              this.state.multiSliderValue[0],
+              this.state.multiSliderValue[1]
+            ]}
+            sliderLength={320}
+            onValuesChange={this.multiSliderValuesChange}
+            min={18}
+            max={110}
+            step={1}
+            allowOverlap
+            snapped
+            trackStyle={{
+              //height: 10,
+              shadowColor: "red"
+            }}
+          />
+
+          {/* <Slider
                   functionListener={this.setAgeRange}
                   minimumValue={18}
                   maximumValue={110}
                   leftBound={"18"}
                   rightBound={"110"}
                 /> */}
-              </View>
-              <Text style={styles.textTop}>
-                Preferred match radius (miles)
-              </Text>
-              <View style={{paddingBottom:50}}>
-                <Slider
-                  functionListener={this.setDistanceRange}
-                  minimumValue={0}
-                  maximumValue={110}
-                  leftBound={"0"}
-                  rightBound={"110"}
-                />
-              </View>
-              
-              
+        </View>
+        <Text style={styles.textTop}>Preferred match radius (miles)</Text>
+        <View style={{ paddingBottom: 50 }}>
+          <Slider
+            functionListener={this.setDistanceRange}
+            minimumValue={0}
+            maximumValue={110}
+            leftBound={"0"}
+            rightBound={"110"}
+          />
+        </View>
       </View>
     );
   }
@@ -221,11 +216,11 @@ const styles = StyleSheet.create({
     marginRight: "5%"
     //marginTop: "40%"
   },
-  titleText2:{
-    margin:10,
-    color: '#fff',
-    fontSize:24,
-    textAlign:"center",
+  titleText2: {
+    margin: 10,
+    color: "#fff",
+    fontSize: 24,
+    textAlign: "center"
   },
   textTop: {
     margin: 10,
@@ -234,24 +229,18 @@ const styles = StyleSheet.create({
     textAlign: "center"
   },
   flexContainer: {
-    
     //top: height *.45,
-    flexDirection: 'row',
-    justifyContent:'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
     //position:'absolute',
-    alignItems:'stretch',
-    
-    
+    alignItems: "stretch"
   },
-  text2:{
-    color:'white',
-  },
+  text2: {
+    color: "white"
+  }
 });
 
-const likes = [
-  "Women",
-  "Men"
-];
+const likes = ["Women", "Men"];
 
 const mapStateToProps = state => {
   return { ...state };

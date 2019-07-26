@@ -128,6 +128,15 @@ class Collapsible_ScrollView extends Component {
                   handlePassed={this.handlePassed}
                 />
 
+                {/*Preferences*/}
+                <CollapseComponent
+                  componentToggle={this.state.preferencesToggle}
+                  componentPassed={this.state.preferencesPassed}
+                  componentName={"preferences"}
+                  handleToggle={this.handleToggle}
+                  handlePassed={this.handlePassed}
+                />
+
               </View>
             </TouchableWithoutFeedback>
           </SafeAreaView>
