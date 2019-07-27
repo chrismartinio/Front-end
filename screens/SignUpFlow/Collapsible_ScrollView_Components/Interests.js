@@ -27,14 +27,63 @@ import RemoveProfileLikesAction from "../../../storage/actions/RemoveProfileLike
 class TellUsMore extends React.Component {
   constructor(props) {
     super(props);
+    this.state = {
+      passed: false
+    };
     this.inputRefs = {};
   }
+
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    //if there have any udpate to the warnings by checking this.state and prevState
+    //then call the allChecker()
+    //allCheck will check if there any warnings
+    //If there have warnings: button show transparent (passed)
+    //If there have no warnings: button show green (passed)
+
+    if (
+      prevProps.CreateProfileReducer.likes !==
+      this.props.CreateProfileReducer.likes
+    ) {
+      this.allChecker();
+      //any changes will remove the check mark from CollapsibleComponent CheckMark
+      this.props.handlePassed("interests", false);
+    }
+  }
+
   handleSubmit = () => {
-    if (this.props.CreateProfileReducer.likes.length < 3) {
-      console.log("Invalid Likes: less than 3 likes");
+    if (this.state.passed) {
+      this.props.handlePassed("interests", true);
     } else {
-      console.log("Passed");
-      this.props.navigation.navigate("TestImInterestedIn");
+      this.props.handlePassed("interests", false);
+    }
+  };
+
+  likesChecker = () => {
+    if (this.props.CreateProfileReducer.likes.length >= 3) {
+      return true;
+    }
+    return false;
+  };
+
+  allChecker = () => {
+    if (this.likesChecker()) {
+      this.setState(
+        {
+          passed: true
+        },
+        () => {
+          console.log("passed");
+        }
+      );
+    } else {
+      this.setState(
+        {
+          passed: false
+        },
+        () => {
+          console.log("not passed");
+        }
+      );
     }
   };
 
@@ -59,11 +108,15 @@ class TellUsMore extends React.Component {
       return (
         <TouchableOpacity
           key={index++}
-          style={
-            this.props.CreateProfileReducer.likes.indexOf(e) === -1
-              ? styles.likeButtonWrap
-              : styles.pickedlikeButtonWrap
-          }
+          style={[
+            styles.likeButtonWrap,
+            {
+              backgroundColor:
+                this.props.CreateProfileReducer.likes.indexOf(e) === -1
+                  ? "transparent"
+                  : "green"
+            }
+          ]}
           onPress={() => this.handleRedux(e)}
         >
           <Text style={styles.likeButton}>{e}</Text>
@@ -73,135 +126,101 @@ class TellUsMore extends React.Component {
 
     return (
       <View style={{ flex: 1 }}>
-        <LinearGradient
-          textStyle={{ color: "#fff" }}
-          colors={["#18cdf6", "#43218c"]}
-          style={{ flex: 1 }}
-        >
-          <View style={styles.wholeWrap}>
-            {/*Spaces*/}
-            <View
-              style={{
-                padding: "20%"
-                //borderRadius: 4,
-                //borderWidth: 0.5,
-                //borderColor: "#d6d7da"
-              }}
-            />
-            {/**Tell Us More Text */}
-            <View style={styles.tellUsMoreTextWrap}>
-              <Text style={styles.tellUsMoreText}>Tell Us More</Text>
-              {/** What are you into? Text*/}
-              <Text style={styles.whatAreYouIntoText}>What are you into?</Text>
-              {/*Spaces*/}
-              <View
-                style={{
-                  padding: "10%"
-                  //borderRadius: 4,
-                  //borderWidth: 0.5,
-                  //borderColor: "#d6d7da"
-                }}
-              />
-            </View>
-            <View style={styles.likeWrapCenter}>
-              <View style={styles.likesWrap}>{displaylikes}</View>
-            </View>
-          </View>
+        {/*Spaces*/}
+        <View
+          style={{
+            padding: "5%"
+            //borderRadius: 4,
+            //borderWidth: 0.5,
+            //borderColor: "#d6d7da"
+          }}
+        />
+        {/*I'm interested in Text & Pick one of both Text*/}
+        <View style={{ alignItems: "center" }}>
+          <Text style={{ color: "white", fontSize: 24 }}>
+            I'm interested in
+          </Text>
+          <Text />
+          <Text style={{ opacity: 0.7, color: "white" }}>Pick 3</Text>
+          {/*Spaces*/}
           <View
             style={{
-              padding: "10%"
+              padding: "5%"
               //borderRadius: 4,
               //borderWidth: 0.5,
               //borderColor: "#d6d7da"
             }}
           />
-          {/*Next Button*/}
-          <View
-            style={{
-              alignItems: "center"
-            }}
+        </View>
+
+        {/*likes*/}
+        <View style={styles.likeWrapCenter}>
+          <View style={styles.likesWrap}>{displaylikes}</View>
+        </View>
+        {/*Spaces*/}
+        <View
+          style={{
+            padding: "10%"
+            //borderRadius: 4,
+            //borderWidth: 0.5,
+            //borderColor: "#d6d7da"
+          }}
+        />
+        {/*Next Button*/}
+        <View
+          alignItems="center"
+          style={{ opacity: this.state.passed ? 1.0 : 0.5 }}
+        >
+          <TouchableOpacity
+            style={styles.nextButton}
+            onPress={this.handleSubmit}
+            disabled={!this.state.passed}
           >
-            <TouchableOpacity
-              style={
-                this.props.CreateProfileReducer.likes.length < 3
-                  ? styles.button
-                  : styles.passedButton
-              }
-              onPress={this.handleSubmit}
-            >
-              <Text style={{ color: "#fff" }}>Next</Text>
-            </TouchableOpacity>
-          </View>
-        </LinearGradient>
+            <Text style={styles.button}>Next</Text>
+          </TouchableOpacity>
+        </View>
+        {/*Spaces*/}
+        <View
+          style={{
+            padding: "3%"
+            //borderRadius: 4,
+            //borderWidth: 0.5,
+            //borderColor: "#d6d7da"
+          }}
+        />
       </View>
     );
   }
 }
 
 const styles = StyleSheet.create({
-  tellUsMoreText: {
-    color: "#fff",
-    fontSize: 45,
-    fontWeight: "100"
-  },
-  whatAreYouIntoText: {
-    color: "#fff",
-    paddingTop: "5%",
-    fontSize: 20
-  },
-  tellUsMoreTextWrap: {
-    alignItems: "center"
-  },
   likeButton: {
     color: "#fff",
-    fontSize: 20
+    fontSize: 15
   },
   likeButtonWrap: {
     alignItems: "center",
-    paddingLeft: 20,
-    paddingRight: 20,
-    paddingTop: 10,
-    paddingBottom: 10,
+    paddingLeft: 15,
+    paddingRight: 15,
+    paddingTop: 5,
+    paddingBottom: 5,
     borderRadius: 40,
-    borderWidth: 1,
+    borderWidth: 2,
     borderColor: "#fff",
-    //width: "30%",
-    margin: "1%"
-  },
-  pickedlikeButtonWrap: {
-    alignItems: "center",
-    paddingLeft: 20,
-    paddingRight: 20,
-    paddingTop: 10,
-    paddingBottom: 10,
-    borderRadius: 40,
-    borderWidth: 1,
-    borderColor: "#fff",
-    //width: "30%",
-    margin: "1%",
-    backgroundColor: "green"
+    //width: "33%",
+    margin: 5
   },
   button: {
-    alignItems: "center",
-    padding: 10,
-    borderRadius: 40,
-    borderWidth: 2,
-    borderColor: "#fff",
-    width: "70%"
-  },
-  passedButton: {
-    alignItems: "center",
-    padding: 10,
-    backgroundColor: "green",
-    borderRadius: 40,
-    borderWidth: 2,
-    borderColor: "#fff",
-    width: "70%"
-  },
-  buttonText: {
-    color: "white",
-    fontWeight: "bold",
+    color: "#fff",
     fontSize: 20
+  },
+  nextButton: {
+    alignItems: "center",
+    padding: 10,
+    borderRadius: 40,
+    borderWidth: 2,
+    borderColor: "#fff",
+    width: "55%"
   },
   likesWrap: {
     flexDirection: "row",
@@ -211,14 +230,6 @@ const styles = StyleSheet.create({
   likeWrapCenter: {
     alignItems: "center"
     //marginTop: "15%"
-  },
-  wholeWrap: {
-    //borderRadius: 4,
-    //borderWidth: 0.5,
-    //borderColor: "#d6d7da",
-    marginLeft: "5%",
-    marginRight: "5%"
-    //marginTop: "40%"
   }
 });
 

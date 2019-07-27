@@ -9,7 +9,7 @@ import {
   TouchableOpacity
 } from "react-native";
 import { LinearGradient } from "expo";
-import Slider from "../components/Slider";
+import Slider from "./TinyComponents/WouldYouRatherSlider";
 import SetWouldRatherDataAction from "../../../storage/actions/SetWouldRatherDataAction";
 import { connect } from "react-redux";
 
@@ -20,6 +20,9 @@ class WouldRather extends React.Component {
 
   constructor(props) {
     super(props);
+    this.state = {
+      passed: true
+    };
     this.s1r1 = 50;
     this.s1r2 = 50;
     this.s2r1 = 50;
@@ -28,7 +31,7 @@ class WouldRather extends React.Component {
     this.s3r2 = 50;
   }
 
-  handlePress = () => {
+  handleSubmit = () => {
     this.props.SetWouldRatherDataAction({
       s1r1: this.s1r1,
       s1r2: this.s1r2,
@@ -37,8 +40,8 @@ class WouldRather extends React.Component {
       s3r1: this.s3r1,
       s3r2: this.s3r2
     });
-    this.props.navigation.navigate("TestSpendWeekend");
-    console.log("Passed")
+    this.props.handlePassed("wouldYouRather", true);
+    console.log("Passed");
   };
 
   handleListener1 = arg => {
@@ -64,54 +67,90 @@ class WouldRather extends React.Component {
 
   render() {
     return (
-      <View style={styles.parent}>
-        <LinearGradient
-          textStyle={{ color: "#fff" }}
-          colors={["#18cdf6", "#43218c"]}
-          style={{ flex: 1 }}
+      <View>
+        {/*Spaces*/}
+        <View
+          style={{
+            padding: "5%"
+            //borderRadius: 4,
+            //borderWidth: 0.5,
+            //borderColor: "#d6d7da"
+          }}
+        />
+        {/*which do you prefer*/}
+        <View style={{ alignItems: "center" }}>
+          <Text style={{ opacity: 0.7, color: "white" }}>
+            Which do you prefer?
+          </Text>
+          {/*Spaces*/}
+          <View
+            style={{
+              padding: "5%"
+              //borderRadius: 4,
+              //borderWidth: 0.5,
+              //borderColor: "#d6d7da"
+            }}
+          />
+        </View>
+
+        <View style={{ alignItems: "center" }}>
+          <View style={{ width: "90%" }}>
+            <Slider
+              functionListener={this.handleListener1}
+              leftBound={"Books"}
+              rightBound={"Movie"}
+            />
+            <Text />
+          </View>
+
+          <View style={{ width: "90%" }}>
+            <Slider
+              functionListener={this.handleListener2}
+              leftBound={"Wine"}
+              rightBound={"Beer"}
+            />
+          </View>
+
+          <View style={{ width: "90%" }}>
+            <Slider
+              functionListener={this.handleListener3}
+              leftBound={"Beach"}
+              rightBound={"Mountains"}
+            />
+          </View>
+        </View>
+        {/*Spaces*/}
+        <View
+          style={{
+            padding: "10%"
+            //borderRadius: 4,
+            //borderWidth: 0.5,
+            //borderColor: "#d6d7da"
+          }}
+        />
+
+        {/*Next Button*/}
+        <View
+          alignItems="center"
+          style={{ opacity: this.state.passed ? 1.0 : 0.5 }}
         >
-          <ScrollView>
-            <View style={styles.viewStyle}>
-              <Text style={styles.textView}>I WOULD RATHER...</Text>
-              <Text style={styles.titleText2}>BE HONEST</Text>
-            </View>
-
-            <View style={styles.sliderContainer}>
-              <View style={styles.V1}>
-                <Slider
-                  functionListener={this.handleListener1}
-                  leftBound={"Books"}
-                  rightBound={"Movie"}
-                />
-              </View>
-
-              <View style={styles.V2}>
-                <Slider
-                  functionListener={this.handleListener2}
-                  leftBound={"Wine"}
-                  rightBound={"Beer"}
-                />
-              </View>
-
-              <View style={styles.V3}>
-                <Slider
-                  functionListener={this.handleListener3}
-                  leftBound={"Beach"}
-                  rightBound={"Mountains"}
-                />
-              </View>
-            </View>
-
-            <View style={styles.buttonStyle}>
-              <TouchableOpacity
-                style={styles.button2}
-                onPress={this.handlePress}
-              >
-                <Text style={{ color: "white" }}>Next</Text>
-              </TouchableOpacity>
-            </View>
-          </ScrollView>
-        </LinearGradient>
+          <TouchableOpacity
+            style={styles.nextButton}
+            onPress={this.handleSubmit}
+            disabled={!this.state.passed}
+          >
+            <Text style={styles.button}>Next</Text>
+          </TouchableOpacity>
+        </View>
+        {/*Spaces*/}
+        <View
+          style={{
+            padding: "3%"
+            //borderRadius: 4,
+            //borderWidth: 0.5,
+            //borderColor: "#d6d7da"
+          }}
+        />
       </View>
     );
   }
@@ -119,26 +158,6 @@ class WouldRather extends React.Component {
 
 const { height, width } = Dimensions.get("window");
 const styles = StyleSheet.create({
-  slider1: {
-    alignItems: "center",
-    zIndex: 0,
-    height: 500
-  },
-  V1: {
-    top: height * 0.3,
-    left: width * 0.1,
-    width: "80%"
-  },
-  V2: {
-    top: height * 0.35,
-    left: width * 0.1,
-    width: "80%"
-  },
-  V3: {
-    top: height * 0.4,
-    left: width * 0.1,
-    width: "80%"
-  },
   flexSliderContainer: {
     flex: 1
   },
@@ -191,6 +210,18 @@ const styles = StyleSheet.create({
   },
   viewStyle: {
     top: height * 0.2
+  },
+  button: {
+    color: "#fff",
+    fontSize: 20
+  },
+  nextButton: {
+    alignItems: "center",
+    padding: 10,
+    borderRadius: 40,
+    borderWidth: 2,
+    borderColor: "#fff",
+    width: "55%"
   }
 });
 

@@ -137,6 +137,24 @@ class Collapsible_ScrollView extends Component {
                   handlePassed={this.handlePassed}
                 />
 
+                {/*interests*/}
+                <CollapseComponent
+                  componentToggle={this.state.interestsToggle}
+                  componentPassed={this.state.interestsPassed}
+                  componentName={"interests"}
+                  handleToggle={this.handleToggle}
+                  handlePassed={this.handlePassed}
+                />
+
+                {/*wouldYouRather*/}
+                <CollapseComponent
+                  componentToggle={this.state.wouldYouRatherToggle}
+                  componentPassed={this.state.wouldYouRatherPassed}
+                  componentName={"wouldYouRather"}
+                  handleToggle={this.handleToggle}
+                  handlePassed={this.handlePassed}
+                />
+
               </View>
             </TouchableWithoutFeedback>
           </SafeAreaView>

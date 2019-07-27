@@ -18,7 +18,7 @@ import t from "tcomb-form-native";
 import { connect } from "react-redux";
 import SetInterestedDataAction from "../../../storage/actions/SetInterestedDataAction";
 import firebase from "../../../utils/mainFire";
-import Slider from "../CSlider";
+import Slider from "./TinyComponents/PreferencesSlider";
 import { Math } from "core-js";
 import MultiSlider from "@ptomasroos/react-native-multi-slider";
 import { Icon } from "react-native-elements";
@@ -241,7 +241,7 @@ class Preferences extends React.Component {
         {/*Spaces*/}
         <View
           style={{
-            padding: "7%"
+            padding: "5%"
             //borderRadius: 4,
             //borderWidth: 0.5,
             //borderColor: "#d6d7da"
