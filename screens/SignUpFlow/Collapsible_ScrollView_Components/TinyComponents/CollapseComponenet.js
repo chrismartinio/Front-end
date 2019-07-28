@@ -70,8 +70,8 @@ export default function CollapseComponenet(props) {
         }}
       >
         <TouchableOpacity
-          onPress={() => {
-            props.handleToggle(props.componentName);
+          onPress={evt => {
+            props.handleToggle(props.componentName, evt);
           }}
         >
           <Text style={{ color: "white", fontSize: 24 }}>

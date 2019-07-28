@@ -42,6 +42,10 @@ class Collapsible_ScrollView extends Component {
       wouldYouRatherPassed: false,
       localDestinationsPassed: false
     };
+    //current Screen Top Y
+    //set to 0 by default
+    //scroll to bottom will increase
+    this.currentScreenTopY = 0;
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
@@ -95,12 +99,20 @@ class Collapsible_ScrollView extends Component {
   };
 
   //When ComponentName/Arrow is pressed, Toggle its states
-  handleToggle = componentName => {
+  handleToggle = (componentName, evt) => {
+    let pageY;
+    evt === null || evt === undefined ? pageY = 150 : pageY = evt.nativeEvent.pageY;
     let toggle = componentName + "Toggle";
     this.setState({
       [toggle]: !this.state[toggle]
     });
+    this.scrollToPosition(componentName, pageY);
   };
+
+
+  //task
+  //better email valid
+  //for createAccount: after user filled all data and pressed next, the offset is kinda wierd
 
   //Handle the status of component passing
   //If true, give it a check mark
@@ -113,7 +125,7 @@ class Collapsible_ScrollView extends Component {
           [passName]: true
         },
         () => {
-          this.handleToggle(componentName);
+          this.handleToggle(componentName, null);
         }
       );
     } else {
@@ -123,6 +135,21 @@ class Collapsible_ScrollView extends Component {
     }
   };
 
+  //handlescroll : update current screen top y
+  handleScroll = ({ nativeEvent }) => {
+    const { contentOffset } = nativeEvent;
+    this.currentScreenTopY = contentOffset.y;
+    //console.log(this.currentScreenTopY);
+  };
+
+  //Press tab will scroll to that tab position
+  scrollToPosition = (componentName, tabPageY) => {
+    let offset;
+    componentName === "createAccount" ? (offset = 250) : (offset = 150);
+    const newScrollY = this.currentScreenTopY + tabPageY - offset;
+    this.scrollView.scrollTo({ y: newScrollY, animated: true });
+  };
+
   render() {
     return (
       <LinearGradient
@@ -130,7 +157,15 @@ class Collapsible_ScrollView extends Component {
         colors={["#18cdf6", "#43218c"]}
         style={{ flex: 1 }}
       >
-        <ScrollView>
+        <ScrollView
+          ref={scrollView => {
+            this.scrollView = scrollView;
+          }}
+          onScroll={this.handleScroll}
+          scrollEventThrottle={16}
+          //Remove this line may have warning for the scrollview?
+          //use 16 may cause frame drop?
+        >
           <SafeAreaView style={styles.container}>
             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
               <View style={styles.inner}>
