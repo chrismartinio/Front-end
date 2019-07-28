@@ -44,6 +44,37 @@ class Collapsible_ScrollView extends Component {
     };
   }
 
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    //if there have any udpate to the warnings by checking this.state and prevState
+    //then call the allChecker()
+    //allCheck will check if there any warnings
+    //If there have warnings: button show transparent (passed)
+    //If there have no warnings: button show green (passed)
+    if (
+      this.state.createAccountPassed !== prevState.createAccountPassed ||
+      this.state.aboutYouPassed !== prevState.aboutYouPassed ||
+      this.state.preferencesPassed !== prevState.preferencesPassed ||
+      this.state.interestsPassed !== prevState.interestsPassed ||
+      this.state.wouldYouRatherPassed !== prevState.wouldYouRatherPassed ||
+      this.state.localDestinationsPassed !== prevState.localDestinationsPassed
+    ) {
+      this.passChecker();
+    }
+  }
+
+  passChecker = () => {
+    if (
+      this.state.createAccountPassed &&
+      this.state.aboutYouPassed &&
+      this.state.preferencesPassed &&
+      this.state.interestsPassed &&
+      this.state.wouldYouRatherPassed &&
+      this.state.localDestinationsPassed
+    ) {
+      this.props.navigation.navigate("TestRegistrationComplete");
+    }
+  };
+
   handleBackToSignIn = () => {
     this.props.navigation.navigate("SignIn");
   };
@@ -76,12 +107,15 @@ class Collapsible_ScrollView extends Component {
   //If false, remove the check mark
   handlePassed = (componentName, passed) => {
     let passName = componentName + "Passed";
-    if(passed) {
-      this.setState({
-        [passName]: true
-      }, () => {
-        this.handleToggle(componentName)
-      });
+    if (passed) {
+      this.setState(
+        {
+          [passName]: true
+        },
+        () => {
+          this.handleToggle(componentName);
+        }
+      );
     } else {
       this.setState({
         [passName]: false
@@ -155,6 +189,14 @@ class Collapsible_ScrollView extends Component {
                   handlePassed={this.handlePassed}
                 />
 
+                {/*localDestinations*/}
+                <CollapseComponent
+                  componentToggle={this.state.localDestinationsToggle}
+                  componentPassed={this.state.localDestinationsPassed}
+                  componentName={"localDestinations"}
+                  handleToggle={this.handleToggle}
+                  handlePassed={this.handlePassed}
+                />
               </View>
             </TouchableWithoutFeedback>
           </SafeAreaView>

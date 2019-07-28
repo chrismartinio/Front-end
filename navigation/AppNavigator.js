@@ -39,6 +39,8 @@ import TellUsMore from "../screens/SignUpFlow/IndividualScreensTestingSync/TellU
 import Collapsible from "../screens/SignUpFlow/Collapsible_ScrollView";
 //import LinksScreen from "../screens/LinksScreen";
 import LinksScreen from "../screens/LinksScreen_OnBoarding";
+import RegistrationComplete from "../screens/SignUpFlow/Collapsible_ScrollView_Components/RegistrationComplete.js";
+
 
 const TestStack = createStackNavigator({
   TestLinksScreen: LinksScreen,
@@ -57,6 +59,7 @@ const TestStack = createStackNavigator({
   TestSpendWeekend: SpendWeekend,
   TestImInterestedIn: ImInterestedIn,
   TestCollapsible: Collapsible,
+  TestRegistrationComplete: RegistrationComplete,
 
 });
 

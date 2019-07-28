@@ -18,9 +18,9 @@ import t from "tcomb-form-native";
 import { connect } from "react-redux";
 import SetWeekendLocationDataAction from "../../../storage/actions/SetWeekendLocationDataAction";
 import RemoveWeekendLocationDataAction from "../../../storage/actions/RemoveWeekendLocationDataAction";
+import { Icon } from "react-native-elements";
 
-
-class SignupPage extends React.Component {
+class LocationDestinations extends React.Component {
   static navigationOptions = {
     //header: null,
     //title: 'Match Chat',
@@ -50,7 +50,8 @@ class SignupPage extends React.Component {
         "loading",
         "loading",
         "loading"
-      ]
+      ],
+      passed: false
     };
   }
 
@@ -62,6 +63,23 @@ class SignupPage extends React.Component {
   handleListener = arg => {
     //console.log(arg)
   };
+
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    //if there have any udpate to the warnings by checking this.state and prevState
+    //then call the allChecker()
+    //allCheck will check if there any warnings
+    //If there have warnings: button show transparent (passed)
+    //If there have no warnings: button show green (passed)
+
+    if (
+      prevProps.CreateProfileReducer.weekendLocation !==
+      this.props.CreateProfileReducer.weekendLocation
+    ) {
+      this.allChecker();
+      //any changes will remove the check mark from CollapsibleComponent CheckMark
+      this.props.handlePassed("localDestinations", false);
+    }
+  }
 
   componentDidMount() {
     this.getData();
@@ -105,180 +123,146 @@ class SignupPage extends React.Component {
     }
   };
 
-  handlSubmit = () => {
-    if (this.props.CreateProfileReducer.weekendLocation.length > 0) {
-      //Navigate to Next Screen
-      //this.props.navigation.navigate("TestSignUp");
-      console.log("Passed");
+  locationsChecker = () => {
+    if (this.props.CreateProfileReducer.weekendLocation.length === 1) {
+      return true;
+    }
+    return false;
+  };
+
+  allChecker = () => {
+    if (this.locationsChecker()) {
+      this.setState(
+        {
+          passed: true
+        },
+        () => {
+          console.log("passed");
+        }
+      );
     } else {
-      //Add Warning here?
-      console.log("empty location");
-      return;
+      this.setState(
+        {
+          passed: false
+        },
+        () => {
+          console.log("not passed");
+        }
+      );
+    }
+  };
+
+  handleSubmit = () => {
+    if (this.state.passed) {
+      this.props.handlePassed("localDestinations", true);
+    } else {
+      this.props.handlePassed("localDestinations", false);
     }
   };
 
   render() {
-    return (
-      <View style={styles.container}>
-        <LinearGradient
-          textStyle={{ color: "#fff" }}
-          colors={["#18cdf6", "#43218c"]}
-          style={{ flex: 1 }}
+    let emptyCityWarning = (
+      <View style={{ alignItems: "center" }}>
+        <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
+          <Icon
+            type="font-awesome"
+            name="exclamation-circle"
+            color="#fff"
+            iconStyle={{ top: 3 }}
+          />
+          <Text style={styles.warningText}>{"   "}Please select a city</Text>
+        </View>
+      </View>
+    );
+
+    let displayLocation = locations.map((e, index = 0) => {
+      return (
+        <TouchableOpacity
+          key={index++}
+          style={[
+            styles.locationsButtonWrap,
+            {
+              backgroundColor:
+                this.props.CreateProfileReducer.weekendLocation.indexOf(e) ===
+                -1
+                  ? "transparent"
+                  : "green",
+              minWidth:
+                e === "San Francisco" || e === "Morro Bay" ? "50%" : "45%"
+            }
+          ]}
+          onPress={() => this.handlPress(e)}
         >
-          <ScrollView>
-            <Text style={styles.titleText}>Spend a weekend</Text>
-            <View alignItems="center">
-              <Text style={styles.text}>based on your location...</Text>
-            </View>
-            <View
-              style={{ margin: 10, color: "#fff", width: "80%", left: "10%" }}
-            >
-              <View alignItems="center">
-                <TouchableOpacity
-                  style={
-                    this.props.CreateProfileReducer.weekendLocation.indexOf(
-                      "San Francisco"
-                    ) === -1
-                      ? styles.button1
-                      : styles.pickedbutton1
-                  }
-                  onPress={() => this.handlPress("San Francisco")}
-                >
-                  <Text style={styles.button}>San Francisco</Text>
-                </TouchableOpacity>
-                <Text />
-              </View>
-              <View
-                style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                  alignContent: "center"
-                }}
-              >
-                <TouchableOpacity
-                  style={
-                    this.props.CreateProfileReducer.weekendLocation.indexOf(
-                      "Tahoe"
-                    ) === -1
-                      ? styles.button2
-                      : styles.pickedbutton2
-                  }
-                  onPress={() => this.handlPress("Tahoe")}
-                >
-                  <Text style={styles.button}>Tahoe</Text>
-                </TouchableOpacity>
-                <Text> </Text>
-                <TouchableOpacity
-                  style={
-                    this.props.CreateProfileReducer.weekendLocation.indexOf(
-                      "Monterey"
-                    ) === -1
-                      ? styles.button2
-                      : styles.pickedbutton2
-                  }
-                  onPress={() => this.handlPress("Monterey")}
-                >
-                  <Text style={styles.button}>Monterey</Text>
-                </TouchableOpacity>
-              </View>
-              <Text />
-              <View
-                style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                  alignContent: "center"
-                }}
-              >
-                <TouchableOpacity
-                  style={
-                    this.props.CreateProfileReducer.weekendLocation.indexOf(
-                      "Big Sur"
-                    ) === -1
-                      ? styles.button2
-                      : styles.pickedbutton2
-                  }
-                  onPress={() => this.handlPress("Big Sur")}
-                >
-                  <Text style={styles.button}>Big Sur</Text>
-                </TouchableOpacity>
-                <Text> </Text>
-                <TouchableOpacity
-                  style={
-                    this.props.CreateProfileReducer.weekendLocation.indexOf(
-                      "Napa"
-                    ) === -1
-                      ? styles.button2
-                      : styles.pickedbutton2
-                  }
-                  onPress={() => this.handlPress("Napa")}
-                >
-                  <Text style={styles.button}>Napa</Text>
-                </TouchableOpacity>
-              </View>
-              <Text />
-              <View
-                style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                  alignContent: "center"
-                }}
-              >
-                <TouchableOpacity
-                  style={
-                    this.props.CreateProfileReducer.weekendLocation.indexOf(
-                      "Santa Cruz"
-                    ) === -1
-                      ? styles.button2
-                      : styles.pickedbutton2
-                  }
-                  onPress={() => this.handlPress("Santa Cruz")}
-                >
-                  <Text style={styles.button}>Santa Cruz</Text>
-                </TouchableOpacity>
-                <Text> </Text>
-                <TouchableOpacity
-                  style={
-                    this.props.CreateProfileReducer.weekendLocation.indexOf(
-                      "Yosemite"
-                    ) === -1
-                      ? styles.button2
-                      : styles.pickedbutton2
-                  }
-                  onPress={() => this.handlPress("Yosemite")}
-                >
-                  <Text style={styles.button}>Yosemite</Text>
-                </TouchableOpacity>
-              </View>
-              <Text />
-              <View alignItems="center">
-                <TouchableOpacity
-                  style={
-                    this.props.CreateProfileReducer.weekendLocation.indexOf(
-                      "Morro Bay"
-                    ) === -1
-                      ? styles.button1
-                      : styles.pickedbutton1
-                  }
-                  onPress={() => this.handlPress("Morro Bay")}
-                >
-                  <Text style={styles.button}>Morro Bay</Text>
-                </TouchableOpacity>
-              </View>
-              <View alignItems="center" top={75}>
-                <TouchableOpacity
-                  style={
-                    this.props.CreateProfileReducer.weekendLocation.length > 0
-                      ? styles.passedNextButton
-                      : styles.nextButton
-                  }
-                  onPress={this.handlSubmit}
-                >
-                  <Text style={styles.button}>Next</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-          </ScrollView>
-        </LinearGradient>
+          <Text style={styles.locationsButton}>{e}</Text>
+        </TouchableOpacity>
+      );
+    });
+
+    return (
+      <View style={{ flex: 1 }}>
+        {/*Spaces*/}
+        <View
+          style={{
+            padding: "5%"
+            //borderRadius: 4,
+            //borderWidth: 0.5,
+            //borderColor: "#d6d7da"
+          }}
+        />
+        {/*I'm interested in Text & Pick one of both Text*/}
+        <View style={{ alignItems: "center" }}>
+          <Text style={{ color: "white", fontSize: 24 }}>Spend a weekend</Text>
+          <Text />
+          <Text style={{ opacity: 0.7, color: "white" }}>Pick 1</Text>
+          {/*Spaces*/}
+          <View
+            style={{
+              padding: "5%"
+              //borderRadius: 4,
+              //borderWidth: 0.5,
+              //borderColor: "#d6d7da"
+            }}
+          />
+        </View>
+
+        {/*likes*/}
+        <View style={styles.locationsWrapCenter}>
+          <View style={styles.locationsWrap}>{displayLocation}</View>
+        </View>
+        <Text />
+        {this.props.CreateProfileReducer.weekendLocation.length !== 1 &&
+          emptyCityWarning}
+        {/*Spaces*/}
+        <View
+          style={{
+            padding: "10%"
+            //borderRadius: 4,
+            //borderWidth: 0.5,
+            //borderColor: "#d6d7da"
+          }}
+        />
+        {/*Next Button*/}
+        <View
+          alignItems="center"
+          style={{ opacity: this.state.passed ? 1.0 : 0.5 }}
+        >
+          <TouchableOpacity
+            style={styles.nextButton}
+            onPress={this.handleSubmit}
+            disabled={!this.state.passed}
+          >
+            <Text style={styles.button}>Next</Text>
+          </TouchableOpacity>
+        </View>
+        {/*Spaces*/}
+        <View
+          style={{
+            padding: "3%"
+            //borderRadius: 4,
+            //borderWidth: 0.5,
+            //borderColor: "#d6d7da"
+          }}
+        />
       </View>
     );
   }
@@ -286,76 +270,23 @@ class SignupPage extends React.Component {
 const { height, width } = Dimensions.get("window");
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1
-  },
-  titleText: {
-    margin: 10,
+  locationsButton: {
     color: "#fff",
-    fontSize: 48,
-    textAlign: "center",
-    fontWeight: "100"
+    fontSize: 20
   },
-  titleText2: {
-    margin: 10,
-    color: "#fff",
-    fontSize: 48,
-    top: 25,
-    textAlign: "center"
-  },
-  _textInput: {
-    color: "#fff",
-    fontSize: 20,
-    textAlign: "left",
-    paddingTop: "20%",
-    borderBottomWidth: 1,
-    borderColor: "#fff"
-  },
-  smallText: {
-    margin: 10,
-    color: "#fff",
-    fontSize: 10
-  },
-  text: {
-    margin: 10,
-    color: "#fff",
-    fontSize: 20,
-    textAlign: "center"
-  },
-  textTop: {
-    //top: 40,
-    margin: 10,
-    color: "#fff",
-    fontSize: 20,
-    textAlign: "center"
-  },
-  textTop2: {
-    // top: 60,
-    margin: 10,
-    color: "#fff",
-    fontSize: 20,
-    textAlign: "center"
+  locationsButtonWrap: {
+    alignItems: "center",
+    padding: 15,
+    borderRadius: 40,
+    borderWidth: 2,
+    borderColor: "#fff",
+    width: "auto",
+    minWidth: "45%",
+    margin: 5
   },
   button: {
     color: "#fff",
     fontSize: 20
-  },
-  button1: {
-    alignItems: "center",
-    padding: 10,
-    borderRadius: 40,
-    borderWidth: 2,
-    borderColor: "#fff",
-    width: "65%"
-  },
-  pickedbutton1: {
-    alignItems: "center",
-    padding: 10,
-    borderRadius: 40,
-    borderWidth: 2,
-    borderColor: "#fff",
-    width: "65%",
-    backgroundColor: "green"
   },
   nextButton: {
     alignItems: "center",
@@ -363,44 +294,36 @@ const styles = StyleSheet.create({
     borderRadius: 40,
     borderWidth: 2,
     borderColor: "#fff",
-    width: "65%"
+    width: "55%"
   },
-  passedNextButton: {
-    alignItems: "center",
-    padding: 10,
-    borderRadius: 40,
-    borderWidth: 2,
-    borderColor: "#fff",
-    width: "65%",
-    backgroundColor: "green"
+  locationsWrap: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "center"
   },
-  button2: {
-    alignItems: "center",
-    padding: 10,
-    borderRadius: 40,
-    borderWidth: 2,
-    borderColor: "#fff",
-    width: "45%"
+  locationsWrapCenter: {
+    alignItems: "center"
+    //marginTop: "15%"
   },
-  pickedbutton2: {
-    alignItems: "center",
-    padding: 10,
-    borderRadius: 40,
-    borderWidth: 2,
-    borderColor: "#fff",
-    width: "45%",
-    backgroundColor: "green"
-  },
-  slider1: {
-    top: 60
-  },
-  slider2: {
-    top: 80
-  },
-  slider3: {
-    top: 15
+  warningText: {
+    color: "#fff",
+    fontSize: 10,
+    paddingTop: "3%",
+    fontWeight: "bold"
   }
 });
+
+const locations = [
+  "San Francisco",
+  "Tahoe",
+  "Monterey",
+  "Big Sur",
+  "Napa",
+  "Santa Cruz",
+  "Yosemite",
+  "Morro Bay"
+];
+
 const mapStateToProps = state => ({
   ...state
 });
@@ -414,4 +337,4 @@ const mapDispatchToProps = dispatch => ({
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(SignupPage);
+)(LocationDestinations);

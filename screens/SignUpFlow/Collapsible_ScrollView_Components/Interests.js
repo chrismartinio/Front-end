@@ -23,6 +23,7 @@ import { connect } from "react-redux";
 import SetProfileLikesAction from "../../../storage/actions/SetProfileLikesAction";
 import SetProfileFirstLike from "../../../storage/actions/SetProfileFirstLike";
 import RemoveProfileLikesAction from "../../../storage/actions/RemoveProfileLikesAction";
+import { Icon } from "react-native-elements";
 
 class TellUsMore extends React.Component {
   constructor(props) {
@@ -104,6 +105,22 @@ class TellUsMore extends React.Component {
   };
 
   render() {
+    let invalidLikesWarning = (
+      <View style={{ alignItems: "center" }}>
+        <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
+          <Icon
+            type="font-awesome"
+            name="exclamation-circle"
+            color="#fff"
+            iconStyle={{ top: 3 }}
+          />
+          <Text style={styles.warningText}>
+            {"   "}Please select 3 interests
+          </Text>
+        </View>
+      </View>
+    );
+
     let displaylikes = likes.map((e, index = 0) => {
       return (
         <TouchableOpacity
@@ -141,7 +158,7 @@ class TellUsMore extends React.Component {
             I'm interested in
           </Text>
           <Text />
-          <Text style={{ opacity: 0.7, color: "white" }}>Pick 3</Text>
+          <Text style={{ opacity: 0.7, color: "white" }}>Pick at least 3</Text>
           {/*Spaces*/}
           <View
             style={{
@@ -157,10 +174,13 @@ class TellUsMore extends React.Component {
         <View style={styles.likeWrapCenter}>
           <View style={styles.likesWrap}>{displaylikes}</View>
         </View>
+        <Text />
+        {this.props.CreateProfileReducer.likes.length < 3 &&
+          invalidLikesWarning}
         {/*Spaces*/}
         <View
           style={{
-            padding: "10%"
+            padding: "7%"
             //borderRadius: 4,
             //borderWidth: 0.5,
             //borderColor: "#d6d7da"
@@ -196,9 +216,19 @@ class TellUsMore extends React.Component {
 const styles = StyleSheet.create({
   likeButton: {
     color: "#fff",
-    fontSize: 15
+    fontSize: 20
   },
   likeButtonWrap: {
+    alignItems: "center",
+    padding: 15,
+    borderRadius: 40,
+    borderWidth: 2,
+    borderColor: "#fff",
+    width: "auto",
+    minWidth: "25%",
+    margin: 5
+  },
+  likeButtonWrapBack: {
     alignItems: "center",
     paddingLeft: 15,
     paddingRight: 15,
@@ -230,6 +260,12 @@ const styles = StyleSheet.create({
   likeWrapCenter: {
     alignItems: "center"
     //marginTop: "15%"
+  },
+  warningText: {
+    color: "#fff",
+    fontSize: 10,
+    paddingTop: "3%",
+    fontWeight: "bold"
   }
 });
 

@@ -109,6 +109,7 @@ class WouldRather extends React.Component {
               leftBound={"Wine"}
               rightBound={"Beer"}
             />
+            <Text />
           </View>
 
           <View style={{ width: "90%" }}>
@@ -117,6 +118,7 @@ class WouldRather extends React.Component {
               leftBound={"Beach"}
               rightBound={"Mountains"}
             />
+            <Text />
           </View>
         </View>
         {/*Spaces*/}

@@ -17,7 +17,8 @@ export default class LinksScreen extends React.Component {
       "TestTellUsMore",
       "TestImInterestedIn",
       "TestSpendWeekend",
-      "TestWouldRather"
+      "TestWouldRather",
+      "TestRegistrationComplete"
     ];
   }
 

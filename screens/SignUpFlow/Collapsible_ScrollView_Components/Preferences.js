@@ -208,17 +208,19 @@ class Preferences extends React.Component {
   };
 
   render() {
-    let invalidGenderWarning = (
-      <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
-        <Icon
-          type="font-awesome"
-          name="exclamation-circle"
-          color="#fff"
-          iconStyle={{ top: 3 }}
-        />
-        <Text style={styles.warningText}>
-          {"   "}Please choose at least one gender
-        </Text>
+    let emptyGenderWarning = (
+      <View style={{ alignItems: "center" }}>
+        <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
+          <Icon
+            type="font-awesome"
+            name="exclamation-circle"
+            color="#fff"
+            iconStyle={{ top: 3 }}
+          />
+          <Text style={styles.warningText}>
+            {"   "}Please choose at least one gender
+          </Text>
+        </View>
       </View>
     );
 
@@ -304,7 +306,7 @@ class Preferences extends React.Component {
           </TouchableOpacity>
           <Text />
         </View>
-        {this.state.interestedGenderWarning === "empty" && invalidGenderWarning}
+        {this.state.interestedGenderWarning === "empty" && emptyGenderWarning}
         {/*Spaces*/}
         <View
           style={{
