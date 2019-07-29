@@ -193,7 +193,7 @@ class Collapsible_ScrollView extends Component {
                 {/*Spaces*/}
                 <View
                   style={{
-                    padding: "10%"
+                    padding: "15%"
                   }}
                 />
 

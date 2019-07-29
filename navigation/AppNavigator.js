@@ -37,8 +37,8 @@ import WouldRather from "../screens/SignUpFlow/IndividualScreensTestingSync/Woul
 import TellUsMore from "../screens/SignUpFlow/IndividualScreensTestingSync/TellUsMore";
 //import Collapsible from "../screens/SignUpFlow/Collapsible_KaChi";
 import Collapsible from "../screens/SignUpFlow/Collapsible_ScrollView";
-//import LinksScreen from "../screens/LinksScreen";
-import LinksScreen from "../screens/LinksScreen_OnBoarding";
+import LinksScreen from "../screens/LinksScreen";
+//import LinksScreen from "../screens/LinksScreen_OnBoarding";
 import RegistrationComplete from "../screens/SignUpFlow/Collapsible_ScrollView_Components/RegistrationComplete.js";
 
 
