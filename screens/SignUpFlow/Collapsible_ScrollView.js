@@ -98,10 +98,22 @@ class Collapsible_ScrollView extends Component {
     }
   };
 
-  //When ComponentName/Arrow is pressed, Toggle its states
+  //When ComponentName/Arrow is pressed, Toggle its states to oppsoite
+  //This function is used on parent component (Collapsible_ScrollView)
+  //and child component (AboutYou, createAccount, etc...)
   handleToggle = (componentName, evt) => {
     let pageY;
-    evt === null || evt === undefined ? pageY = 150 : pageY = evt.nativeEvent.pageY;
+    //for child component (no event can be caught)
+    //Set the PageY to 150
+    if (evt === null || evt === undefined) {
+      pageY = 150;
+      if (componentName === "createAccount") {
+        pageY = 250;
+      }
+    } else {
+      //else while in parent component (we can catch the event of tab Y position)
+      pageY = evt.nativeEvent.pageY;
+    }
     let toggle = componentName + "Toggle";
     this.setState({
       [toggle]: !this.state[toggle]
@@ -109,14 +121,14 @@ class Collapsible_ScrollView extends Component {
     this.scrollToPosition(componentName, pageY);
   };
 
-
   //task
   //better email valid
   //for createAccount: after user filled all data and pressed next, the offset is kinda wierd
 
   //Handle the status of component passing
-  //If true, give it a check mark
-  //If false, remove the check mark
+  //Active when user clicked next button of each screen
+  //If the screen passed, give it a check icon
+  //If the screen not passed, no change or revert the check icon
   handlePassed = (componentName, passed) => {
     let passName = componentName + "Passed";
     if (passed) {
@@ -125,6 +137,10 @@ class Collapsible_ScrollView extends Component {
           [passName]: true
         },
         () => {
+          //If the screen passed, close the screen
+          //Since this is handled by child component (user working inside the child dom)
+          //it cannot retrieve the event fire from the child
+          //therefore, we passed null to handleToggle
           this.handleToggle(componentName, null);
         }
       );
@@ -144,7 +160,9 @@ class Collapsible_ScrollView extends Component {
 
   //Press tab will scroll to that tab position
   scrollToPosition = (componentName, tabPageY) => {
-    let offset;
+    //this.currentScreenTopY : current screen (not scroll) Y position; changed upon scrolling
+    //tabPageY : the screen tab's Y position in the whole scroll screen view
+    let offset; // offset : an offset to prevent screen scroll too high when closing
     componentName === "createAccount" ? (offset = 250) : (offset = 150);
     const newScrollY = this.currentScreenTopY + tabPageY - offset;
     this.scrollView.scrollTo({ y: newScrollY, animated: true });

@@ -64,7 +64,7 @@ const TestStack = createStackNavigator({
 });
 
 const AuthStack = createStackNavigator({
-  SignUp: SignupPage,
+  SignUp: Collapsible,
   Registration: RegistrationPage,
   Selfie: SelfiePage,
   Profile: ProfilePage
