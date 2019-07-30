@@ -20,35 +20,65 @@ import {
   ListItem
 } from "react-native";
 import { LinearGradient } from "expo";
-import { connect } from "react-redux";
-import SetUserDataAction from "../../storage/actions/SetUserDataAction";
-import firebase from "../../utils/mainFire";
-import {
-  Collapse,
-  CollapseHeader,
-  CollapseBody
-} from "accordion-collapse-react-native";
-import SignupPage from "./AccordianCollapse_ScrollView/SignupPage";
-import AboutYou from "./AccordianCollapse_ScrollView/AboutYou";
-import ImInterestedIn from "./AccordianCollapse_ScrollView/ImInterestedIn";
-import TellUsMore from "./AccordianCollapse_ScrollView/TellUsMore";
-import WouldRather from "./AccordianCollapse_ScrollView/WouldRather";
-import SpendWeekend from "./AccordianCollapse_ScrollView/SpendAWeekend";
+import CollapseComponent from "./Collapsible_ScrollView_Components/TinyComponents/CollapseComponenet.js";
 
 import { Chevron } from "react-native-shapes";
+import { Icon, Input } from "react-native-elements";
 
-class Welcome extends Component {
+class Collapsible_ScrollView extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      createAccountScreen: false,
-      aboutYouScreen: false,
-      preferencesScreen: false,
-      interestsScreen: false,
-      wouldYouRatherScreen: false,
-      localDestinationsScreen: false
+      createAccountToggle: false,
+      aboutYouToggle: false,
+      preferencesToggle: false,
+      interestsToggle: false,
+      wouldYouRatherToggle: false,
+      localDestinationsToggle: false,
+      createAccountPassed: false,
+      aboutYouPassed: false,
+      preferencesPassed: false,
+      interestsPassed: false,
+      wouldYouRatherPassed: false,
+      localDestinationsPassed: false
     };
+    //current Screen Top Y
+    //set to 0 by default
+    //scroll to bottom will increase
+    this.currentScreenTopY = 0;
   }
+
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    //if there have any udpate to the warnings by checking this.state and prevState
+    //then call the allChecker()
+    //allCheck will check if there any warnings
+    //If there have warnings: button show transparent (passed)
+    //If there have no warnings: button show green (passed)
+    if (
+      this.state.createAccountPassed !== prevState.createAccountPassed ||
+      this.state.aboutYouPassed !== prevState.aboutYouPassed ||
+      this.state.preferencesPassed !== prevState.preferencesPassed ||
+      this.state.interestsPassed !== prevState.interestsPassed ||
+      this.state.wouldYouRatherPassed !== prevState.wouldYouRatherPassed ||
+      this.state.localDestinationsPassed !== prevState.localDestinationsPassed
+    ) {
+      this.passChecker();
+    }
+  }
+
+  passChecker = () => {
+    if (
+      this.state.createAccountPassed &&
+      this.state.aboutYouPassed &&
+      this.state.preferencesPassed &&
+      this.state.interestsPassed &&
+      this.state.wouldYouRatherPassed &&
+      this.state.localDestinationsPassed
+    ) {
+      this.props.navigation.navigate("TestRegistrationComplete");
+    }
+  };
+
   handleBackToSignIn = () => {
     this.props.navigation.navigate("SignIn");
   };
@@ -68,6 +98,76 @@ class Welcome extends Component {
     }
   };
 
+  //When ComponentName/Arrow is pressed, Toggle its states to oppsoite
+  //This function is used on parent component (Collapsible_ScrollView)
+  //and child component (AboutYou, createAccount, etc...)
+  handleToggle = (componentName, evt) => {
+    let pageY;
+    //for child component (no event can be caught)
+    //Set the PageY to 150
+    if (evt === null || evt === undefined) {
+      pageY = 150;
+      if (componentName === "createAccount") {
+        pageY = 250;
+      }
+    } else {
+      //else while in parent component (we can catch the event of tab Y position)
+      pageY = evt.nativeEvent.pageY;
+    }
+    let toggle = componentName + "Toggle";
+    this.setState({
+      [toggle]: !this.state[toggle]
+    });
+    this.scrollToPosition(componentName, pageY);
+  };
+
+  //task
+  //better email valid
+  //for createAccount: after user filled all data and pressed next, the offset is kinda wierd
+
+  //Handle the status of component passing
+  //Active when user clicked next button of each screen
+  //If the screen passed, give it a check icon
+  //If the screen not passed, no change or revert the check icon
+  handlePassed = (componentName, passed) => {
+    let passName = componentName + "Passed";
+    if (passed) {
+      this.setState(
+        {
+          [passName]: true
+        },
+        () => {
+          //If the screen passed, close the screen
+          //Since this is handled by child component (user working inside the child dom)
+          //it cannot retrieve the event fire from the child
+          //therefore, we passed null to handleToggle
+          this.handleToggle(componentName, null);
+        }
+      );
+    } else {
+      this.setState({
+        [passName]: false
+      });
+    }
+  };
+
+  //handlescroll : update current screen top y
+  handleScroll = ({ nativeEvent }) => {
+    const { contentOffset } = nativeEvent;
+    this.currentScreenTopY = contentOffset.y;
+    //console.log(this.currentScreenTopY);
+  };
+
+  //Press tab will scroll to that tab position
+  scrollToPosition = (componentName, tabPageY) => {
+    //this.currentScreenTopY : current screen (not scroll) Y position; changed upon scrolling
+    //tabPageY : the screen tab's Y position in the whole scroll screen view
+    let offset; // offset : an offset to prevent screen scroll too high when closing
+    componentName === "createAccount" ? (offset = 250) : (offset = 150);
+    const newScrollY = this.currentScreenTopY + tabPageY - offset;
+    this.scrollView.scrollTo({ y: newScrollY, animated: true });
+  };
+
   render() {
     return (
       <LinearGradient
@@ -75,7 +175,15 @@ class Welcome extends Component {
         colors={["#18cdf6", "#43218c"]}
         style={{ flex: 1 }}
       >
-        <ScrollView>
+        <ScrollView
+          ref={scrollView => {
+            this.scrollView = scrollView;
+          }}
+          onScroll={this.handleScroll}
+          scrollEventThrottle={16}
+          //Remove this line may have warning for the scrollview?
+          //use 16 may cause frame drop?
+        >
           <SafeAreaView style={styles.container}>
             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
               <View style={styles.inner}>
@@ -85,256 +193,62 @@ class Welcome extends Component {
                 {/*Spaces*/}
                 <View
                   style={{
-                    padding: "10%"
-                    //borderRadius: 4,
-                    //borderWidth: 0.5,
-                    //borderColor: "#d6d7da"
+                    padding: "15%"
                   }}
                 />
 
                 {/*Create Account*/}
-                <Collapse
-                  isCollapsed={this.state.createAccountScreen}
-                  onToggle={createAccountScreen =>
-                    this.setState({ createAccountScreen: createAccountScreen })
-                  }
-                >
-                  >
-                  <CollapseHeader>
-                    <View
-                      style={{
-                        opacity: this.state.createAccountScreen ? 1 : 0.5
-                      }}
-                    >
-                      <Text style={{ color: "white", fontSize: 24 }}>
-                        Create Account
-                      </Text>
-                      <View style={{ alignItems: "flex-end" }}>
-                        <Chevron
-                          size={2}
-                          rotate={this.state.createAccountScreen ? 0 : 270}
-                          style={{ bottom: 15, right: 5 }}
-                          color="#fff"
-                        />
-                      </View>
-                    </View>
-                  </CollapseHeader>
-                  <CollapseBody>
-                    <SignupPage />
-                  </CollapseBody>
-                </Collapse>
-                {/*Spaces*/}
-                <View
-                  style={{
-                    padding: "10%"
-                    //borderRadius: 4,
-                    //borderWidth: 0.5,
-                    //borderColor: "#d6d7da"
-                  }}
+                <CollapseComponent
+                  componentToggle={this.state.createAccountToggle}
+                  componentPassed={this.state.createAccountPassed}
+                  componentName={"createAccount"}
+                  handleToggle={this.handleToggle}
+                  handlePassed={this.handlePassed}
                 />
 
                 {/*About You*/}
-                <Collapse
-                  isCollapsed={this.state.aboutYouScreen}
-                  onToggle={aboutYouScreen =>
-                    this.setState({ aboutYouScreen: aboutYouScreen })
-                  }
-                >
-                  <CollapseHeader>
-                    <View
-                      style={{
-                        opacity: this.state.aboutYouScreen ? 1 : 0.5
-                      }}
-                    >
-                      <Text style={{ color: "white", fontSize: 24 }}>
-                        About you
-                      </Text>
-                      <View style={{ alignItems: "flex-end" }}>
-                        <Chevron
-                          size={2}
-                          style={{ bottom: 15, right: 5 }}
-                          rotate={this.state.aboutYouScreen ? 0 : 270}
-                          color="#fff"
-                        />
-                      </View>
-                    </View>
-                  </CollapseHeader>
-                  <CollapseBody>
-                    <SignupPage />
-                  </CollapseBody>
-                </Collapse>
-                {/*Spaces*/}
-                <View
-                  style={{
-                    padding: "10%"
-                    //borderRadius: 4,
-                    //borderWidth: 0.5,
-                    //borderColor: "#d6d7da"
-                  }}
+                <CollapseComponent
+                  componentToggle={this.state.aboutYouToggle}
+                  componentPassed={this.state.aboutYouPassed}
+                  componentName={"aboutYou"}
+                  handleToggle={this.handleToggle}
+                  handlePassed={this.handlePassed}
                 />
 
                 {/*Preferences*/}
-                <Collapse
-                  isCollapsed={this.state.preferencesScreen}
-                  onToggle={preferencesScreen =>
-                    this.setState({ preferencesScreen: preferencesScreen })
-                  }
-                >
-                  <CollapseHeader>
-                    <View
-                      style={{
-                        opacity: this.state.preferencesScreen ? 1 : 0.5
-                      }}
-                    >
-                      <Text style={{ color: "white", fontSize: 24 }}>
-                        Preferences
-                      </Text>
-                      <View style={{ alignItems: "flex-end" }}>
-                        <Chevron
-                          size={2}
-                          rotate={this.state.preferencesScreen ? 0 : 270}
-                          style={{ bottom: 15, right: 5 }}
-                          color="#fff"
-                        />
-                      </View>
-                    </View>
-                  </CollapseHeader>
-                  <CollapseBody>
-                    <SignupPage />
-                  </CollapseBody>
-                </Collapse>
-                {/*Spaces*/}
-                <View
-                  style={{
-                    padding: "10%"
-                    //borderRadius: 4,
-                    //borderWidth: 0.5,
-                    //borderColor: "#d6d7da"
-                  }}
+                <CollapseComponent
+                  componentToggle={this.state.preferencesToggle}
+                  componentPassed={this.state.preferencesPassed}
+                  componentName={"preferences"}
+                  handleToggle={this.handleToggle}
+                  handlePassed={this.handlePassed}
                 />
 
-                {/*Interests*/}
-                <Collapse
-                  isCollapsed={this.state.interestsScreen}
-                  onToggle={interestsScreen =>
-                    this.setState({ interestsScreen: interestsScreen })
-                  }
-                >
-                  <CollapseHeader>
-                    <View
-                      style={{
-                        opacity: this.state.interestsScreen ? 1 : 0.5
-                      }}
-                    >
-                      <Text style={{ color: "white", fontSize: 24 }}>
-                        Interests
-                      </Text>
-                      <View style={{ alignItems: "flex-end" }}>
-                        <Chevron
-                          size={2}
-                          rotate={this.state.interestsScreen ? 0 : 270}
-                          style={{ bottom: 15, right: 5 }}
-                          color="#fff"
-                        />
-                      </View>
-                    </View>
-                  </CollapseHeader>
-                  <CollapseBody>
-                    <SignupPage />
-                  </CollapseBody>
-                </Collapse>
-                {/*Spaces*/}
-                <View
-                  style={{
-                    padding: "10%"
-                    //borderRadius: 4,
-                    //borderWidth: 0.5,
-                    //borderColor: "#d6d7da"
-                  }}
+                {/*interests*/}
+                <CollapseComponent
+                  componentToggle={this.state.interestsToggle}
+                  componentPassed={this.state.interestsPassed}
+                  componentName={"interests"}
+                  handleToggle={this.handleToggle}
+                  handlePassed={this.handlePassed}
                 />
 
-                {/*Would You Rather*/}
-                <Collapse
-                  isCollapsed={this.state.wouldYouRatherScreen}
-                  onToggle={wouldYouRatherScreen =>
-                    this.setState({
-                      wouldYouRatherScreen: wouldYouRatherScreen
-                    })
-                  }
-                >
-                  <CollapseHeader>
-                    <View
-                      style={{
-                        opacity: this.state.wouldYouRatherScreen ? 1 : 0.5
-                      }}
-                    >
-                      <Text style={{ color: "white", fontSize: 24 }}>
-                        Would you rather
-                      </Text>
-                      <View style={{ alignItems: "flex-end" }}>
-                        <Chevron
-                          size={2}
-                          rotate={this.state.wouldYouRatherScreen ? 0 : 270}
-                          style={{ bottom: 15, right: 5 }}
-                          color="#fff"
-                        />
-                      </View>
-                    </View>
-                  </CollapseHeader>
-                  <CollapseBody>
-                    <SignupPage />
-                  </CollapseBody>
-                </Collapse>
-                {/*Spaces*/}
-                <View
-                  style={{
-                    padding: "10%"
-                    //borderRadius: 4,
-                    //borderWidth: 0.5,
-                    //borderColor: "#d6d7da"
-                  }}
+                {/*wouldYouRather*/}
+                <CollapseComponent
+                  componentToggle={this.state.wouldYouRatherToggle}
+                  componentPassed={this.state.wouldYouRatherPassed}
+                  componentName={"wouldYouRather"}
+                  handleToggle={this.handleToggle}
+                  handlePassed={this.handlePassed}
                 />
 
-                {/*Local Destinations*/}
-                <Collapse
-                  isCollapsed={this.state.localDestinationsScreen}
-                  onToggle={localDestinationsScreen =>
-                    this.setState({
-                      localDestinationsScreen: localDestinationsScreen
-                    })
-                  }
-                >
-                  <CollapseHeader>
-                    <View
-                      style={{
-                        opacity: this.state.localDestinationsScreen ? 1 : 0.5
-                      }}
-                    >
-                      <Text style={{ color: "white", fontSize: 24 }}>
-                        Local Destinations
-                      </Text>
-                      <View style={{ alignItems: "flex-end" }}>
-                        <Chevron
-                          size={2}
-                          rotate={this.state.localDestinationsScreen ? 0 : 270}
-                          style={{ bottom: 15, right: 5 }}
-                          color="#fff"
-                        />
-                      </View>
-                    </View>
-                  </CollapseHeader>
-                  <CollapseBody>
-                    <SignupPage />
-                  </CollapseBody>
-                </Collapse>
-                {/*Spaces*/}
-                <View
-                  style={{
-                    padding: "10%"
-                    //borderRadius: 4,
-                    //borderWidth: 0.5,
-                    //borderColor: "#d6d7da"
-                  }}
+                {/*localDestinations*/}
+                <CollapseComponent
+                  componentToggle={this.state.localDestinationsToggle}
+                  componentPassed={this.state.localDestinationsPassed}
+                  componentName={"localDestinations"}
+                  handleToggle={this.handleToggle}
+                  handlePassed={this.handlePassed}
                 />
               </View>
             </TouchableWithoutFeedback>
@@ -418,17 +332,4 @@ const styles = StyleSheet.create({
   }
 });
 
-const mapStateToProps = state => {
-  return { ...state };
-};
-
-const mapDispatchToProps = dispatch => {
-  return {
-    SetUserDataAction: payload => dispatch(SetUserDataAction(payload))
-  };
-};
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Welcome);
+export default Collapsible_ScrollView;

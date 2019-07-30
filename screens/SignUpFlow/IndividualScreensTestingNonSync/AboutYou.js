@@ -60,8 +60,12 @@ class AboutYou extends Component {
 
   //return true/false for valid first name and last name
   checkName = string => {
-    //Have atleast one character
-    //maybe? a user would like to have number in their name ??
+    //check if string has only space
+    if (!string.replace(/\s/g, "").length) {
+      return false;
+    }
+
+    //check letters and spaces
     let regExp = /^[a-zA-Z\s]*$/;
     if (regExp.test(string)) {
       return true;
@@ -178,7 +182,7 @@ class AboutYou extends Component {
     }
 
     //check invalid/empty gender
-    if (this.state.gender === "") {
+    if (this.state.gender === "" || this.state.gender === null) {
       console.log("Empty Gender");
       gender = false;
       this.setState({
@@ -192,7 +196,7 @@ class AboutYou extends Component {
     }
 
     //check invalid/empty country
-    if (this.state.country === "") {
+    if (this.state.country === "" || this.state.country === null) {
       console.log("Empty Country");
       country = false;
       this.setState({

@@ -23,12 +23,11 @@ import SetProfilePersonalAction from "../../../storage/actions/SetProfilePersona
 import firebase from "../../../utils/mainFire";
 import DatePicker from "react-native-datepicker";
 import RNPickerSelect from "react-native-picker-select";
-<<<<<<< HEAD:screens/SignUpFlow/AboutYou.js
 import { countries, genders } from "./someData.js";
-=======
+
 //import { countries, genders } from "./someData.js";
 import { countries, genders } from "../someData.js";
->>>>>>> 9a8044f056b2b5a10cc0836611bccdf63f28de67:screens/SignUpFlow/IndividualScreensBackUp/AboutYou.js
+
 
 class AboutYou extends Component {
   constructor(props) {
@@ -62,8 +61,12 @@ class AboutYou extends Component {
 
   //return true/false for valid first name and last name
   checkName = string => {
-    //Have atleast one character
-    //maybe? a user would like to have number in their name ??
+    //check if string has only space
+    if (!string.replace(/\s/g, "").length) {
+      return false;
+    }
+
+    //check letters and spaces
     let regExp = /^[a-zA-Z\s]*$/;
     if (regExp.test(string)) {
       return true;
