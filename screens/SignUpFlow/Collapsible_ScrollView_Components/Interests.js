@@ -131,12 +131,24 @@ class TellUsMore extends React.Component {
               backgroundColor:
                 this.props.CreateProfileReducer.likes.indexOf(e) === -1
                   ? "transparent"
-                  : "green"
+                  : "white"
             }
           ]}
           onPress={() => this.handleRedux(e)}
         >
-          <Text style={styles.likeButton}>{e}</Text>
+          <Text
+            style={[
+              styles.likeButton,
+              {
+                color:
+                  this.props.CreateProfileReducer.likes.indexOf(e) === -1
+                    ? "white"
+                    : "#43218c"
+              }
+            ]}
+          >
+            {e}
+          </Text>
         </TouchableOpacity>
       );
     });
@@ -226,18 +238,6 @@ const styles = StyleSheet.create({
     borderColor: "#fff",
     width: "auto",
     minWidth: "25%",
-    margin: 5
-  },
-  likeButtonWrapBack: {
-    alignItems: "center",
-    paddingLeft: 15,
-    paddingRight: 15,
-    paddingTop: 5,
-    paddingBottom: 5,
-    borderRadius: 40,
-    borderWidth: 2,
-    borderColor: "#fff",
-    //width: "33%",
     margin: 5
   },
   button: {

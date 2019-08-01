@@ -29,7 +29,7 @@ class Collapsible_ScrollView extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      createAccountToggle: false,
+      createAccountToggle: true,
       aboutYouToggle: false,
       preferencesToggle: false,
       interestsToggle: false,
@@ -99,21 +99,24 @@ class Collapsible_ScrollView extends Component {
   };
 
   //When ComponentName/Arrow is pressed, Toggle its states to oppsoite
-  //This function is used on parent component (Collapsible_ScrollView)
-  //and child component (AboutYou, createAccount, etc...)
   handleToggle = (componentName, evt) => {
+    //If email screen didn't passed yet, not allow user to click other screen
+    if (
+      componentName !== "createAccount" &&
+      this.state.createAccountPassed === false
+    ) {
+      return;
+    }
+
     let pageY;
-    //for child component (no event can be caught)
-    //Set the PageY to 150
+    //If user pressed the "Next Button"
     if (evt === null || evt === undefined) {
-      pageY = 150;
-      if (componentName === "createAccount") {
-        pageY = 250;
-      }
+      pageY = componentName !== "createAccount" ? 150 : 250;
     } else {
-      //else while in parent component (we can catch the event of tab Y position)
+      //If user pressed the Toggle
       pageY = evt.nativeEvent.pageY;
     }
+
     let toggle = componentName + "Toggle";
     this.setState({
       [toggle]: !this.state[toggle]

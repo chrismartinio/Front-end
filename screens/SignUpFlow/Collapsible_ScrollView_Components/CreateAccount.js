@@ -22,6 +22,8 @@ import firebase from "../../../utils/mainFire";
 import { Icon, Input } from "react-native-elements";
 import { Chevron } from "react-native-shapes";
 
+//click password button to toggle password
+
 class CreateAccount extends Component {
   static navigationOptions = {
     //header: null,
@@ -53,7 +55,8 @@ class CreateAccount extends Component {
       password_UpperLowerCaseWarning: true,
       password_NumberSymbolWarning: true,
       password_LengthWarning: true,
-      passed: false
+      passed: false,
+      editable: true
     };
   }
   handleBackToSignIn = () => {
@@ -150,6 +153,12 @@ class CreateAccount extends Component {
 
   //check email
   emailChecker = () => {
+    //Clear confirmEmail Input if any changes made to email input
+    this.confirmEmailInput.clear();
+    this.setState({
+      confirmEmailWarning: "empty"
+    });
+
     if (!this.nullCheck(this.state.email)) {
       console.log("Empty Email");
       this.setState({
@@ -186,6 +195,11 @@ class CreateAccount extends Component {
   };
 
   passwordChecker = () => {
+    //Clear password Input if any changes made to password input
+    this.confirmPasswordInput.clear();
+    this.setState({
+      confirmPasswordWarning: "empty"
+    });
     if (!this.nullCheck(this.state.password)) {
       console.log("Empty Password");
       this.setState({
@@ -266,6 +280,9 @@ class CreateAccount extends Component {
 
   handleSubmit = () => {
     if (this.state.passed) {
+      this.setState({
+        editable: false
+      });
       this.props.SetUserDataAction({
         email: this.state.email,
         password: this.state.password
@@ -273,9 +290,6 @@ class CreateAccount extends Component {
       //this.props.navigation.navigate("TestAboutYou");
       //if successed to passed, it will put the check mark from CollapsibleComponent CheckMark
       this.props.handlePassed("createAccount", true);
-    } else {
-      //if failed to passed, it will remove the check mark from CollapsibleComponent CheckMark
-      this.props.handlePassed("createAccount", false);
     }
   };
 
@@ -341,6 +355,7 @@ class CreateAccount extends Component {
                 />
               )
             }
+            editable={this.state.editable}
             autoCompleteType={false}
             autoCapitalize="none"
             autoCorrect={false}
@@ -381,9 +396,13 @@ class CreateAccount extends Component {
                 />
               )
             }
+            editable={this.state.editable}
             autoCompleteType={false}
             autoCapitalize="none"
             autoCorrect={false}
+            ref={input => {
+              this.confirmEmailInput = input;
+            }}
             onChangeText={confirmEmail =>
               this.setState({ confirmEmail }, () => {
                 this.confirmEmailChecker();
@@ -422,6 +441,7 @@ class CreateAccount extends Component {
                 />
               )
             }
+            editable={this.state.editable}
             autoCompleteType={false}
             autoCapitalize="none"
             autoCorrect={false}
@@ -463,10 +483,14 @@ class CreateAccount extends Component {
                 />
               )
             }
+            editable={this.state.editable}
             autoCompleteType={false}
             autoCapitalize="none"
             autoCorrect={false}
             secureTextEntry={true}
+            ref={input => {
+              this.confirmPasswordInput = input;
+            }}
             onChangeText={confirmPassword =>
               this.setState({ confirmPassword }, () => {
                 this.confirmPasswordChecker();
@@ -505,7 +529,7 @@ class CreateAccount extends Component {
             {this.state.password_UpperLowerCaseWarning ? (
               <Icon name="times" type="font-awesome" color="red" />
             ) : (
-              <Icon name="check" type="font-awesome" color="orange" />
+              <Icon name="check" type="font-awesome" color="lightgreen" />
             )}
             <Text style={{ color: "#fff", paddingVertical: 5 }}>
               {"   "}
@@ -523,7 +547,7 @@ class CreateAccount extends Component {
             {this.state.password_NumberSymbolWarning ? (
               <Icon name="times" type="font-awesome" color="red" />
             ) : (
-              <Icon name="check" type="font-awesome" color="orange" />
+              <Icon name="check" type="font-awesome" color="lightgreen" />
             )}
             <Text style={{ color: "#fff", paddingVertical: 5 }}>
               {"   "}
@@ -541,7 +565,7 @@ class CreateAccount extends Component {
             {this.state.password_LengthWarning ? (
               <Icon name="times" type="font-awesome" color="red" />
             ) : (
-              <Icon name="check" type="font-awesome" color="orange" />
+              <Icon name="check" type="font-awesome" color="lightgreen" />
             )}
             <Text style={{ color: "#fff", paddingVertical: 5 }}>
               {"   "}
@@ -560,18 +584,26 @@ class CreateAccount extends Component {
         />
 
         {/*Next Button*/}
-        <View
-          alignItems="center"
-          style={{ opacity: this.state.passed ? 1.0 : 0.5 }}
-        >
-          <TouchableOpacity
-            style={styles.nextButton}
-            onPress={this.handleSubmit}
-            disabled={!this.state.passed}
+        {this.state.editable ? (
+          <View
+            alignItems="center"
+            style={{ opacity: this.state.passed ? 1.0 : 0.5 }}
           >
-            <Text style={styles.button}>Next</Text>
-          </TouchableOpacity>
-        </View>
+            <TouchableOpacity
+              style={styles.nextButton}
+              onPress={this.handleSubmit}
+              disabled={!this.state.passed}
+            >
+              <Text style={styles.button}>Next</Text>
+            </TouchableOpacity>
+          </View>
+        ) : (
+          <View alignItems="center" style={{ opacity: 0.5 }}>
+            <TouchableOpacity style={styles.nextButton} disabled={true}>
+              <Icon type="font-awesome" name="lock" color="#fff" />
+            </TouchableOpacity>
+          </View>
+        )}
         {/*Spaces*/}
         <View
           style={{

@@ -186,14 +186,27 @@ class LocationDestinations extends React.Component {
                 this.props.CreateProfileReducer.weekendLocation.indexOf(e) ===
                 -1
                   ? "transparent"
-                  : "green",
+                  : "white",
               minWidth:
                 e === "San Francisco" || e === "Morro Bay" ? "50%" : "45%"
             }
           ]}
           onPress={() => this.handlPress(e)}
         >
-          <Text style={styles.locationsButton}>{e}</Text>
+          <Text
+            style={[
+              styles.locationsButton,
+              {
+                color:
+                  this.props.CreateProfileReducer.weekendLocation.indexOf(e) ===
+                  -1
+                    ? "white"
+                    : "#43218c"
+              }
+            ]}
+          >
+            {e}
+          </Text>
         </TouchableOpacity>
       );
     });
