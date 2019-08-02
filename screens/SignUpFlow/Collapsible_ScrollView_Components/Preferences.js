@@ -271,38 +271,48 @@ class Preferences extends React.Component {
         <View style={{ alignItems: "center" }}>
           {/*Men*/}
           <TouchableOpacity
-            style={{
-              alignItems: "center",
-              padding: 7,
-              borderRadius: 40,
-              borderWidth: 2,
-              borderColor: "#fff",
-              width: "65%",
-              backgroundColor: this.state.pickedMen ? "green" : "transparent"
-            }}
+            style={[
+              styles.genderButtonWrap,
+              {
+                backgroundColor: this.state.pickedMen ? "white" : "transparent"
+              }
+            ]}
             onPress={() => {
               this.pickedGender("pickedMen");
             }}
           >
-            <Text style={styles.button}>Men</Text>
+            <Text
+              style={[
+                styles.button,
+                { color: this.state.pickedMen ? "#43218c" : "white" }
+              ]}
+            >
+              Men
+            </Text>
           </TouchableOpacity>
           <Text />
           {/*Women*/}
           <TouchableOpacity
-            style={{
-              alignItems: "center",
-              padding: 7,
-              borderRadius: 40,
-              borderWidth: 2,
-              borderColor: "#fff",
-              width: "65%",
-              backgroundColor: this.state.pickedWomen ? "green" : "transparent"
-            }}
+            style={[
+              styles.genderButtonWrap,
+              {
+                backgroundColor: this.state.pickedWomen
+                  ? "white"
+                  : "transparent"
+              }
+            ]}
             onPress={() => {
               this.pickedGender("pickedWomen");
             }}
           >
-            <Text style={styles.button}>Women</Text>
+            <Text
+              style={[
+                styles.button,
+                { color: this.state.pickedWomen ? "#43218c" : "white" }
+              ]}
+            >
+              Women
+            </Text>
           </TouchableOpacity>
           <Text />
         </View>
@@ -500,6 +510,14 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: "#fff",
     width: "55%"
+  },
+  genderButtonWrap: {
+    alignItems: "center",
+    padding: 7,
+    borderRadius: 40,
+    borderWidth: 2,
+    borderColor: "#fff",
+    width: "65%"
   }
 });
 const mapStateToProps = state => ({

@@ -593,16 +593,16 @@ class AboutYou extends Component {
             {this.state.zipCodeWarning === "empty" && empty}
             {this.state.zipCodeWarning === "invalid" && invalidZipCodeWarning}
           </View>
-          {/*Spaces*/}
-          <View
-            style={{
-              padding: "10%"
-              //borderRadius: 4,
-              //borderWidth: 0.5,
-              //borderColor: "#d6d7da"
-            }}
-          />
         </View>
+        {/*Spaces*/}
+        <View
+          style={{
+            padding: "10%"
+            //borderRadius: 4,
+            //borderWidth: 0.5,
+            //borderColor: "#d6d7da"
+          }}
+        />
 
         {/*Next Button*/}
         <View

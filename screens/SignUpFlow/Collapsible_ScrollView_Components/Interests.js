@@ -21,15 +21,16 @@ import { connect } from "react-redux";
 //import SetProfileLikesAction from "../../storage/actions/SetProfileLikesAction";
 //import SetProfileFirstLike from "../../storage/actions/SetProfileFirstLike";
 import SetProfileLikesAction from "../../../storage/actions/SetProfileLikesAction";
-import SetProfileFirstLike from "../../../storage/actions/SetProfileFirstLike";
-import RemoveProfileLikesAction from "../../../storage/actions/RemoveProfileLikesAction";
+//import SetProfileFirstLike from "../../../storage/actions/SetProfileFirstLike";
+//import RemoveProfileLikesAction from "../../../storage/actions/RemoveProfileLikesAction";
 import { Icon } from "react-native-elements";
 
 class TellUsMore extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      passed: false
+      passed: false,
+      likesArray: []
     };
     this.inputRefs = {};
   }
@@ -41,10 +42,7 @@ class TellUsMore extends React.Component {
     //If there have warnings: button show transparent (passed)
     //If there have no warnings: button show green (passed)
 
-    if (
-      prevProps.CreateProfileReducer.likes !==
-      this.props.CreateProfileReducer.likes
-    ) {
+    if (prevState.likesArray !== this.state.likesArray) {
       this.allChecker();
       //any changes will remove the check mark from CollapsibleComponent CheckMark
       this.props.handlePassed("interests", false);
@@ -53,6 +51,9 @@ class TellUsMore extends React.Component {
 
   handleSubmit = () => {
     if (this.state.passed) {
+      this.props.SetProfileLikesAction({
+        likesArray: this.state.likesArray
+      });
       this.props.handlePassed("interests", true);
     } else {
       this.props.handlePassed("interests", false);
@@ -60,7 +61,7 @@ class TellUsMore extends React.Component {
   };
 
   likesChecker = () => {
-    if (this.props.CreateProfileReducer.likes.length >= 3) {
+    if (this.state.likesArray.length >= 3) {
       return true;
     }
     return false;
@@ -88,20 +89,22 @@ class TellUsMore extends React.Component {
     }
   };
 
-  handleRedux = name => {
-    const likes = this.props.CreateProfileReducer.likes;
-    //console.log(name);
-    // replacing initial state
-    if (likes[0] === null) {
-      return this.props.SetProfileFirstLike(name);
-    }
-
+  handlePress = name => {
     // blocks duplicates
-    if (likes.indexOf(name) !== -1) {
-      return this.props.RemoveProfileLikesAction(name);
+    let index = this.state.likesArray.indexOf(name);
+    if (index !== -1) {
+      let tempAry = [
+        ...this.state.likesArray.slice(0, index),
+        ...this.state.likesArray.slice(index + 1)
+      ];
+      this.setState({
+        likesArray: tempAry
+      });
+    } else {
+      this.setState({
+        likesArray: [...this.state.likesArray, name]
+      });
     }
-
-    this.props.SetProfileLikesAction(name);
   };
 
   render() {
@@ -129,21 +132,19 @@ class TellUsMore extends React.Component {
             styles.likeButtonWrap,
             {
               backgroundColor:
-                this.props.CreateProfileReducer.likes.indexOf(e) === -1
+                this.state.likesArray.indexOf(e) === -1
                   ? "transparent"
                   : "white"
             }
           ]}
-          onPress={() => this.handleRedux(e)}
+          onPress={() => this.handlePress(e)}
         >
           <Text
             style={[
               styles.likeButton,
               {
                 color:
-                  this.props.CreateProfileReducer.likes.indexOf(e) === -1
-                    ? "white"
-                    : "#43218c"
+                  this.state.likesArray.indexOf(e) === -1 ? "white" : "#43218c"
               }
             ]}
           >
@@ -187,8 +188,7 @@ class TellUsMore extends React.Component {
           <View style={styles.likesWrap}>{displaylikes}</View>
         </View>
         <Text />
-        {this.props.CreateProfileReducer.likes.length < 3 &&
-          invalidLikesWarning}
+        {this.state.likesArray.length < 3 && invalidLikesWarning}
         {/*Spaces*/}
         <View
           style={{

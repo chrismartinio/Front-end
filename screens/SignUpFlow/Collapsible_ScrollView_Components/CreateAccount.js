@@ -23,6 +23,7 @@ import { Icon, Input } from "react-native-elements";
 import { Chevron } from "react-native-shapes";
 
 //click password button to toggle password
+//duplicate email from database
 
 class CreateAccount extends Component {
   static navigationOptions = {

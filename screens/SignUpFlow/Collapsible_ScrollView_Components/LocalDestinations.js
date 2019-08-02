@@ -17,7 +17,7 @@ import { LinearGradient } from "expo";
 import t from "tcomb-form-native";
 import { connect } from "react-redux";
 import SetWeekendLocationDataAction from "../../../storage/actions/SetWeekendLocationDataAction";
-import RemoveWeekendLocationDataAction from "../../../storage/actions/RemoveWeekendLocationDataAction";
+//import RemoveWeekendLocationDataAction from "../../../storage/actions/RemoveWeekendLocationDataAction";
 import { Icon } from "react-native-elements";
 
 class LocationDestinations extends React.Component {
@@ -41,7 +41,7 @@ class LocationDestinations extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      location: "",
+      weekendLocation: "",
       places: [
         "loading",
         "loading",
@@ -71,10 +71,7 @@ class LocationDestinations extends React.Component {
     //If there have warnings: button show transparent (passed)
     //If there have no warnings: button show green (passed)
 
-    if (
-      prevProps.CreateProfileReducer.weekendLocation !==
-      this.props.CreateProfileReducer.weekendLocation
-    ) {
+    if (prevState.weekendLocation !== this.state.weekendLocation) {
       this.allChecker();
       //any changes will remove the check mark from CollapsibleComponent CheckMark
       this.props.handlePassed("localDestinations", false);
@@ -114,17 +111,19 @@ class LocationDestinations extends React.Component {
   };
 
   handlPress = location => {
-    if (
-      this.props.CreateProfileReducer.weekendLocation.indexOf(location) !== -1
-    ) {
-      this.props.RemoveWeekendLocationDataAction(location);
+    if (this.state.weekendLocation === location) {
+      this.setState({
+        weekendLocation: ""
+      });
     } else {
-      this.props.SetWeekendLocationDataAction(location);
+      this.setState({
+        weekendLocation: location
+      });
     }
   };
 
   locationsChecker = () => {
-    if (this.props.CreateProfileReducer.weekendLocation.length === 1) {
+    if (this.state.weekendLocation !== "") {
       return true;
     }
     return false;
@@ -154,6 +153,9 @@ class LocationDestinations extends React.Component {
 
   handleSubmit = () => {
     if (this.state.passed) {
+      this.props.SetWeekendLocationDataAction({
+        weekendLocation: this.state.weekendLocation
+      });
       this.props.handlePassed("localDestinations", true);
     } else {
       this.props.handlePassed("localDestinations", false);
@@ -183,10 +185,7 @@ class LocationDestinations extends React.Component {
             styles.locationsButtonWrap,
             {
               backgroundColor:
-                this.props.CreateProfileReducer.weekendLocation.indexOf(e) ===
-                -1
-                  ? "transparent"
-                  : "white",
+                this.state.weekendLocation !== e ? "transparent" : "white",
               minWidth:
                 e === "San Francisco" || e === "Morro Bay" ? "50%" : "45%"
             }
@@ -197,11 +196,7 @@ class LocationDestinations extends React.Component {
             style={[
               styles.locationsButton,
               {
-                color:
-                  this.props.CreateProfileReducer.weekendLocation.indexOf(e) ===
-                  -1
-                    ? "white"
-                    : "#43218c"
+                color: this.state.weekendLocation !== e ? "white" : "#43218c"
               }
             ]}
           >
@@ -243,8 +238,7 @@ class LocationDestinations extends React.Component {
           <View style={styles.locationsWrap}>{displayLocation}</View>
         </View>
         <Text />
-        {this.props.CreateProfileReducer.weekendLocation.length !== 1 &&
-          emptyCityWarning}
+        {this.state.weekendLocation === "" && emptyCityWarning}
         {/*Spaces*/}
         <View
           style={{
