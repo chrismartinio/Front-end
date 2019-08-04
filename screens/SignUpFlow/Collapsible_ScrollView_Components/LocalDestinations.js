@@ -156,7 +156,7 @@ class LocationDestinations extends React.Component {
           passed: false
         },
         () => {
-          console.log("not passed");
+          console.log("not passeds");
         }
       );
     }
