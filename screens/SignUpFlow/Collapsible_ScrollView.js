@@ -29,23 +29,24 @@ class Collapsible_ScrollView extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      createAccountToggle: true,
+      //createAccountToggle: true,
+      createAccountToggle: false,
       aboutYouToggle: false,
       preferencesToggle: false,
       interestsToggle: false,
       wouldYouRatherToggle: false,
       localDestinationsToggle: false,
-      createAccountPassed: false,
+      //createAccountPassed: false,
+      createAccountPassed: true,
       aboutYouPassed: false,
       preferencesPassed: false,
       interestsPassed: false,
       wouldYouRatherPassed: false,
-      localDestinationsPassed: false
+      localDestinationsPassed: false,
+      currentScreenTopY: 0 //screenTopY : slide down increase ; slide up decrease
     };
-    //current Screen Top Y
-    //set to 0 by default
-    //scroll to bottom will increase
-    this.currentScreenTopY = 0;
+    this.interestsPositionY = 0;
+    this.localDestinationsPositionY = 0;
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
@@ -157,17 +158,19 @@ class Collapsible_ScrollView extends Component {
   //handlescroll : update current screen top y
   handleScroll = ({ nativeEvent }) => {
     const { contentOffset } = nativeEvent;
-    this.currentScreenTopY = contentOffset.y;
-    //console.log(this.currentScreenTopY);
+    this.setState({
+      currentScreenTopY: contentOffset.y
+    });
+    //console.log(this.state.currentScreenTopY);
   };
 
   //Press tab will scroll to that tab position
   scrollToPosition = (componentName, tabPageY) => {
-    //this.currentScreenTopY : current screen (not scroll) Y position; changed upon scrolling
+    //this.state.currentScreenTopY : current screen (not scroll) Y position; changed upon scrolling
     //tabPageY : the screen tab's Y position in the whole scroll screen view
     let offset; // offset : an offset to prevent screen scroll too high when closing
     componentName === "createAccount" ? (offset = 250) : (offset = 150);
-    const newScrollY = this.currentScreenTopY + tabPageY - offset;
+    const newScrollY = this.state.currentScreenTopY + tabPageY - offset;
     this.scrollView.scrollTo({ y: newScrollY, animated: true });
   };
 
@@ -225,16 +228,26 @@ class Collapsible_ScrollView extends Component {
                   componentName={"preferences"}
                   handleToggle={this.handleToggle}
                   handlePassed={this.handlePassed}
+                  currentScreenTopY={this.state.currentScreenTopY}
                 />
 
                 {/*interests*/}
-                <CollapseComponent
-                  componentToggle={this.state.interestsToggle}
-                  componentPassed={this.state.interestsPassed}
-                  componentName={"interests"}
-                  handleToggle={this.handleToggle}
-                  handlePassed={this.handlePassed}
-                />
+                <View
+                  onLayout={event => {
+                    const layout = event.nativeEvent.layout;
+                    this.interestsPositionY = layout.y;
+                  }}
+                >
+                  <CollapseComponent
+                    componentToggle={this.state.interestsToggle}
+                    componentPassed={this.state.interestsPassed}
+                    componentName={"interests"}
+                    handleToggle={this.handleToggle}
+                    handlePassed={this.handlePassed}
+                    currentScreenTopY={this.state.currentScreenTopY}
+                    interestsPositionY={this.interestsPositionY}
+                  />
+                </View>
 
                 {/*wouldYouRather*/}
                 <CollapseComponent
@@ -246,13 +259,22 @@ class Collapsible_ScrollView extends Component {
                 />
 
                 {/*localDestinations*/}
-                <CollapseComponent
-                  componentToggle={this.state.localDestinationsToggle}
-                  componentPassed={this.state.localDestinationsPassed}
-                  componentName={"localDestinations"}
-                  handleToggle={this.handleToggle}
-                  handlePassed={this.handlePassed}
-                />
+                <View
+                  onLayout={event => {
+                    const layout = event.nativeEvent.layout;
+                    this.localDestinationsPositionY = layout.y;
+                  }}
+                >
+                  <CollapseComponent
+                    componentToggle={this.state.localDestinationsToggle}
+                    componentPassed={this.state.localDestinationsPassed}
+                    componentName={"localDestinations"}
+                    handleToggle={this.handleToggle}
+                    handlePassed={this.handlePassed}
+                    currentScreenTopY={this.state.currentScreenTopY}
+                    localDestinationsPositionY={this.localDestinationsPositionY}
+                  />
+                </View>
               </View>
             </TouchableWithoutFeedback>
           </SafeAreaView>

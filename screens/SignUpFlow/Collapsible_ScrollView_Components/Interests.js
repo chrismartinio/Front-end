@@ -12,7 +12,8 @@ import {
   Picker,
   DatePickerIOS,
   TouchableHighlight,
-  SafeAreaView
+  SafeAreaView,
+  Dimensions
 } from "react-native";
 import { LinearGradient } from "expo";
 import DatePicker from "react-native-datepicker";
@@ -24,6 +25,7 @@ import SetProfileLikesAction from "../../../storage/actions/SetProfileLikesActio
 //import SetProfileFirstLike from "../../../storage/actions/SetProfileFirstLike";
 //import RemoveProfileLikesAction from "../../../storage/actions/RemoveProfileLikesAction";
 import { Icon } from "react-native-elements";
+const screenHeight = Math.round(Dimensions.get("window").height);
 
 class TellUsMore extends React.Component {
   constructor(props) {
@@ -32,7 +34,16 @@ class TellUsMore extends React.Component {
       passed: false,
       likesArray: []
     };
-    this.inputRefs = {};
+
+    this.b1y = 0;
+    this.b2y = 0;
+    this.b3y = 0;
+    this.b4y = 0;
+    this.b5y = 0;
+    this.b6y = 0;
+    this.b7y = 0;
+    this.b8y = 0;
+    this.b9y = 0;
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
@@ -89,6 +100,25 @@ class TellUsMore extends React.Component {
     }
   };
 
+  changeColor = bname => {
+    let topY = this.props.currentScreenTopY;
+
+    const topRed = 24;
+    const topGreen = 205;
+    const topBlue = 246;
+    const bottomRed = 67;
+    const bottomGreen = 33;
+    const bottomBlue = 140;
+
+    let pos = (this[bname] - topY) / screenHeight;
+
+    let colorRed = topRed + (bottomRed - topRed) * pos;
+    let colorGreen = topGreen + (bottomGreen - topGreen) * pos;
+    let colorBlue = topBlue + (bottomBlue - topBlue) * pos;
+
+    return `rgb(${colorRed},${colorGreen},${colorBlue})`;
+  };
+
   handlePress = name => {
     // blocks duplicates
     let index = this.state.likesArray.indexOf(name);
@@ -108,6 +138,7 @@ class TellUsMore extends React.Component {
   };
 
   render() {
+
     let invalidLikesWarning = (
       <View style={{ alignItems: "center" }}>
         <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
@@ -126,31 +157,40 @@ class TellUsMore extends React.Component {
 
     let displaylikes = likes.map((e, index = 0) => {
       return (
-        <TouchableOpacity
+        <View
           key={index++}
-          style={[
-            styles.likeButtonWrap,
-            {
-              backgroundColor:
-                this.state.likesArray.indexOf(e) === -1
-                  ? "transparent"
-                  : "white"
-            }
-          ]}
-          onPress={() => this.handlePress(e)}
+          onLayout={event => {
+            const layout = event.nativeEvent.layout;
+            this[`b${index}y`] = layout.y + this.props.interestsPositionY;
+          }}
         >
-          <Text
+          <TouchableOpacity
             style={[
-              styles.likeButton,
+              styles.likeButtonWrap,
               {
-                color:
-                  this.state.likesArray.indexOf(e) === -1 ? "white" : "#43218c"
+                backgroundColor:
+                  this.state.likesArray.indexOf(e) === -1
+                    ? "transparent"
+                    : "white"
               }
             ]}
+            onPress={() => this.handlePress(e)}
           >
-            {e}
-          </Text>
-        </TouchableOpacity>
+            <Text
+              style={[
+                styles.likeButton,
+                {
+                  color:
+                    this.state.likesArray.indexOf(e) === -1
+                      ? "white"
+                      : this.changeColor(`b${index}y`)
+                }
+              ]}
+            >
+              {e}
+            </Text>
+          </TouchableOpacity>
+        </View>
       );
     });
 

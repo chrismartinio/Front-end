@@ -20,16 +20,33 @@ export default function CollapseComponenet(props) {
         return <AboutYou handlePassed={props.handlePassed} />;
 
       case "preferences":
-        return <Preferences handlePassed={props.handlePassed} />;
+        return (
+          <Preferences
+            handlePassed={props.handlePassed}
+            currentScreenTopY={props.currentScreenTopY}
+          />
+        );
 
       case "interests":
-        return <Interests handlePassed={props.handlePassed} />;
+        return (
+          <Interests
+            handlePassed={props.handlePassed}
+            currentScreenTopY={props.currentScreenTopY}
+            interestsPositionY={props.interestsPositionY}
+          />
+        );
 
       case "wouldYouRather":
         return <WouldYouRather handlePassed={props.handlePassed} />;
 
       case "localDestinations":
-        return <LocalDestinations handlePassed={props.handlePassed} />;
+        return (
+          <LocalDestinations
+            handlePassed={props.handlePassed}
+            currentScreenTopY={props.currentScreenTopY}
+            localDestinationsPositionY={props.localDestinationsPositionY}
+          />
+        );
 
       default:
         return;

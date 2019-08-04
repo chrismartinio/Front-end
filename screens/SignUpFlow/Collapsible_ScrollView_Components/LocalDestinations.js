@@ -19,6 +19,7 @@ import { connect } from "react-redux";
 import SetWeekendLocationDataAction from "../../../storage/actions/SetWeekendLocationDataAction";
 //import RemoveWeekendLocationDataAction from "../../../storage/actions/RemoveWeekendLocationDataAction";
 import { Icon } from "react-native-elements";
+const screenHeight = Math.round(Dimensions.get("window").height);
 
 class LocationDestinations extends React.Component {
   static navigationOptions = {
@@ -53,6 +54,16 @@ class LocationDestinations extends React.Component {
       ],
       passed: false
     };
+
+    this.b1y = 0;
+    this.b2y = 0;
+    this.b3y = 0;
+    this.b4y = 0;
+    this.b5y = 0;
+    this.b6y = 0;
+    this.b7y = 0;
+    this.b8y = 0;
+    this.b9y = 0;
   }
 
   //header : navigate to sign in screen
@@ -151,6 +162,25 @@ class LocationDestinations extends React.Component {
     }
   };
 
+  changeColor = bname => {
+    let topY = this.props.currentScreenTopY;
+
+    const topRed = 24;
+    const topGreen = 205;
+    const topBlue = 246;
+    const bottomRed = 67;
+    const bottomGreen = 33;
+    const bottomBlue = 140;
+
+    let pos = (this[bname] - topY) / screenHeight;
+
+    let colorRed = topRed + (bottomRed - topRed) * pos;
+    let colorGreen = topGreen + (bottomGreen - topGreen) * pos;
+    let colorBlue = topBlue + (bottomBlue - topBlue) * pos;
+
+    return `rgb(${colorRed},${colorGreen},${colorBlue})`;
+  };
+
   handleSubmit = () => {
     if (this.state.passed) {
       this.props.SetWeekendLocationDataAction({
@@ -179,30 +209,40 @@ class LocationDestinations extends React.Component {
 
     let displayLocation = locations.map((e, index = 0) => {
       return (
-        <TouchableOpacity
+        <View
           key={index++}
-          style={[
-            styles.locationsButtonWrap,
-            {
-              backgroundColor:
-                this.state.weekendLocation !== e ? "transparent" : "white",
-              minWidth:
-                e === "San Francisco" || e === "Morro Bay" ? "50%" : "45%"
-            }
-          ]}
-          onPress={() => this.handlPress(e)}
+          onLayout={event => {
+            const layout = event.nativeEvent.layout;
+            this[`b${index}y`] = layout.y + this.props.localDestinationsPositionY;
+          }}
         >
-          <Text
+          <TouchableOpacity
             style={[
-              styles.locationsButton,
+              styles.locationsButtonWrap,
               {
-                color: this.state.weekendLocation !== e ? "white" : "#43218c"
+                backgroundColor:
+                  this.state.weekendLocation !== e ? "transparent" : "white",
+                minWidth:
+                  e === "San Francisco" || e === "Morro Bay" ? "50%" : "45%"
               }
             ]}
+            onPress={() => this.handlPress(e)}
           >
-            {e}
-          </Text>
-        </TouchableOpacity>
+            <Text
+              style={[
+                styles.locationsButton,
+                {
+                  color:
+                    this.state.weekendLocation !== e
+                      ? "white"
+                      : this.changeColor(`b${index}y`)
+                }
+              ]}
+            >
+              {e}
+            </Text>
+          </TouchableOpacity>
+        </View>
       );
     });
 
