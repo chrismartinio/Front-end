@@ -280,14 +280,21 @@ class CreateAccount extends Component {
   };
 
   handleSubmit = () => {
+    if (this.state.editable === false) {
+      this.props.handlePassed("createAccount", true);
+      return;
+    }
+
     if (this.state.passed) {
       this.setState({
         editable: false
       });
+
       this.props.SetUserDataAction({
         email: this.state.email,
         password: this.state.password
       });
+
       //this.props.navigation.navigate("TestAboutYou");
       //if successed to passed, it will put the check mark from CollapsibleComponent CheckMark
       this.props.handlePassed("createAccount", true);
@@ -585,26 +592,20 @@ class CreateAccount extends Component {
         />
 
         {/*Next Button*/}
-        {this.state.editable ? (
-          <View
-            alignItems="center"
-            style={{ opacity: this.state.passed ? 1.0 : 0.5 }}
+
+        <View
+          alignItems="center"
+          style={{ opacity: this.state.passed ? 1.0 : 0.5 }}
+        >
+          <TouchableOpacity
+            style={styles.nextButton}
+            onPress={this.handleSubmit}
+            disabled={!this.state.passed}
           >
-            <TouchableOpacity
-              style={styles.nextButton}
-              onPress={this.handleSubmit}
-              disabled={!this.state.passed}
-            >
-              <Text style={styles.button}>Next</Text>
-            </TouchableOpacity>
-          </View>
-        ) : (
-          <View alignItems="center" style={{ opacity: 0.5 }}>
-            <TouchableOpacity style={styles.nextButton} disabled={true}>
-              <Icon type="font-awesome" name="lock" color="#fff" />
-            </TouchableOpacity>
-          </View>
-        )}
+            <Text style={styles.button}>Next</Text>
+          </TouchableOpacity>
+        </View>
+
         {/*Spaces*/}
         <View
           style={{

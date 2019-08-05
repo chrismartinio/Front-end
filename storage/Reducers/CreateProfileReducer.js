@@ -3,13 +3,25 @@ const CreateProfileReducer = (
     userData: null,
     profImage: null,
     profData: null,
-    likesData: [null],
+    likesData: null,
     interestedData: null,
-    weekendLocation: []
+    weekendLocation: null,
+    wouldRatherData: null
   },
   action
 ) => {
   switch (action.type) {
+    case "RESET_REDUX_DATA":
+      return {
+        ...state,
+        userData: null,
+        profImage: null,
+        profData: null,
+        likesData: null,
+        interestedData: null,
+        weekendLocation: null,
+        wouldRatherData: null
+      };
     case "ADD_PROFILE_PICTURE":
       return { ...state, profImage: action.PAYLOAD };
     case "ADD_PROFILE_DATA":

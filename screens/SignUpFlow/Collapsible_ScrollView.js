@@ -22,8 +22,13 @@ import {
 import { LinearGradient } from "expo";
 import CollapseComponent from "./Collapsible_ScrollView_Components/TinyComponents/CollapseComponenet.js";
 
+import { connect } from "react-redux";
+import ResetReduxData from "../../storage/actions/ResetReduxData";
+
 import { Chevron } from "react-native-shapes";
 import { Icon, Input } from "react-native-elements";
+
+//task clean redux
 
 class Collapsible_ScrollView extends Component {
   constructor(props) {
@@ -46,6 +51,13 @@ class Collapsible_ScrollView extends Component {
     this.interestsPositionY = 0;
     this.localDestinationsPositionY = 0;
     this.preferencesPositionY = 0;
+  }
+
+  componentDidMount() {
+    //reset all data at start of registration
+    this.props.ResetReduxData({
+      reset: true
+    });
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
@@ -363,5 +375,17 @@ const styles = StyleSheet.create({
     alignItems: "center"
   }
 });
+const mapStateToProps = state => {
+  return { ...state };
+};
 
-export default Collapsible_ScrollView;
+const mapDispatchToProps = dispatch => {
+  return {
+    ResetReduxData: payload => dispatch(ResetReduxData(payload))
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Collapsible_ScrollView);

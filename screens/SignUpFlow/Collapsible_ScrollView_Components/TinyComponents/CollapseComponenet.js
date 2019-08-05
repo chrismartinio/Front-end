@@ -97,21 +97,12 @@ export default function CollapseComponenet(props) {
           </Text>
           <View style={{ alignItems: "flex-end" }}>
             {props.componentPassed ? (
-              props.componentName === "createAccount" ? (
-                <Icon
-                  type="font-awesome"
-                  name="lock"
-                  color="#fff"
-                  iconStyle={{ bottom: 23 }}
-                />
-              ) : (
-                <Icon
-                  type="font-awesome"
-                  name="check-circle"
-                  color="#fff"
-                  iconStyle={{ bottom: 23 }}
-                />
-              )
+              <Icon
+                type="font-awesome"
+                name="check-circle"
+                color="#fff"
+                iconStyle={{ bottom: 23 }}
+              />
             ) : (
               <Chevron
                 size={2}
