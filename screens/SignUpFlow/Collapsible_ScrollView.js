@@ -29,15 +29,13 @@ class Collapsible_ScrollView extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      //createAccountToggle: true,
-      createAccountToggle: false,
+      createAccountToggle: true,
       aboutYouToggle: false,
       preferencesToggle: false,
       interestsToggle: false,
       wouldYouRatherToggle: false,
       localDestinationsToggle: false,
-      //createAccountPassed: false,
-      createAccountPassed: true,
+      createAccountPassed: false,
       aboutYouPassed: false,
       preferencesPassed: false,
       interestsPassed: false,
@@ -47,6 +45,7 @@ class Collapsible_ScrollView extends Component {
     };
     this.interestsPositionY = 0;
     this.localDestinationsPositionY = 0;
+    this.preferencesPositionY = 0;
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
@@ -222,14 +221,22 @@ class Collapsible_ScrollView extends Component {
                 />
 
                 {/*Preferences*/}
-                <CollapseComponent
-                  componentToggle={this.state.preferencesToggle}
-                  componentPassed={this.state.preferencesPassed}
-                  componentName={"preferences"}
-                  handleToggle={this.handleToggle}
-                  handlePassed={this.handlePassed}
-                  currentScreenTopY={this.state.currentScreenTopY}
-                />
+                <View
+                  onLayout={event => {
+                    const layout = event.nativeEvent.layout;
+                    this.preferencesPositionY = layout.y;
+                  }}
+                >
+                  <CollapseComponent
+                    componentToggle={this.state.preferencesToggle}
+                    componentPassed={this.state.preferencesPassed}
+                    componentName={"preferences"}
+                    handleToggle={this.handleToggle}
+                    handlePassed={this.handlePassed}
+                    currentScreenTopY={this.state.currentScreenTopY}
+                    preferencesPositionY={this.preferencesPositionY}
+                  />
+                </View>
 
                 {/*interests*/}
                 <View

@@ -19,9 +19,10 @@ import { connect } from "react-redux";
 import SetInterestedDataAction from "../../../storage/actions/SetInterestedDataAction";
 import firebase from "../../../utils/mainFire";
 import Slider from "./TinyComponents/PreferencesSlider";
-import { Math } from "core-js";
+//import { Math } from "core-js";
 import MultiSlider from "@ptomasroos/react-native-multi-slider";
 import { Icon } from "react-native-elements";
+const screenHeight = Math.round(Dimensions.get("window").height);
 
 class Preferences extends React.Component {
   static navigationOptions = {
@@ -55,6 +56,9 @@ class Preferences extends React.Component {
       distanceWarning: "empty",
       passed: false
     };
+
+    this.bMaley = 0;
+    this.bFemaley = 0;
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
@@ -183,6 +187,25 @@ class Preferences extends React.Component {
     }
   };
 
+  changeColor = bname => {
+    let topY = this.props.currentScreenTopY;
+
+    const topRed = 24;
+    const topGreen = 205;
+    const topBlue = 246;
+    const bottomRed = 67;
+    const bottomGreen = 33;
+    const bottomBlue = 140;
+
+    let pos = (this[bname] - topY) / screenHeight;
+
+    let colorRed = topRed + (bottomRed - topRed) * pos;
+    let colorGreen = topGreen + (bottomGreen - topGreen) * pos;
+    let colorBlue = topBlue + (bottomBlue - topBlue) * pos;
+
+    return `rgb(${colorRed},${colorGreen},${colorBlue})`;
+  };
+
   handleSubmit = () => {
     if (this.state.passed) {
       let interestedGender = null;
@@ -268,7 +291,14 @@ class Preferences extends React.Component {
         </View>
 
         {/*Men and Women buttons */}
-        <View style={{ alignItems: "center" }}>
+        <View
+          onLayout={event => {
+            const layout = event.nativeEvent.layout;
+            this.bMaley = layout.y + this.props.preferencesPositionY;
+            this.bFemaley = layout.y + this.props.preferencesPositionY;
+          }}
+          style={{ alignItems: "center" }}
+        >
           {/*Men*/}
           <TouchableOpacity
             style={[
@@ -284,7 +314,11 @@ class Preferences extends React.Component {
             <Text
               style={[
                 styles.button,
-                { color: this.state.pickedMen ? "#43218c" : "white" }
+                {
+                  color: this.state.pickedMen
+                    ? this.changeColor(`bMaley`)
+                    : "white"
+                }
               ]}
             >
               Men
@@ -308,7 +342,11 @@ class Preferences extends React.Component {
             <Text
               style={[
                 styles.button,
-                { color: this.state.pickedWomen ? "#43218c" : "white" }
+                {
+                  color: this.state.pickedWomen
+                    ? this.changeColor(`bFemaley`)
+                    : "white"
+                }
               ]}
             >
               Women

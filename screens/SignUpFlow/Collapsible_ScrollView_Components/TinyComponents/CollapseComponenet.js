@@ -24,6 +24,7 @@ export default function CollapseComponenet(props) {
           <Preferences
             handlePassed={props.handlePassed}
             currentScreenTopY={props.currentScreenTopY}
+            preferencesPositionY={props.preferencesPositionY}
           />
         );
 
