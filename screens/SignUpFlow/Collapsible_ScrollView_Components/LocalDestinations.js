@@ -17,8 +17,9 @@ import { LinearGradient } from "expo";
 import t from "tcomb-form-native";
 import { connect } from "react-redux";
 import SetWeekendLocationDataAction from "../../../storage/actions/SetWeekendLocationDataAction";
-import RemoveWeekendLocationDataAction from "../../../storage/actions/RemoveWeekendLocationDataAction";
+//import RemoveWeekendLocationDataAction from "../../../storage/actions/RemoveWeekendLocationDataAction";
 import { Icon } from "react-native-elements";
+const screenHeight = Math.round(Dimensions.get("window").height);
 
 class LocationDestinations extends React.Component {
   static navigationOptions = {
@@ -41,7 +42,7 @@ class LocationDestinations extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      location: "",
+      weekendLocation: "",
       places: [
         "loading",
         "loading",
@@ -53,6 +54,16 @@ class LocationDestinations extends React.Component {
       ],
       passed: false
     };
+
+    this.b1y = 0;
+    this.b2y = 0;
+    this.b3y = 0;
+    this.b4y = 0;
+    this.b5y = 0;
+    this.b6y = 0;
+    this.b7y = 0;
+    this.b8y = 0;
+    this.b9y = 0;
   }
 
   //header : navigate to sign in screen
@@ -71,10 +82,7 @@ class LocationDestinations extends React.Component {
     //If there have warnings: button show transparent (passed)
     //If there have no warnings: button show green (passed)
 
-    if (
-      prevProps.CreateProfileReducer.weekendLocation !==
-      this.props.CreateProfileReducer.weekendLocation
-    ) {
+    if (prevState.weekendLocation !== this.state.weekendLocation) {
       this.allChecker();
       //any changes will remove the check mark from CollapsibleComponent CheckMark
       this.props.handlePassed("localDestinations", false);
@@ -114,17 +122,19 @@ class LocationDestinations extends React.Component {
   };
 
   handlPress = location => {
-    if (
-      this.props.CreateProfileReducer.weekendLocation.indexOf(location) !== -1
-    ) {
-      this.props.RemoveWeekendLocationDataAction(location);
+    if (this.state.weekendLocation === location) {
+      this.setState({
+        weekendLocation: ""
+      });
     } else {
-      this.props.SetWeekendLocationDataAction(location);
+      this.setState({
+        weekendLocation: location
+      });
     }
   };
 
   locationsChecker = () => {
-    if (this.props.CreateProfileReducer.weekendLocation.length === 1) {
+    if (this.state.weekendLocation !== "") {
       return true;
     }
     return false;
@@ -146,14 +156,36 @@ class LocationDestinations extends React.Component {
           passed: false
         },
         () => {
-          console.log("not passed");
+          console.log("not passeds");
         }
       );
     }
   };
 
+  changeColor = bname => {
+    let topY = this.props.currentScreenTopY;
+
+    const topRed = 24;
+    const topGreen = 205;
+    const topBlue = 246;
+    const bottomRed = 67;
+    const bottomGreen = 33;
+    const bottomBlue = 140;
+
+    let pos = (this[bname] - topY) / screenHeight;
+
+    let colorRed = topRed + (bottomRed - topRed) * pos;
+    let colorGreen = topGreen + (bottomGreen - topGreen) * pos;
+    let colorBlue = topBlue + (bottomBlue - topBlue) * pos;
+
+    return `rgb(${colorRed},${colorGreen},${colorBlue})`;
+  };
+
   handleSubmit = () => {
     if (this.state.passed) {
+      this.props.SetWeekendLocationDataAction({
+        weekendLocation: this.state.weekendLocation
+      });
       this.props.handlePassed("localDestinations", true);
     } else {
       this.props.handlePassed("localDestinations", false);
@@ -177,24 +209,40 @@ class LocationDestinations extends React.Component {
 
     let displayLocation = locations.map((e, index = 0) => {
       return (
-        <TouchableOpacity
+        <View
           key={index++}
-          style={[
-            styles.locationsButtonWrap,
-            {
-              backgroundColor:
-                this.props.CreateProfileReducer.weekendLocation.indexOf(e) ===
-                -1
-                  ? "transparent"
-                  : "green",
-              minWidth:
-                e === "San Francisco" || e === "Morro Bay" ? "50%" : "45%"
-            }
-          ]}
-          onPress={() => this.handlPress(e)}
+          onLayout={event => {
+            const layout = event.nativeEvent.layout;
+            this[`b${index}y`] = layout.y + this.props.localDestinationsPositionY;
+          }}
         >
-          <Text style={styles.locationsButton}>{e}</Text>
-        </TouchableOpacity>
+          <TouchableOpacity
+            style={[
+              styles.locationsButtonWrap,
+              {
+                backgroundColor:
+                  this.state.weekendLocation !== e ? "transparent" : "white",
+                minWidth:
+                  e === "San Francisco" || e === "Morro Bay" ? "50%" : "45%"
+              }
+            ]}
+            onPress={() => this.handlPress(e)}
+          >
+            <Text
+              style={[
+                styles.locationsButton,
+                {
+                  color:
+                    this.state.weekendLocation !== e
+                      ? "white"
+                      : this.changeColor(`b${index}y`)
+                }
+              ]}
+            >
+              {e}
+            </Text>
+          </TouchableOpacity>
+        </View>
       );
     });
 
@@ -230,8 +278,7 @@ class LocationDestinations extends React.Component {
           <View style={styles.locationsWrap}>{displayLocation}</View>
         </View>
         <Text />
-        {this.props.CreateProfileReducer.weekendLocation.length !== 1 &&
-          emptyCityWarning}
+        {this.state.weekendLocation === "" && emptyCityWarning}
         {/*Spaces*/}
         <View
           style={{

@@ -22,14 +22,19 @@ import {
 import { LinearGradient } from "expo";
 import CollapseComponent from "./Collapsible_ScrollView_Components/TinyComponents/CollapseComponenet.js";
 
+import { connect } from "react-redux";
+import ResetReduxData from "../../storage/actions/ResetReduxData";
+
 import { Chevron } from "react-native-shapes";
 import { Icon, Input } from "react-native-elements";
+
+//task clean redux
 
 class Collapsible_ScrollView extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      createAccountToggle: false,
+      createAccountToggle: true,
       aboutYouToggle: false,
       preferencesToggle: false,
       interestsToggle: false,
@@ -40,12 +45,19 @@ class Collapsible_ScrollView extends Component {
       preferencesPassed: false,
       interestsPassed: false,
       wouldYouRatherPassed: false,
-      localDestinationsPassed: false
+      localDestinationsPassed: false,
+      currentScreenTopY: 0 //screenTopY : slide down increase ; slide up decrease
     };
-    //current Screen Top Y
-    //set to 0 by default
-    //scroll to bottom will increase
-    this.currentScreenTopY = 0;
+    this.interestsPositionY = 0;
+    this.localDestinationsPositionY = 0;
+    this.preferencesPositionY = 0;
+  }
+
+  componentDidMount() {
+    //reset all data at start of registration
+    this.props.ResetReduxData({
+      reset: true
+    });
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
@@ -99,21 +111,24 @@ class Collapsible_ScrollView extends Component {
   };
 
   //When ComponentName/Arrow is pressed, Toggle its states to oppsoite
-  //This function is used on parent component (Collapsible_ScrollView)
-  //and child component (AboutYou, createAccount, etc...)
   handleToggle = (componentName, evt) => {
+    //If email screen didn't passed yet, not allow user to click other screen
+    if (
+      componentName !== "createAccount" &&
+      this.state.createAccountPassed === false
+    ) {
+      return;
+    }
+
     let pageY;
-    //for child component (no event can be caught)
-    //Set the PageY to 150
+    //If user pressed the "Next Button"
     if (evt === null || evt === undefined) {
-      pageY = 150;
-      if (componentName === "createAccount") {
-        pageY = 250;
-      }
+      pageY = componentName !== "createAccount" ? 150 : 250;
     } else {
-      //else while in parent component (we can catch the event of tab Y position)
+      //If user pressed the Toggle
       pageY = evt.nativeEvent.pageY;
     }
+
     let toggle = componentName + "Toggle";
     this.setState({
       [toggle]: !this.state[toggle]
@@ -154,17 +169,19 @@ class Collapsible_ScrollView extends Component {
   //handlescroll : update current screen top y
   handleScroll = ({ nativeEvent }) => {
     const { contentOffset } = nativeEvent;
-    this.currentScreenTopY = contentOffset.y;
-    //console.log(this.currentScreenTopY);
+    this.setState({
+      currentScreenTopY: contentOffset.y
+    });
+    //console.log(this.state.currentScreenTopY);
   };
 
   //Press tab will scroll to that tab position
   scrollToPosition = (componentName, tabPageY) => {
-    //this.currentScreenTopY : current screen (not scroll) Y position; changed upon scrolling
+    //this.state.currentScreenTopY : current screen (not scroll) Y position; changed upon scrolling
     //tabPageY : the screen tab's Y position in the whole scroll screen view
     let offset; // offset : an offset to prevent screen scroll too high when closing
     componentName === "createAccount" ? (offset = 250) : (offset = 150);
-    const newScrollY = this.currentScreenTopY + tabPageY - offset;
+    const newScrollY = this.state.currentScreenTopY + tabPageY - offset;
     this.scrollView.scrollTo({ y: newScrollY, animated: true });
   };
 
@@ -216,22 +233,40 @@ class Collapsible_ScrollView extends Component {
                 />
 
                 {/*Preferences*/}
-                <CollapseComponent
-                  componentToggle={this.state.preferencesToggle}
-                  componentPassed={this.state.preferencesPassed}
-                  componentName={"preferences"}
-                  handleToggle={this.handleToggle}
-                  handlePassed={this.handlePassed}
-                />
+                <View
+                  onLayout={event => {
+                    const layout = event.nativeEvent.layout;
+                    this.preferencesPositionY = layout.y;
+                  }}
+                >
+                  <CollapseComponent
+                    componentToggle={this.state.preferencesToggle}
+                    componentPassed={this.state.preferencesPassed}
+                    componentName={"preferences"}
+                    handleToggle={this.handleToggle}
+                    handlePassed={this.handlePassed}
+                    currentScreenTopY={this.state.currentScreenTopY}
+                    preferencesPositionY={this.preferencesPositionY}
+                  />
+                </View>
 
                 {/*interests*/}
-                <CollapseComponent
-                  componentToggle={this.state.interestsToggle}
-                  componentPassed={this.state.interestsPassed}
-                  componentName={"interests"}
-                  handleToggle={this.handleToggle}
-                  handlePassed={this.handlePassed}
-                />
+                <View
+                  onLayout={event => {
+                    const layout = event.nativeEvent.layout;
+                    this.interestsPositionY = layout.y;
+                  }}
+                >
+                  <CollapseComponent
+                    componentToggle={this.state.interestsToggle}
+                    componentPassed={this.state.interestsPassed}
+                    componentName={"interests"}
+                    handleToggle={this.handleToggle}
+                    handlePassed={this.handlePassed}
+                    currentScreenTopY={this.state.currentScreenTopY}
+                    interestsPositionY={this.interestsPositionY}
+                  />
+                </View>
 
                 {/*wouldYouRather*/}
                 <CollapseComponent
@@ -243,13 +278,22 @@ class Collapsible_ScrollView extends Component {
                 />
 
                 {/*localDestinations*/}
-                <CollapseComponent
-                  componentToggle={this.state.localDestinationsToggle}
-                  componentPassed={this.state.localDestinationsPassed}
-                  componentName={"localDestinations"}
-                  handleToggle={this.handleToggle}
-                  handlePassed={this.handlePassed}
-                />
+                <View
+                  onLayout={event => {
+                    const layout = event.nativeEvent.layout;
+                    this.localDestinationsPositionY = layout.y;
+                  }}
+                >
+                  <CollapseComponent
+                    componentToggle={this.state.localDestinationsToggle}
+                    componentPassed={this.state.localDestinationsPassed}
+                    componentName={"localDestinations"}
+                    handleToggle={this.handleToggle}
+                    handlePassed={this.handlePassed}
+                    currentScreenTopY={this.state.currentScreenTopY}
+                    localDestinationsPositionY={this.localDestinationsPositionY}
+                  />
+                </View>
               </View>
             </TouchableWithoutFeedback>
           </SafeAreaView>
@@ -331,5 +375,17 @@ const styles = StyleSheet.create({
     alignItems: "center"
   }
 });
+const mapStateToProps = state => {
+  return { ...state };
+};
 
-export default Collapsible_ScrollView;
+const mapDispatchToProps = dispatch => {
+  return {
+    ResetReduxData: payload => dispatch(ResetReduxData(payload))
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Collapsible_ScrollView);

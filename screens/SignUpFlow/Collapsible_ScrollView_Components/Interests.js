@@ -12,7 +12,8 @@ import {
   Picker,
   DatePickerIOS,
   TouchableHighlight,
-  SafeAreaView
+  SafeAreaView,
+  Dimensions
 } from "react-native";
 import { LinearGradient } from "expo";
 import DatePicker from "react-native-datepicker";
@@ -21,17 +22,28 @@ import { connect } from "react-redux";
 //import SetProfileLikesAction from "../../storage/actions/SetProfileLikesAction";
 //import SetProfileFirstLike from "../../storage/actions/SetProfileFirstLike";
 import SetProfileLikesAction from "../../../storage/actions/SetProfileLikesAction";
-import SetProfileFirstLike from "../../../storage/actions/SetProfileFirstLike";
-import RemoveProfileLikesAction from "../../../storage/actions/RemoveProfileLikesAction";
+//import SetProfileFirstLike from "../../../storage/actions/SetProfileFirstLike";
+//import RemoveProfileLikesAction from "../../../storage/actions/RemoveProfileLikesAction";
 import { Icon } from "react-native-elements";
+const screenHeight = Math.round(Dimensions.get("window").height);
 
 class TellUsMore extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      passed: false
+      passed: false,
+      likesArray: []
     };
-    this.inputRefs = {};
+
+    this.b1y = 0;
+    this.b2y = 0;
+    this.b3y = 0;
+    this.b4y = 0;
+    this.b5y = 0;
+    this.b6y = 0;
+    this.b7y = 0;
+    this.b8y = 0;
+    this.b9y = 0;
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
@@ -41,10 +53,7 @@ class TellUsMore extends React.Component {
     //If there have warnings: button show transparent (passed)
     //If there have no warnings: button show green (passed)
 
-    if (
-      prevProps.CreateProfileReducer.likes !==
-      this.props.CreateProfileReducer.likes
-    ) {
+    if (prevState.likesArray !== this.state.likesArray) {
       this.allChecker();
       //any changes will remove the check mark from CollapsibleComponent CheckMark
       this.props.handlePassed("interests", false);
@@ -53,6 +62,9 @@ class TellUsMore extends React.Component {
 
   handleSubmit = () => {
     if (this.state.passed) {
+      this.props.SetProfileLikesAction({
+        likesArray: this.state.likesArray
+      });
       this.props.handlePassed("interests", true);
     } else {
       this.props.handlePassed("interests", false);
@@ -60,7 +72,7 @@ class TellUsMore extends React.Component {
   };
 
   likesChecker = () => {
-    if (this.props.CreateProfileReducer.likes.length >= 3) {
+    if (this.state.likesArray.length >= 3) {
       return true;
     }
     return false;
@@ -88,23 +100,45 @@ class TellUsMore extends React.Component {
     }
   };
 
-  handleRedux = name => {
-    const likes = this.props.CreateProfileReducer.likes;
-    //console.log(name);
-    // replacing initial state
-    if (likes[0] === null) {
-      return this.props.SetProfileFirstLike(name);
-    }
+  changeColor = bname => {
+    let topY = this.props.currentScreenTopY;
 
+    const topRed = 24;
+    const topGreen = 205;
+    const topBlue = 246;
+    const bottomRed = 67;
+    const bottomGreen = 33;
+    const bottomBlue = 140;
+
+    let pos = (this[bname] - topY) / screenHeight;
+
+    let colorRed = topRed + (bottomRed - topRed) * pos;
+    let colorGreen = topGreen + (bottomGreen - topGreen) * pos;
+    let colorBlue = topBlue + (bottomBlue - topBlue) * pos;
+
+    return `rgb(${colorRed},${colorGreen},${colorBlue})`;
+  };
+
+  handlePress = name => {
     // blocks duplicates
-    if (likes.indexOf(name) !== -1) {
-      return this.props.RemoveProfileLikesAction(name);
+    let index = this.state.likesArray.indexOf(name);
+    if (index !== -1) {
+      let tempAry = [
+        ...this.state.likesArray.slice(0, index),
+        ...this.state.likesArray.slice(index + 1)
+      ];
+      this.setState({
+        likesArray: tempAry
+      });
+    } else {
+      this.setState({
+        likesArray: [...this.state.likesArray, name]
+      });
     }
-
-    this.props.SetProfileLikesAction(name);
   };
 
   render() {
+
     let invalidLikesWarning = (
       <View style={{ alignItems: "center" }}>
         <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
@@ -123,21 +157,40 @@ class TellUsMore extends React.Component {
 
     let displaylikes = likes.map((e, index = 0) => {
       return (
-        <TouchableOpacity
+        <View
           key={index++}
-          style={[
-            styles.likeButtonWrap,
-            {
-              backgroundColor:
-                this.props.CreateProfileReducer.likes.indexOf(e) === -1
-                  ? "transparent"
-                  : "green"
-            }
-          ]}
-          onPress={() => this.handleRedux(e)}
+          onLayout={event => {
+            const layout = event.nativeEvent.layout;
+            this[`b${index}y`] = layout.y + this.props.interestsPositionY;
+          }}
         >
-          <Text style={styles.likeButton}>{e}</Text>
-        </TouchableOpacity>
+          <TouchableOpacity
+            style={[
+              styles.likeButtonWrap,
+              {
+                backgroundColor:
+                  this.state.likesArray.indexOf(e) === -1
+                    ? "transparent"
+                    : "white"
+              }
+            ]}
+            onPress={() => this.handlePress(e)}
+          >
+            <Text
+              style={[
+                styles.likeButton,
+                {
+                  color:
+                    this.state.likesArray.indexOf(e) === -1
+                      ? "white"
+                      : this.changeColor(`b${index}y`)
+                }
+              ]}
+            >
+              {e}
+            </Text>
+          </TouchableOpacity>
+        </View>
       );
     });
 
@@ -175,8 +228,7 @@ class TellUsMore extends React.Component {
           <View style={styles.likesWrap}>{displaylikes}</View>
         </View>
         <Text />
-        {this.props.CreateProfileReducer.likes.length < 3 &&
-          invalidLikesWarning}
+        {this.state.likesArray.length < 3 && invalidLikesWarning}
         {/*Spaces*/}
         <View
           style={{
@@ -226,18 +278,6 @@ const styles = StyleSheet.create({
     borderColor: "#fff",
     width: "auto",
     minWidth: "25%",
-    margin: 5
-  },
-  likeButtonWrapBack: {
-    alignItems: "center",
-    paddingLeft: 15,
-    paddingRight: 15,
-    paddingTop: 5,
-    paddingBottom: 5,
-    borderRadius: 40,
-    borderWidth: 2,
-    borderColor: "#fff",
-    //width: "33%",
     margin: 5
   },
   button: {

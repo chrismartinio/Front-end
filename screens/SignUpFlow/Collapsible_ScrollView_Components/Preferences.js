@@ -19,9 +19,10 @@ import { connect } from "react-redux";
 import SetInterestedDataAction from "../../../storage/actions/SetInterestedDataAction";
 import firebase from "../../../utils/mainFire";
 import Slider from "./TinyComponents/PreferencesSlider";
-import { Math } from "core-js";
+//import { Math } from "core-js";
 import MultiSlider from "@ptomasroos/react-native-multi-slider";
 import { Icon } from "react-native-elements";
+const screenHeight = Math.round(Dimensions.get("window").height);
 
 class Preferences extends React.Component {
   static navigationOptions = {
@@ -55,6 +56,9 @@ class Preferences extends React.Component {
       distanceWarning: "empty",
       passed: false
     };
+
+    this.bMaley = 0;
+    this.bFemaley = 0;
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
@@ -183,6 +187,25 @@ class Preferences extends React.Component {
     }
   };
 
+  changeColor = bname => {
+    let topY = this.props.currentScreenTopY;
+
+    const topRed = 24;
+    const topGreen = 205;
+    const topBlue = 246;
+    const bottomRed = 67;
+    const bottomGreen = 33;
+    const bottomBlue = 140;
+
+    let pos = (this[bname] - topY) / screenHeight;
+
+    let colorRed = topRed + (bottomRed - topRed) * pos;
+    let colorGreen = topGreen + (bottomGreen - topGreen) * pos;
+    let colorBlue = topBlue + (bottomBlue - topBlue) * pos;
+
+    return `rgb(${colorRed},${colorGreen},${colorBlue})`;
+  };
+
   handleSubmit = () => {
     if (this.state.passed) {
       let interestedGender = null;
@@ -268,41 +291,66 @@ class Preferences extends React.Component {
         </View>
 
         {/*Men and Women buttons */}
-        <View style={{ alignItems: "center" }}>
+        <View
+          onLayout={event => {
+            const layout = event.nativeEvent.layout;
+            this.bMaley = layout.y + this.props.preferencesPositionY;
+            this.bFemaley = layout.y + this.props.preferencesPositionY;
+          }}
+          style={{ alignItems: "center" }}
+        >
           {/*Men*/}
           <TouchableOpacity
-            style={{
-              alignItems: "center",
-              padding: 7,
-              borderRadius: 40,
-              borderWidth: 2,
-              borderColor: "#fff",
-              width: "65%",
-              backgroundColor: this.state.pickedMen ? "green" : "transparent"
-            }}
+            style={[
+              styles.genderButtonWrap,
+              {
+                backgroundColor: this.state.pickedMen ? "white" : "transparent"
+              }
+            ]}
             onPress={() => {
               this.pickedGender("pickedMen");
             }}
           >
-            <Text style={styles.button}>Men</Text>
+            <Text
+              style={[
+                styles.button,
+                {
+                  color: this.state.pickedMen
+                    ? this.changeColor(`bMaley`)
+                    : "white"
+                }
+              ]}
+            >
+              Men
+            </Text>
           </TouchableOpacity>
           <Text />
           {/*Women*/}
           <TouchableOpacity
-            style={{
-              alignItems: "center",
-              padding: 7,
-              borderRadius: 40,
-              borderWidth: 2,
-              borderColor: "#fff",
-              width: "65%",
-              backgroundColor: this.state.pickedWomen ? "green" : "transparent"
-            }}
+            style={[
+              styles.genderButtonWrap,
+              {
+                backgroundColor: this.state.pickedWomen
+                  ? "white"
+                  : "transparent"
+              }
+            ]}
             onPress={() => {
               this.pickedGender("pickedWomen");
             }}
           >
-            <Text style={styles.button}>Women</Text>
+            <Text
+              style={[
+                styles.button,
+                {
+                  color: this.state.pickedWomen
+                    ? this.changeColor(`bFemaley`)
+                    : "white"
+                }
+              ]}
+            >
+              Women
+            </Text>
           </TouchableOpacity>
           <Text />
         </View>
@@ -500,6 +548,14 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: "#fff",
     width: "55%"
+  },
+  genderButtonWrap: {
+    alignItems: "center",
+    padding: 7,
+    borderRadius: 40,
+    borderWidth: 2,
+    borderColor: "#fff",
+    width: "65%"
   }
 });
 const mapStateToProps = state => ({
