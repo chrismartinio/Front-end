@@ -21,9 +21,12 @@ import SetUserDataAction from "../../../storage/actions/SetUserDataAction";
 import firebase from "../../../utils/mainFire";
 import { Icon, Input } from "react-native-elements";
 import { Chevron } from "react-native-shapes";
+import axios from "axios";
 
 //click password button to toggle password
 //duplicate email from database
+
+const profileServer = "http://74.80.250.210:5000/createAccount";
 
 class CreateAccount extends Component {
   static navigationOptions = {
@@ -56,7 +59,8 @@ class CreateAccount extends Component {
       password_UpperLowerCaseWarning: true,
       password_NumberSymbolWarning: true,
       password_LengthWarning: true,
-      passed: false,
+      //passed: false,
+      passed: true,
       editable: true
     };
   }
@@ -280,10 +284,17 @@ class CreateAccount extends Component {
   };
 
   handleSubmit = () => {
+    //Prevent user to submit email for second times
     if (this.state.editable === false) {
       this.props.handlePassed("createAccount", true);
       return;
     }
+
+    axios
+      .post("http://74.80.250.210:5000/dbRouter/createAccount")
+      .then(res => {
+        console.log(res);
+      });
 
     if (this.state.passed) {
       this.setState({
