@@ -32,6 +32,31 @@ class WouldRather extends React.Component {
   }
 
   handleSubmit = () => {
+    //Send data to database
+    fetch("http://74.80.250.210:5000/dbRouter/wouldyouRatherSubmit", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        hashID: this.props.hashID,
+        s1r1: this.s1r1,
+        s1r2: this.s1r2,
+        s2r1: this.s2r1,
+        s2r2: this.s2r2,
+        s3r1: this.s3r1,
+        s3r2: this.s3r2
+      })
+    })
+      .then(res => {
+        console.log(res);
+      })
+      .catch(function(error) {
+        console.error(error.message);
+        throw error;
+      });
+
+    //Send Data to Redux
     this.props.SetWouldRatherDataAction({
       s1r1: this.s1r1,
       s1r2: this.s1r2,

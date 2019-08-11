@@ -51,6 +51,19 @@ class Collapsible_ScrollView extends Component {
     this.interestsPositionY = 0;
     this.localDestinationsPositionY = 0;
     this.preferencesPositionY = 0;
+
+    //when the user click signup button in homescreen,
+    //it will call onAuth api to check if account already exist
+    //if Yes, go to login
+    //if no , generate an hash id and send to onboarding
+    //If account exist but not finish, also send to onboarding
+
+    this.hashID = Math.random()
+      .toString(36)
+      .slice(-5);
+
+    //Prevent User to re-submit different if their account is undone
+    this.undone = false;
   }
 
   componentDidMount() {
@@ -221,6 +234,8 @@ class Collapsible_ScrollView extends Component {
                   componentName={"createAccount"}
                   handleToggle={this.handleToggle}
                   handlePassed={this.handlePassed}
+                  hashID={this.hashID}
+                  undone={this.undone}
                 />
 
                 {/*About You*/}
@@ -230,6 +245,7 @@ class Collapsible_ScrollView extends Component {
                   componentName={"aboutYou"}
                   handleToggle={this.handleToggle}
                   handlePassed={this.handlePassed}
+                  hashID={this.hashID}
                 />
 
                 {/*Preferences*/}
@@ -247,6 +263,7 @@ class Collapsible_ScrollView extends Component {
                     handlePassed={this.handlePassed}
                     currentScreenTopY={this.state.currentScreenTopY}
                     preferencesPositionY={this.preferencesPositionY}
+                    hashID={this.hashID}
                   />
                 </View>
 
@@ -265,6 +282,7 @@ class Collapsible_ScrollView extends Component {
                     handlePassed={this.handlePassed}
                     currentScreenTopY={this.state.currentScreenTopY}
                     interestsPositionY={this.interestsPositionY}
+                    hashID={this.hashID}
                   />
                 </View>
 
@@ -275,6 +293,7 @@ class Collapsible_ScrollView extends Component {
                   componentName={"wouldYouRather"}
                   handleToggle={this.handleToggle}
                   handlePassed={this.handlePassed}
+                  hashID={this.hashID}
                 />
 
                 {/*localDestinations*/}
@@ -292,6 +311,7 @@ class Collapsible_ScrollView extends Component {
                     handlePassed={this.handlePassed}
                     currentScreenTopY={this.state.currentScreenTopY}
                     localDestinationsPositionY={this.localDestinationsPositionY}
+                    hashID={this.hashID}
                   />
                 </View>
               </View>

@@ -183,6 +183,26 @@ class LocationDestinations extends React.Component {
 
   handleSubmit = () => {
     if (this.state.passed) {
+      //Send data to database
+      fetch("http://74.80.250.210:5000/dbRouter/localDestinationsSubmit", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          hashID: this.props.hashID,
+          weekendLocation: this.state.weekendLocation
+        })
+      })
+        .then(res => {
+          console.log(res);
+        })
+        .catch(function(error) {
+          console.error(error.message);
+          throw error;
+        });
+
+      //Send Data to Redux
       this.props.SetWeekendLocationDataAction({
         weekendLocation: this.state.weekendLocation
       });
@@ -213,7 +233,8 @@ class LocationDestinations extends React.Component {
           key={index++}
           onLayout={event => {
             const layout = event.nativeEvent.layout;
-            this[`b${index}y`] = layout.y + this.props.localDestinationsPositionY;
+            this[`b${index}y`] =
+              layout.y + this.props.localDestinationsPositionY;
           }}
         >
           <TouchableOpacity

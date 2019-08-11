@@ -14,10 +14,17 @@ export default function CollapseComponenet(props) {
   const componentSwitch = componentName => {
     switch (componentName) {
       case "createAccount":
-        return <CreateAccount handlePassed={props.handlePassed} />;
+        return (
+          <CreateAccount
+            handlePassed={props.handlePassed}
+            hashID={props.hashID}
+          />
+        );
 
       case "aboutYou":
-        return <AboutYou handlePassed={props.handlePassed} />;
+        return (
+          <AboutYou handlePassed={props.handlePassed} hashID={props.hashID} />
+        );
 
       case "preferences":
         return (
@@ -25,6 +32,7 @@ export default function CollapseComponenet(props) {
             handlePassed={props.handlePassed}
             currentScreenTopY={props.currentScreenTopY}
             preferencesPositionY={props.preferencesPositionY}
+            hashID={props.hashID}
           />
         );
 
@@ -34,11 +42,17 @@ export default function CollapseComponenet(props) {
             handlePassed={props.handlePassed}
             currentScreenTopY={props.currentScreenTopY}
             interestsPositionY={props.interestsPositionY}
+            hashID={props.hashID}
           />
         );
 
       case "wouldYouRather":
-        return <WouldYouRather handlePassed={props.handlePassed} />;
+        return (
+          <WouldYouRather
+            handlePassed={props.handlePassed}
+            hashID={props.hashID}
+          />
+        );
 
       case "localDestinations":
         return (
@@ -46,6 +60,7 @@ export default function CollapseComponenet(props) {
             handlePassed={props.handlePassed}
             currentScreenTopY={props.currentScreenTopY}
             localDestinationsPositionY={props.localDestinationsPositionY}
+            hashID={props.hashID}
           />
         );
 

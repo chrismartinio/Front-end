@@ -26,7 +26,7 @@ import axios from "axios";
 //click password button to toggle password
 //duplicate email from database
 
-const profileServer = "http://74.80.250.210:5000/createAccount";
+const profileServer = "http://74.80.250.210:5000/dbRouter/";
 
 class CreateAccount extends Component {
   static navigationOptions = {
@@ -59,14 +59,15 @@ class CreateAccount extends Component {
       password_UpperLowerCaseWarning: true,
       password_NumberSymbolWarning: true,
       password_LengthWarning: true,
-      //passed: false,
-      passed: true,
+      passed: false,
       editable: true
     };
   }
   handleBackToSignIn = () => {
     this.props.navigation.navigate("SignIn");
   };
+
+  componentDidMount() {}
 
   componentDidUpdate(prevProps, prevState, snapshot) {
     //if there have any udpate to the warnings by checking this.state and prevState
@@ -285,22 +286,37 @@ class CreateAccount extends Component {
 
   handleSubmit = () => {
     //Prevent user to submit email for second times
-    if (this.state.editable === false) {
+    if (this.state.editable === false || this.props.undone) {
       this.props.handlePassed("createAccount", true);
       return;
     }
-
-    axios
-      .post("http://74.80.250.210:5000/dbRouter/createAccount")
-      .then(res => {
-        console.log(res);
-      });
 
     if (this.state.passed) {
       this.setState({
         editable: false
       });
 
+      //Send data to database
+      fetch("http://74.80.250.210:5000/dbRouter/createAccountSubmit", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          hashID: this.props.hashID,
+          email: this.state.email,
+          password: this.state.password
+        })
+      })
+        .then(res => {
+          console.log(res);
+        })
+        .catch(function(error) {
+          console.error(error.message);
+          throw error;
+        });
+
+      //Send data to Redux
       this.props.SetUserDataAction({
         email: this.state.email,
         password: this.state.password

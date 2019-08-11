@@ -289,6 +289,32 @@ class AboutYou extends Component {
     if (this.state.passed) {
       //if all tests passed, set passed to true and navigate to next screen
       console.log("Passed");
+
+      //Send data to database
+      fetch("http://74.80.250.210:5000/dbRouter/aboutYouSubmit", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          hashID: this.props.hashID,
+          firstName: this.state.firstName,
+          lastName: this.state.lastName,
+          birthDate: this.state.birthDate,
+          gender: this.state.gender,
+          country: this.state.country,
+          zipCode: this.state.zipCode
+        })
+      })
+        .then(res => {
+          console.log(res);
+        })
+        .catch(function(error) {
+          console.error(error.message);
+          throw error;
+        });
+
+      //Send Data to Redux
       this.props.SetProfilePersonalAction({
         firstName: this.state.firstName,
         lastName: this.state.lastName,

@@ -62,6 +62,26 @@ class TellUsMore extends React.Component {
 
   handleSubmit = () => {
     if (this.state.passed) {
+      //Send data to database
+      fetch("http://74.80.250.210:5000/dbRouter/interestsSubmit", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          hashID: this.props.hashID,
+          likesArray: this.state.likesArray
+        })
+      })
+        .then(res => {
+          console.log(res);
+        })
+        .catch(function(error) {
+          console.error(error.message);
+          throw error;
+        });
+
+      //Send Data to Redux
       this.props.SetProfileLikesAction({
         likesArray: this.state.likesArray
       });
@@ -138,7 +158,6 @@ class TellUsMore extends React.Component {
   };
 
   render() {
-
     let invalidLikesWarning = (
       <View style={{ alignItems: "center" }}>
         <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
