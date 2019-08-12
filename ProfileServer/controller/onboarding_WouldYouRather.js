@@ -9,8 +9,6 @@ let database, collection;
 // WouldYouRather Submit Route
 //========================================
 exports.wouldyouRatherSubmit = function(req, res) {
-  //console.log(req.body);
-
   MongoClient.connect(
     CONNECTION_URL,
     { useNewUrlParser: true },
@@ -38,10 +36,9 @@ exports.wouldyouRatherSubmit = function(req, res) {
         .collection("wouldYouRather")
         .updateOne(target, updateData, function(err, res) {
           if (err) throw err;
-          console.log("1 wouldYouRather Data updated");
+
           client.close();
         });
-      //console.log("Connected to `" + DATABASE_NAME + "`!");
     }
   );
 };

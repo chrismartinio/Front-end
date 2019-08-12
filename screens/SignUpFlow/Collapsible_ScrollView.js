@@ -28,8 +28,6 @@ import ResetReduxData from "../../storage/actions/ResetReduxData";
 import { Chevron } from "react-native-shapes";
 import { Icon, Input } from "react-native-elements";
 
-//task clean redux
-
 class Collapsible_ScrollView extends Component {
   constructor(props) {
     super(props);
@@ -58,13 +56,15 @@ class Collapsible_ScrollView extends Component {
     //if no , generate an hash id and send to onboarding
     //If account exist but not finish, also send to onboarding
 
-    this.hashID = Math.random()
-      .toString(36)
-      .slice(-5);
+    this.hashID = "";
 
     //Prevent User to re-submit different if their account is undone
     this.undone = false;
   }
+
+  generateHashID = hashedID => {
+    this.hashID = hashedID;
+  };
 
   componentDidMount() {
     //reset all data at start of registration
@@ -236,6 +236,7 @@ class Collapsible_ScrollView extends Component {
                   handlePassed={this.handlePassed}
                   hashID={this.hashID}
                   undone={this.undone}
+                  generateHashID={this.generateHashID}
                 />
 
                 {/*About You*/}

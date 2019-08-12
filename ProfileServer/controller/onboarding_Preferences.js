@@ -9,8 +9,6 @@ let database, collection;
 // Preferences Submit Route
 //========================================
 exports.preferencesSubmit = function(req, res) {
-  //console.log(req.body);
-
   MongoClient.connect(
     CONNECTION_URL,
     { useNewUrlParser: true },
@@ -35,10 +33,9 @@ exports.preferencesSubmit = function(req, res) {
         .collection("preferences")
         .updateOne(target, updateData, function(err, res) {
           if (err) throw err;
-          console.log("1 Preferences Data updated");
+
           client.close();
         });
-      //console.log("Connected to `" + DATABASE_NAME + "`!");
     }
   );
 };

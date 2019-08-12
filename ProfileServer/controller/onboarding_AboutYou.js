@@ -9,8 +9,6 @@ let database, collection;
 // AboutYou Submit Route
 //========================================
 exports.aboutYouSubmit = function(req, res) {
-  //console.log(req.body);
-
   MongoClient.connect(
     CONNECTION_URL,
     { useNewUrlParser: true },
@@ -38,10 +36,9 @@ exports.aboutYouSubmit = function(req, res) {
         .collection("aboutYou")
         .updateOne(target, updateData, function(err, res) {
           if (err) throw err;
-          console.log("1 AboutYou Data updated");
+
           client.close();
         });
-      //console.log("Connected to `" + DATABASE_NAME + "`!");
     }
   );
 };

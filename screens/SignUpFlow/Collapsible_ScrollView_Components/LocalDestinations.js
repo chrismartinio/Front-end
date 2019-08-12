@@ -71,10 +71,6 @@ class LocationDestinations extends React.Component {
     this.props.navigation.navigate("SignIn");
   };
 
-  handleListener = arg => {
-    //console.log(arg)
-  };
-
   componentDidUpdate(prevProps, prevState, snapshot) {
     //if there have any udpate to the warnings by checking this.state and prevState
     //then call the allChecker()
@@ -89,6 +85,7 @@ class LocationDestinations extends React.Component {
     }
   }
 
+  /*
   componentDidMount() {
     this.getData();
   }
@@ -120,7 +117,7 @@ class LocationDestinations extends React.Component {
       console.log("failed toload data", e);
     }
   };
-
+*/
   handlPress = location => {
     if (this.state.weekendLocation === location) {
       this.setState({
@@ -142,23 +139,13 @@ class LocationDestinations extends React.Component {
 
   allChecker = () => {
     if (this.locationsChecker()) {
-      this.setState(
-        {
-          passed: true
-        },
-        () => {
-          console.log("passed");
-        }
-      );
+      this.setState({
+        passed: true
+      });
     } else {
-      this.setState(
-        {
-          passed: false
-        },
-        () => {
-          console.log("not passeds");
-        }
-      );
+      this.setState({
+        passed: false
+      });
     }
   };
 
@@ -193,14 +180,10 @@ class LocationDestinations extends React.Component {
           hashID: this.props.hashID,
           weekendLocation: this.state.weekendLocation
         })
-      })
-        .then(res => {
-          console.log(res);
-        })
-        .catch(function(error) {
-          console.error(error.message);
-          throw error;
-        });
+      }).catch(function(error) {
+        console.error(error.message);
+        throw error;
+      });
 
       //Send Data to Redux
       this.props.SetWeekendLocationDataAction({

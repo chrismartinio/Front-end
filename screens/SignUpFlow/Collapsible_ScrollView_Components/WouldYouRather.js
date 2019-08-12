@@ -47,14 +47,10 @@ class WouldRather extends React.Component {
         s3r1: this.s3r1,
         s3r2: this.s3r2
       })
-    })
-      .then(res => {
-        console.log(res);
-      })
-      .catch(function(error) {
-        console.error(error.message);
-        throw error;
-      });
+    }).catch(function(error) {
+      console.error(error.message);
+      throw error;
+    });
 
     //Send Data to Redux
     this.props.SetWouldRatherDataAction({
@@ -66,26 +62,19 @@ class WouldRather extends React.Component {
       s3r2: this.s3r2
     });
     this.props.handlePassed("wouldYouRather", true);
-    console.log("Passed");
   };
 
   handleListener1 = arg => {
-    console.log("field1");
-    console.log(arg);
     this.s1r1 = 50 - arg;
     this.s1r2 = 50 + arg;
   };
 
   handleListener2 = arg => {
-    console.log("field2");
-    console.log(arg);
     this.s2r1 = 50 - arg;
     this.s2r2 = 50 + arg;
   };
 
   handleListener3 = arg => {
-    console.log("field3");
-    console.log(arg);
     this.s3r1 = 50 - arg;
     this.s3r2 = 50 + arg;
   };

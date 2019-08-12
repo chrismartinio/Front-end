@@ -107,7 +107,6 @@ class CreateAccount extends Component {
 
   passwordLength = password => {
     if (!(password.length >= 8)) {
-      console.log("password less than 8");
       return false;
     }
     return true;
@@ -119,7 +118,6 @@ class CreateAccount extends Component {
     // use positive look ahead to see if at least one upper case letter exists
     //regExp = /^(?=.*[A-Z])/;
     if (!(/^(?=.*[a-z])/.test(password) && /^(?=.*[A-Z])/.test(password))) {
-      console.log("not including any lower and upper cases");
       return false;
     }
     return true;
@@ -131,7 +129,6 @@ class CreateAccount extends Component {
     // use positive look ahead to see if at least one non-word character exists
     //regExp = /^(?=.*\W)/;
     if (!(/^(?=.*[0-9])/.test(password) || /^(?=.*\W)/.test(password))) {
-      console.log("not including at least one digit or symbol");
       return false;
     }
     return true;
@@ -166,12 +163,10 @@ class CreateAccount extends Component {
     });
 
     if (!this.nullCheck(this.state.email)) {
-      console.log("Empty Email");
       this.setState({
         emailWarning: "empty"
       });
     } else if (!this.emailCheck(this.state.email)) {
-      console.log("Invalid Email");
       this.setState({
         emailWarning: "invalid"
       });
@@ -184,12 +179,10 @@ class CreateAccount extends Component {
 
   confirmEmailChecker = () => {
     if (!this.nullCheck(this.state.confirmEmail)) {
-      console.log("Empty Confirm Email");
       this.setState({
         confirmEmailWarning: "empty"
       });
     } else if (this.state.email !== this.state.confirmEmail) {
-      console.log("Email and Confirm Email not match");
       this.setState({
         confirmEmailWarning: "notmatch"
       });
@@ -207,7 +200,6 @@ class CreateAccount extends Component {
       confirmPasswordWarning: "empty"
     });
     if (!this.nullCheck(this.state.password)) {
-      console.log("Empty Password");
       this.setState({
         passwordWarning: "empty",
         password_UpperLowerCaseWarning: true,
@@ -215,7 +207,6 @@ class CreateAccount extends Component {
         password_LengthWarning: true
       });
     } else if (!this.passwordCheck(this.state.password)) {
-      console.log("Invalid Password");
       let pLength = !this.passwordLength(this.state.password);
       let pLetterCase = !this.passworcdCase(this.state.password);
       let pNonLetter = !this.passwordNonLetter(this.state.password);
@@ -237,13 +228,11 @@ class CreateAccount extends Component {
 
   confirmPasswordChecker = () => {
     if (!this.nullCheck(this.state.confirmPassword)) {
-      console.log("Empty Confirm Password");
       password = false;
       this.setState({
         confirmPasswordWarning: "empty"
       });
     } else if (this.state.password !== this.state.confirmPassword) {
-      console.log("Password and Confirm Password not match");
       password = false;
       this.setState({
         confirmPasswordWarning: "notmatch"
@@ -264,23 +253,13 @@ class CreateAccount extends Component {
       this.state.passwordWarning === "" &&
       this.state.confirmPasswordWarning === ""
     ) {
-      this.setState(
-        {
-          passed: true
-        },
-        () => {
-          console.log("passed");
-        }
-      );
+      this.setState({
+        passed: true
+      });
     } else {
-      this.setState(
-        {
-          passed: false
-        },
-        () => {
-          console.log("not passed");
-        }
-      );
+      this.setState({
+        passed: false
+      });
     }
   };
 
@@ -308,8 +287,11 @@ class CreateAccount extends Component {
           password: this.state.password
         })
       })
+        .then(res => res.json())
         .then(res => {
-          console.log(res);
+          let object = JSON.parse(JSON.stringify(res));
+          console.log(object)
+          this.props.generateHashID(object.hashID);
         })
         .catch(function(error) {
           console.error(error.message);

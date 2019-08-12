@@ -1,3 +1,4 @@
+const uuidv5 = require("uuid/v5");
 const MongoClient = require("mongodb").MongoClient;
 const ObjectId = require("mongodb").ObjectID;
 const CONNECTION_URL =
@@ -9,7 +10,11 @@ let database, collection;
 // createAccount Submit Route
 //========================================
 exports.createAccountSubmit = function(req, res) {
-  //console.log(req.body);
+  console.log("Start");
+
+  //hash the email to an id on database
+  let hashID = uuidv5(req.body.email, uuidv5.URL);
+
   MongoClient.connect(
     CONNECTION_URL,
     { useNewUrlParser: true },
@@ -22,7 +27,7 @@ exports.createAccountSubmit = function(req, res) {
 
       //createAccount Data
       var createAccountData = {
-        _id: req.body.hashID,
+        _id: hashID,
         email: req.body.email,
         password: req.body.password
       };
@@ -31,15 +36,19 @@ exports.createAccountSubmit = function(req, res) {
       collection = database.collection("createAccount");
       database
         .collection("createAccount")
-        .insertOne(createAccountData, function(err, res) {
-          if (err) throw err;
-          console.log("Created a row in createAccount Collection ");
+        .insertOne(createAccountData, function(err) {
+          //make a promise to wait for all database
+          
+          if (err) {
+            res.end({ success: false, hashID: "duplicate" });
+          }
+
           client.close();
         });
 
       //AboutYou data
       var aboutYouData = {
-        _id: req.body.hashID,
+        _id: hashID,
         birthDate: "",
         gender: "",
         country: "",
@@ -52,15 +61,14 @@ exports.createAccountSubmit = function(req, res) {
       collection = database.collection("aboutYou");
       database
         .collection("aboutYou")
-        .insertOne(aboutYouData, function(err, res) {
-          if (err) throw err;
-          console.log("Created a row in aboutYou Collection ");
+        .insertOne(aboutYouData, function(err) {
+          if (err) throw "err";
           client.close();
         });
 
       //Preferences data
       var preferencesData = {
-        _id: req.body.hashID,
+        _id: hashID,
         ageRange: "",
         distanceRange: "",
         interestedGender: ""
@@ -70,15 +78,14 @@ exports.createAccountSubmit = function(req, res) {
       collection = database.collection("preferences");
       database
         .collection("preferences")
-        .insertOne(preferencesData, function(err, res) {
+        .insertOne(preferencesData, function(err) {
           if (err) throw err;
-          console.log("Created a row in preferences Collection ");
           client.close();
         });
 
       //interests data
       var interestsData = {
-        _id: req.body.hashID,
+        _id: hashID,
         likesArray: ""
       };
 
@@ -86,15 +93,14 @@ exports.createAccountSubmit = function(req, res) {
       collection = database.collection("interests");
       database
         .collection("interests")
-        .insertOne(interestsData, function(err, res) {
+        .insertOne(interestsData, function(err) {
           if (err) throw err;
-          console.log("Created a row in interests Collection ");
           client.close();
         });
 
       //wouldYouRather data
       var wouldYouRatherData = {
-        _id: req.body.hashID,
+        _id: hashID,
         s1r1: "",
         s1r2: "",
         s2r1: "",
@@ -107,15 +113,14 @@ exports.createAccountSubmit = function(req, res) {
       collection = database.collection("wouldYouRather");
       database
         .collection("wouldYouRather")
-        .insertOne(wouldYouRatherData, function(err, res) {
+        .insertOne(wouldYouRatherData, function(err) {
           if (err) throw err;
-          console.log("Created a row in wouldYouRather Collection ");
           client.close();
         });
 
       //localDestinations data
       var localDestinationsData = {
-        _id: req.body.hashID,
+        _id: hashID,
         weekendLocation: ""
       };
 
@@ -123,13 +128,12 @@ exports.createAccountSubmit = function(req, res) {
       collection = database.collection("localDestinations");
       database
         .collection("localDestinations")
-        .insertOne(localDestinationsData, function(err, res) {
+        .insertOne(localDestinationsData, function(err) {
           if (err) throw err;
-          console.log("Created a row in localDestinations Collection ");
           client.close();
         });
 
-      //console.log("Connected to `" + DATABASE_NAME + "`!");
+      res.send({ hashID: hashID });
     }
   );
 };

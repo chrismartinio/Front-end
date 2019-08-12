@@ -9,8 +9,6 @@ let database, collection;
 // LocalDestinations Submit Route
 //========================================
 exports.localDestinationsSubmit = function(req, res) {
-  //console.log(req.body);
-
   MongoClient.connect(
     CONNECTION_URL,
     { useNewUrlParser: true },
@@ -33,10 +31,9 @@ exports.localDestinationsSubmit = function(req, res) {
         .collection("localDestinations")
         .updateOne(target, updateData, function(err, res) {
           if (err) throw err;
-          console.log("1 localDestinations Data updated");
+
           client.close();
         });
-      //console.log("Connected to `" + DATABASE_NAME + "`!");
     }
   );
 };

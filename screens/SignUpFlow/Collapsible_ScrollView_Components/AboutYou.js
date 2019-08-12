@@ -138,13 +138,11 @@ class AboutYou extends Component {
   //checkers
   firstNameChecker = () => {
     if (this.state.firstName === "") {
-      console.log("Empty FirstName");
       firstName = false;
       this.setState({
         firstNameWarning: "empty"
       });
     } else if (!this.checkName(this.state.firstName)) {
-      console.log("Invalid FirstName");
       firstName = false;
       this.setState({
         firstNameWarning: "invalid"
@@ -160,13 +158,11 @@ class AboutYou extends Component {
   lastNameChecker = () => {
     //check invalid/empty lastName
     if (this.state.lastName === "") {
-      console.log("Empty LastName");
       lastName = false;
       this.setState({
         lastNameWarning: "empty"
       });
     } else if (!this.checkName(this.state.lastName)) {
-      console.log("Invalid LastName");
       lastName = false;
       this.setState({
         lastNameWarning: "invalid"
@@ -182,13 +178,11 @@ class AboutYou extends Component {
   zipCodeChecker = () => {
     //check invalid/empty zipCode
     if (this.state.zipCode === "") {
-      console.log("Empty ZipCode");
       zipCode = false;
       this.setState({
         zipCodeWarning: "empty"
       });
     } else if (!this.checkZipCode(this.state.zipCode)) {
-      console.log("Invalid ZipCode");
       zipCode = false;
       this.setState({
         zipCodeWarning: "invalid"
@@ -204,13 +198,11 @@ class AboutYou extends Component {
   birthDateChecker = () => {
     //check invalid/empty birthDate
     if (this.state.birthDate === "") {
-      console.log("Empty Birthdate");
       birthDate = false;
       this.setState({
         birthDateWarning: "empty"
       });
     } else if (!this.checkage(this.state.birthDate)) {
-      console.log("Invalid Birthdate");
       birthDate = false;
       this.setState({
         birthDateWarning: "invalid"
@@ -226,7 +218,6 @@ class AboutYou extends Component {
   genderChecker = () => {
     //check invalid/empty gender
     if (this.state.gender === "" || this.state.gender === null) {
-      console.log("Empty Gender");
       gender = false;
       this.setState({
         genderWarning: "empty"
@@ -242,7 +233,6 @@ class AboutYou extends Component {
   countryChecker = () => {
     //check invalid/empty country
     if (this.state.country === "" || this.state.country === null) {
-      console.log("Empty Country");
       country = false;
       this.setState({
         countryWarning: "empty"
@@ -264,23 +254,13 @@ class AboutYou extends Component {
       this.state.countryWarning === "" &&
       this.state.zipCodeWarning === ""
     ) {
-      this.setState(
-        {
-          passed: true
-        },
-        () => {
-          console.log("passed");
-        }
-      );
+      this.setState({
+        passed: true
+      });
     } else {
-      this.setState(
-        {
-          passed: false
-        },
-        () => {
-          console.log("not passed");
-        }
-      );
+      this.setState({
+        passed: false
+      });
     }
   };
 
@@ -288,7 +268,6 @@ class AboutYou extends Component {
   handleSubmit = evt => {
     if (this.state.passed) {
       //if all tests passed, set passed to true and navigate to next screen
-      console.log("Passed");
 
       //Send data to database
       fetch("http://74.80.250.210:5000/dbRouter/aboutYouSubmit", {
@@ -305,14 +284,10 @@ class AboutYou extends Component {
           country: this.state.country,
           zipCode: this.state.zipCode
         })
-      })
-        .then(res => {
-          console.log(res);
-        })
-        .catch(function(error) {
-          console.error(error.message);
-          throw error;
-        });
+      }).catch(function(error) {
+        console.error(error.message);
+        throw error;
+      });
 
       //Send Data to Redux
       this.props.SetProfilePersonalAction({

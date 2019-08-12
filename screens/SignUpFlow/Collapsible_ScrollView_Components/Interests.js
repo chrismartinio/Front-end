@@ -72,14 +72,10 @@ class TellUsMore extends React.Component {
           hashID: this.props.hashID,
           likesArray: this.state.likesArray
         })
-      })
-        .then(res => {
-          console.log(res);
-        })
-        .catch(function(error) {
-          console.error(error.message);
-          throw error;
-        });
+      }).catch(function(error) {
+        console.error(error.message);
+        throw error;
+      });
 
       //Send Data to Redux
       this.props.SetProfileLikesAction({
@@ -100,23 +96,13 @@ class TellUsMore extends React.Component {
 
   allChecker = () => {
     if (this.likesChecker()) {
-      this.setState(
-        {
-          passed: true
-        },
-        () => {
-          console.log("passed");
-        }
-      );
+      this.setState({
+        passed: true
+      });
     } else {
-      this.setState(
-        {
-          passed: false
-        },
-        () => {
-          console.log("not passed");
-        }
-      );
+      this.setState({
+        passed: false
+      });
     }
   };
 

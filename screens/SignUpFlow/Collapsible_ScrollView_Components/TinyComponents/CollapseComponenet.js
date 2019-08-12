@@ -12,12 +12,14 @@ import LocalDestinations from "../LocalDestinations";
 
 export default function CollapseComponenet(props) {
   const componentSwitch = componentName => {
+    
     switch (componentName) {
       case "createAccount":
         return (
           <CreateAccount
             handlePassed={props.handlePassed}
             hashID={props.hashID}
+            generateHashID={props.generateHashID}
           />
         );
 

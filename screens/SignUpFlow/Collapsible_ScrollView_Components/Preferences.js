@@ -87,20 +87,13 @@ class Preferences extends React.Component {
     this.setState({
       distanceRange: arg
     });
-    //console.log(this.state.distanceRange)
   };
 
   //age range
   multiSliderValuesChange = values => {
-    this.setState(
-      {
-        multiSliderValue: values
-      },
-      () => {
-        console.log("A" + this.state.multiSliderValue[0]);
-        console.log("B" + this.state.multiSliderValue[1]);
-      }
-    );
+    this.setState({
+      multiSliderValue: values
+    });
   };
 
   //gender
@@ -118,7 +111,6 @@ class Preferences extends React.Component {
   };
 
   distanceChecker = () => {
-    console.log(this.state.distanceRange);
     if (this.state.distanceRange > 0) {
       return true;
     }
@@ -167,23 +159,13 @@ class Preferences extends React.Component {
     */
 
     if (gender && distance) {
-      this.setState(
-        {
-          passed: true
-        },
-        () => {
-          console.log("passed");
-        }
-      );
+      this.setState({
+        passed: true
+      });
     } else {
-      this.setState(
-        {
-          passed: false
-        },
-        () => {
-          console.log("not passed");
-        }
-      );
+      this.setState({
+        passed: false
+      });
     }
   };
 
@@ -231,14 +213,10 @@ class Preferences extends React.Component {
           distanceRange: this.state.distanceRange,
           interestedGender: interestedGender
         })
-      })
-        .then(res => {
-          console.log(res);
-        })
-        .catch(function(error) {
-          console.error(error.message);
-          throw error;
-        });
+      }).catch(function(error) {
+        console.error(error.message);
+        throw error;
+      });
 
       //Send Data to Redux
       this.props.SetInterestedDataAction({
