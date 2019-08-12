@@ -1,7 +1,9 @@
 const jwt = require('jsonwebtoken'),
+    mongoose = require('mongoose'),
     crypto = require('crypto'),
     User = require('../models/users'),
     config = require('../config/main');
+    var ObjectId = require('mongodb').ObjectID;
 
 function generateToken(user) {
     return jwt.sign(user, config.secret, {
@@ -23,33 +25,40 @@ function setUserInfo(request) {
 }
 
 function setLogin(request){
+
   return {
-      username: request.body.username,
+    username: request.body.username,
+    password: request.body.password
   }
 }
 //========================================
 // Login Route
 //========================================
+// testing adding a person
+
+
+
 exports.login = function (req, res, next) {
-    let userInfo = setLogin(req);
+    let userInfo = setLogin(req)
+
       User.findOne({"username":userInfo.username}, function(err, result){
         if(err){
+            res.status(422).send({error:err})
             return err
         } else {
-        if(result !== null){
-            res.status(200).json({
-              token: 'JWT ' + generateToken(userInfo),
-              user: userInfo
+         if(result !== null && JSON.stringify(result.password) === JSON.stringify(userInfo.password)){
+              res.status(200).json({
+                token: 'JWT ' + generateToken(userInfo),
+                user: userInfo
           })
-        } else {
-          res.status(422).send({error:`Invalid Username`})
-        }
+         } else if(JSON.stringify(result.password) !== JSON.stringify(userInfo.password)){
+            res.status(422).send({error:'Wrong Password'})
+         }
       }
   })
+
+
 }
-
-// make functions for every file.
-
 
 
 //========================================
@@ -73,10 +82,6 @@ exports.register = function (req, res, next) {
     const email = req.body.email;
     const password = req.body.password;
     const username = req.body.username
-
-
-
-
 
     const dateOfBirth = req.body.dateOfBirth;
     const country = req.body.country;

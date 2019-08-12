@@ -70,11 +70,10 @@ export default class HomeScreen extends React.Component {
 
 
   handleEmailAndPasswordSignin = async() => {
-
     try{
     const {username, password} = this._form.getValue();
     // front end check:
-        let data = await fetch('http://10.0.0.246:3000/api/auth/login', {
+        let data = await fetch('http://10.0.0.246:3001/api/auth/login', {
           method: 'POST',
           mode:'cors',
           credentials: "same-origin",
@@ -89,7 +88,10 @@ export default class HomeScreen extends React.Component {
 
       let jsonData = await data.json()
       console.log(jsonData)
-      this.props.navigation.navigate('Chat');
+      // must compare passwords!
+      if(jsonData.token){
+        this.props.navigation.navigate('Chat');
+      }
     } catch(e){
       console.log(e.error)
 
@@ -99,9 +101,9 @@ export default class HomeScreen extends React.Component {
 
     handleTestAddUser = async() => {
     try{
-    const {username, password} = this._form.getValue();
+    const { username, password } = this._form.getValue();
     // front end check:
-        let data = await fetch('http://10.0.0.246:3000/api/auth/login', {
+        let data = await fetch('http://10.0.0.246:3001/api/auth/login', {
           method: 'POST',
           mode:'cors',
           credentials: "same-origin",

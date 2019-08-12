@@ -19,7 +19,6 @@ module.exports = function (app) {
         onboardingRoutes = express.Router();
         S3 = express.Router();
 
-
     //=========================
     // Auth Routes
     //=========================
