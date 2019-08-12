@@ -10,130 +10,155 @@ let database, collection;
 // createAccount Submit Route
 //========================================
 exports.createAccountSubmit = function(req, res) {
-  console.log("Start");
-
   //hash the email to an id on database
   let hashID = uuidv5(req.body.email, uuidv5.URL);
 
-  MongoClient.connect(
-    CONNECTION_URL,
-    { useNewUrlParser: true },
-    (error, client) => {
-      if (error) {
-        throw error;
-      }
-      //Access or Create Database
-      database = client.db(DATABASE_NAME);
-
-      //createAccount Data
-      var createAccountData = {
-        _id: hashID,
-        email: req.body.email,
-        password: req.body.password
-      };
-
-      //Access or Create Collection
-      collection = database.collection("createAccount");
-      database
-        .collection("createAccount")
-        .insertOne(createAccountData, function(err) {
-          //make a promise to wait for all database
-          
-          if (err) {
-            res.end({ success: false, hashID: "duplicate" });
+  let myPromise = () => {
+    return new Promise((resolve, reject) => {
+      MongoClient.connect(
+        CONNECTION_URL,
+        { useNewUrlParser: true },
+        (error, client) => {
+          if (error) {
+            throw error;
           }
+          //Access or Create Database
+          database = client.db(DATABASE_NAME);
 
-          client.close();
-        });
+          //createAccount Data
+          var createAccountData = {
+            _id: hashID,
+            email: req.body.email,
+            password: req.body.password
+          };
 
-      //AboutYou data
-      var aboutYouData = {
-        _id: hashID,
-        birthDate: "",
-        gender: "",
-        country: "",
-        firstName: "",
-        lastName: "",
-        zipCode: ""
-      };
+          //Access or Create Collection
+          collection = database.collection("createAccount");
+          database
+            .collection("createAccount")
+            .insertOne(createAccountData, function(err) {
+              //make a promise to wait for all database
 
-      //Access or Create Collection
-      collection = database.collection("aboutYou");
-      database
-        .collection("aboutYou")
-        .insertOne(aboutYouData, function(err) {
-          if (err) throw "err";
-          client.close();
-        });
+              if (err) {
+                client.close();
+                res.send({ success: false, hashID: "duplicate" });
+              }
 
-      //Preferences data
-      var preferencesData = {
-        _id: hashID,
-        ageRange: "",
-        distanceRange: "",
-        interestedGender: ""
-      };
+              client.close();
+            });
 
-      //Access or Create Collection
-      collection = database.collection("preferences");
-      database
-        .collection("preferences")
-        .insertOne(preferencesData, function(err) {
-          if (err) throw err;
-          client.close();
-        });
+          //AboutYou data
+          var aboutYouData = {
+            _id: hashID,
+            birthDate: "",
+            gender: "",
+            country: "",
+            firstName: "",
+            lastName: "",
+            zipCode: ""
+          };
 
-      //interests data
-      var interestsData = {
-        _id: hashID,
-        likesArray: ""
-      };
+          //Access or Create Collection
+          collection = database.collection("aboutYou");
+          database
+            .collection("aboutYou")
+            .insertOne(aboutYouData, function(err) {
+              if (err) {
+                client.close();
+                res.end();
+              }
+              client.close();
+            });
 
-      //Access or Create Collection
-      collection = database.collection("interests");
-      database
-        .collection("interests")
-        .insertOne(interestsData, function(err) {
-          if (err) throw err;
-          client.close();
-        });
+          //Preferences data
+          var preferencesData = {
+            _id: hashID,
+            ageRange: "",
+            distanceRange: "",
+            interestedGender: ""
+          };
 
-      //wouldYouRather data
-      var wouldYouRatherData = {
-        _id: hashID,
-        s1r1: "",
-        s1r2: "",
-        s2r1: "",
-        s2r2: "",
-        s3r1: "",
-        s3r2: ""
-      };
+          //Access or Create Collection
+          collection = database.collection("preferences");
+          database
+            .collection("preferences")
+            .insertOne(preferencesData, function(err) {
+              if (err) {
+                client.close();
+                res.end();
+              }
+              client.close();
+            });
 
-      //Access or Create Collection
-      collection = database.collection("wouldYouRather");
-      database
-        .collection("wouldYouRather")
-        .insertOne(wouldYouRatherData, function(err) {
-          if (err) throw err;
-          client.close();
-        });
+          //interests data
+          var interestsData = {
+            _id: hashID,
+            likesArray: ""
+          };
 
-      //localDestinations data
-      var localDestinationsData = {
-        _id: hashID,
-        weekendLocation: ""
-      };
+          //Access or Create Collection
+          collection = database.collection("interests");
+          database
+            .collection("interests")
+            .insertOne(interestsData, function(err) {
+              if (err) {
+                client.close();
+                res.end();
+              }
+              client.close();
+            });
 
-      //Access or Create Collection
-      collection = database.collection("localDestinations");
-      database
-        .collection("localDestinations")
-        .insertOne(localDestinationsData, function(err) {
-          if (err) throw err;
-          client.close();
-        });
+          //wouldYouRather data
+          var wouldYouRatherData = {
+            _id: hashID,
+            s1r1: "",
+            s1r2: "",
+            s2r1: "",
+            s2r2: "",
+            s3r1: "",
+            s3r2: ""
+          };
 
-      res.send({ hashID: hashID });
-    }
-  );
+          //Access or Create Collection
+          collection = database.collection("wouldYouRather");
+          database
+            .collection("wouldYouRather")
+            .insertOne(wouldYouRatherData, function(err) {
+              if (err) {
+                client.close();
+                res.end();
+              }
+              client.close();
+            });
+
+          //localDestinations data
+          var localDestinationsData = {
+            _id: hashID,
+            weekendLocation: ""
+          };
+
+          //Access or Create Collection
+          collection = database.collection("localDestinations");
+          database
+            .collection("localDestinations")
+            .insertOne(localDestinationsData, function(err) {
+              if (err) {
+                client.close();
+                res.end();
+              }
+              client.close();
+            });
+        }
+      );
+    });
+  };
+
+  var callMyPromise = async () => {
+    let result = await myPromise();
+    return;
+  };
+
+  callMyPromise().then(function(result) {
+    res.send({ success: true, hashID: hashID });
+  });
 };

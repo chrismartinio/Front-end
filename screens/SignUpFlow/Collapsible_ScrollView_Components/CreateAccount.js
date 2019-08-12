@@ -290,8 +290,19 @@ class CreateAccount extends Component {
         .then(res => res.json())
         .then(res => {
           let object = JSON.parse(JSON.stringify(res));
-          console.log(object)
-          this.props.generateHashID(object.hashID);
+          if (object.success) {
+            this.props.generateHashID(object.hashID);
+          } else {
+            this.setState(
+              {
+                emailWarning: "duplicate",
+                editable: true
+              },
+              () => {
+                this.props.handlePassed("createAccount", "duplicate");
+              }
+            );
+          }
         })
         .catch(function(error) {
           console.error(error.message);
@@ -322,6 +333,10 @@ class CreateAccount extends Component {
       <Text style={styles.warningText}>
         * Please enter a valid email address
       </Text>
+    );
+
+    let duplicateEmailWarning = (
+      <Text style={styles.warningText}>* Email has been used.</Text>
     );
 
     let invalidConfirmEmailWarning = (
@@ -384,6 +399,7 @@ class CreateAccount extends Component {
           />
           {this.state.emailWarning === "empty" && emptyEmail}
           {this.state.emailWarning === "invalid" && invalidEmailWarning}
+          {this.state.emailWarning === "duplicate" && duplicateEmailWarning}
         </View>
         {/*Spaces*/}
         <View

@@ -159,6 +159,15 @@ class Collapsible_ScrollView extends Component {
   //If the screen not passed, no change or revert the check icon
   handlePassed = (componentName, passed) => {
     let passName = componentName + "Passed";
+
+    if(componentName === "createAccount" && passed === "duplicate") {
+      this.setState({
+        createAccountToggle: false
+      }, () => {
+        return
+      })
+    }
+
     if (passed) {
       this.setState(
         {
