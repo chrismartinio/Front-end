@@ -36,4 +36,5 @@ exports.localDestinationsSubmit = function(req, res) {
         });
     }
   );
+  res.status(200).end();
 };

@@ -41,4 +41,5 @@ exports.wouldyouRatherSubmit = function(req, res) {
         });
     }
   );
+  res.status(200).end();
 };

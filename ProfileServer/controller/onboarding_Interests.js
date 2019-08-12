@@ -36,4 +36,5 @@ exports.interestsSubmit = function(req, res) {
         });
     }
   );
+  res.status(200).end();
 };
