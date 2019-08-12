@@ -160,12 +160,16 @@ class Collapsible_ScrollView extends Component {
   handlePassed = (componentName, passed) => {
     let passName = componentName + "Passed";
 
-    if(componentName === "createAccount" && passed === "duplicate") {
-      this.setState({
-        createAccountToggle: false
-      }, () => {
-        return
-      })
+    if (componentName === "createAccount" && passed === "duplicate") {
+      this.setState(
+        {
+          createAccountToggle: false,
+          createAccountPassed: false
+        },
+        () => {
+          return;
+        }
+      );
     }
 
     if (passed) {
