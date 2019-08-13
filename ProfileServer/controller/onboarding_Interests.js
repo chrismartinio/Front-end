@@ -20,7 +20,7 @@ exports.interestsSubmit = function(req, res) {
       database = client.db(DATABASE_NAME);
       //Access or Create Collection
       collection = database.collection("interests");
-      var target = { '_id': ObjectId(req.body.hashID) };
+      var target = { '_id': ObjectId(req.body.gui) };
       var updateData = {
         $set: {
           likesArray: req.body.likesArray

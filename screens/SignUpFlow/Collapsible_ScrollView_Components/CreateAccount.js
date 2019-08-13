@@ -282,7 +282,7 @@ class CreateAccount extends Component {
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
-          hashID: this.props.hashID,
+          gui: this.props.gui,
           email: this.state.email,
           password: this.state.password
         })
@@ -293,7 +293,7 @@ class CreateAccount extends Component {
 
           console.log(object);
           if (object.success) {
-            this.props.generateHashID(object.hashID);
+            this.props.generateGUI(object.gui);
           } else {
             this.setState(
               {

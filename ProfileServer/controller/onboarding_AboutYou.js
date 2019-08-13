@@ -20,7 +20,7 @@ exports.aboutYouSubmit = function(req, res) {
       database = client.db(DATABASE_NAME);
       //Access or Create Collection
       collection = database.collection("aboutYou");
-      var target = { '_id': ObjectId(req.body.hashID) };
+      var target = { '_id': ObjectId(req.body.gui) };
       var updateData = {
         $set: {
           firstName: req.body.firstName,

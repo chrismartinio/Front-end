@@ -276,7 +276,7 @@ class AboutYou extends Component {
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
-          hashID: this.props.hashID,
+          gui: this.props.gui,
           firstName: this.state.firstName,
           lastName: this.state.lastName,
           birthDate: this.state.birthDate,

@@ -158,10 +158,9 @@ exports.createAccountSubmit = function(req, res) {
               });
             //(Step 3 Above)
             client.close();
-            res.json({ success: true, hashID: gui });
+            res.json({ success: true, gui: gui });
           });
         }
-        //res.send({ success: true, hashID: 123 });
       });
     }
   );
