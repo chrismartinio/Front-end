@@ -291,9 +291,13 @@ class CreateAccount extends Component {
         .then(res => {
           let object = JSON.parse(JSON.stringify(res));
 
-          console.log(object);
           if (object.success) {
-            this.props.generateGUI(object.gui);
+            //Send data to Redux
+            this.props.SetUserDataAction({
+              gui: object.gui,
+              email: this.state.email,
+              password: this.state.password
+            });
           } else {
             this.setState(
               {
@@ -310,12 +314,6 @@ class CreateAccount extends Component {
           console.error(error.message);
           throw error;
         });
-
-      //Send data to Redux
-      this.props.SetUserDataAction({
-        email: this.state.email,
-        password: this.state.password
-      });
 
       //this.props.navigation.navigate("TestAboutYou");
       //if successed to passed, it will put the check mark from CollapsibleComponent CheckMark

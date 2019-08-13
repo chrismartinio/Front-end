@@ -61,6 +61,7 @@ class TellUsMore extends React.Component {
   }
 
   handleSubmit = () => {
+
     if (this.state.passed) {
       //Send data to database
       fetch("http://74.80.250.210:5000/dbRouter/interestsSubmit", {
@@ -69,7 +70,7 @@ class TellUsMore extends React.Component {
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
-          gui: this.props.gui,
+          gui: this.props.CreateProfileReducer.userData.gui,
           likesArray: this.state.likesArray
         })
       }).catch(function(error) {

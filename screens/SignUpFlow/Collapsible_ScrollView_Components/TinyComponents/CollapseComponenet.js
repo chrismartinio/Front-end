@@ -12,21 +12,12 @@ import LocalDestinations from "../LocalDestinations";
 
 export default function CollapseComponenet(props) {
   const componentSwitch = componentName => {
-
     switch (componentName) {
       case "createAccount":
-        return (
-          <CreateAccount
-            handlePassed={props.handlePassed}
-            gui={props.gui}
-            generateGUI={props.generateGUI}
-          />
-        );
+        return <CreateAccount handlePassed={props.handlePassed} />;
 
       case "aboutYou":
-        return (
-          <AboutYou handlePassed={props.handlePassed} gui={props.gui} />
-        );
+        return <AboutYou handlePassed={props.handlePassed} gui={props.gui} />;
 
       case "preferences":
         return (
@@ -34,7 +25,6 @@ export default function CollapseComponenet(props) {
             handlePassed={props.handlePassed}
             currentScreenTopY={props.currentScreenTopY}
             preferencesPositionY={props.preferencesPositionY}
-            gui={props.gui}
           />
         );
 
@@ -44,17 +34,11 @@ export default function CollapseComponenet(props) {
             handlePassed={props.handlePassed}
             currentScreenTopY={props.currentScreenTopY}
             interestsPositionY={props.interestsPositionY}
-            gui={props.gui}
           />
         );
 
       case "wouldYouRather":
-        return (
-          <WouldYouRather
-            handlePassed={props.handlePassed}
-            gui={props.gui}
-          />
-        );
+        return <WouldYouRather handlePassed={props.handlePassed} />;
 
       case "localDestinations":
         return (
@@ -62,7 +46,6 @@ export default function CollapseComponenet(props) {
             handlePassed={props.handlePassed}
             currentScreenTopY={props.currentScreenTopY}
             localDestinationsPositionY={props.localDestinationsPositionY}
-            gui={props.gui}
           />
         );
 

@@ -39,7 +39,7 @@ class WouldRather extends React.Component {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        gui: this.props.gui,
+        gui: this.props.CreateProfileReducer.userData.gui,
         s1r1: this.s1r1,
         s1r2: this.s1r2,
         s2r1: this.s2r1,

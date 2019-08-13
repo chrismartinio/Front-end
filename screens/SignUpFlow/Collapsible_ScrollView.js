@@ -56,22 +56,11 @@ class Collapsible_ScrollView extends Component {
     //if no , generate an hash id and send to onboarding
     //If account exist but not finish, also send to onboarding
 
-    this.gui = "";
-
     //Prevent User to re-submit different if their account is undone
     this.undone = false;
   }
 
-  generateGUI = gui => {
-    this.gui = gui;
-  };
-
-  componentDidMount() {
-    //reset all data at start of registration
-    this.props.ResetReduxData({
-      reset: true
-    });
-  }
+  componentDidMount() {}
 
   componentDidUpdate(prevProps, prevState, snapshot) {
     //if there have any udpate to the warnings by checking this.state and prevState
@@ -100,26 +89,10 @@ class Collapsible_ScrollView extends Component {
       this.state.wouldYouRatherPassed &&
       this.state.localDestinationsPassed
     ) {
+      this.props.ResetReduxData({
+        reset: true
+      });
       this.props.navigation.navigate("TestRegistrationComplete");
-    }
-  };
-
-  handleBackToSignIn = () => {
-    this.props.navigation.navigate("SignIn");
-  };
-  static navigationOptions = {
-    //header: null,
-    //title: 'Match Chat',
-    headerStyle: {
-      backgroundColor: "#18cdf6"
-    },
-    footerStyle: {
-      backgroundColor: "#fff"
-    },
-    headerTintColor: "#fff",
-    headerTitleStyle: {
-      fontWeight: "bold",
-      fontSize: 24
     }
   };
 
@@ -160,6 +133,7 @@ class Collapsible_ScrollView extends Component {
   handlePassed = (componentName, passed) => {
     let passName = componentName + "Passed";
 
+    //Handle Duplicate Email; let the createAccount Collapse
     if (componentName === "createAccount" && passed === "duplicate") {
       this.setState(
         {
@@ -247,9 +221,7 @@ class Collapsible_ScrollView extends Component {
                   componentName={"createAccount"}
                   handleToggle={this.handleToggle}
                   handlePassed={this.handlePassed}
-                  gui={this.gui}
                   undone={this.undone}
-                  generateGUI={this.generateGUI}
                 />
 
                 {/*About You*/}
@@ -259,7 +231,6 @@ class Collapsible_ScrollView extends Component {
                   componentName={"aboutYou"}
                   handleToggle={this.handleToggle}
                   handlePassed={this.handlePassed}
-                  gui={this.gui}
                 />
 
                 {/*Preferences*/}
@@ -277,7 +248,6 @@ class Collapsible_ScrollView extends Component {
                     handlePassed={this.handlePassed}
                     currentScreenTopY={this.state.currentScreenTopY}
                     preferencesPositionY={this.preferencesPositionY}
-                    gui={this.gui}
                   />
                 </View>
 
@@ -296,7 +266,6 @@ class Collapsible_ScrollView extends Component {
                     handlePassed={this.handlePassed}
                     currentScreenTopY={this.state.currentScreenTopY}
                     interestsPositionY={this.interestsPositionY}
-                    gui={this.gui}
                   />
                 </View>
 
@@ -307,7 +276,6 @@ class Collapsible_ScrollView extends Component {
                   componentName={"wouldYouRather"}
                   handleToggle={this.handleToggle}
                   handlePassed={this.handlePassed}
-                  gui={this.gui}
                 />
 
                 {/*localDestinations*/}
@@ -325,7 +293,6 @@ class Collapsible_ScrollView extends Component {
                     handlePassed={this.handlePassed}
                     currentScreenTopY={this.state.currentScreenTopY}
                     localDestinationsPositionY={this.localDestinationsPositionY}
-                    gui={this.gui}
                   />
                 </View>
               </View>

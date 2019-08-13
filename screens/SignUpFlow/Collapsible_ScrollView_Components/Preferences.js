@@ -208,7 +208,7 @@ class Preferences extends React.Component {
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
-          gui: this.props.gui,
+          gui: this.props.CreateProfileReducer.userData.gui,
           ageRange: this.state.multiSliderValue,
           distanceRange: this.state.distanceRange,
           interestedGender: interestedGender

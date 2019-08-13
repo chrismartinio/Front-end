@@ -177,7 +177,7 @@ class LocationDestinations extends React.Component {
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
-          gui: this.props.gui,
+          gui: this.props.CreateProfileReducer.userData.gui,
           weekendLocation: this.state.weekendLocation
         })
       }).catch(function(error) {

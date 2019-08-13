@@ -266,6 +266,7 @@ class AboutYou extends Component {
 
   //next button : valid all input fields
   handleSubmit = evt => {
+
     if (this.state.passed) {
       //if all tests passed, set passed to true and navigate to next screen
 
@@ -276,7 +277,7 @@ class AboutYou extends Component {
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
-          gui: this.props.gui,
+          gui: this.props.CreateProfileReducer.userData.gui,
           firstName: this.state.firstName,
           lastName: this.state.lastName,
           birthDate: this.state.birthDate,
