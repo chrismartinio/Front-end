@@ -20,7 +20,7 @@ exports.localDestinationsSubmit = function(req, res) {
       database = client.db(DATABASE_NAME);
       //Access or Create Collection
       collection = database.collection("localDestinations");
-      var target = { _id: req.body.hashID };
+      var target = { _id: ObjectId(req.body.hashID) };
       var updateData = {
         $set: {
           weekendLocation: req.body.weekendLocation

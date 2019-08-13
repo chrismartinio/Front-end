@@ -290,10 +290,10 @@ class CreateAccount extends Component {
         .then(res => res.json())
         .then(res => {
           let object = JSON.parse(JSON.stringify(res));
-          //if (object.success) {
-          console.log(object.hashID)
-          this.props.generateHashID(object.hashID);
-          /*
+
+          console.log(object);
+          if (object.success) {
+            this.props.generateHashID(object.hashID);
           } else {
             this.setState(
               {
@@ -304,7 +304,7 @@ class CreateAccount extends Component {
                 this.props.handlePassed("createAccount", "duplicate");
               }
             );
-          }*/
+          }
         })
         .catch(function(error) {
           console.error(error.message);

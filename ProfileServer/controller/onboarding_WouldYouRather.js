@@ -20,7 +20,7 @@ exports.wouldyouRatherSubmit = function(req, res) {
       database = client.db(DATABASE_NAME);
       //Access or Create Collection
       collection = database.collection("wouldYouRather");
-      var target = { _id: req.body.hashID };
+      var target = { '_id': ObjectId(req.body.hashID) };
       var updateData = {
         $set: {
           s1r1: req.body.s1r1,
