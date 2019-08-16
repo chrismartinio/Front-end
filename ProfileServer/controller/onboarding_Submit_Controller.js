@@ -181,7 +181,7 @@ exports.aboutYouSubmit = function(req, res) {
       database = client.db(DATABASE_NAME);
       //Access or Create Collection
       collection = database.collection("aboutYou");
-      var target = { '_id': ObjectId(req.body.gui) };
+      var target = { _id: ObjectId(req.body.gui) };
       var updateData = {
         $set: {
           firstName: req.body.firstName,
@@ -197,9 +197,8 @@ exports.aboutYouSubmit = function(req, res) {
         .collection("aboutYou")
         .updateOne(target, updateData, function(err, res) {
           if (err) throw err;
-
-          client.close();
         });
+      client.close();
     }
   );
   res.status(200).end();
@@ -220,7 +219,7 @@ exports.preferencesSubmit = function(req, res) {
       database = client.db(DATABASE_NAME);
       //Access or Create Collection
       collection = database.collection("preferences");
-      var target = { '_id': ObjectId(req.body.gui) };
+      var target = { _id: ObjectId(req.body.gui) };
       var updateData = {
         $set: {
           ageRange: req.body.ageRange,
@@ -233,9 +232,8 @@ exports.preferencesSubmit = function(req, res) {
         .collection("preferences")
         .updateOne(target, updateData, function(err, res) {
           if (err) throw err;
-
-          client.close();
         });
+      client.close();
     }
   );
   res.status(200).end();
@@ -256,7 +254,7 @@ exports.interestsSubmit = function(req, res) {
       database = client.db(DATABASE_NAME);
       //Access or Create Collection
       collection = database.collection("interests");
-      var target = { '_id': ObjectId(req.body.gui) };
+      var target = { _id: ObjectId(req.body.gui) };
       var updateData = {
         $set: {
           likesArray: req.body.likesArray
@@ -267,9 +265,8 @@ exports.interestsSubmit = function(req, res) {
         .collection("interests")
         .updateOne(target, updateData, function(err, res) {
           if (err) throw err;
-
-          client.close();
         });
+      client.close();
     }
   );
   res.status(200).end();
@@ -290,7 +287,7 @@ exports.wouldyouRatherSubmit = function(req, res) {
       database = client.db(DATABASE_NAME);
       //Access or Create Collection
       collection = database.collection("wouldYouRather");
-      var target = { '_id': ObjectId(req.body.gui) };
+      var target = { _id: ObjectId(req.body.gui) };
       var updateData = {
         $set: {
           s1r1: req.body.s1r1,
@@ -306,9 +303,8 @@ exports.wouldyouRatherSubmit = function(req, res) {
         .collection("wouldYouRather")
         .updateOne(target, updateData, function(err, res) {
           if (err) throw err;
-
-          client.close();
         });
+      client.close();
     }
   );
   res.status(200).end();
@@ -340,9 +336,8 @@ exports.localDestinationsSubmit = function(req, res) {
         .collection("localDestinations")
         .updateOne(target, updateData, function(err, res) {
           if (err) throw err;
-
-          client.close();
         });
+      client.close();
     }
   );
   res.status(200).end();

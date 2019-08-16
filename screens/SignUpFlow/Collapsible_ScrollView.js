@@ -29,7 +29,6 @@ import { Chevron } from "react-native-shapes";
 import { Icon, Input } from "react-native-elements";
 
 class Collapsible_ScrollView extends Component {
-
   static navigationOptions = {
     //header: null,
     title: "Welcome!",
@@ -78,13 +77,14 @@ class Collapsible_ScrollView extends Component {
   }
 
   componentDidMount() {
-    fetch("http://74.80.250.210:5000/dbRouter/userProfileAllCollectionsQuery", {
+
+    fetch("http://74.80.250.210:5000/dbRouter/userProfileUndoneQuery", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        email: "abc@live.com",
+        email: "bbb@live.com",
         password: "12345Abc",
         collectionName: "createAccount",
       })
@@ -98,6 +98,7 @@ class Collapsible_ScrollView extends Component {
         console.error(error.message);
         throw error;
       });
+
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {

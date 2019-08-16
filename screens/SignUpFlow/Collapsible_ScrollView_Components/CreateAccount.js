@@ -29,7 +29,6 @@ import axios from "axios";
 const profileServer = "http://74.80.250.210:5000/dbRouter/";
 
 class CreateAccount extends Component {
-
   constructor(props) {
     super(props);
     this.state = {
@@ -47,6 +46,22 @@ class CreateAccount extends Component {
       passed: false,
       editable: true
     };
+
+    //Suppose to get from Redux
+    this.undone = 1;
+    this.reduxEmail = "abc@live.com";
+    this.reduxPassword = "12345Abc";
+  }
+
+  componentDidMount() {
+    if (this.undone === 2 || this.unedone === 4) {
+      this.setState({
+        passed: true,
+        editable: false,
+        email: this.reduxEmail,
+        password: this.reduxPassword
+      });
+    }
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
@@ -245,7 +260,8 @@ class CreateAccount extends Component {
 
   handleSubmit = () => {
     //Prevent user to submit email for second times
-    if (this.state.editable === false || this.props.undone) {
+    //Or Prevent Undone User (generate a new GUI for them)
+    if (this.state.editable === false) {
       this.props.handlePassed("createAccount", true);
       return;
     }
@@ -356,6 +372,7 @@ class CreateAccount extends Component {
             placeholderTextColor="#fff"
             containerStyle={styles.inputContainerStyle}
             inputStyle={styles.inputStyle}
+            value={this.state.email}
             rightIcon={
               this.state.emailWarning === "" ? (
                 <Icon type="font-awesome" name="check" color="#fff" />
@@ -398,6 +415,7 @@ class CreateAccount extends Component {
             placeholderTextColor="#fff"
             containerStyle={styles.inputContainerStyle}
             inputStyle={styles.inputStyle}
+            value={this.state.confirmEmail}
             rightIcon={
               this.state.confirmEmailWarning === "" ? (
                 <Icon type="font-awesome" name="check" color="#fff" />
@@ -443,6 +461,7 @@ class CreateAccount extends Component {
             placeholderTextColor="#fff"
             containerStyle={styles.inputContainerStyle}
             inputStyle={styles.inputStyle}
+            value={this.state.password}
             rightIcon={
               this.state.passwordWarning === "" ? (
                 <Icon type="font-awesome" name="check" color="#fff" />
@@ -485,6 +504,7 @@ class CreateAccount extends Component {
             placeholderTextColor="#fff"
             containerStyle={styles.inputContainerStyle}
             inputStyle={styles.inputStyle}
+            value={this.state.confirmPassword}
             rightIcon={
               this.state.confirmPasswordWarning === "" ? (
                 <Icon type="font-awesome" name="check" color="#fff" />
