@@ -6,60 +6,17 @@ const DATABASE_NAME = "UsersProfile";
 let database, collection;
 
 //========================================
-// createAccount Query Route
-//========================================
-//take a paramater "Email" to Query createAccount's data
-exports.createAccountQuery = function(req, res) {
-  MongoClient.connect(
-    CONNECTION_URL,
-    { useNewUrlParser: true },
-    (error, client) => {
-      if (error) {
-        throw error;
-      }
-      //Access or Create Database
-      database = client.db(DATABASE_NAME);
-
-      //Query Data by Email
-      let createAccountPromise = () => {
-        return new Promise((resolve, reject) => {
-          database
-            .collection("createAccount")
-            .findOne({ email: req.body.email }, function(err, result) {
-              err ? reject(err) : resolve(result);
-            });
-        });
-      };
-
-      let callcreateAccountPromise = async () => {
-        var emailResult = await createAccountPromise().catch(err =>
-          console.log(err)
-        );
-        return emailResult;
-      };
-
-      callcreateAccountPromise().then(function(result) {
-        if (result === null) {
-          res.json({
-            success: false,
-            message: "The email does not exist"
-          });
-          res.end();
-        } else {
-          result.success = true;
-          result.message = "Query Data Sucessfully";
-          res.json(result);
-        }
-      });
-    }
-  );
-};
-
-//========================================
 // UsersProfile Single Collection Query Route
 //========================================
-//Use take the first parameter "Email" to query GUI from createAccount Collection
-//Use GUI to query data from the second parameter "CollectionName" to query appropriate Collection's data
+//Parameter 1 - Email : used to find the user data in the database
+//Parameter 2 - Password : used to secure user data
+//Parameter 3 - collectionName : used to query the requested Collection
+
+/*Process
+  Step 1 : find the user data by email in the createAccount Colleciton and return that user gui
+  Step 2 : check whether the user password is match to the database password
+  Step 3 : use the user gui to find the user data from the collections
+*/
 exports.userProfileSingleCollectionQuery = function(req, res) {
   MongoClient.connect(
     CONNECTION_URL,
@@ -94,7 +51,11 @@ exports.userProfileSingleCollectionQuery = function(req, res) {
             success: false,
             message: "The email does not exist"
           });
-          res.end();
+        } else if (result.password !== req.body.password) {
+          res.json({
+            success: false,
+            message: "Password does not match"
+          });
         } else {
           let gui = result._id;
 
@@ -130,8 +91,14 @@ exports.userProfileSingleCollectionQuery = function(req, res) {
 //========================================
 // UsersProfile All Collection Query Route
 //========================================
-//Use take the first parameter "Email" to query GUI from createAccount Collection
-//Use GUI to query data all data from all collections from userProfile Database
+//Parameter 1 - Email : used to find the user data in the database
+//Parameter 2 - Password : used to secure user data
+
+/*Process
+  Step 1 : find the user data by email in the createAccount Colleciton and return that user gui
+  Step 2 : check whether the user password is match to the database password
+  Step 3 : query all data from all collection and send them back to client as a big object
+*/
 exports.userProfileAllCollectionsQuery = function(req, res) {
   MongoClient.connect(
     CONNECTION_URL,
@@ -167,6 +134,11 @@ exports.userProfileAllCollectionsQuery = function(req, res) {
             message: "The email does not exist"
           });
           res.end();
+        } else if (result.password !== req.body.password) {
+          res.json({
+            success: false,
+            message: "Password does not match"
+          });
         } else {
           let gui = result._id;
 

@@ -16,7 +16,6 @@ router.post("/localDestinationsSubmit", Onboarding_Submit_Controller.localDestin
 //=========================
 // onboarding Query Route
 //=========================
-router.post("/createAccountQuery", Onboarding_Query_Controller.createAccountQuery);
 router.post("/userProfileSingleCollectionQuery", Onboarding_Query_Controller.userProfileSingleCollectionQuery);
 router.post("/userProfileAllCollectionsQuery", Onboarding_Query_Controller.userProfileAllCollectionsQuery);
 
