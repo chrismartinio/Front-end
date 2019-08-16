@@ -29,6 +29,23 @@ import { Chevron } from "react-native-shapes";
 import { Icon, Input } from "react-native-elements";
 
 class Collapsible_ScrollView extends Component {
+
+  static navigationOptions = {
+    //header: null,
+    title: "Welcome!",
+    headerStyle: {
+      backgroundColor: "#18cdf6"
+    },
+    footerStyle: {
+      backgroundColor: "#fff"
+    },
+    headerTintColor: "#fff",
+    headerTitleStyle: {
+      fontWeight: "bold",
+      fontSize: 24
+    }
+  };
+
   constructor(props) {
     super(props);
     this.state = {
@@ -61,13 +78,14 @@ class Collapsible_ScrollView extends Component {
   }
 
   componentDidMount() {
-    fetch("http://74.80.250.210:5000/dbRouter/createAccountQuery", {
+    fetch("http://74.80.250.210:5000/dbRouter/userProfileAllCollectionsQuery", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        email: "abc@live.com"
+        email: "abc@live.com",
+        collectionName: "localDestinations"
       })
     })
       .then(res => res.json())
