@@ -1,4 +1,3 @@
-const uuidv5 = require("uuid/v5");
 const MongoClient = require("mongodb").MongoClient;
 const ObjectId = require("mongodb").ObjectID;
 const CONNECTION_URL =
@@ -165,4 +164,186 @@ exports.createAccountSubmit = function(req, res) {
     }
   );
   //(Step 1 above)
+};
+
+//========================================
+// AboutYou Submit Route
+//========================================
+exports.aboutYouSubmit = function(req, res) {
+  MongoClient.connect(
+    CONNECTION_URL,
+    { useNewUrlParser: true },
+    (error, client) => {
+      if (error) {
+        throw error;
+      }
+      //Access or Create Database
+      database = client.db(DATABASE_NAME);
+      //Access or Create Collection
+      collection = database.collection("aboutYou");
+      var target = { '_id': ObjectId(req.body.gui) };
+      var updateData = {
+        $set: {
+          firstName: req.body.firstName,
+          lastName: req.body.lastName,
+          birthDate: req.body.birthDate,
+          gender: req.body.gender,
+          country: req.body.country,
+          zipCode: req.body.zipCode
+        }
+      };
+      //Find the first document in the customers collection:
+      database
+        .collection("aboutYou")
+        .updateOne(target, updateData, function(err, res) {
+          if (err) throw err;
+
+          client.close();
+        });
+    }
+  );
+  res.status(200).end();
+};
+
+//========================================
+// Preferences Submit Route
+//========================================
+exports.preferencesSubmit = function(req, res) {
+  MongoClient.connect(
+    CONNECTION_URL,
+    { useNewUrlParser: true },
+    (error, client) => {
+      if (error) {
+        throw error;
+      }
+      //Access or Create Database
+      database = client.db(DATABASE_NAME);
+      //Access or Create Collection
+      collection = database.collection("preferences");
+      var target = { '_id': ObjectId(req.body.gui) };
+      var updateData = {
+        $set: {
+          ageRange: req.body.ageRange,
+          distanceRange: req.body.distanceRange,
+          interestedGender: req.body.interestedGender
+        }
+      };
+      //Find the first document in the customers collection:
+      database
+        .collection("preferences")
+        .updateOne(target, updateData, function(err, res) {
+          if (err) throw err;
+
+          client.close();
+        });
+    }
+  );
+  res.status(200).end();
+};
+
+//========================================
+// Interests Submit Route
+//========================================
+exports.interestsSubmit = function(req, res) {
+  MongoClient.connect(
+    CONNECTION_URL,
+    { useNewUrlParser: true },
+    (error, client) => {
+      if (error) {
+        throw error;
+      }
+      //Access or Create Database
+      database = client.db(DATABASE_NAME);
+      //Access or Create Collection
+      collection = database.collection("interests");
+      var target = { '_id': ObjectId(req.body.gui) };
+      var updateData = {
+        $set: {
+          likesArray: req.body.likesArray
+        }
+      };
+      //Find the first document in the customers collection:
+      database
+        .collection("interests")
+        .updateOne(target, updateData, function(err, res) {
+          if (err) throw err;
+
+          client.close();
+        });
+    }
+  );
+  res.status(200).end();
+};
+
+//========================================
+// WouldYouRather Submit Route
+//========================================
+exports.wouldyouRatherSubmit = function(req, res) {
+  MongoClient.connect(
+    CONNECTION_URL,
+    { useNewUrlParser: true },
+    (error, client) => {
+      if (error) {
+        throw error;
+      }
+      //Access or Create Database
+      database = client.db(DATABASE_NAME);
+      //Access or Create Collection
+      collection = database.collection("wouldYouRather");
+      var target = { '_id': ObjectId(req.body.gui) };
+      var updateData = {
+        $set: {
+          s1r1: req.body.s1r1,
+          s1r2: req.body.s1r2,
+          s2r1: req.body.s2r1,
+          s2r2: req.body.s2r2,
+          s3r1: req.body.s3r1,
+          s3r2: req.body.s3r2
+        }
+      };
+      //Find the first document in the customers collection:
+      database
+        .collection("wouldYouRather")
+        .updateOne(target, updateData, function(err, res) {
+          if (err) throw err;
+
+          client.close();
+        });
+    }
+  );
+  res.status(200).end();
+};
+
+//========================================
+// LocalDestinations Submit Route
+//========================================
+exports.localDestinationsSubmit = function(req, res) {
+  MongoClient.connect(
+    CONNECTION_URL,
+    { useNewUrlParser: true },
+    (error, client) => {
+      if (error) {
+        throw error;
+      }
+      //Access or Create Database
+      database = client.db(DATABASE_NAME);
+      //Access or Create Collection
+      collection = database.collection("localDestinations");
+      var target = { _id: ObjectId(req.body.gui) };
+      var updateData = {
+        $set: {
+          weekendLocation: req.body.weekendLocation
+        }
+      };
+      //Find the first document in the customers collection:
+      database
+        .collection("localDestinations")
+        .updateOne(target, updateData, function(err, res) {
+          if (err) throw err;
+
+          client.close();
+        });
+    }
+  );
+  res.status(200).end();
 };

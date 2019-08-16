@@ -29,21 +29,6 @@ import axios from "axios";
 const profileServer = "http://74.80.250.210:5000/dbRouter/";
 
 class CreateAccount extends Component {
-  static navigationOptions = {
-    //header: null,
-    //title: 'Match Chat',
-    headerStyle: {
-      backgroundColor: "#18cdf6"
-    },
-    footerStyle: {
-      backgroundColor: "#fff"
-    },
-    headerTintColor: "#fff",
-    headerTitleStyle: {
-      fontWeight: "bold",
-      fontSize: 24
-    }
-  };
 
   constructor(props) {
     super(props);
@@ -63,11 +48,6 @@ class CreateAccount extends Component {
       editable: true
     };
   }
-  handleBackToSignIn = () => {
-    this.props.navigation.navigate("SignIn");
-  };
-
-  componentDidMount() {}
 
   componentDidUpdate(prevProps, prevState, snapshot) {
     //if there have any udpate to the warnings by checking this.state and prevState

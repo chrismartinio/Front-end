@@ -60,7 +60,26 @@ class Collapsible_ScrollView extends Component {
     this.undone = false;
   }
 
-  componentDidMount() {}
+  componentDidMount() {
+    fetch("http://74.80.250.210:5000/dbRouter/createAccountQuery", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        email: "abc@live.com"
+      })
+    })
+      .then(res => res.json())
+      .then(res => {
+        let object = JSON.parse(JSON.stringify(res));
+        console.log(object);
+      })
+      .catch(function(error) {
+        console.error(error.message);
+        throw error;
+      });
+  }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
     //if there have any udpate to the warnings by checking this.state and prevState

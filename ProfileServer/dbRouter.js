@@ -1,41 +1,21 @@
 const express = require("express");
-const Onboarding_CreateAccountController = require("./controller/onboarding_CreateAccount.js");
-const Onboarding_AboutYouController = require("./controller/onboarding_AboutYou.js");
-const Onboarding_PreferencesController = require("./controller/onboarding_Preferences.js");
-const Onboarding_InterestsController = require("./controller/onboarding_Interests.js");
-const Onboarding_WouldYouRatherController = require("./controller/onboarding_WouldYouRather.js");
-const Onboarding_LocalDestinationsController = require("./controller/onboarding_LocalDestinations.js");
-
+const Onboarding_Submit_Controller = require("./controller/onboarding_Submit_Controller.js");
+const Onboarding_Query_Controller = require("./controller/onboarding_Query_Controller.js");
 const router = express.Router();
 
 //=========================
-// onboarding CreateAccount Route
+// onboarding Submit Route
 //=========================
-router.post("/createAccountSubmit", Onboarding_CreateAccountController.createAccountSubmit);
+router.post("/createAccountSubmit", Onboarding_Submit_Controller.createAccountSubmit);
+router.post("/aboutYouSubmit", Onboarding_Submit_Controller.aboutYouSubmit);
+router.post("/preferencesSubmit", Onboarding_Submit_Controller.preferencesSubmit);
+router.post("/interestsSubmit", Onboarding_Submit_Controller.interestsSubmit);
+router.post("/wouldyouRatherSubmit", Onboarding_Submit_Controller.wouldyouRatherSubmit);
+router.post("/localDestinationsSubmit", Onboarding_Submit_Controller.localDestinationsSubmit);
 
 //=========================
-// onboarding AboutYou Route
+// onboarding Query Route
 //=========================
-router.post("/aboutYouSubmit", Onboarding_AboutYouController.aboutYouSubmit);
-
-//=========================
-// onboarding Preferences Route
-//=========================
-router.post("/preferencesSubmit", Onboarding_PreferencesController.preferencesSubmit);
-
-//=========================
-// onboarding Interests Route
-//=========================
-router.post("/interestsSubmit", Onboarding_InterestsController.interestsSubmit);
-
-//=========================
-// onboarding WouldYouRather Route
-//=========================
-router.post("/wouldyouRatherSubmit", Onboarding_WouldYouRatherController.wouldyouRatherSubmit);
-
-//=========================
-// onboarding LocalDestinations Route
-//=========================
-router.post("/localDestinationsSubmit", Onboarding_LocalDestinationsController.localDestinationsSubmit);
+router.post("/createAccountQuery", Onboarding_Query_Controller.createAccountQuery);
 
 module.exports = router;
