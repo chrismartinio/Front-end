@@ -42,7 +42,7 @@ class AboutYou extends Component {
       firstName: "",
       lastName: "",
       zipCode: "",
-      empty: false,
+      //empty: false,
       passed: false,
       firstNameWarning: "empty",
       lastNameWarning: "empty",
@@ -51,6 +51,45 @@ class AboutYou extends Component {
       zipCodeWarning: "empty",
       birthDateWarning: "empty"
     };
+
+    //TESTING USE : DELETE WHEN CONNECT TO onAuth
+
+    //user identiflier
+    this.undone = 4;
+
+    //suppose to get from redux from 3rd parties user 3
+    this.firstName3 = "hello";
+    this.lastName3 = "world";
+
+    //suppose to get from redux from 3rd parties undone user 2 or 4
+    this.firstName2or4 = "hello";
+    this.lastName2or4 = "world";
+    this.birthDate2or4 = "01-02-1993";
+    this.gender2or4 = "male";
+    this.country2or4 = "China";
+    this.zipcode2or4 = "11111";
+
+    //TESTING USE : DELETE WHEN CONNECT TO onAuth
+  }
+
+  componentDidMount() {
+    if (this.undone === 2 || this.undone === 4) {
+      this.setState({
+        firstName: this.firstName2or4,
+        lastName: this.lastName2or4,
+        birthDate: this.birthDate2or4,
+        gender: this.gender2or4,
+        country: this.country2or4,
+        zipCode: this.zipcode2or4,
+        firstNameWarning: "",
+        lastNameWarning: "",
+        genderWarning: "",
+        countryWarning: "",
+        zipCodeWarning: "",
+        birthDateWarning: "",
+        passed: true
+      });
+    }
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
@@ -266,7 +305,6 @@ class AboutYou extends Component {
 
   //next button : valid all input fields
   handleSubmit = evt => {
-
     if (this.state.passed) {
       //if all tests passed, set passed to true and navigate to next screen
 
@@ -366,6 +404,7 @@ class AboutYou extends Component {
             placeholderTextColor="#fff"
             containerStyle={styles.inputContainerStyle}
             inputStyle={styles.inputStyle}
+            value={this.state.firstName}
             rightIcon={
               this.state.firstNameWarning === "" ? (
                 <Icon type="font-awesome" name="check" color="#fff" />
@@ -403,6 +442,7 @@ class AboutYou extends Component {
             placeholderTextColor="#fff"
             containerStyle={styles.inputContainerStyle}
             inputStyle={styles.inputStyle}
+            value={this.state.lastName}
             rightIcon={
               this.state.lastNameWarning === "" ? (
                 <Icon type="font-awesome" name="check" color="#fff" />
@@ -575,6 +615,7 @@ class AboutYou extends Component {
               autoCorrect={false}
               keyboardType="numeric"
               maxLength={5}
+              value={this.state.zipCode}
               rightIcon={
                 this.state.zipCodeWarning === "" ? (
                   <Icon type="font-awesome" name="check" color="#fff" />

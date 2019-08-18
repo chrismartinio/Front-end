@@ -47,19 +47,39 @@ class CreateAccount extends Component {
       editable: true
     };
 
-    //Suppose to get from Redux
-    this.undone = 1;
-    this.reduxEmail = "abc@live.com";
-    this.reduxPassword = "12345Abc";
+    //TESTING USE : DELETE WHEN CONNECT TO onAuth
+
+    //user identiflier
+    this.undone = 4;
+
+    //Suppose to get from Redux from undone user 3
+    this.reduxEmail3 = "ccc@live.com"
+    this.thirdPartiesUID = "12345Abc"
+    this.reduxPassword3 = this.thirdPartiesUID
+
+    //Suppose to get from Redux from undone user 2 or 4
+    this.reduxEmail2or4 = "ccc@live.com";
+    this.reduxPassword2or4 = "12345Abc";
+
+    //TESTING USE : DELETE WHEN CONNECT TO onAuth
   }
 
   componentDidMount() {
-    if (this.undone === 2 || this.unedone === 4) {
+    if (this.undone === 2 || this.undone === 4) {
       this.setState({
         passed: true,
         editable: false,
-        email: this.reduxEmail,
-        password: this.reduxPassword
+        email: this.reduxEmail2or4,
+        confirmEmail: this.reduxEmail2or4,
+        password: this.reduxPassword2or4,
+        confirmPassword: this.reduxPassword2or4,
+        emailWarning: "",
+        confirmEmailWarning: "",
+        passwordWarning: "",
+        confirmPasswordWarning: "",
+        password_UpperLowerCaseWarning: false,
+        password_NumberSymbolWarning: false,
+        password_LengthWarning: false,
       });
     }
   }
@@ -262,6 +282,16 @@ class CreateAccount extends Component {
     //Prevent user to submit email for second times
     //Or Prevent Undone User (generate a new GUI for them)
     if (this.state.editable === false) {
+
+      //TESTING USE : DELETE WHEN CONNECT TO onAuth
+      //Send data to Redux
+      this.props.SetUserDataAction({
+        gui: "5d589470907643cea2cc0d06",
+        email: this.state.email,
+        password: this.state.password
+      });
+      //TESTING USE : DELETE WHEN CONNECT TO onAuth
+
       this.props.handlePassed("createAccount", true);
       return;
     }
