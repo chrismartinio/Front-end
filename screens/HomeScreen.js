@@ -9,15 +9,15 @@ import {
   View,
   Button
 } from 'react-native';
-import { WebBrowser } from 'expo';
 import Firebase from '../storage/Store'
-
 import { MonoText } from '../components/StyledText';
 import t from 'tcomb-form-native';
 import axios from 'axios'
 import { signInWithFacebook } from '../utils/auth.js'
-
-import { Constants, Location, Permissions } from 'expo';
+import { connect } from 'react-redux'
+import SetFbDataAction from '../storage/actions/ThirdPartyActions/SetFbDataAction'
+import publicIP from 'react-native-public-ip';
+import { Constants, Location, Permissions,  WebBrowser } from 'expo';
 const { manifest } = Constants;
 
 const Form = t.form.Form;
@@ -28,8 +28,7 @@ const User = t.struct({
 });
 
 
-
-export default class HomeScreen extends React.Component {
+class HomeScreen extends React.Component {
   static navigationOptions = {
     header: null,
   };
@@ -64,37 +63,33 @@ export default class HomeScreen extends React.Component {
   //   this.setState({ location });
   // };
 
-
-
-
-
-
   handleEmailAndPasswordSignin = async() => {
-    try{
-    const {username, password} = this._form.getValue();
-    // front end check:
-        let data = await fetch('http://10.0.0.246:3001/api/auth/login', {
-          method: 'POST',
-          mode:'cors',
-          credentials: "same-origin",
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-          password: password,
-          username: username
-        })})
+      const { username, password } = this._form.getValue();
+          let data = await fetch('http://10.0.0.246:3001/api/auth/login', {
+            method: 'POST',
+            mode:'cors',
+            credentials: "same-origin",
+            headers: {
+              Accept: 'application/json',
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+            password: password,
+            username: username,
+            mode: 2
+          })})
 
-      let jsonData = await data.json()
-      console.log(jsonData)
-      // must compare passwords!
-      if(jsonData.token){
-        this.props.navigation.navigate('Chat');
-      }
+        let jsonData = await data.json()
+        console.log(jsonData)
+        // must compare passwords!
+        if(jsonData.token){
+          this.props.navigation.navigate('Chat');
+        } else {
+          //case 1 user not found: route to onboaarding screen?
+          console.alert('Wrong Login password')
+        }
     } catch(e){
-      console.log(e.error)
-
+        console.log(e.error)
     }
   }
 
@@ -121,7 +116,6 @@ export default class HomeScreen extends React.Component {
       this.props.navigation.navigate('Chat');
     } catch(e){
       console.log(e.error)
-
     }
   }
 
@@ -131,34 +125,32 @@ export default class HomeScreen extends React.Component {
 
   handleSocialMediaSignIn = (event) => {
     const value = this._form.getValue();
-    //66 = fb
-    //76= google
-    // 86  twitter
-    console.log(event.target)
-    switch(event.target){
-      case 67 :
-        this.checkFaceBookValidity(value)
-        console.log('checked in with fb')
-        break;
-      case 77:
-        // google auth
-        break;
-      case 87:
-        // twitter auth
-        break;
-      default:
-        console.log('broken');
-
-    }
 
   }
 
 
 
   checkFaceBookValidity = (signInData) => {
+    //uid": "GKFSGO5NihZRQgtwRaJVul4RvFi1",
+    //GKFSGO5NihZRQgtwRaJVul4RvFi1
     var fbData = signInWithFacebook()
     fbData.then((data)=>{
-      console.log(data.data)
+      let profData = {
+        firstName: data.data.additionalUserInfo.profile.first_name,
+        lastName: data.data.additionalUserInfo.profile.last_name,
+        email:data.data.additionalUserInfo.profile.email,
+        uid: data.data.user.uid,
+        undone:4
+      }
+
+      this.props.SetFbDataAction(profData)
+
+      //check here if user email/or uuid exists in db
+        // if it does; continue to chat
+        // if it doesn't continue to onboarding.
+          // the prof data above changes the undone button from 3 to 4 depending
+          // if the prof data is found or not
+
       this.props.navigation.navigate('Chat')
     }).catch((err)=>{
       console.log(err)
@@ -166,11 +158,10 @@ export default class HomeScreen extends React.Component {
   }
 
   render() {
-
     return (
       <View style={styles.container}>
-        <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
 
+        <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
           <View style={styles.welcomeContainer}>
             <Image
               source={
@@ -209,7 +200,7 @@ export default class HomeScreen extends React.Component {
         <View style={{flex:1, flexDirection:'row', justifyContent:'center'}}>
           <Button
             title="facebook"
-            onPress={this.handleSocialMediaSignIn}
+            onPress={this.checkFaceBookValidity}
             color='blue'
           />
 
@@ -359,3 +350,12 @@ const styles = StyleSheet.create({
     color: '#2e78b7',
   },
 });
+const mapStateToProps = (state) => ({
+  ...state
+})
+
+const mapDispatchToProps = (dispatch) => ({
+  SetFbDataAction: (payload) => dispatch(SetFbDataAction(payload))
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(HomeScreen)
