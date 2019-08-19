@@ -16,7 +16,6 @@ import axios from 'axios'
 import { signInWithFacebook } from '../utils/auth.js'
 import { connect } from 'react-redux'
 import SetFbDataAction from '../storage/actions/ThirdPartyActions/SetFbDataAction'
-import publicIP from 'react-native-public-ip';
 import { Constants, Location, Permissions,  WebBrowser } from 'expo';
 const { manifest } = Constants;
 
@@ -64,6 +63,7 @@ class HomeScreen extends React.Component {
   // };
 
   handleEmailAndPasswordSignin = async() => {
+
       const { username, password } = this._form.getValue();
           let data = await fetch('http://10.0.0.246:3001/api/auth/login', {
             method: 'POST',
@@ -76,7 +76,7 @@ class HomeScreen extends React.Component {
             body: JSON.stringify({
             password: password,
             username: username,
-            mode: 2
+            mode: ''
           })})
 
         let jsonData = await data.json()
@@ -85,12 +85,9 @@ class HomeScreen extends React.Component {
         if(jsonData.token){
           this.props.navigation.navigate('Chat');
         } else {
-          //case 1 user not found: route to onboaarding screen?
-          console.alert('Wrong Login password')
+
         }
-    } catch(e){
-        console.log(e.error)
-    }
+
   }
 
 
@@ -131,16 +128,15 @@ class HomeScreen extends React.Component {
 
 
   checkFaceBookValidity = (signInData) => {
-    //uid": "GKFSGO5NihZRQgtwRaJVul4RvFi1",
-    //GKFSGO5NihZRQgtwRaJVul4RvFi1
     var fbData = signInWithFacebook()
     fbData.then((data)=>{
+      console.log(data)
       let profData = {
         firstName: data.data.additionalUserInfo.profile.first_name,
         lastName: data.data.additionalUserInfo.profile.last_name,
         email:data.data.additionalUserInfo.profile.email,
         uid: data.data.user.uid,
-        undone:4
+        mode:'undone'
       }
 
       this.props.SetFbDataAction(profData)
