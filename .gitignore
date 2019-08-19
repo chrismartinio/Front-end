@@ -76,6 +76,10 @@ fastlane/screenshots
 fastlane/test_output
 fastlane/readme.md
 
+#auth node modules
+AuthServer/Node_modules
+AuthServer/config/main.js
+
 # Version control
 vcs.xml
 

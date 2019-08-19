@@ -99,7 +99,7 @@ const populateSelectedMatchesMedia = (arrayOfId) => {
   // firebase calls to get the initmate data.
 }
 
-console.log(gatherPersonalMatches(me, allRegionalMatches,100))
+//console.log(gatherPersonalMatches(me, allRegionalMatches,100))
 
 //////////////////////////////////
 
@@ -130,4 +130,115 @@ function getPermutations(string) {
   return results
 }
 
-console.log(getPermutations('aba'))
+//
+
+
+
+// After we receive your submission our team will review and get back to you.
+// Write a function in JavaScript that accepts an array of integers and a number X as parameters, when invoked, returns an array of unique indices of two numbers whose sum is equal to X.
+// For example: [1, 3, 4, 5, 6, 8, 10, 11, 13], Sum: 14
+// Pairs of indices: [0, 8], [1, 7], [2, 6], [4, 5]
+
+  //notes
+// Edge case: if array is not sorted;
+  // Must preserve OG indices
+  // handle duplicates
+
+//let testCase = [1, 3, 4, 5, 6, 8, 10, 11, 13]
+let testCase = [1, 1, 4, 5, 6, 8, 10, 13, 13]
+let testCase1 = [1,13, 4,10,6,8]
+
+
+// must contain original indices
+
+
+// brute force
+const findUniqueIndi = (array, targetSum) => {
+  let res = [];
+  for(let x = 0; x <= array.length -1; x++){
+    for(let y = x; y <= array.length -1; y++){
+      if(array[x] + array[y] === targetSum){
+        res.push([x,y])
+      }
+    }
+  }
+  // iterate through here handle duplicates
+
+  return res;
+}
+// timeComplexity O(n^2)
+// space complexity O(N)
+
+// must handle duplicates
+
+//kinda optimized lol
+const findUniqueIndices = (array, targetSum) => {
+  if(!array.length){
+    return [];
+  }
+
+  let ogIndiceDirectory = {};
+
+  array.forEach((value, index)=>{
+    if(!ogIndiceDirectory[value]){
+      ogIndiceDirectory[value] = [index]
+    } else {
+      ogIndiceDirectory[value].push(index)
+    }
+  })
+
+  let arr = array.sort((a,b)=>{
+    return a - b
+  })
+
+  const res = [];
+  let floor = 0
+  let ceiling = array.length - 1
+  while(floor < ceiling){
+    let currSum = arr[floor] + arr[ceiling]
+    if(currSum === targetSum){
+      let xVal = ogIndiceDirectory[arr[floor]].shift()
+      let yVal = ogIndiceDirectory[arr[ceiling]].shift()
+
+      res.push([xVal, yVal])
+      floor++
+      ceiling--
+    } else if(currSum < targetSum){
+      floor++
+    } else if(currSum > targetSum){
+      ceiling--
+    }
+  }
+  return res;
+}
+// Time Complexity O(2N log n) =  O(N log n)
+  // N: Map out og indices
+  // N: Must iterate through entire arr to gather all unique values
+// Space Complexity O(N), must map out og indices
+
+//console.log(findUniqueIndi(testCase, 14))
+//console.log(findUniqueIndices(testCase, 14))
+
+const taxicab = (n) => {
+  let anwsers = [];
+  let i = 1, count = 0
+  while(count < n){
+    let inCount = 0;
+    for(let j = 1; j <= Math.pow(i, 1/3); j++){
+      for(let k = j + 1; k <= Math.pow(i,1/3); k++){
+        let sum = ((j*j*j) + (k*k*k))
+        if(sum == i){
+          inCount+=1
+        }
+      }
+    }
+    if(inCount == 2){
+        count++
+        anwsers.push(i)
+      }
+      i++
+  }
+  return anwsers
+}
+console.log(taxicab(6))
+
