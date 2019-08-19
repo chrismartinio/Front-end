@@ -65,7 +65,7 @@ class AboutYou extends Component {
     this.reduxGender = "";
     this.reduxCountry = "";
     this.reduxZipcode = "";
-    */
+*/
 
     //Undone
 
@@ -75,7 +75,6 @@ class AboutYou extends Component {
     this.reduxGender = "male";
     this.reduxCountry = "China";
     this.reduxZipcode = "11111";
-
 
     //TESTING USE : DELETE WHEN CONNECT TO onAuth
   }
@@ -102,7 +101,7 @@ class AboutYou extends Component {
         birthDateWarning: birthDate === "" ? "empty" : "",
         genderWarning: gender === "" ? "empty" : "",
         countryWarning: country === "" ? "empty" : "",
-        zipCodeWarning: zipCode === "" ? "empty" : "",
+        zipCodeWarning: zipCode === "" ? "empty" : ""
       });
     }
   }
@@ -320,7 +319,7 @@ class AboutYou extends Component {
 
   //next button : valid all input fields
   handleSubmit = evt => {
-    console.log(this.props.CreateProfileReducer.userData.gui)
+    console.log(this.props.CreateProfileReducer.userData.gui);
     if (this.state.passed) {
       //if all tests passed, set passed to true and navigate to next screen
 

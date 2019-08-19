@@ -53,9 +53,9 @@ class CreateAccount extends Component {
     //mode = undone
     //mode = done
     this.mode = "undone";
-    this.gui = "5d5a6dbf8413c8099791fcbc";
+    this.gui = "5d5b2d8b1dc6d2bd12a1dc7e";
     //this.gui = "";
-    this.reduxEmail = "bbb@live.com";
+    this.reduxEmail = "hhh@live.com";
     this.reduxPassword = "12345Abc";
 
     //TESTING USE : DELETE WHEN CONNECT TO onAuth
