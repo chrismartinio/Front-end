@@ -55,6 +55,7 @@ class LocationDestinations extends React.Component {
       passed: false
     };
 
+    //Control Button Text Color based on Current Screen's Position
     this.b1y = 0;
     this.b2y = 0;
     this.b3y = 0;
@@ -64,6 +65,25 @@ class LocationDestinations extends React.Component {
     this.b7y = 0;
     this.b8y = 0;
     this.b9y = 0;
+
+    //TESTING USE : DELETE WHEN CONNECT TO onAuth
+    //user identiflier
+    this.mode = "undone";
+
+    this.reduxWeekendLocation = "Napa";
+
+    //TESTING USE : DELETE WHEN CONNECT TO onAuth
+  }
+
+  componentDidMount() {
+    //For Undone User
+    if (this.mode === "undone") {
+      let weekendLocation = this.reduxWeekendLocation;
+
+      this.setState({
+        weekendLocation: weekendLocation
+      });
+    }
   }
 
   //header : navigate to sign in screen

@@ -50,29 +50,27 @@ class CreateAccount extends Component {
     //TESTING USE : DELETE WHEN CONNECT TO onAuth
 
     //user identiflier
-    this.undone = 4;
+    //mode = undone
+    //mode = done
+    this.mode = "undone";
 
-    //Suppose to get from Redux from undone user 3
-    this.reduxEmail3 = "ccc@live.com"
-    this.thirdPartiesUID = "12345Abc"
-    this.reduxPassword3 = this.thirdPartiesUID
-
-    //Suppose to get from Redux from undone user 2 or 4
-    this.reduxEmail2or4 = "ccc@live.com";
-    this.reduxPassword2or4 = "12345Abc";
+    this.reduxEmail = "ccc@live.com";
+    this.reduxPassword = "12345Abc";
 
     //TESTING USE : DELETE WHEN CONNECT TO onAuth
   }
 
   componentDidMount() {
-    if (this.undone === 2 || this.undone === 4) {
+    //For Undone User
+    if (this.mode === "undone") {
+      let email = this.reduxEmail;
+      let password = this.reduxPassword;
+
       this.setState({
-        passed: true,
-        editable: false,
-        email: this.reduxEmail2or4,
-        confirmEmail: this.reduxEmail2or4,
-        password: this.reduxPassword2or4,
-        confirmPassword: this.reduxPassword2or4,
+        email: email,
+        confirmEmail: email,
+        password: password,
+        confirmPassword: password,
         emailWarning: "",
         confirmEmailWarning: "",
         passwordWarning: "",
@@ -80,6 +78,7 @@ class CreateAccount extends Component {
         password_UpperLowerCaseWarning: false,
         password_NumberSymbolWarning: false,
         password_LengthWarning: false,
+        editable: false
       });
     }
   }
@@ -282,7 +281,6 @@ class CreateAccount extends Component {
     //Prevent user to submit email for second times
     //Or Prevent Undone User (generate a new GUI for them)
     if (this.state.editable === false) {
-
       //TESTING USE : DELETE WHEN CONNECT TO onAuth
       //Send data to Redux
       this.props.SetUserDataAction({

@@ -55,52 +55,56 @@ class AboutYou extends Component {
     //TESTING USE : DELETE WHEN CONNECT TO onAuth
 
     //user identiflier
-    this.undone = 4;
+    this.mode = "undone";
 
-    //suppose to get from redux from 3rd parties user 3
-    this.firstName3 = "hello";
-    this.lastName3 = "world";
+    //3rd
+    /*
+    this.reduxFirstName = "hello";
+    this.reduxLastName = "world";
+    this.reduxBirthDate = "";
+    this.reduxGender = "";
+    this.reduxCountry = "";
+    this.reduxZipcode = "";
+    */
 
-    //suppose to get from redux from 3rd parties undone user 2 or 4
-    this.firstName2or4 = "hello";
-    this.lastName2or4 = "world";
-    this.birthDate2or4 = "01-02-1993";
-    this.gender2or4 = "male";
-    this.country2or4 = "China";
-    this.zipcode2or4 = "11111";
+    //Undone
+
+    this.reduxFirstName = "hello";
+    this.reduxLastName = "world";
+    this.reduxBirthDate = "01-02-1993";
+    this.reduxGender = "male";
+    this.reduxCountry = "China";
+    this.reduxZipcode = "11111";
+
 
     //TESTING USE : DELETE WHEN CONNECT TO onAuth
   }
 
   componentDidMount() {
-    if (this.undone === 2 || this.undone === 4) {
+    //For Undone User
+    if (this.mode === "undone") {
+      let firstName = this.reduxFirstName;
+      let lastName = this.reduxLastName;
+      let birthDate = this.reduxBirthDate;
+      let gender = this.reduxGender;
+      let country = this.reduxCountry;
+      let zipCode = this.reduxZipcode;
+
       this.setState({
-        firstName: this.firstName2or4,
-        lastName: this.lastName2or4,
-        birthDate: this.birthDate2or4,
-        gender: this.gender2or4,
-        country: this.country2or4,
-        zipCode: this.zipcode2or4,
-        firstNameWarning: "",
-        lastNameWarning: "",
-        genderWarning: "",
-        countryWarning: "",
-        zipCodeWarning: "",
-        birthDateWarning: "",
-        passed: true
+        firstName: firstName,
+        lastName: lastName,
+        birthDate: birthDate,
+        gender: gender,
+        country: country,
+        zipCode: zipCode,
+        firstNameWarning: firstName === "" ? "empty" : "",
+        lastNameWarning: lastName === "" ? "empty" : "",
+        birthDateWarning: birthDate === "" ? "empty" : "",
+        genderWarning: gender === "" ? "empty" : "",
+        countryWarning: country === "" ? "empty" : "",
+        zipCodeWarning: zipCode === "" ? "empty" : "",
       });
     }
-
-    if(this.undone === 3) {
-      this.setState({
-        firstName: this.firstName3,
-        lastName: this.lastName3,
-        firstNameWarning: "",
-        lastNameWarning: "",
-        passed: true
-      });
-    }
-
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {

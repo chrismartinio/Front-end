@@ -35,6 +35,7 @@ class TellUsMore extends React.Component {
       likesArray: []
     };
 
+    //Control Button Text Color based on Current Screen's Position
     this.b1y = 0;
     this.b2y = 0;
     this.b3y = 0;
@@ -44,7 +45,27 @@ class TellUsMore extends React.Component {
     this.b7y = 0;
     this.b8y = 0;
     this.b9y = 0;
+
+    //TESTING USE : DELETE WHEN CONNECT TO onAuth
+    //user identiflier
+    this.mode = "undone";
+
+    this.reduxLikesArray = ["Shopping", "Pets", "Hiking"];
+
+    //TESTING USE : DELETE WHEN CONNECT TO onAuth
   }
+
+  componentDidMount() {
+    //For Undone User
+    if (this.mode === "undone") {
+      let likesArray = this.reduxLikesArray
+
+      this.setState({
+        likesArray: likesArray,
+      });
+    }
+  }
+
 
   componentDidUpdate(prevProps, prevState, snapshot) {
     //if there have any udpate to the warnings by checking this.state and prevState

@@ -41,74 +41,48 @@ class Preferences extends React.Component {
       //distanceWarning: "empty",
     };
 
+    //Control Button Text Color based on Current Screen's Position
     this.bMaley = 0;
     this.bFemaley = 0;
 
     //TESTING USE : DELETE WHEN CONNECT TO onAuth
-
     //user identiflier
-    this.undone = 3
+    this.mode = "undone";
 
-    this.interestedGender = "both";
-
-    //suppose to get from redux from 3rd parties user 3
-    this.pickedMen3 = false;
-    this.pickedWomen3 = false;
-    this.multiSliderValue3 = [0, 30];
-    this.distanceRange3 = 30;
-
-    //suppose to get from redux from 3rd parties undone user 2 or 4
-
-    this.pickedMen2or4 = false;
-    this.pickedWomen2or4 = false;
-    this.multiSliderValue2or4 = [60, 70];
-    this.distanceRange2or4 = 50;
+    this.reduxInterestedGender = "male";
+    this.reduxMultiSliderValue = [60, 70];
+    this.reduxDistanceRange = 60;
 
     //TESTING USE : DELETE WHEN CONNECT TO onAuth
   }
 
   componentDidMount() {
-    if (this.interestedGender === "both") {
-      this.pickedMen3 = true;
-      this.pickedWomen3 = true;
+    //For Undone User
+    if (this.mode === "undone") {
+      let pickedMen = false;
+      let pickedWomen = false;
+      let multiSliderValue = this.reduxMultiSliderValue;
+      let distanceRange = this.reduxDistanceRange;
 
-      this.pickedMen2or4 = true;
-      this.pickedWomen2or4 = true;
-    } else if (this.interestedGender === "male") {
-      this.pickedMen3 = true;
+      if (this.reduxInterestedGender === "both") {
+        pickedMen = true;
+        pickedWomen = true;
+      } else if (this.reduxInterestedGender === "male") {
+        pickedMen = true;
+      } else if (this.reduxInterestedGender === "female") {
+        pickedWomen = true;
+      } else {
+        pickedMen = false;
+        pickedWomen = false;
+      }
 
-      this.pickedMen2or4 = true;
-    } else if (this.interestedGender === "female") {
-      this.pickedWomen3 = true;
-
-      this.pickedWomen2or4 = true;
-    } else {
-      this.pickedMen3 = false;
-      this.pickedWomen3 = false;
-
-      this.pickedMen2or4 = false;
-      this.pickedWomen2or4 = false;
-    }
-
-    if (this.undone === 2 || this.undone === 4) {
       this.setState({
-        pickedMen: this.pickedMen2or4,
-        pickedWomen: this.pickedWomen2or4,
-        multiSliderValue: this.multiSliderValue2or4,
-        distanceRange: this.distanceRange2or4,
-        interestedGenderWarning: "",
-        passed: true
-      });
-    }
-
-    if (this.undone === 3) {
-      this.setState({
-        pickedMen: this.pickedMen3,
-        pickedWomen: this.pickedWomen3,
-        multiSliderValue: this.multiSliderValue3,
-        distanceRange: this.distanceRange3,
-        interestedGenderWarning: "",
-        passed: true
+        pickedMen: pickedMen,
+        pickedWomen: pickedWomen,
+        interestedGenderWarning:
+          pickedMen === "" && pickedWomen === "" ? "empty" : "",
+        multiSliderValue: multiSliderValue,
+        distanceRange: distanceRange
       });
     }
   }

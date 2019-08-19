@@ -47,7 +47,7 @@ class CSlider extends React.Component {
       <View style={{ flex: 1 }}>
         <Slider
           style={styles.slider}
-          value={0}
+          value={this.props.value}
           minimumValue={-50}
           maximumValue={50}
           minimumTrackTintColor={"white"}
