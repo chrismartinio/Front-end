@@ -367,7 +367,7 @@ class CreateAccount extends Component {
           console.error(error.message);
           throw error;
         });
-        
+
       //if successed to passed, it will put the check mark from CollapsibleComponent CheckMark
       this.props.handlePassed("createAccount", true);
     }
