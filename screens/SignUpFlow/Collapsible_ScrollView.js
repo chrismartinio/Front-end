@@ -84,7 +84,7 @@ class Collapsible_ScrollView extends Component {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        email: "ddd@live.com",
+        email: "dddd@live.com",
         password: "12345Abc",
         collectionName: "aboutYou",
       })
