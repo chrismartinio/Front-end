@@ -55,8 +55,8 @@ class WouldRather extends React.Component {
       this.s1r2 = this.reduxS1r2;
       this.s2r1 = this.reduxS2r1;
       this.s2r2 = this.reduxS2r2;
-      this.s3r3 = this.reduxS3r1;
-      this.s3r3 = this.reduxS3r2;
+      this.s3r1 = this.reduxS3r1;
+      this.s3r2 = this.reduxS3r2;
 
       this.displaySlider1Value = this.reduxS1r2 - 50;
 
