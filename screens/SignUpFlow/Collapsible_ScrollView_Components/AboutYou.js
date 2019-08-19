@@ -320,6 +320,7 @@ class AboutYou extends Component {
 
   //next button : valid all input fields
   handleSubmit = evt => {
+    console.log(this.props.CreateProfileReducer.userData.gui)
     if (this.state.passed) {
       //if all tests passed, set passed to true and navigate to next screen
 

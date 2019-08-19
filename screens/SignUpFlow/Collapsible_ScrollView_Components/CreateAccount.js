@@ -53,8 +53,9 @@ class CreateAccount extends Component {
     //mode = undone
     //mode = done
     this.mode = "undone";
-
-    this.reduxEmail = "ccc@live.com";
+    this.gui = "5d5a6dbf8413c8099791fcbc";
+    //this.gui = "";
+    this.reduxEmail = "bbb@live.com";
     this.reduxPassword = "12345Abc";
 
     //TESTING USE : DELETE WHEN CONNECT TO onAuth
@@ -65,6 +66,18 @@ class CreateAccount extends Component {
     if (this.mode === "undone") {
       let email = this.reduxEmail;
       let password = this.reduxPassword;
+
+      //For third parties User
+      //Third Parties User has same properties as undone user
+      //Except they would have to genereate a new GUI
+      //The Purpose of set the mode is that to bypass the first two comparison inside the handleSubmit():
+      //1. if (this.state.editable === false && this.mode === "") { This is for User second submission
+      //2. } else if (this.state.editable === false && this.mode === "undone") { This is for Undone user
+      //After the third parties User submit and generated a new GUI
+      //its mode will change to empty (mode = "") so to satisfies the first comparsion
+      if (this.gui === "") {
+        this.mode = "3rd";
+      }
 
       this.setState({
         email: email,
@@ -278,13 +291,24 @@ class CreateAccount extends Component {
   };
 
   handleSubmit = () => {
-    //Prevent user to submit email for second times
-    //Or Prevent Undone User (generate a new GUI for them)
-    if (this.state.editable === false) {
+
+    //First comparsion
+    //Purpose: Prevent Regular user Second submission
+    //Even though Regular user mode is set to empty (mode = "") by default
+    //However, the editable is also set to true by default to meet the first comparison
+    if (this.state.editable === false && this.mode === "") {
+      this.props.handlePassed("createAccount", true);
+      return;
+
+    //Second comparision
+    //Purpose: Prevent Undone User (they already have a GUI) for second submission
+    //Also, onAuth will pass a gui to on-boarding, we will use that gui on other screen
+    //That's why we send the gui/email/password to redux
+    } else if (this.state.editable === false && this.mode === "undone") {
       //TESTING USE : DELETE WHEN CONNECT TO onAuth
       //Send data to Redux
       this.props.SetUserDataAction({
-        gui: "5d589470907643cea2cc0d06",
+        gui: this.gui,
         email: this.state.email,
         password: this.state.password
       });
@@ -295,9 +319,15 @@ class CreateAccount extends Component {
     }
 
     if (this.state.passed) {
+      //If the createAccount screen is submit
+      //We do not want the user to submit other one (generate a new gui) on the same registration
+      //the editable will lock the input to prevent changing email or password
       this.setState({
         editable: false
       });
+
+      //For third Parties User (Prevent Second submission)
+      this.mode = "";
 
       //Send data to database
       fetch("http://74.80.250.210:5000/dbRouter/createAccountSubmit", {
@@ -306,7 +336,6 @@ class CreateAccount extends Component {
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
-          gui: this.props.gui,
           email: this.state.email,
           password: this.state.password
         })
@@ -338,8 +367,7 @@ class CreateAccount extends Component {
           console.error(error.message);
           throw error;
         });
-
-      //this.props.navigation.navigate("TestAboutYou");
+        
       //if successed to passed, it will put the check mark from CollapsibleComponent CheckMark
       this.props.handlePassed("createAccount", true);
     }
