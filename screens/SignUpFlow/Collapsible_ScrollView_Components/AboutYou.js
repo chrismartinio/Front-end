@@ -90,6 +90,17 @@ class AboutYou extends Component {
         passed: true
       });
     }
+
+    if(this.undone === 3) {
+      this.setState({
+        firstName: this.firstName3,
+        lastName: this.lastName3,
+        firstNameWarning: "",
+        lastNameWarning: "",
+        passed: true
+      });
+    }
+
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {

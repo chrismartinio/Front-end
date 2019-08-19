@@ -25,40 +25,92 @@ import { Icon } from "react-native-elements";
 const screenHeight = Math.round(Dimensions.get("window").height);
 
 class Preferences extends React.Component {
-  static navigationOptions = {
-    //header: null,
-    //title: 'Match Chat',
-    headerStyle: {
-      backgroundColor: "#18cdf6"
-    },
-    footerStyle: {
-      backgroundColor: "#fff"
-    },
-    headerTintColor: "#fff",
-    headerTitleStyle: {
-      fontWeight: "bold",
-      fontSize: 24
-    }
-  };
-
   //having null header means no back  button is present!
   constructor(props) {
     super(props);
     this.state = {
       pickedMen: false,
       pickedWomen: false,
-      distanceRange: 0,
       sliderOneChanging: false,
       sliderOneValue: [5],
       multiSliderValue: [20, 108],
       nonCollidingMultiSliderValue: [0, 100],
       interestedGenderWarning: "empty",
-      distanceWarning: "empty",
-      passed: false
+      passed: false,
+      distanceRange: 0
+      //distanceWarning: "empty",
     };
 
     this.bMaley = 0;
     this.bFemaley = 0;
+
+    //TESTING USE : DELETE WHEN CONNECT TO onAuth
+
+    //user identiflier
+    this.undone = 3
+
+    this.interestedGender = "both";
+
+    //suppose to get from redux from 3rd parties user 3
+    this.pickedMen3 = false;
+    this.pickedWomen3 = false;
+    this.multiSliderValue3 = [0, 30];
+    this.distanceRange3 = 30;
+
+    //suppose to get from redux from 3rd parties undone user 2 or 4
+
+    this.pickedMen2or4 = false;
+    this.pickedWomen2or4 = false;
+    this.multiSliderValue2or4 = [60, 70];
+    this.distanceRange2or4 = 50;
+
+    //TESTING USE : DELETE WHEN CONNECT TO onAuth
+  }
+
+  componentDidMount() {
+    if (this.interestedGender === "both") {
+      this.pickedMen3 = true;
+      this.pickedWomen3 = true;
+
+      this.pickedMen2or4 = true;
+      this.pickedWomen2or4 = true;
+    } else if (this.interestedGender === "male") {
+      this.pickedMen3 = true;
+
+      this.pickedMen2or4 = true;
+    } else if (this.interestedGender === "female") {
+      this.pickedWomen3 = true;
+
+      this.pickedWomen2or4 = true;
+    } else {
+      this.pickedMen3 = false;
+      this.pickedWomen3 = false;
+
+      this.pickedMen2or4 = false;
+      this.pickedWomen2or4 = false;
+    }
+
+    if (this.undone === 2 || this.undone === 4) {
+      this.setState({
+        pickedMen: this.pickedMen2or4,
+        pickedWomen: this.pickedWomen2or4,
+        multiSliderValue: this.multiSliderValue2or4,
+        distanceRange: this.distanceRange2or4,
+        interestedGenderWarning: "",
+        passed: true
+      });
+    }
+
+    if (this.undone === 3) {
+      this.setState({
+        pickedMen: this.pickedMen3,
+        pickedWomen: this.pickedWomen3,
+        multiSliderValue: this.multiSliderValue3,
+        distanceRange: this.distanceRange3,
+        interestedGenderWarning: "",
+        passed: true
+      });
+    }
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
@@ -194,7 +246,7 @@ class Preferences extends React.Component {
       if (this.state.pickedMen && this.state.pickedWomen) {
         interestedGender = "both";
       } else if (this.state.pickedMen) {
-        interestedGender = "men";
+        interestedGender = "male";
       } else if (this.state.pickedWomen) {
         interestedGender = "female";
       } else {
@@ -400,6 +452,7 @@ class Preferences extends React.Component {
           }}
         />
 
+        {/*Preferred match radius*/}
         <View>
           <Text style={styles.textTop}>Preferred match radius</Text>
           <Slider
@@ -408,6 +461,7 @@ class Preferences extends React.Component {
             maximumValue={110}
             leftBound={"0"}
             rightBound={"110"}
+            value={this.state.distanceRange}
           />
         </View>
         {/*Spaces*/}
