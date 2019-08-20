@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   View,
   Button
+
 } from "react-native";
 import Firebase from "../storage/Store";
 import { MonoText } from "../components/StyledText";
@@ -18,6 +19,7 @@ import { connect } from "react-redux";
 import SetFbDataAction from "../storage/actions/ThirdPartyActions/SetFbDataAction";
 //import publicIP from "react-native-public-ip";
 import { Constants, Location, Permissions, WebBrowser } from "expo";
+
 const { manifest } = Constants;
 
 const Form = t.form.Form;
@@ -89,6 +91,7 @@ class HomeScreen extends React.Component {
     }
   };
 
+
   handleTestAddUser = async () => {
     try {
       const { username, password } = this._form.getValue();
@@ -123,6 +126,7 @@ class HomeScreen extends React.Component {
     const value = this._form.getValue();
   };
 
+
   checkFaceBookValidity = signInData => {
     //uid": "GKFSGO5NihZRQgtwRaJVul4RvFi1",
     //GKFSGO5NihZRQgtwRaJVul4RvFi1
@@ -140,6 +144,7 @@ class HomeScreen extends React.Component {
         this.props.SetFbDataAction(profData);
 
         //check here if user email/or uuid exists in db
+
         // if it does; continue to chat
         // if it doesn't continue to onboarding.
         // the prof data above changes the undone button from 3 to 4 depending
