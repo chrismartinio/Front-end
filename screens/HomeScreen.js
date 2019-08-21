@@ -63,6 +63,29 @@ class HomeScreen extends React.Component {
   //   this.setState({ location });
   // };
 
+  // componentDidMount(){
+  //   fetch("http://10.0.0.246:5000/dbRouter/userProfileAllCollectionsQuery", {
+  //     method: "POST",
+  //     headers: {
+  //       "Content-Type": "application/json"
+  //     },
+  //     body: JSON.stringify({
+  //       email: "ddd@live.com",
+  //       password: "12345Abc",
+  //       collectionName: "aboutYou",
+  //     })
+  //   })
+  //     .then(res => res.json())
+  //     .then(res => {
+  //       let object = JSON.parse(JSON.stringify(res));
+  //       console.log(object);
+  //     })
+  //     .catch(function(error) {
+  //       console.error(error.message);
+  //       throw error;
+  //     });
+  // }
+
   handleEmailAndPasswordSignin = async () => {
     const { username, password } = this._form.getValue();
     let data = await fetch("http://10.0.0.246:3001/api/auth/login", {
@@ -126,13 +149,40 @@ class HomeScreen extends React.Component {
     const value = this._form.getValue();
   };
 
+  handleSingleDBCheck = async() => {
+    try {
+      const { username, password } = this._form.getValue();
+      // front end check:
+      let data = await fetch("http://10.0.0.246:5000/api/auth/login", {
+        method: "POST",
+        mode: "cors",
+        credentials: "same-origin",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          password: password,
+          username: username
+        })
+      });
+
+      let jsonData = await data.json();
+      return jsonData
+    } catch (e) {
+      console.log(e.error);
+    }
+  }
+
 
   checkFaceBookValidity = signInData => {
     //uid": "GKFSGO5NihZRQgtwRaJVul4RvFi1",
     //GKFSGO5NihZRQgtwRaJVul4RvFi1
     var fbData = signInWithFacebook();
+
     fbData
       .then(data => {
+        //console.log(data)
         let profData = {
           firstName: data.data.additionalUserInfo.profile.first_name,
           lastName: data.data.additionalUserInfo.profile.last_name,
@@ -141,18 +191,39 @@ class HomeScreen extends React.Component {
           undone: 4
         };
 
-        this.props.SetFbDataAction(profData);
+
+      //   fetch("http://10.0.0.246:5000/dbRouter/userProfileAllCollectionsQuery", {
+      //   method: "POST",
+      //   mode: "cors",
+      //   credentials: "same-origin",
+      //   headers: {
+      //     Accept: "application/json",
+      //     "Content-Type": "application/json"
+      //   },
+      //   body: JSON.stringify({
+      //     password: profData.uid,
+      //     email: profData.email,
+      //     collection:'aboutYou'
+      //   })
+      // }).then((data)=>{
+      //   console.log('we matched data', data)
+      // }).catch((e)=>{
+      //   console.log('error at loading data:',e)
+      // })
+
+
+        // /userProfileSingleCollectionQuery
+        // only send to chat if data already exists
+        //this.props.navigation.navigate("Chat");
+
 
         //check here if user email/or uuid exists in db
 
         // if it does; continue to chat
-        // if it doesn't continue to onboarding.
-        // the prof data above changes the undone button from 3 to 4 depending
-        // if the prof data is found or not
+          // if it doesn't continue to onboarding.
+          this.props.SetFbDataAction(profData);
 
-        this.props.navigation.navigate("Chat");
-      })
-      .catch(err => {
+      }).catch(err => {
         console.log(err);
       });
   };
