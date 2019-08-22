@@ -5,6 +5,9 @@ const CONNECTION_URL =
 const DATABASE_NAME = "UsersProfile";
 let database, collection;
 
+//Hash Password
+const bcrypt = require("bcrypt");
+
 //========================================
 // createAccount Submit Route
 //========================================
@@ -43,6 +46,9 @@ exports.createAccountSubmit = function(req, res) {
       };
 
       callFindEmailPromise().then(function(result) {
+        //Hash Password
+        let hashPassword = bcrypt.hashSync(req.body.password, 10);
+
         //if we find there a email exist, return false to client
         if (result.length != 0) {
           res.json({ success: false });
@@ -52,15 +58,15 @@ exports.createAccountSubmit = function(req, res) {
           //createAccount Data
           let createAccountData = {
             email: req.body.email,
-            password: req.body.password
+            password: hashPassword
           };
           let createAccountPromise = () => {
             return new Promise((resolve, reject) => {
               database
                 .collection("createAccount")
                 .insertOne(createAccountData, function(err, docsInserted) {
-                  if (err) throw err;
-                  resolve(docsInserted.ops[0]._id);
+                  //Return GUI
+                  err ? reject(err) : resolve(docsInserted.ops[0]._id);
                 });
             });
           };

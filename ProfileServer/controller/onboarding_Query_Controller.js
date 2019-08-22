@@ -5,6 +5,8 @@ const CONNECTION_URL =
 const DATABASE_NAME = "UsersProfile";
 let database, collection;
 
+const bcrypt = require('bcrypt');
+
 //========================================
 // UsersProfile Single Collection Query Route
 //========================================
@@ -53,7 +55,7 @@ exports.userProfileSingleCollectionQuery = function(req, res) {
             success: false,
             message: "The email does not exist"
           });
-        } else if (result.password !== req.body.password) {
+        } else if (!bcrypt.compareSync(req.body.password, result.password)) {
           res.json({
             success: false,
             message: "Password does not match"
@@ -132,13 +134,14 @@ exports.userProfileAllCollectionsQuery = function(req, res) {
       };
 
       callcreateAccountPromise().then(function(result) {
+
         if (result === null) {
           res.json({
             success: false,
             message: "The email does not exist"
           });
           res.end();
-        } else if (result.password !== req.body.password) {
+        } else if (!bcrypt.compareSync(req.body.password, result.password)) {
           res.json({
             success: false,
             message: "Password does not match"

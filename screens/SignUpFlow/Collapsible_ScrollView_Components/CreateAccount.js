@@ -26,6 +26,9 @@ import axios from "axios";
 //click password button to toggle password
 //duplicate email from database
 
+
+//this.props.CreateAuthDataReducer.data
+
 const profileServer = "http://74.80.250.210:5000/dbRouter/";
 
 class CreateAccount extends Component {
@@ -52,11 +55,12 @@ class CreateAccount extends Component {
     //user identiflier
     //mode = undone
     //mode = done
-    this.mode = "undone";
-    this.gui = "5d5b2d8b1dc6d2bd12a1dc7e";
-    //this.gui = "";
-    this.reduxEmail = "hhh@live.com";
-    this.reduxPassword = "12345Abc";
+    //this.mode = ""; // regular
+    this.mode = "undone"; //regular undone, third_parties, third_parties undone
+    this.gui = "5d5b2d8b1dc6d2bd12a1dc7e"; // regular undone and third_parties undone
+    //this.gui = ""; //third_parties
+    this.reduxEmail = "hhh@live.com"; //regular undone, third_parties, third_parties undone
+    this.reduxPassword = "12345Abc"; //regular undone, third_parties, third_parties undone
 
     //TESTING USE : DELETE WHEN CONNECT TO onAuth
   }
