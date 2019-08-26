@@ -1,5 +1,6 @@
 const CreateProfileReducer = (
   state = {
+    mode: null,
     userData: null,
     profImage: null,
     profData: null,
@@ -11,9 +12,22 @@ const CreateProfileReducer = (
   action
 ) => {
   switch (action.type) {
+    case "INSERT_DUMMY_DATA":
+      return {
+        ...state,
+        mode: action.PAYLOAD.mode,
+        userData: action.PAYLOAD.userData,
+        profImage: null,
+        profData: action.PAYLOAD.profData,
+        interestedData: action.PAYLOAD.interestedData,
+        likesData: action.PAYLOAD.likesData,
+        wouldRatherData: action.PAYLOAD.wouldRatherData,
+        weekendLocation: action.PAYLOAD.weekendLocation
+      };
     case "RESET_REDUX_DATA":
       return {
         ...state,
+        mode: null,
         userData: null,
         profImage: null,
         profData: null,

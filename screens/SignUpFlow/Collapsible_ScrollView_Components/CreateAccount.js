@@ -18,6 +18,11 @@ import {
 import { LinearGradient } from "expo";
 import { connect } from "react-redux";
 import SetUserDataAction from "../../../storage/actions/SetUserDataAction";
+
+//TESTING USES
+import InsertDummyData from "../../../storage/actions/InsertDummyData";
+//TESTING USES
+
 import firebase from "../../../utils/mainFire";
 import { Icon, Input } from "react-native-elements";
 import { Chevron } from "react-native-shapes";
@@ -25,7 +30,6 @@ import axios from "axios";
 
 //click password button to toggle password
 //duplicate email from database
-
 
 //this.props.CreateAuthDataReducer.data
 
@@ -50,26 +54,116 @@ class CreateAccount extends Component {
       editable: true
     };
 
-    //TESTING USE : DELETE WHEN CONNECT TO onAuth
-
-    //user identiflier
-    //mode = undone
-    //mode = done
-    //this.mode = ""; // regular
-    this.mode = "undone"; //regular undone, third_parties, third_parties undone
-    this.gui = "5d5b2d8b1dc6d2bd12a1dc7e"; // regular undone and third_parties undone
-    //this.gui = ""; //third_parties
-    this.reduxEmail = "hhh@live.com"; //regular undone, third_parties, third_parties undone
-    this.reduxPassword = "12345Abc"; //regular undone, third_parties, third_parties undone
-
-    //TESTING USE : DELETE WHEN CONNECT TO onAuth
+    this.mode = "";
+    this.gui = "";
   }
 
   componentDidMount() {
+    //TESTING USE BELOW
+    //SETUP DUMMY DATA
+
+    let userData = { gui: "", email: "", password: "" };
+    let profData = {
+      firstName: "",
+      lastName: "",
+      birthDate: "",
+      gender: "",
+      country: "",
+      zipCode: ""
+    };
+    let interestedData = {
+      ageRange: 0,
+      distanceRange: [20, 108],
+      interestedGender: ""
+    };
+    let likesData = { likesArray: [] };
+    let wouldRatherData = {
+      s1r1: 50,
+      s1r2: 50,
+      s2r1: 50,
+      s2r2: 50,
+      s3r1: 50,
+      s3r2: 50
+    };
+    let weekendLocation = "";
+
+    //Options
+    //Option #1 : Regular User Registration
+    //Option #2  : Third Parties Services User Registration
+    //Option #3  : Third Parties Services Undone User Registration or Regular Undone User Registration
+    let option = 3;
+
+    switch (option) {
+      //Regular User Registration
+      case 1:
+        this.mode = "";
+        break;
+
+      //Third Parties Services User Registration
+      //Test Case : only email screen and about you's fistname and lastname is filled up
+      case 2:
+        this.mode = "undone";
+        this.gui = "";
+        userData = { gui: "", email: "zzz@live.com", password: "12345Abc" };
+        profData = {
+          firstName: "Ryan",
+          lastName: "Albert",
+          birthDate: "",
+          gender: "",
+          country: "",
+          zipCode: ""
+        };
+        break;
+
+      //Third Parties Services Undone User Registration or Regular Undone User Registration
+      //Test Case : only email screen, about you screen and wouldyouRather screen is filled up
+      case 3:
+        this.mode = "undone";
+        userData = {
+          gui: "5d5b2d8b1dc6d2bd12a1dc7e",
+          email: "hhh@live.com",
+          password: "12345Abc"
+        };
+        profData = {
+          firstName: "Ryan",
+          lastName: "Albert",
+          birthDate: "01-18-1996",
+          gender: "male",
+          country: "France",
+          zipCode: "94612"
+        };
+        wouldRatherData = {
+          s1r1: 10,
+          s1r2: 90,
+          s2r1: 50,
+          s2r2: 50,
+          s3r1: 60,
+          s3r2: 40
+        };
+        this.gui = userData.gui;
+        break;
+
+      default:
+        this.mode = "";
+        break;
+    }
+
+    this.props.InsertDummyData({
+      mode: this.mode,
+      userData: userData,
+      profData: profData,
+      interestedData: interestedData,
+      likesData: likesData,
+      wouldRatherData: wouldRatherData,
+      weekendLocation: weekendLocation
+    });
+
+    //TESTING USE ABOVE
+
     //For Undone User
     if (this.mode === "undone") {
-      let email = this.reduxEmail;
-      let password = this.reduxPassword;
+      let email = userData.email;
+      let password = userData.password;
 
       //For third parties User
       //Third Parties User has same properties as undone user
@@ -295,7 +389,6 @@ class CreateAccount extends Component {
   };
 
   handleSubmit = () => {
-
     //First comparsion
     //Purpose: Prevent Regular user Second submission
     //Even though Regular user mode is set to empty (mode = "") by default
@@ -304,20 +397,11 @@ class CreateAccount extends Component {
       this.props.handlePassed("createAccount", true);
       return;
 
-    //Second comparision
-    //Purpose: Prevent Undone User (they already have a GUI) for second submission
-    //Also, onAuth will pass a gui to on-boarding, we will use that gui on other screen
-    //That's why we send the gui/email/password to redux
+      //Second comparision
+      //Purpose: Prevent Undone User (they already have a GUI) for second submission
+      //Also, onAuth will pass a gui to on-boarding, we will use that gui on other screen
+      //That's why we send the gui/email/password to redux
     } else if (this.state.editable === false && this.mode === "undone") {
-      //TESTING USE : DELETE WHEN CONNECT TO onAuth
-      //Send data to Redux
-      this.props.SetUserDataAction({
-        gui: this.gui,
-        email: this.state.email,
-        password: this.state.password
-      });
-      //TESTING USE : DELETE WHEN CONNECT TO onAuth
-
       this.props.handlePassed("createAccount", true);
       return;
     }
@@ -754,7 +838,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    SetUserDataAction: payload => dispatch(SetUserDataAction(payload))
+    SetUserDataAction: payload => dispatch(SetUserDataAction(payload)),
+    InsertDummyData: payload => dispatch(InsertDummyData(payload))
   };
 };
 
