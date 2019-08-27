@@ -29,9 +29,8 @@ import { Chevron } from "react-native-shapes";
 import axios from "axios";
 
 //click password button to toggle password
-//duplicate email from database
 
-//this.props.CreateAuthDataReducer.data
+//on home screen pass something to redux for testing
 
 const profileServer = "http://74.80.250.210:5000/dbRouter/";
 
@@ -59,7 +58,12 @@ class CreateAccount extends Component {
   }
 
   componentDidMount() {
-    //TESTING USE BELOW
+    //When onAuth works functionally (login pass data to redux)
+    //uncomment the following codes
+    //this.mode = this.props.CreateProfileReducer.mode
+    //this.gui = this.props.CreateProfileReducer.userData.gui
+
+    //TESTING USE BELOW (When onAuth work functionally (login pass data to redux, remove below))
     //SETUP DUMMY DATA
 
     let userData = { gui: "", email: "", password: "" };
@@ -164,6 +168,10 @@ class CreateAccount extends Component {
     if (this.mode === "undone") {
       let email = userData.email;
       let password = userData.password;
+      //When onAuth works functionally (login pass data to redux)
+      //uncomment the following codes
+      //let email = this.props.CreateProfileReducer.userData.email
+      //let password = this.props.CreateProfileReducer.userData.password
 
       //For third parties User
       //Third Parties User has same properties as undone user
