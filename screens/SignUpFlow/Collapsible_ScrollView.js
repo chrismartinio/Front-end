@@ -28,6 +28,7 @@ import ResetReduxData from "../../storage/actions/ResetReduxData";
 import { Chevron } from "react-native-shapes";
 import { Icon, Input } from "react-native-elements";
 
+
 class Collapsible_ScrollView extends Component {
   static navigationOptions = {
     //header: null,
@@ -44,6 +45,7 @@ class Collapsible_ScrollView extends Component {
       fontSize: 24
     }
   };
+
 
   constructor(props) {
     super(props);
@@ -77,7 +79,8 @@ class Collapsible_ScrollView extends Component {
   }
 
   componentDidMount() {
-/*
+
+    /*
     fetch("http://74.80.250.210:5000/dbRouter/userProfileAllCollectionsQuery", {
       method: "POST",
       headers: {
@@ -421,7 +424,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    ResetReduxData: payload => dispatch(ResetReduxData(payload))
+    ResetReduxData: payload => dispatch(ResetReduxData(payload)),
   };
 };
 
