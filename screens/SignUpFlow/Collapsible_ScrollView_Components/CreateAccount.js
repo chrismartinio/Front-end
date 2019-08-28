@@ -63,6 +63,7 @@ class CreateAccount extends Component {
     this.mode = this.props.CreateProfileReducer.mode
     this.gui = this.props.CreateProfileReducer.userData.gui
 
+
     //For Undone User
     if (this.mode === "undone") {
       //let email = userData.email;

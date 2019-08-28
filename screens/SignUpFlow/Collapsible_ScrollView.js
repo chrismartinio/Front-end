@@ -80,16 +80,15 @@ class Collapsible_ScrollView extends Component {
 
   componentDidMount() {
 
-    /*
-    fetch("http://74.80.250.210:5000/dbRouter/userProfileAllCollectionsQuery", {
+
+    fetch("http://74.80.250.210:5000/dbRouter/userProfileSingleCollectionQuery", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        email: "lll@live.com",
+        email: "abc@live.com",
         password: "12345Abc",
-        collectionName: "aboutYou",
       })
     })
       .then(res => res.json())
@@ -101,7 +100,7 @@ class Collapsible_ScrollView extends Component {
         console.error(error.message);
         throw error;
       });
-*/
+
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {

@@ -76,7 +76,7 @@ class HomeScreen extends React.Component {
     //Option #1 : Regular User Registration
     //Option #2  : Third Parties Services User Registration
     //Option #3  : Third Parties Services Undone User Registration or Regular Undone User Registration
-    let option = 2;
+    let option = 1;
 
     switch (option) {
       //Regular User Registration
