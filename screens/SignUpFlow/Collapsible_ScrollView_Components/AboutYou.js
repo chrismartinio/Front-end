@@ -52,42 +52,21 @@ class AboutYou extends Component {
       birthDateWarning: "empty"
     };
 
-    //TESTING USE : DELETE WHEN CONNECT TO onAuth
-
-    //user identiflier
-    this.mode = "undone";
-
-    //3rd
-    /*
-    this.reduxFirstName = "hello";
-    this.reduxLastName = "world";
-    this.reduxBirthDate = "";
-    this.reduxGender = "";
-    this.reduxCountry = "";
-    this.reduxZipcode = "";
-*/
-
-    //Undone
-
-    this.reduxFirstName = "hello";
-    this.reduxLastName = "world";
-    this.reduxBirthDate = "01-02-1993";
-    this.reduxGender = "male";
-    this.reduxCountry = "China";
-    this.reduxZipcode = "11111";
-
-    //TESTING USE : DELETE WHEN CONNECT TO onAuth
+    this.mode = "";
+    this.gui = "";
   }
 
   componentDidMount() {
+    this.mode = this.props.CreateProfileReducer.mode;
+
     //For Undone User
     if (this.mode === "undone") {
-      let firstName = this.reduxFirstName;
-      let lastName = this.reduxLastName;
-      let birthDate = this.reduxBirthDate;
-      let gender = this.reduxGender;
-      let country = this.reduxCountry;
-      let zipCode = this.reduxZipcode;
+      let firstName = this.props.CreateProfileReducer.profData.firstName;
+      let lastName = this.props.CreateProfileReducer.profData.lastName;
+      let birthDate = this.props.CreateProfileReducer.profData.birthDate;
+      let gender = this.props.CreateProfileReducer.profData.gender;
+      let country = this.props.CreateProfileReducer.profData.country;
+      let zipCode = this.props.CreateProfileReducer.profData.zipCode;
 
       this.setState({
         firstName: firstName,
@@ -319,7 +298,6 @@ class AboutYou extends Component {
 
   //next button : valid all input fields
   handleSubmit = evt => {
-    console.log(this.props.CreateProfileReducer.userData.gui);
     if (this.state.passed) {
       //if all tests passed, set passed to true and navigate to next screen
 
@@ -352,7 +330,7 @@ class AboutYou extends Component {
         country: this.state.country,
         zipCode: this.state.zipCode
       });
-      //this.props.navigation.navigate("TestTellUsMore");
+
       //if successed to passed, it will put the check mark from CollapsibleComponent CheckMark
       this.props.handlePassed("aboutYou", true);
     } else {

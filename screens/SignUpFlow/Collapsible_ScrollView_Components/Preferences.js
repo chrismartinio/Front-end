@@ -33,8 +33,7 @@ class Preferences extends React.Component {
       pickedWomen: false,
       sliderOneChanging: false,
       sliderOneValue: [5],
-      multiSliderValue: [20, 108],
-      nonCollidingMultiSliderValue: [0, 100],
+      ageRange: [20, 108],
       interestedGenderWarning: "empty",
       passed: false,
       distanceRange: 0
@@ -45,31 +44,29 @@ class Preferences extends React.Component {
     this.bMaley = 0;
     this.bFemaley = 0;
 
-    //TESTING USE : DELETE WHEN CONNECT TO onAuth
-    //user identiflier
-    this.mode = "undone";
-
-    this.reduxInterestedGender = "male";
-    this.reduxMultiSliderValue = [60, 70];
-    this.reduxDistanceRange = 60;
-
-    //TESTING USE : DELETE WHEN CONNECT TO onAuth
+    this.mode = "";
+    this.gui = "";
   }
 
   componentDidMount() {
+    this.mode = this.props.CreateProfileReducer.mode;
+
     //For Undone User
     if (this.mode === "undone") {
       let pickedMen = false;
       let pickedWomen = false;
-      let multiSliderValue = this.reduxMultiSliderValue;
-      let distanceRange = this.reduxDistanceRange;
+      let ageRange = this.props.CreateProfileReducer.interestedData.ageRange;
+      let distanceRange = this.props.CreateProfileReducer.interestedData
+        .distanceRange;
+      let interestedGender = this.props.CreateProfileReducer.interestedData
+        .interestedGender;
 
-      if (this.reduxInterestedGender === "both") {
+      if (interestedGender === "both") {
         pickedMen = true;
         pickedWomen = true;
-      } else if (this.reduxInterestedGender === "male") {
+      } else if (interestedGender === "male") {
         pickedMen = true;
-      } else if (this.reduxInterestedGender === "female") {
+      } else if (interestedGender === "female") {
         pickedWomen = true;
       } else {
         pickedMen = false;
@@ -81,7 +78,7 @@ class Preferences extends React.Component {
         pickedWomen: pickedWomen,
         interestedGenderWarning:
           pickedMen === "" && pickedWomen === "" ? "empty" : "",
-        multiSliderValue: multiSliderValue,
+        ageRange: ageRange,
         distanceRange: distanceRange
       });
     }
@@ -116,9 +113,9 @@ class Preferences extends React.Component {
   };
 
   //age range
-  multiSliderValuesChange = values => {
+  ageRangeChange = values => {
     this.setState({
-      multiSliderValue: values
+      ageRange: values
     });
   };
 
@@ -216,7 +213,7 @@ class Preferences extends React.Component {
 
   handleSubmit = () => {
     if (this.state.passed) {
-      let interestedGender = null;
+      let interestedGender = "";
       if (this.state.pickedMen && this.state.pickedWomen) {
         interestedGender = "both";
       } else if (this.state.pickedMen) {
@@ -224,7 +221,7 @@ class Preferences extends React.Component {
       } else if (this.state.pickedWomen) {
         interestedGender = "female";
       } else {
-        interestedGender = "null";
+        interestedGender = "";
       }
 
       //Send data to database
@@ -235,7 +232,7 @@ class Preferences extends React.Component {
         },
         body: JSON.stringify({
           gui: this.props.CreateProfileReducer.userData.gui,
-          ageRange: this.state.multiSliderValue,
+          ageRange: this.state.ageRange,
           distanceRange: this.state.distanceRange,
           interestedGender: interestedGender
         })
@@ -246,7 +243,7 @@ class Preferences extends React.Component {
 
       //Send Data to Redux
       this.props.SetInterestedDataAction({
-        ageRange: this.state.multiSliderValue,
+        ageRange: this.state.ageRange,
         distanceRange: this.state.distanceRange,
         interestedGender: interestedGender
       });
@@ -395,16 +392,13 @@ class Preferences extends React.Component {
         <View>
           <Text style={styles.textTop}>Preferred age range</Text>
           <View style={styles.flexContainer}>
-            <Text style={styles.text2}> {this.state.multiSliderValue[0]} </Text>
-            <Text style={styles.text2}> {this.state.multiSliderValue[1]} </Text>
+            <Text style={styles.text2}> {this.state.ageRange[0]} </Text>
+            <Text style={styles.text2}> {this.state.ageRange[1]} </Text>
           </View>
           <MultiSlider
-            values={[
-              this.state.multiSliderValue[0],
-              this.state.multiSliderValue[1]
-            ]}
+            values={[this.state.ageRange[0], this.state.ageRange[1]]}
             sliderLength={320}
-            onValuesChange={this.multiSliderValuesChange}
+            onValuesChange={this.ageRangeChange}
             min={18}
             max={110}
             step={1}

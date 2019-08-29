@@ -18,19 +18,12 @@ import {
 import { LinearGradient } from "expo";
 import { connect } from "react-redux";
 import SetUserDataAction from "../../../storage/actions/SetUserDataAction";
-
-//TESTING USES
-import InsertDummyData from "../../../storage/actions/InsertDummyData";
-//TESTING USES
-
 import firebase from "../../../utils/mainFire";
 import { Icon, Input } from "react-native-elements";
 import { Chevron } from "react-native-shapes";
 import axios from "axios";
 
 //click password button to toggle password
-
-//on home screen pass something to redux for testing
 
 const profileServer = "http://74.80.250.210:5000/dbRouter/";
 
@@ -58,20 +51,13 @@ class CreateAccount extends Component {
   }
 
   componentDidMount() {
-    //When onAuth works functionally (login pass data to redux)
-    //uncomment the following codes
-    this.mode = this.props.CreateProfileReducer.mode
-    this.gui = this.props.CreateProfileReducer.userData.gui
-
+    this.mode = this.props.CreateProfileReducer.mode;
+    this.gui = this.props.CreateProfileReducer.userData.gui;
 
     //For Undone User
     if (this.mode === "undone") {
-      //let email = userData.email;
-      //let password = userData.password;
-      //When onAuth works functionally (login pass data to redux)
-      //uncomment the following codes
-      let email = this.props.CreateProfileReducer.userData.email
-      let password = this.props.CreateProfileReducer.userData.password
+      let email = this.props.CreateProfileReducer.userData.email;
+      let password = this.props.CreateProfileReducer.userData.password;
 
       //For third parties User
       //Third Parties User has same properties as undone user
@@ -339,9 +325,9 @@ class CreateAccount extends Component {
         .then(res => res.json())
         .then(res => {
           let object = JSON.parse(JSON.stringify(res));
-
           if (object.success) {
             //Send data to Redux
+
             this.props.SetUserDataAction({
               gui: object.gui,
               email: this.state.email,
@@ -746,8 +732,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    SetUserDataAction: payload => dispatch(SetUserDataAction(payload)),
-    InsertDummyData: payload => dispatch(InsertDummyData(payload))
+    SetUserDataAction: payload => dispatch(SetUserDataAction(payload))
   };
 };
 

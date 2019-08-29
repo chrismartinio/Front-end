@@ -31,8 +31,8 @@ class LinksScreen extends React.Component {
       zipCode: ""
     };
     let interestedData = {
-      ageRange: 0,
-      distanceRange: [20, 108],
+      ageRange: [20, 108],
+      distanceRange: 0,
       interestedGender: ""
     };
     let likesData = { likesArray: [] };
@@ -44,7 +44,9 @@ class LinksScreen extends React.Component {
       s3r1: 50,
       s3r2: 50
     };
-    let weekendLocation = "";
+    let weekendLocation = {
+      localDestinations: ""
+    };
 
     //Options
     //Option #1 : Regular User Registration
@@ -63,10 +65,10 @@ class LinksScreen extends React.Component {
       case 2:
         mode = "undone";
 
-        userData = { gui: "", email: "zzz@live.com", password: "12345Abc" };
+        userData = { gui: "", email: "aaa@live.com", password: "12345Abc" };
         profData = {
-          firstName: "Ryan",
-          lastName: "Albert",
+          firstName: "Ken",
+          lastName: "Ryuu",
           birthDate: "",
           gender: "",
           country: "",
@@ -76,30 +78,50 @@ class LinksScreen extends React.Component {
 
       //Third Parties Services Undone User Registration or Regular Undone User Registration
       //Test Case : only email screen, about you screen and wouldyouRather screen is filled up
+      //If you want to test with a new account, follow these steps
+      //Step 1 : change to option = 1
+      //Step 2 : go to sign up and submit a new email and password
+      //Step 3 : change to option = 3
+      //Step 4 : login to mongodb and copy the objectid for that email
+      //Step 5 : replace that objectid to the gui below
+      //Step 6 : Now you are ready to test the undone user
       case 3:
         mode = "undone";
+        //Remove or Uncomment one of the field below to test undone user
         userData = {
-          gui: "5d5b2d8b1dc6d2bd12a1dc7e",
-          email: "hhh@live.com",
+          gui: "5d677a54aa9448328f154aa1",
+          email: "abc@live.com",
           password: "12345Abc"
         };
         profData = {
           firstName: "Ryan",
           lastName: "Albert",
-          birthDate: "01-18-1996",
+          birthDate: "1993-01-18",
           gender: "male",
           country: "France",
           zipCode: "94612"
         };
+        /*
         wouldRatherData = {
-          s1r1: 10,
-          s1r2: 90,
-          s2r1: 50,
-          s2r2: 50,
-          s3r1: 60,
-          s3r2: 40
+          s1r1: 100,
+          s1r2: 0,
+          s2r1: 0,
+          s2r2: 100,
+          s3r1: 23,
+          s3r2: 77
         };
-
+        */
+        interestedData = {
+          ageRange: [26, 51],
+          distanceRange: 90,
+          interestedGender: "male"
+        };
+        /*
+        likesData = { likesArray: ["Food", "Gym", "Hiking"] };
+        weekendLocation = {
+          localDestinations: "San Francisco"
+        };
+        */
         break;
 
       default:

@@ -41,9 +41,9 @@ class HomeScreen extends React.Component {
     errorMessage: null
   };
 
+  //TESTING USE BELOW (When onAuth work functionally (login pass data to redux, remove below))
   testcase = () => {
-    //TESTING USE BELOW (When onAuth work functionally (login pass data to redux, remove below))
-    //SETUP DUMMY DATA
+    //SETUP DUMMY DATA FOR TESTING
     let mode = "";
     let gui = "";
 
@@ -57,8 +57,8 @@ class HomeScreen extends React.Component {
       zipCode: ""
     };
     let interestedData = {
-      ageRange: 0,
-      distanceRange: [20, 108],
+      ageRange: [20, 108],
+      distanceRange: 0,
       interestedGender: ""
     };
     let likesData = { likesArray: [] };
@@ -70,7 +70,9 @@ class HomeScreen extends React.Component {
       s3r1: 50,
       s3r2: 50
     };
-    let weekendLocation = "";
+    let weekendLocation = {
+      localDestinations: ""
+    };
 
     //Options
     //Option #1 : Regular User Registration
@@ -102,30 +104,50 @@ class HomeScreen extends React.Component {
 
       //Third Parties Services Undone User Registration or Regular Undone User Registration
       //Test Case : only email screen, about you screen and wouldyouRather screen is filled up
+      //If you want to test with a new account, follow these steps
+      //Step 1 : change to option = 1
+      //Step 2 : go to sign up and submit a new email and password
+      //Step 3 : change to option = 3
+      //Step 4 : login to mongodb and copy the objectid for that email
+      //Step 5 : replace that objectid to the gui below
+      //Step 6 : Now you are ready to test the undone user
       case 3:
         mode = "undone";
+        //Comment or Uncomment some of the data fields below to test undone user
         userData = {
-          gui: "5d6594faf90286f8acb815e8",
+          gui: "5d677a54aa9448328f154aa1",
           email: "abc@live.com",
           password: "12345Abc"
         };
         profData = {
           firstName: "Ryan",
           lastName: "Albert",
-          birthDate: "01-18-1996",
+          birthDate: "1993-01-18",
           gender: "male",
           country: "France",
           zipCode: "94612"
         };
+        /*
         wouldRatherData = {
-          s1r1: 10,
-          s1r2: 90,
-          s2r1: 50,
-          s2r2: 50,
-          s3r1: 60,
-          s3r2: 40
+          s1r1: 100,
+          s1r2: 0,
+          s2r1: 0,
+          s2r2: 100,
+          s3r1: 23,
+          s3r2: 77
         };
-
+        */
+        interestedData = {
+          ageRange: [26, 51],
+          distanceRange: 90,
+          interestedGender: "male"
+        };
+        /*
+        likesData = { likesArray: ["Food", "Gym", "Hiking"] };
+        weekendLocation = {
+          localDestinations: "San Francisco"
+        };
+        */
         break;
 
       default:
@@ -133,6 +155,7 @@ class HomeScreen extends React.Component {
         break;
     }
 
+    //Pass to Redux
     this.props.InsertDummyData({
       mode: mode,
       userData: userData,
@@ -142,9 +165,8 @@ class HomeScreen extends React.Component {
       wouldRatherData: wouldRatherData,
       weekendLocation: weekendLocation
     });
-
-    //TESTING USE ABOVE
   };
+  //TESTING USE ABOVE
 
   // Aysnc problems
   // componentWillMount() {
@@ -225,10 +247,8 @@ class HomeScreen extends React.Component {
   };
 
   handleSignUp = () => {
-
-    //DO SOMETHING TO MAKE SURE PASS DATA TO REDUX BEFOFRE NAVIGATE TO SIGHUP
-
     //TESTING USE
+    //DO SOMETHING TO MAKE SURE REDUX HAS RECEIVED SOME DATA
     this.testcase();
     //TESTING USE
 
