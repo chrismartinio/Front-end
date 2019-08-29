@@ -326,7 +326,7 @@ class CreateAccount extends Component {
       this.mode = "";
 
       //Send data to database
-      fetch("http://74.80.250.210:5000/dbRouter/createAccountSubmit", {
+      fetch("http://74.80.250.210:5000/api/profile/createAccountSubmit", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"

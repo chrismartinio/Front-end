@@ -68,7 +68,7 @@ class WouldRather extends React.Component {
 
   handleSubmit = () => {
     //Send data to database
-    fetch("http://74.80.250.210:5000/dbRouter/wouldyouRatherSubmit", {
+    fetch("http://74.80.250.210:5000/api/profile/wouldyouRatherSubmit", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"

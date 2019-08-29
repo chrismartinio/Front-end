@@ -16,7 +16,7 @@ router.post("/localDestinationsSubmit", Onboarding_Submit_Controller.localDestin
 //=========================
 // onboarding Query Route
 //=========================
-router.post("/userProfileSingleCollectionQuery", Onboarding_Query_Controller.userProfileSingleCollectionQuery);
+router.post("/query", Onboarding_Query_Controller.userProfileSingleCollectionQuery);
 
 
 module.exports = router;

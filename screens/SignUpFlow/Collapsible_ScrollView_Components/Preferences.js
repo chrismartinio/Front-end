@@ -228,7 +228,7 @@ class Preferences extends React.Component {
       }
 
       //Send data to database
-      fetch("http://74.80.250.210:5000/dbRouter/preferencesSubmit", {
+      fetch("http://74.80.250.210:5000/api/profile/preferencesSubmit", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
