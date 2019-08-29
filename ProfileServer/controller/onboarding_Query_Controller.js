@@ -20,7 +20,7 @@ const bcrypt = require('bcrypt');
   Step 2 : check whether the user password is match to the database password
   Step 3 : use the user gui to find the user data from the collections
 */
-exports.userProfileSingleCollectionQuery = function(req, res) {
+exports.usersProfileQuery = function(req, res) {
   MongoClient.connect(
     CONNECTION_URL,
     { useNewUrlParser: true },
