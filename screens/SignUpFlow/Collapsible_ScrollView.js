@@ -28,6 +28,9 @@ import ResetReduxData from "../../storage/actions/ResetReduxData";
 import { Chevron } from "react-native-shapes";
 import { Icon, Input } from "react-native-elements";
 
+//TESTING USES
+import InsertDummyData from "../../storage/actions/InsertDummyData";
+//TESTING USES
 
 class Collapsible_ScrollView extends Component {
   static navigationOptions = {
@@ -46,7 +49,6 @@ class Collapsible_ScrollView extends Component {
     }
   };
 
-
   constructor(props) {
     super(props);
     this.state = {
@@ -62,45 +64,149 @@ class Collapsible_ScrollView extends Component {
       interestsPassed: false,
       wouldYouRatherPassed: false,
       localDestinationsPassed: false,
-      currentScreenTopY: 0 //screenTopY : slide down increase ; slide up decrease
+      currentScreenTopY: 0, //screenTopY : slide down increase ; slide up decrease
+      loaded: false //use to make sure if there data inside redux before rendering
     };
     this.interestsPositionY = 0;
     this.localDestinationsPositionY = 0;
     this.preferencesPositionY = 0;
-
-    //when the user click signup button in homescreen,
-    //it will call onAuth api to check if account already exist
-    //if Yes, go to login
-    //if no , generate an hash id and send to onboarding
-    //If account exist but not finish, also send to onboarding
-
-    //Prevent User to re-submit different if their account is undone
-    this.undone = false;
   }
 
-  componentDidMount() {
+  //TESTING USE BELOW (When onAuth work functionally (login pass data to redux, remove below))
+  testcase = () => {
+    //SETUP DUMMY DATA FOR TESTING
+    let mode = "";
 
-/*
-    fetch("http://74.80.250.210:5000/api/profile/query", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        email: "abc@live.com",
-        password: "12345Abc",
-      })
-    })
-      .then(res => res.json())
-      .then(res => {
-        let object = JSON.parse(JSON.stringify(res));
-        console.log(object);
-      })
-      .catch(function(error) {
-        console.error(error.message);
-        throw error;
-      });
-*/
+    let userData = { gui: "", email: "", password: "" };
+    let profData = {
+      firstName: "",
+      lastName: "",
+      birthDate: "",
+      gender: "",
+      country: "",
+      zipCode: ""
+    };
+    let interestedData = {
+      ageRange: [20, 108],
+      distanceRange: 0,
+      interestedGender: ""
+    };
+    let likesData = { likesArray: [] };
+    let wouldRatherData = {
+      s1r1: 50,
+      s1r2: 50,
+      s2r1: 50,
+      s2r2: 50,
+      s3r1: 50,
+      s3r2: 50
+    };
+    let weekendLocation = {
+      localDestinations: ""
+    };
+
+    //Options
+    //Option #1 : Regular User Registration
+    //Option #2  : Third Parties Services User Registration
+    //Option #3  : Third Parties Services Undone User Registration or Regular Undone User Registration
+    let option = 1;
+
+    switch (option) {
+      //Regular User Registration
+      case 1:
+        mode = "";
+        break;
+
+      //Third Parties Services User Registration
+      //Test Case : only email screen and about you's fistname and lastname is filled up
+      case 2:
+        mode = "undone";
+
+        userData = { gui: "", email: "ddd@live.com", password: "12345Abc" };
+        profData = {
+          firstName: "Ken",
+          lastName: "Ryuu",
+          birthDate: "",
+          gender: "",
+          country: "",
+          zipCode: ""
+        };
+        break;
+
+      //Third Parties Services Undone User Registration or Regular Undone User Registration
+      //Test Case : only email screen, about you screen and wouldyouRather screen is filled up
+      //If you want to test with a new account, follow these steps
+      //Step 1 : change to option = 1
+      //Step 2 : go to sign up and submit a new email and password
+      //Step 3 : change to option = 3
+      //Step 4 : login to mongodb and copy the objectid for that email
+      //Step 5 : replace that objectid to the gui below
+      //Step 6 : Now you are ready to test the undone user
+      case 3:
+        mode = "undone";
+        //Comment or Uncomment some of the data fields below to test undone user
+        userData = {
+          gui: "5d6ec840fabdf1ac4b6da87e",
+          email: "ddd@live.com",
+          password: "12345Abc"
+        };
+        profData = {
+          firstName: "Ryan",
+          lastName: "Albert",
+          birthDate: "1993-01-18",
+          gender: "male",
+          country: "France",
+          zipCode: "94612"
+        };
+        /*
+        wouldRatherData = {
+          s1r1: 100,
+          s1r2: 0,
+          s2r1: 0,
+          s2r2: 100,
+          s3r1: 23,
+          s3r2: 77
+        };
+        */
+        interestedData = {
+          ageRange: [26, 51],
+          distanceRange: 90,
+          interestedGender: "male"
+        };
+        /*
+        likesData = { likesArray: ["Food", "Gym", "Hiking"] };
+        weekendLocation = {
+          localDestinations: "San Francisco"
+        };
+        */
+        break;
+
+      default:
+        mode = "";
+        break;
+    }
+
+    //Pass to Redux
+    this.props.InsertDummyData({
+      mode: mode,
+      userData: userData,
+      profData: profData,
+      interestedData: interestedData,
+      likesData: likesData,
+      wouldRatherData: wouldRatherData,
+      weekendLocation: weekendLocation
+    });
+  };
+  //TESTING USE ABOVE
+
+  //async and await is used to make sure finish passing data to redux before rendering
+  async componentDidMount() {
+    //TESTING USE
+    //DO SOMETHING TO MAKE SURE REDUX HAS RECEIVED SOME DATA
+    await this.testcase();
+    this.setState({
+      loaded: true
+    });
+    //TESTING USE
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
@@ -227,7 +333,7 @@ class Collapsible_ScrollView extends Component {
   };
 
   render() {
-    return (
+    return this.state.loaded ? (
       <LinearGradient
         textStyle={{ color: "#fff" }}
         colors={["#18cdf6", "#43218c"]}
@@ -262,7 +368,6 @@ class Collapsible_ScrollView extends Component {
                   componentName={"createAccount"}
                   handleToggle={this.handleToggle}
                   handlePassed={this.handlePassed}
-                  undone={this.undone}
                 />
 
                 {/*About You*/}
@@ -341,6 +446,8 @@ class Collapsible_ScrollView extends Component {
           </SafeAreaView>
         </ScrollView>
       </LinearGradient>
+    ) : (
+      <View />
     );
   }
 }
@@ -424,6 +531,9 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     ResetReduxData: payload => dispatch(ResetReduxData(payload)),
+    //TESTING USE
+    InsertDummyData: payload => dispatch(InsertDummyData(payload))
+    ///TESTING USE
   };
 };
 
