@@ -16,7 +16,8 @@ import t from "tcomb-form-native";
 import axios from "axios";
 import { signInWithFacebook } from "../utils/auth.js";
 import { connect } from "react-redux";
-import SetFbDataAction from "../storage/actions/ThirdPartyActions/SetFbDataAction";
+import SetFbDataAction from "../storage/actions/DataReducerActions/SetFbDataAction";
+import SetJwtAction from "../storage/actions/DataReducerActions/SetJwtAction";
 //import publicIP from "react-native-public-ip";
 import { Constants, Location, Permissions, WebBrowser } from "expo";
 
@@ -63,28 +64,9 @@ class HomeScreen extends React.Component {
   //   this.setState({ location });
   // };
 
-  // componentDidMount(){
-  //   fetch("http://10.0.0.246:5000/dbRouter/userProfileAllCollectionsQuery", {
-  //     method: "POST",
-  //     headers: {
-  //       "Content-Type": "application/json"
-  //     },
-  //     body: JSON.stringify({
-  //       email: "ddd@live.com",
-  //       password: "12345Abc",
-  //       collectionName: "aboutYou",
-  //     })
-  //   })
-  //     .then(res => res.json())
-  //     .then(res => {
-  //       let object = JSON.parse(JSON.stringify(res));
-  //       console.log(object);
-  //     })
-  //     .catch(function(error) {
-  //       console.error(error.message);
-  //       throw error;
-  //     });
-  // }
+  componentDidMount(){
+
+  }
 
   handleEmailAndPasswordSignin = async () => {
     try {
@@ -105,10 +87,14 @@ class HomeScreen extends React.Component {
     });
 
     let jsonData = await data.json();
-    console.log(jsonData);
+
       if (jsonData.token) {
+        this.props.SetJwtAction(jsonData)
         this.props.navigation.navigate("Chat");
+      } else {
+        alert(jsonData.error)
       }
+
     } catch(e){
       console.log(e)
     }
@@ -424,7 +410,8 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  SetFbDataAction: payload => dispatch(SetFbDataAction(payload))
+  SetFbDataAction: payload => dispatch(SetFbDataAction(payload)),
+  SetJwtAction: payload => dispatch(SetJwtAction(payload))
 });
 
 export default connect(
