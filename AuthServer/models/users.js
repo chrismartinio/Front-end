@@ -6,13 +6,14 @@ const mongoose = require('mongoose'),
 // User Schema
 //================================
 const UserSchema = new Schema({
+    username:{
+        unique: true,
+        type: String,
+        lowercase: true,
+        required: false
+    },
     password: {
         type: String,
-        required: true
-    },
-    username: {
-        type: String,
-        unique: true,
         required: true
     },
     email: {
@@ -21,16 +22,10 @@ const UserSchema = new Schema({
         lowercase: true,
         required: false
     },
-    profile: {
-        firstname: { type: String },
-        lastName: { type: String },
-        dateOfBirth: { type: Date },
-        country: { type: String },
-        city: { type: String }
-    },
+    isAdmin: {type: Boolean },
     resetPasswordToken: { type: String },
     resetPasswordExpires: { type: Date }
-},
+    },
     {
         timestamps: true
 
@@ -62,5 +57,9 @@ UserSchema.methods.comparePassword = function (candidatePassword, cb) {
         cb(null, isMatch);
     });
 }
+// UserSchema.methods.validPassword = function(password) {
+//   return bcrypt.compareSync(password, this.password);
+// };
 
-module.exports = mongoose.model('Users', UserSchema, 'Users');
+var User = mongoose.model('Users', UserSchema, 'usersProfile');
+module.exports = User;

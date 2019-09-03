@@ -4,8 +4,10 @@ const jwt = require('jsonwebtoken'),
     User = require('../models/users'),
     config = require('../config/main');
     var ObjectId = require('mongodb').ObjectID;
+    bcrypt = require('bcrypt');
 
 function generateToken(user) {
+
     return jwt.sign(user, config.secret, {
         expiresIn: 10080 // in seconds
     });
@@ -21,6 +23,12 @@ function setUserInfo(request) {
         dateOfBirth: request.dateOfBirth,
         profile: request.profile,
         username: request.username
+    };
+}
+
+function setUserId(request){
+    return {
+        _id: request._id
     };
 }
 
@@ -40,21 +48,23 @@ function setLogin(request){
 
 exports.login = function (req, res, next) {
     let userInfo = setLogin(req)
-
-      User.findOne({"username":userInfo.username}, function(err, result){
+    let user_id = setUserId(req)
+      User.findOne({"email":userInfo.username}, function(err, user){
         if(err){
-            res.status(422).send({error:err})
-            return err
-        } else {
-         if(result !== null && JSON.stringify(result.password) === JSON.stringify(userInfo.password)){
-              res.status(200).json({
-                token: 'JWT ' + generateToken(userInfo),
-                user: userInfo
-          })
-         } else if(JSON.stringify(result.password) !== JSON.stringify(userInfo.password)){
-            res.status(422).send({error:'Wrong Password'})
-         }
-      }
+            console.log('err here')
+            return next(err)
+        }
+        if(!user){
+          return res.status(403).send({ error: 'User Not found.' })
+        }
+
+        if(!bcrypt.compareSync(req.body.password, user.password)){
+           return res.status(403).send({ error: 'Wrong Password.' })
+        }
+
+
+        const token = generateToken(user_id)
+        return res.send({token: token, success: true})
   })
 
 
