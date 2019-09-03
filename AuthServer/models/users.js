@@ -6,13 +6,14 @@ const mongoose = require('mongoose'),
 // User Schema
 //================================
 const UserSchema = new Schema({
+    username:{
+        unique: true,
+        type: String,
+        lowercase: true,
+        required: false
+    },
     password: {
         type: String,
-        required: true
-    },
-    username: {
-        type: String,
-        unique: true,
         required: true
     },
     email: {
@@ -20,13 +21,6 @@ const UserSchema = new Schema({
         type: String,
         lowercase: true,
         required: false
-    },
-    profile: {
-        firstname: { type: String },
-        lastName: { type: String },
-        dateOfBirth: { type: Date },
-        country: { type: String },
-        city: { type: String }
     },
     resetPasswordToken: { type: String },
     resetPasswordExpires: { type: Date }

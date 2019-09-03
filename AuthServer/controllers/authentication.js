@@ -40,21 +40,20 @@ function setLogin(request){
 
 exports.login = function (req, res, next) {
     let userInfo = setLogin(req)
-
-      User.findOne({"username":userInfo.username}, function(err, result){
+    console.log(userInfo)
+      User.findOne({"email":userInfo.username}, function(err, user){
         if(err){
-            res.status(422).send({error:err})
-            return err
-        } else {
-         if(result !== null && JSON.stringify(result.password) === JSON.stringify(userInfo.password)){
-              res.status(200).json({
-                token: 'JWT ' + generateToken(userInfo),
-                user: userInfo
-          })
-         } else if(JSON.stringify(result.password) !== JSON.stringify(userInfo.password)){
-            res.status(422).send({error:'Wrong Password'})
+            console.log('err here')
+            return next(err)
+        }
+         if(!user && user.password !== userInfo.password){
+            res.status(403);
+           return next(new Error("Email or password are incorrect"));
          }
-      }
+         // generating token with password?
+        const token = generateToken(userInfo)
+        return res.send({token: token, user: user, success: true})
+
   })
 
 

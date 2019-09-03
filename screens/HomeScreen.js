@@ -87,6 +87,7 @@ class HomeScreen extends React.Component {
   // }
 
   handleEmailAndPasswordSignin = async () => {
+    try {
     const { username, password } = this._form.getValue();
     let data = await fetch("http://10.0.0.246:3001/api/auth/login", {
       method: "POST",
@@ -105,13 +106,14 @@ class HomeScreen extends React.Component {
 
     let jsonData = await data.json();
     console.log(jsonData);
-    // must compare passwords!
-    if (jsonData.token) {
-      this.props.navigation.navigate("Chat");
-    } else {
-      //case 1 user not found: route to onboaarding screen?
-      console.alert("Wrong Login password");
+      if (jsonData.token) {
+        this.props.navigation.navigate("Chat");
+      }
+    } catch(e){
+      console.log(e)
     }
+
+    // must compare passwords!
   };
 
 
