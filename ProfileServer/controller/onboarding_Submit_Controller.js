@@ -2,8 +2,11 @@ const MongoClient = require("mongodb").MongoClient;
 const ObjectId = require("mongodb").ObjectID;
 const CONNECTION_URL =
   "mongodb+srv://Rex:oDDBydpkjOVfN7Ni@cluster0-pilnb.mongodb.net/test?retryWrites=true&w=majority";
-const DATABASE_NAME = "UsersProfile";
+const DATABASE_NAME = "Profile_Service";
 let database, collection;
+
+//Hash Password
+const bcrypt = require("bcrypt");
 
 //========================================
 // createAccount Submit Route
@@ -21,13 +24,12 @@ exports.createAccountSubmit = function(req, res) {
 
       //Step 1 : find if email exist in database
       //Step 2 : create an account (insert email/password) and return a GUI (ObjectId)
-      //Step 3 : create a column in other collections based on that ObjectId
 
       //Find Duplicate email (Step 1 below)
       let findEmailPromise = () => {
         return new Promise((resolve, reject) => {
           database
-            .collection("createAccount")
+            .collection("usersProfile")
             .find({ email: req.body.email })
             .toArray(function(err, result) {
               err ? reject(err) : resolve(result);
@@ -43,119 +45,56 @@ exports.createAccountSubmit = function(req, res) {
       };
 
       callFindEmailPromise().then(function(result) {
+        //Hash Password
+        let hashPassword = bcrypt.hashSync(req.body.password, 10);
+
         //if we find there a email exist, return false to client
         if (result.length != 0) {
           res.json({ success: false });
           res.end();
         } else {
           //Create a account on database and return the GUI (Step 2 Below)
-          //createAccount Data
-          let createAccountData = {
+          //usersProfile Data
+          let usersProfileData = {
             email: req.body.email,
-            password: req.body.password
+            password: hashPassword,
+            birthDate: "",
+            gender: "",
+            country: "",
+            firstName: "",
+            lastName: "",
+            zipCode: "",
+            ageRange: "",
+            distanceRange: "",
+            interestedGender: "",
+            likesArray: "",
+            s1r1: "",
+            s1r2: "",
+            s2r1: "",
+            s2r2: "",
+            s3r1: "",
+            s3r2: "",
+            weekendLocation: ""
           };
-          let createAccountPromise = () => {
+          let usersProfilePromise = () => {
             return new Promise((resolve, reject) => {
               database
-                .collection("createAccount")
-                .insertOne(createAccountData, function(err, docsInserted) {
-                  if (err) throw err;
-                  resolve(docsInserted.ops[0]._id);
+                .collection("usersProfile")
+                .insertOne(usersProfileData, function(err, docsInserted) {
+                  //Return GUI
+                  err ? reject(err) : resolve(docsInserted.ops[0]._id);
                 });
             });
           };
 
-          let callcreateAccountPromise = async () => {
-            var gui = await createAccountPromise().catch(err =>
+          let callusersProfilePromise = async () => {
+            var gui = await usersProfilePromise().catch(err =>
               console.log(err)
             );
             return gui;
           };
 
-          callcreateAccountPromise().then(function(gui) {
-            //create a column in other collection based on that GUI (Step 3 Below)
-            //AboutYou data
-            var aboutYouData = {
-              _id: gui,
-              birthDate: "",
-              gender: "",
-              country: "",
-              firstName: "",
-              lastName: "",
-              zipCode: ""
-            };
-
-            //Access or Create Collection
-            collection = database.collection("aboutYou");
-            database
-              .collection("aboutYou")
-              .insertOne(aboutYouData, function(err) {
-                if (err) throw err;
-              });
-
-            //Preferences data
-            var preferencesData = {
-              _id: gui,
-              ageRange: "",
-              distanceRange: "",
-              interestedGender: ""
-            };
-
-            //Access or Create Collection
-            collection = database.collection("preferences");
-            database
-              .collection("preferences")
-              .insertOne(preferencesData, function(err) {
-                if (err) throw err;
-              });
-
-            //interests data
-            var interestsData = {
-              _id: gui,
-              likesArray: ""
-            };
-
-            //Access or Create Collection
-            collection = database.collection("interests");
-            database
-              .collection("interests")
-              .insertOne(interestsData, function(err) {
-                if (err) throw err;
-              });
-
-            //wouldYouRather data
-            var wouldYouRatherData = {
-              _id: gui,
-              s1r1: "",
-              s1r2: "",
-              s2r1: "",
-              s2r2: "",
-              s3r1: "",
-              s3r2: ""
-            };
-
-            //Access or Create Collection
-            collection = database.collection("wouldYouRather");
-            database
-              .collection("wouldYouRather")
-              .insertOne(wouldYouRatherData, function(err) {
-                if (err) throw err;
-              });
-
-            //localDestinations data
-            var localDestinationsData = {
-              _id: gui,
-              weekendLocation: ""
-            };
-
-            //Access or Create Collection
-            collection = database.collection("localDestinations");
-            database
-              .collection("localDestinations")
-              .insertOne(localDestinationsData, function(err) {
-                if (err) throw err;
-              });
-            //(Step 3 Above)
+          callusersProfilePromise().then(function(gui) {
             client.close();
             res.json({ success: true, gui: gui });
           });
@@ -180,7 +119,7 @@ exports.aboutYouSubmit = function(req, res) {
       //Access or Create Database
       database = client.db(DATABASE_NAME);
       //Access or Create Collection
-      collection = database.collection("aboutYou");
+      collection = database.collection("usersProfile");
       var target = { _id: ObjectId(req.body.gui) };
       var updateData = {
         $set: {
@@ -194,7 +133,7 @@ exports.aboutYouSubmit = function(req, res) {
       };
       //Find the first document in the customers collection:
       database
-        .collection("aboutYou")
+        .collection("usersProfile")
         .updateOne(target, updateData, function(err, res) {
           if (err) throw err;
         });
@@ -218,7 +157,7 @@ exports.preferencesSubmit = function(req, res) {
       //Access or Create Database
       database = client.db(DATABASE_NAME);
       //Access or Create Collection
-      collection = database.collection("preferences");
+      collection = database.collection("usersProfile");
       var target = { _id: ObjectId(req.body.gui) };
       var updateData = {
         $set: {
@@ -229,7 +168,7 @@ exports.preferencesSubmit = function(req, res) {
       };
       //Find the first document in the customers collection:
       database
-        .collection("preferences")
+        .collection("usersProfile")
         .updateOne(target, updateData, function(err, res) {
           if (err) throw err;
         });
@@ -253,7 +192,7 @@ exports.interestsSubmit = function(req, res) {
       //Access or Create Database
       database = client.db(DATABASE_NAME);
       //Access or Create Collection
-      collection = database.collection("interests");
+      collection = database.collection("usersProfile");
       var target = { _id: ObjectId(req.body.gui) };
       var updateData = {
         $set: {
@@ -262,7 +201,7 @@ exports.interestsSubmit = function(req, res) {
       };
       //Find the first document in the customers collection:
       database
-        .collection("interests")
+        .collection("usersProfile")
         .updateOne(target, updateData, function(err, res) {
           if (err) throw err;
         });
@@ -286,7 +225,7 @@ exports.wouldyouRatherSubmit = function(req, res) {
       //Access or Create Database
       database = client.db(DATABASE_NAME);
       //Access or Create Collection
-      collection = database.collection("wouldYouRather");
+      collection = database.collection("usersProfile");
       var target = { _id: ObjectId(req.body.gui) };
       var updateData = {
         $set: {
@@ -300,7 +239,7 @@ exports.wouldyouRatherSubmit = function(req, res) {
       };
       //Find the first document in the customers collection:
       database
-        .collection("wouldYouRather")
+        .collection("usersProfile")
         .updateOne(target, updateData, function(err, res) {
           if (err) throw err;
         });
@@ -324,7 +263,7 @@ exports.localDestinationsSubmit = function(req, res) {
       //Access or Create Database
       database = client.db(DATABASE_NAME);
       //Access or Create Collection
-      collection = database.collection("localDestinations");
+      collection = database.collection("usersProfile");
       var target = { _id: ObjectId(req.body.gui) };
       var updateData = {
         $set: {
@@ -333,7 +272,7 @@ exports.localDestinationsSubmit = function(req, res) {
       };
       //Find the first document in the customers collection:
       database
-        .collection("localDestinations")
+        .collection("usersProfile")
         .updateOne(target, updateData, function(err, res) {
           if (err) throw err;
         });

@@ -46,26 +46,22 @@ class TellUsMore extends React.Component {
     this.b8y = 0;
     this.b9y = 0;
 
-    //TESTING USE : DELETE WHEN CONNECT TO onAuth
-    //user identiflier
-    this.mode = "undone";
-
-    this.reduxLikesArray = ["Shopping", "Pets", "Hiking"];
-
-    //TESTING USE : DELETE WHEN CONNECT TO onAuth
+    this.mode = "";
+    this.gui = "";
   }
 
   componentDidMount() {
+    this.mode = this.props.CreateProfileReducer.mode;
+
     //For Undone User
     if (this.mode === "undone") {
-      let likesArray = this.reduxLikesArray
+      let likesArray = this.props.CreateProfileReducer.likesData.likesArray;
 
       this.setState({
-        likesArray: likesArray,
+        likesArray: likesArray
       });
     }
   }
-
 
   componentDidUpdate(prevProps, prevState, snapshot) {
     //if there have any udpate to the warnings by checking this.state and prevState
@@ -82,10 +78,9 @@ class TellUsMore extends React.Component {
   }
 
   handleSubmit = () => {
-
     if (this.state.passed) {
       //Send data to database
-      fetch("http://74.80.250.210:5000/dbRouter/interestsSubmit", {
+      fetch("http://74.80.250.210:5000/api/profile/interestsSubmit", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"

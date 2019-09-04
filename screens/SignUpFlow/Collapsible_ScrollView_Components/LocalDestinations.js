@@ -66,19 +66,17 @@ class LocationDestinations extends React.Component {
     this.b8y = 0;
     this.b9y = 0;
 
-    //TESTING USE : DELETE WHEN CONNECT TO onAuth
-    //user identiflier
-    this.mode = "undone";
-
-    this.reduxWeekendLocation = "Napa";
-
-    //TESTING USE : DELETE WHEN CONNECT TO onAuth
+    this.mode = "";
+    this.gui = "";
   }
 
   componentDidMount() {
+    this.mode = this.props.CreateProfileReducer.mode;
+
     //For Undone User
     if (this.mode === "undone") {
-      let weekendLocation = this.reduxWeekendLocation;
+      let weekendLocation = this.props.CreateProfileReducer.weekendLocation
+        .localDestinations;
 
       this.setState({
         weekendLocation: weekendLocation
@@ -191,7 +189,7 @@ class LocationDestinations extends React.Component {
   handleSubmit = () => {
     if (this.state.passed) {
       //Send data to database
-      fetch("http://74.80.250.210:5000/dbRouter/localDestinationsSubmit", {
+      fetch("http://74.80.250.210:5000/api/profile/localDestinationsSubmit", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"

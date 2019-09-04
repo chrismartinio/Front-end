@@ -130,6 +130,7 @@ class HomeScreen extends React.Component {
   };
 
   handleSignUp = () => {
+
     this.props.navigation.navigate("SignUp");
   };
 

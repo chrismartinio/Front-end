@@ -13,7 +13,7 @@ import Slider from "./TinyComponents/WouldYouRatherSlider";
 import SetWouldRatherDataAction from "../../../storage/actions/SetWouldRatherDataAction";
 import { connect } from "react-redux";
 
-class WouldRather extends React.Component {
+class WouldYouRather extends React.Component {
   static navigationOptions = {
     header: null
   };
@@ -21,6 +21,9 @@ class WouldRather extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      displaySlider1Value: 0,
+      displaySlider2Value: 0,
+      displaySlider3Value: 0,
       passed: true
     };
     this.s1r1 = 50;
@@ -30,45 +33,35 @@ class WouldRather extends React.Component {
     this.s3r1 = 50;
     this.s3r2 = 50;
 
-    this.displaySlider1Value = 0;
-    this.displaySlider2Value = 0;
-    this.displaySlider3Value = 0;
-
-    //TESTING USE : DELETE WHEN CONNECT TO onAuth
-    //user identiflier
-    this.mode = "undone";
-
-    this.reduxS1r1 = 10;
-    this.reduxS1r2 = 90;
-    this.reduxS2r1 = 50;
-    this.reduxS2r2 = 50;
-    this.reduxS3r1 = 60;
-    this.reduxS3r2 = 40;
-
-    //TESTING USE : DELETE WHEN CONNECT TO onAuth
+    this.mode = "";
+    this.gui = "";
   }
 
   componentDidMount() {
+    this.mode = this.props.CreateProfileReducer.mode;
+
     //For Undone User
     if (this.mode === "undone") {
-      this.s1r1 = this.reduxS1r1;
-      this.s1r2 = this.reduxS1r2;
-      this.s2r1 = this.reduxS2r1;
-      this.s2r2 = this.reduxS2r2;
-      this.s3r1 = this.reduxS3r1;
-      this.s3r2 = this.reduxS3r2;
 
-      this.displaySlider1Value = this.reduxS1r2 - 50;
+      this.s1r1 = this.props.CreateProfileReducer.wouldRatherData.s1r1;
+      this.s1r2 = this.props.CreateProfileReducer.wouldRatherData.s1r2;
+      this.s2r1 = this.props.CreateProfileReducer.wouldRatherData.s2r1;
+      this.s2r2 = this.props.CreateProfileReducer.wouldRatherData.s2r2;
+      this.s3r1 = this.props.CreateProfileReducer.wouldRatherData.s3r1;
+      this.s3r2 = this.props.CreateProfileReducer.wouldRatherData.s3r2;
 
-      this.displaySlider2Value = this.reduxS2r2 - 50;
+      this.setState({
+        displaySlider1Value: this.props.CreateProfileReducer.wouldRatherData.s1r2 - 50,
+        displaySlider2Value: this.props.CreateProfileReducer.wouldRatherData.s2r2 - 50,
+        displaySlider3Value: this.props.CreateProfileReducer.wouldRatherData.s3r2 - 50,
+      })
 
-      this.displaySlider3Value = this.reduxS3r2 - 50;
     }
   }
 
   handleSubmit = () => {
     //Send data to database
-    fetch("http://74.80.250.210:5000/dbRouter/wouldyouRatherSubmit", {
+    fetch("http://74.80.250.210:5000/api/profile/wouldyouRatherSubmit", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -148,7 +141,7 @@ class WouldRather extends React.Component {
               functionListener={this.handleListener1}
               leftBound={"Books"}
               rightBound={"Movie"}
-              value={this.displaySlider1Value}
+              value={this.state.displaySlider1Value}
             />
             <Text />
           </View>
@@ -158,7 +151,7 @@ class WouldRather extends React.Component {
               functionListener={this.handleListener2}
               leftBound={"Wine"}
               rightBound={"Beer"}
-              value={this.displaySlider2Value}
+              value={this.state.displaySlider2Value}
             />
             <Text />
           </View>
@@ -168,7 +161,7 @@ class WouldRather extends React.Component {
               functionListener={this.handleListener3}
               leftBound={"Beach"}
               rightBound={"Mountains"}
-              value={this.displaySlider3Value}
+              value={this.state.displaySlider3Value}
             />
             <Text />
           </View>
@@ -290,4 +283,4 @@ const mapDispatchToProps = dispatch => ({
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(WouldRather);
+)(WouldYouRather);

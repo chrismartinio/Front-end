@@ -24,7 +24,6 @@ import { Chevron } from "react-native-shapes";
 import axios from "axios";
 
 //click password button to toggle password
-//duplicate email from database
 
 const profileServer = "http://74.80.250.210:5000/dbRouter/";
 
@@ -47,25 +46,18 @@ class CreateAccount extends Component {
       editable: true
     };
 
-    //TESTING USE : DELETE WHEN CONNECT TO onAuth
-
-    //user identiflier
-    //mode = undone
-    //mode = done
-    this.mode = "undone";
-    this.gui = "5d5b2d8b1dc6d2bd12a1dc7e";
-    //this.gui = "";
-    this.reduxEmail = "hhh@live.com";
-    this.reduxPassword = "12345Abc";
-
-    //TESTING USE : DELETE WHEN CONNECT TO onAuth
+    this.mode = "";
+    this.gui = "";
   }
 
   componentDidMount() {
+    this.mode = this.props.CreateProfileReducer.mode;
+    this.gui = this.props.CreateProfileReducer.userData.gui;
+
     //For Undone User
     if (this.mode === "undone") {
-      let email = this.reduxEmail;
-      let password = this.reduxPassword;
+      let email = this.props.CreateProfileReducer.userData.email;
+      let password = this.props.CreateProfileReducer.userData.password;
 
       //For third parties User
       //Third Parties User has same properties as undone user
@@ -291,7 +283,6 @@ class CreateAccount extends Component {
   };
 
   handleSubmit = () => {
-
     //First comparsion
     //Purpose: Prevent Regular user Second submission
     //Even though Regular user mode is set to empty (mode = "") by default
@@ -300,20 +291,11 @@ class CreateAccount extends Component {
       this.props.handlePassed("createAccount", true);
       return;
 
-    //Second comparision
-    //Purpose: Prevent Undone User (they already have a GUI) for second submission
-    //Also, onAuth will pass a gui to on-boarding, we will use that gui on other screen
-    //That's why we send the gui/email/password to redux
+      //Second comparision
+      //Purpose: Prevent Undone User (they already have a GUI) for second submission
+      //Also, onAuth will pass a gui to on-boarding, we will use that gui on other screen
+      //That's why we send the gui/email/password to redux
     } else if (this.state.editable === false && this.mode === "undone") {
-      //TESTING USE : DELETE WHEN CONNECT TO onAuth
-      //Send data to Redux
-      this.props.SetUserDataAction({
-        gui: this.gui,
-        email: this.state.email,
-        password: this.state.password
-      });
-      //TESTING USE : DELETE WHEN CONNECT TO onAuth
-
       this.props.handlePassed("createAccount", true);
       return;
     }
@@ -330,7 +312,7 @@ class CreateAccount extends Component {
       this.mode = "";
 
       //Send data to database
-      fetch("http://74.80.250.210:5000/dbRouter/createAccountSubmit", {
+      fetch("http://74.80.250.210:5000/api/profile/createAccountSubmit", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -343,9 +325,9 @@ class CreateAccount extends Component {
         .then(res => res.json())
         .then(res => {
           let object = JSON.parse(JSON.stringify(res));
-
           if (object.success) {
             //Send data to Redux
+
             this.props.SetUserDataAction({
               gui: object.gui,
               email: this.state.email,
