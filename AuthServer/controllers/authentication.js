@@ -39,16 +39,53 @@ function setLogin(request){
     password: request.body.password
   }
 }
+
+import firebase from './mainFire'
+
+// send data to back end: or to configure
+
+
+async function signInWithFacebook() {
+
+  try{
+    const appId = Expo.Constants.manifest.extra.facebook.appId;
+    const permissions = ['public_profile', 'email'];  // Permissions required, consult Facebook docs
+
+    const {
+        type,
+        token,
+        expires,
+        declinedPermissions,
+    } = await Expo.Facebook.logInWithReadPermissionsAsync(
+      appId,
+      {permissions}
+    )
+      if (type === 'success') {
+        // Get the user's name using Facebook's Graph API
+        const response = await fetch(`https://graph.facebook.com/me?fields=id,name,email,birthday&access_token=${token}`);
+        //const dataNeeded = await fetch(` https://graph.facebook.com/${await response.json().id}?fields=id,name,email&access_token=${token}`)
+         return (await response.json());
+      } else {
+        // type === 'cancel'
+        console.log(`Facebook Login Error: ${message}`);
+      }
+  } catch ({ message }) {
+    console.log(`Facebook Login Error: ${message}`);
+  }
+
+
+}
 //========================================
 // Login Route
 //========================================
 // testing adding a person
 
 
-
+//have multiple use cases for facebook, email password
 exports.login = function (req, res, next) {
     let userInfo = setLogin(req)
     let user_id = setUserId(req)
+
       User.findOne({"email":userInfo.username}, function(err, user){
         if(err){
             console.log('err here')
@@ -57,7 +94,8 @@ exports.login = function (req, res, next) {
         if(!user){
           return res.status(403).send({ error: 'User Not found.' })
         }
-
+        // fb password auth is wrong:
+            // bycrypt for requested password differes from
         if(!bcrypt.compareSync(req.body.password, user.password)){
            return res.status(403).send({ error: 'Wrong Password.' })
         }
@@ -66,7 +104,6 @@ exports.login = function (req, res, next) {
         const token = generateToken(user_id)
         return res.send({token: token, success: true})
   })
-
 
 }
 
