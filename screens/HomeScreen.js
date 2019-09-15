@@ -87,7 +87,6 @@ class HomeScreen extends React.Component {
     });
 
     let jsonData = await data.json();
-
       if (jsonData.token) {
         this.props.SetJwtAction(jsonData)
         this.props.navigation.navigate("Chat");
@@ -130,7 +129,6 @@ class HomeScreen extends React.Component {
   };
 
   handleSignUp = () => {
-
     this.props.navigation.navigate("SignUp");
   };
 
@@ -163,55 +161,62 @@ class HomeScreen extends React.Component {
     }
   }
 
+  DBCheck = async(info) => {
+    try {
+      console.log(info.uid)
+      let data = await fetch("http://10.0.0.246:3001/api/auth/login", {
+        method: "POST",
+        mode: "cors",
+        credentials: "same-origin",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          password: info.uid,
+          username: info.email
+        })
+      });
 
-  checkFaceBookValidity = signInData => {
+      let jsonData = await data.json();
+      return jsonData
+    } catch (e) {
+      console.log(e.error);
+    }
+  }
+
+
+  checkFaceBookValidity = async(signInData) => {
     //uid": "GKFSGO5NihZRQgtwRaJVul4RvFi1",
     //GKFSGO5NihZRQgtwRaJVul4RvFi1
-    var fbData = signInWithFacebook();
 
+    var fbData = signInWithFacebook();
     fbData
       .then(data => {
-        //console.log(data)
+        let fullName = data.name.split(' ')
+        let firstName = fullName[0]
+        let lastName = fullName[1]
         let profData = {
-          firstName: data.data.additionalUserInfo.profile.first_name,
-          lastName: data.data.additionalUserInfo.profile.last_name,
-          email: data.data.additionalUserInfo.profile.email,
-          uid: data.data.user.uid,
+          firstName: firstName,
+          lastName: lastName,
+          email: data.email,
+          uid: data.id,
+          birthday:data.birthday,
           undone: 4
         };
 
-
-      //   fetch("http://10.0.0.246:5000/dbRouter/userProfileAllCollectionsQuery", {
-      //   method: "POST",
-      //   mode: "cors",
-      //   credentials: "same-origin",
-      //   headers: {
-      //     Accept: "application/json",
-      //     "Content-Type": "application/json"
-      //   },
-      //   body: JSON.stringify({
-      //     password: profData.uid,
-      //     email: profData.email,
-      //     collection:'aboutYou'
-      //   })
-      // }).then((data)=>{
-      //   console.log('we matched data', data)
-      // }).catch((e)=>{
-      //   console.log('error at loading data:',e)
-      // })
+        var userFinished = this.DBCheck(profData)
+        userFinished
+          .then((userData)=>{
+            console.log(userData)
+          }).catch((e)=>{
+            console.log('wrong error')
+          })
 
 
-        // /userProfileSingleCollectionQuery
-        // only send to chat if data already exists
-        //this.props.navigation.navigate("Chat");
 
 
-        //check here if user email/or uuid exists in db
-
-        // if it does; continue to chat
-          // if it doesn't continue to onboarding.
-          this.props.SetFbDataAction(profData);
-
+          //this.props.SetFbDataAction(profData);
       }).catch(err => {
         console.log(err);
       });
