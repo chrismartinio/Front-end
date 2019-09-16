@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import {
   Image,
   Platform,
@@ -8,222 +8,206 @@ import {
   TouchableOpacity,
   View,
   Button
-} from 'react-native';
-import { WebBrowser } from 'expo';
-import Firebase from '../storage/Store'
 
-import { MonoText } from '../components/StyledText';
-import t from 'tcomb-form-native';
-import axios from 'axios'
-import { signInWithFacebook } from '../utils/auth.js'
+} from "react-native";
+import Firebase from "../storage/Store";
+import { MonoText } from "../components/StyledText";
+import t from "tcomb-form-native";
+import axios from "axios";
+import { signInWithFacebook } from "../utils/auth.js";
+import { connect } from "react-redux";
+import SetFbDataAction from "../storage/actions/DataReducerActions/SetFbDataAction";
+import SetJwtAction from "../storage/actions/DataReducerActions/SetJwtAction";
+//import publicIP from "react-native-public-ip";
+import { Constants, Location, Permissions, WebBrowser } from "expo";
 
-import { Constants, Location, Permissions } from 'expo';
 const { manifest } = Constants;
 
 const Form = t.form.Form;
 
 const User = t.struct({
   username: t.String,
-  password: t.String,
+  password: t.String
 });
 
-
-
-export default class HomeScreen extends React.Component {
+class HomeScreen extends React.Component {
   static navigationOptions = {
-    header: null,
+    header: null
   };
 
   state = {
     location: null,
-    errorMessage: null,
+    errorMessage: null
   };
 
 
-// Aysnc problems
-  // componentWillMount() {
-  //   if (Platform.OS === 'android' && !Constants.isDevice) {
-  //     this.setState({
-  //       errorMessage: 'Oops, this will not work on Sketch in an Android emulator. Try it on your device!',
-  //     });
-  //   } else {
-  //     this._getLocationAsync();
-  //   }
-  // }
+  handleEmailAndPasswordSignin = async () => {
+    // needs to have json web token?
+    try {
+    const { username, password } = this._form.getValue();
+    let data = await fetch("http://10.0.0.246:3001/api/auth/login", {
+      method: "POST",
+      mode: "cors",
+      credentials: "same-origin",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        password: password,
+        username: username,
+        mode: 2,
+        authType:'email'
+      })
+    });
 
-  // _getLocationAsync = async () => {
-  //   let { status } = await Permissions.askAsync(Permissions.LOCATION);
-  //   if (status !== 'granted') {
-  //     this.setState({
-  //       errorMessage: 'Permission to access location was denied',
-  //     });
-  //   }
+    let jsonData = await data.json();
+      if (jsonData.token) {
+        this.props.SetJwtAction(jsonData.token)
+        this.props.navigation.navigate("Chat");
+      } else {
+        alert(jsonData.error)
+      }
 
-  //   let location = await Location.getCurrentPositionAsync({});
-  //   console.log(location)
-  //   this.setState({ location });
-  // };
-
-
-
-
-
-
-  handleEmailAndPasswordSignin = async() => {
-
-    try{
-    const {username, password} = this._form.getValue();
-    // front end check:
-        let data = await fetch('http://10.0.0.246:3000/api/auth/login', {
-          method: 'POST',
-          mode:'cors',
-          credentials: "same-origin",
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-          password: password,
-          username: username
-        })})
-
-      let jsonData = await data.json()
-      console.log(jsonData)
-      this.props.navigation.navigate('Chat');
     } catch(e){
-      console.log(e.error)
-
+      console.log(e)
     }
-  }
+  };
 
 
-    handleTestAddUser = async() => {
-    try{
-    const {username, password} = this._form.getValue();
-    // front end check:
-        let data = await fetch('http://10.0.0.246:3000/api/auth/login', {
-          method: 'POST',
-          mode:'cors',
-          credentials: "same-origin",
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-          password: password,
-          username: username
-        })})
-
-      let jsonData = await data.json()
-      console.log(jsonData)
-      this.props.navigation.navigate('Chat');
-    } catch(e){
-      console.log(e.error)
-
-    }
-  }
 
   handleSignUp = () => {
-    this.props.navigation.navigate('SignUp');
-  }
+    this.props.navigation.navigate("SignUp");
+  };
 
-  handleSocialMediaSignIn = (event) => {
-    const value = this._form.getValue();
-    //66 = fb
-    //76= google
-    // 86  twitter
-    console.log(event.target)
-    switch(event.target){
-      case 67 :
-        this.checkFaceBookValidity(value)
-        console.log('checked in with fb')
-        break;
-      case 77:
-        // google auth
-        break;
-      case 87:
-        // twitter auth
-        break;
-      default:
-        console.log('broken');
 
+  DBCheck = async(info) => {
+    try {
+      console.log(info.uid)
+      let data = await fetch("http://10.0.0.246:3001/api/auth/login", {
+        method: "POST",
+        mode: "cors",
+        credentials: "same-origin",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          password: info.uid,
+          username: info.email
+        })
+      });
+
+      let jsonData = await data.json();
+      return jsonData
+    } catch (e) {
+      console.log(e.error);
     }
-
   }
 
 
+  checkFaceBookValidity = async(signInData) => {
 
-  checkFaceBookValidity = (signInData) => {
+    try {
+    //const { username, password } = this._form.getValue();
     var fbData = signInWithFacebook()
-    fbData.then((data)=>{
-      console.log(data.data)
-      this.props.navigation.navigate('Chat')
+    fbData
+    .then((data)=>{
+      return data
+    })
+    .then((fbData)=>{
+         fetch("http://10.0.0.246:3001/api/auth/login", {
+            method: "POST",
+            mode: "cors",
+            credentials: "same-origin",
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+              mode: 2,
+              authType:'facebook',
+              data: fbData
+            })
+          }).then((AuthData)=>{
+              return AuthData.json()
+          }).then((data)=>{
+            this.props.SetJwtAction(data.token)
+            this.props.navigation.navigate("Chat")
+          }).catch((e)=>{
+            console.log(e)
+          })
+
+
     }).catch((err)=>{
       console.log(err)
     })
-  }
+
+
+
+
+
+
+
+    } catch(e){
+      console.log(e)
+    }
+  };
 
   render() {
-
     return (
       <View style={styles.container}>
-        <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
-
+        <ScrollView
+          style={styles.container}
+          contentContainerStyle={styles.contentContainer}
+        >
           <View style={styles.welcomeContainer}>
             <Image
               source={
                 __DEV__
-                  ? require('../assets/images/blindly.jpg')
-                  : require('../assets/images/blindly.jpg')
+                  ? require("../assets/images/blindly.jpg")
+                  : require("../assets/images/blindly.jpg")
               }
               style={styles.welcomeImage}
             />
           </View>
           <View style={styles.formContainer}>
-            <Form
-              type={User}
-              ref={c => this._form = c}
-            />
+            <Form type={User} ref={c => (this._form = c)} />
           </View>
 
+          <View style={styles.container}>
+            <Button
+              title="Sign in!"
+              onPress={e => this.handleEmailAndPasswordSignin(e)}
+              color="blue"
+              key="100"
+            />
+            <Text />
+          </View>
 
-      <View style={styles.container}>
-        <Button
-          title="Sign in!"
-          onPress={(e)=>this.handleEmailAndPasswordSignin(e)}
-          color='blue'
-          key='100'
-        />
-        <Text>
-        </Text>
-      </View>
+          <Button title="Sign Up!" onPress={this.handleSignUp} color="blue" />
 
-        <Button
-          title="Sign Up!"
-          onPress={this.handleSignUp}
-          color='blue'
-        />
+          <View
+            style={{ flex: 1, flexDirection: "row", justifyContent: "center" }}
+          >
+            <Button
+              title="facebook"
+              onPress={this.checkFaceBookValidity}
+              color="blue"
+            />
 
-        <View style={{flex:1, flexDirection:'row', justifyContent:'center'}}>
-          <Button
-            title="facebook"
-            onPress={this.handleSocialMediaSignIn}
-            color='blue'
-          />
+            <Button
+              title="google"
+              onPress={this.checkFaceBookValidity}
+              color="blue"
+            />
 
-        <Button
-          title="google"
-          onPress={this.handleSocialMediaSignIn}
-          color='blue'
-        />
-
-        <Button
-          title="twitter"
-          onPress={this.handleSocialMediaSignIn}
-          color='blue'
-        />
-        </View>
-
+            <Button
+              title="twitter"
+              onPress={this.checkFaceBookValidity}
+              color="blue"
+            />
+          </View>
         </ScrollView>
       </View>
     );
@@ -239,8 +223,8 @@ export default class HomeScreen extends React.Component {
 
       return (
         <Text style={styles.developmentModeText}>
-          Development mode is enabled, your app will be slower but you can use useful development
-          tools. {learnMoreButton}
+          Development mode is enabled, your app will be slower but you can use
+          useful development tools. {learnMoreButton}
         </Text>
       );
     } else {
@@ -253,12 +237,14 @@ export default class HomeScreen extends React.Component {
   }
 
   _handleLearnMorePress = () => {
-    WebBrowser.openBrowserAsync('https://docs.expo.io/versions/latest/guides/development-mode');
+    WebBrowser.openBrowserAsync(
+      "https://docs.expo.io/versions/latest/guides/development-mode"
+    );
   };
 
   _handleHelpPress = () => {
     WebBrowser.openBrowserAsync(
-      'https://docs.expo.io/versions/latest/guides/up-and-running.html#can-t-see-your-changes'
+      "https://docs.expo.io/versions/latest/guides/up-and-running.html#can-t-see-your-changes"
     );
   };
 }
@@ -266,94 +252,107 @@ export default class HomeScreen extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff"
   },
   formContainer: {
-    justifyContent: 'center',
+    justifyContent: "center",
     marginTop: 50,
     padding: 10,
-    backgroundColor: '#ffffff',
+    backgroundColor: "#ffffff"
   },
   developmentModeText: {
     marginBottom: 20,
-    color: 'rgba(0,0,0,0.4)',
+    color: "rgba(0,0,0,0.4)",
     fontSize: 14,
     lineHeight: 19,
-    textAlign: 'center',
+    textAlign: "center"
   },
   contentContainer: {
-    paddingTop: 30,
+    paddingTop: 30
   },
   welcomeContainer: {
-    alignItems: 'center',
+    alignItems: "center",
     marginTop: 10,
-    marginBottom: 10,
+    marginBottom: 10
   },
   welcomeImage: {
     width: 300,
     height: 200,
-    resizeMode: 'contain',
+    resizeMode: "contain",
     marginTop: 3,
-    marginLeft: -10,
+    marginLeft: -10
   },
   getStartedContainer: {
-    alignItems: 'center',
-    marginHorizontal: 50,
+    alignItems: "center",
+    marginHorizontal: 50
   },
   homeScreenFilename: {
-    marginVertical: 7,
+    marginVertical: 7
   },
   codeHighlightText: {
-    color: 'rgba(96,100,109, 0.8)',
+    color: "rgba(96,100,109, 0.8)"
   },
   codeHighlightContainer: {
-    backgroundColor: 'rgba(0,0,0,0.05)',
+    backgroundColor: "rgba(0,0,0,0.05)",
     borderRadius: 3,
-    paddingHorizontal: 4,
+    paddingHorizontal: 4
   },
   getStartedText: {
     fontSize: 17,
-    color: 'rgba(96,100,109, 1)',
+    color: "rgba(96,100,109, 1)",
     lineHeight: 24,
-    textAlign: 'center',
+    textAlign: "center"
   },
   tabBarInfoContainer: {
-    position: 'absolute',
+    position: "absolute",
     bottom: 0,
     left: 0,
     right: 0,
     ...Platform.select({
       ios: {
-        shadowColor: 'black',
+        shadowColor: "black",
         shadowOffset: { height: -3 },
         shadowOpacity: 0.1,
-        shadowRadius: 3,
+        shadowRadius: 3
       },
       android: {
-        elevation: 20,
-      },
+        elevation: 20
+      }
     }),
-    alignItems: 'center',
-    backgroundColor: '#fbfbfb',
-    paddingVertical: 20,
+    alignItems: "center",
+    backgroundColor: "#fbfbfb",
+    paddingVertical: 20
   },
   tabBarInfoText: {
     fontSize: 17,
-    color: 'rgba(96,100,109, 1)',
-    textAlign: 'center',
+    color: "rgba(96,100,109, 1)",
+    textAlign: "center"
   },
   navigationFilename: {
-    marginTop: 5,
+    marginTop: 5
   },
   helpContainer: {
     marginTop: 15,
-    alignItems: 'center',
+    alignItems: "center"
   },
   helpLink: {
-    paddingVertical: 15,
+    paddingVertical: 15
   },
   helpLinkText: {
     fontSize: 14,
-    color: '#2e78b7',
-  },
+    color: "#2e78b7"
+  }
 });
+const mapStateToProps = state => ({
+  ...state
+});
+
+const mapDispatchToProps = dispatch => ({
+  SetFbDataAction: payload => dispatch(SetFbDataAction(payload)),
+  SetJwtAction: payload => dispatch(SetJwtAction(payload))
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(HomeScreen);

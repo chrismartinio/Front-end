@@ -36,18 +36,20 @@ exports.login = function (req, res, next) {
         if(err){
             return err
         } else {
-
         if(result !== null){
             res.status(200).json({
               token: 'JWT ' + generateToken(userInfo),
               user: userInfo
           })
         } else {
-          res.status(422).send({error:'Invalid Username'})
+          res.status(422).send({error:`Invalid Username`})
         }
       }
   })
 }
+
+// make functions for every file.
+
 
 
 //========================================
@@ -56,20 +58,10 @@ exports.login = function (req, res, next) {
 exports.register = function (req, res, next) {
     // Check for registration errors
 
-
     // registration will need multiple handlers
     // need to handle range of having one data, or all data
 
-    const email = req.body.email;
-    const dateOfBirth = req.body.dateOfBirth;
-    const password = req.body.password;
-    const firstName = req.body.firstName;
-    const lastName = req.body.lastName;
-    const country = req.body.country;
-    const city = req.body.city;
-    const username = req.body.username
-
-    // Return error if no username provided
+        // Return error if no username provided
     if (!username) {
         return res.status(422).send({ error: 'You must enter a username.' })
     }
@@ -77,6 +69,21 @@ exports.register = function (req, res, next) {
     if (!email) {
         return res.status(422).send({ error: 'You must enter an email address.' });
     }
+
+    const email = req.body.email;
+    const password = req.body.password;
+    const username = req.body.username
+
+
+
+
+
+    const dateOfBirth = req.body.dateOfBirth;
+    const country = req.body.country;
+    //zip code over here
+    const city = req.body.city;
+    const firstName = req.body.firstName;
+    const lastName = req.body.lastName;
 
     // Return error if no password provided
     if (!password) {

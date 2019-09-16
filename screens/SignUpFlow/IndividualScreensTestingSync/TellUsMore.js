@@ -22,6 +22,7 @@ import { connect } from "react-redux";
 //import SetProfileFirstLike from "../../storage/actions/SetProfileFirstLike";
 import SetProfileLikesAction from "../../../storage/actions/SetProfileLikesAction";
 import SetProfileFirstLike from "../../../storage/actions/SetProfileFirstLike";
+import RemoveProfileLikesAction from "../../../storage/actions/RemoveProfileLikesAction";
 
 class TellUsMore extends React.Component {
   constructor(props) {
@@ -29,27 +30,28 @@ class TellUsMore extends React.Component {
     this.inputRefs = {};
   }
   handleSubmit = () => {
-    this.props.navigation.navigate("TestImInterestedIn");
+    if (this.props.CreateProfileReducer.likes.length < 3) {
+      console.log("Invalid Likes: less than 3 likes");
+    } else {
+      console.log("Passed");
+      this.props.navigation.navigate("TestImInterestedIn");
+    }
   };
 
   handleRedux = name => {
     const likes = this.props.CreateProfileReducer.likes;
     //console.log(name);
-
     // replacing initial state
     if (likes[0] === null) {
       return this.props.SetProfileFirstLike(name);
     }
-    // blocks duplicates
-    for (let i = 0; i < likes.length; i++) {
-      if (likes[i] === name) {
-        return;
-      }
-    }
-    this.props.SetProfileLikesAction(name);
 
-    //after clicked, gray the buttons
-    //copy categories.js
+    // blocks duplicates
+    if (likes.indexOf(name) !== -1) {
+      return this.props.RemoveProfileLikesAction(name);
+    }
+
+    this.props.SetProfileLikesAction(name);
   };
 
   render() {
@@ -57,7 +59,11 @@ class TellUsMore extends React.Component {
       return (
         <TouchableOpacity
           key={index++}
-          style={styles.likeButtonWrap}
+          style={
+            this.props.CreateProfileReducer.likes.indexOf(e) === -1
+              ? styles.likeButtonWrap
+              : styles.pickedlikeButtonWrap
+          }
           onPress={() => this.handleRedux(e)}
         >
           <Text style={styles.likeButton}>{e}</Text>
@@ -115,7 +121,14 @@ class TellUsMore extends React.Component {
               alignItems: "center"
             }}
           >
-            <TouchableOpacity style={styles.button} onPress={this.handleSubmit}>
+            <TouchableOpacity
+              style={
+                this.props.CreateProfileReducer.likes.length < 3
+                  ? styles.button
+                  : styles.passedButton
+              }
+              onPress={this.handleSubmit}
+            >
               <Text style={{ color: "#fff" }}>Next</Text>
             </TouchableOpacity>
           </View>
@@ -155,9 +168,31 @@ const styles = StyleSheet.create({
     //width: "30%",
     margin: "1%"
   },
+  pickedlikeButtonWrap: {
+    alignItems: "center",
+    paddingLeft: 20,
+    paddingRight: 20,
+    paddingTop: 10,
+    paddingBottom: 10,
+    borderRadius: 40,
+    borderWidth: 1,
+    borderColor: "#fff",
+    //width: "30%",
+    margin: "1%",
+    backgroundColor: "green"
+  },
   button: {
     alignItems: "center",
     padding: 10,
+    borderRadius: 40,
+    borderWidth: 2,
+    borderColor: "#fff",
+    width: "70%"
+  },
+  passedButton: {
+    alignItems: "center",
+    padding: 10,
+    backgroundColor: "green",
     borderRadius: 40,
     borderWidth: 2,
     borderColor: "#fff",
@@ -206,7 +241,9 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     SetProfileLikesAction: payload => dispatch(SetProfileLikesAction(payload)),
-    SetProfileFirstLike: payload => dispatch(SetProfileFirstLike(payload))
+    SetProfileFirstLike: payload => dispatch(SetProfileFirstLike(payload)),
+    RemoveProfileLikesAction: payload =>
+      dispatch(RemoveProfileLikesAction(payload))
   };
 };
 

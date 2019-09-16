@@ -106,7 +106,7 @@ class SelfiePage extends React.Component {
             title='Submit selfie'
             onPress={this.handleSelfieSubmit}
           />
-          </View> 
+          </View>
         </ScrollView>
         </LinearGradient>
       </View>

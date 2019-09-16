@@ -4,37 +4,32 @@ import firebase from './mainFire'
 
 
 export async function signInWithFacebook() {
-  const appId = Expo.Constants.manifest.extra.facebook.appId;
-  const permissions = ['public_profile', 'email'];  // Permissions required, consult Facebook docs
 
-  const {
-    type,
-    token,
-  } = await Expo.Facebook.logInWithReadPermissionsAsync(
-    appId,
-    {permissions}
-  );
-  console.log(type)
+  try{
+    const appId = Expo.Constants.manifest.extra.facebook.appId;
+    const permissions = ['public_profile', 'email'];  // Permissions required, consult Facebook docs
 
-  switch (type) {
-    case 'success': {
-      await firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL);  // Set persistent auth state
-      const credential = firebase.auth.FacebookAuthProvider.credential(token);
-      const facebookProfileData = await firebase.auth().signInAndRetrieveDataWithCredential(credential);  // Sign in with Facebook credential
-
-      // Do something with Facebook profile data
-
-      // navigate to registration page for categories
-        // complete sign up flow:
-
-
-      // OR you have subscribed to auth state change, authStateChange handler will process the profile data
-      // send data to redux store for profile handling:
-
-      return Promise.resolve({type: 'success', data:facebookProfileData});
-    }
-    case 'cancel': {
-      return Promise.reject({type: 'cancel'});
-    }
+    const {
+        type,
+        token,
+        expires,
+        declinedPermissions,
+    } = await Expo.Facebook.logInWithReadPermissionsAsync(
+      appId,
+      {permissions}
+    )
+      if (type === 'success') {
+        // Get the user's name using Facebook's Graph API
+        const response = await fetch(`https://graph.facebook.com/me?fields=id,name,email,birthday&access_token=${token}`);
+        //const dataNeeded = await fetch(` https://graph.facebook.com/${await response.json().id}?fields=id,name,email&access_token=${token}`)
+         return (await response.json());
+      } else {
+        // type === 'cancel'
+        console.log(`Facebook Login Error: ${message}`);
+      }
+  } catch ({ message }) {
+    console.log(`Facebook Login Error: ${message}`);
   }
+
+
 }

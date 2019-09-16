@@ -20,6 +20,7 @@ import SetInterestedDataAction from "../../../storage/actions/SetInterestedDataA
 import firebase from "../../../utils/mainFire";
 import Slider from "../CSlider";
 import { Math } from "core-js";
+import MultiSlider from '@ptomasroos/react-native-multi-slider'
 
 let pickedMen = false;
 let pickedWomen = false;
@@ -51,7 +52,11 @@ class SignupPage extends React.Component {
       pickedMen: "transparent",
       pickedWomen: "transparent",
       ageRange: 18,
-      distanceRange: 0
+      distanceRange: 0,
+      sliderOneChanging: false,
+        sliderOneValue: [5],
+        multiSliderValue: [20, 108],
+        nonCollidingMultiSliderValue: [0, 100]
     };
   }
   handleBackToSignIn = () => {
@@ -106,7 +111,16 @@ class SignupPage extends React.Component {
 
     return;
   };
+  multiSliderValuesChange = values => {
+    this.setState({
+        multiSliderValue: values,
+    },()=>{//console.log(this.state.multiSliderValue[0])
+      //console.log("JJJJ "+ this.state.multiSliderValue[1])
+    });
+    
+    
 
+};
   render() {
     if (pickedMen == true) bkgMen = "green";
     else bkgMen = "transparent";
@@ -161,15 +175,38 @@ class SignupPage extends React.Component {
 
               <Text style={styles.titleText2}>Set your preferences</Text>
               <Text style={styles.textTop}>Preferred age range</Text>
-
+              
               <View style={styles.slider1}>
-                <Slider
+              <View style={styles.flexContainer}>
+                        <Text style={styles.text2}> {this.state.multiSliderValue[0]}  </Text>
+                        <Text style={styles.text2}> {this.state.multiSliderValue[1]}  </Text>
+                      </View>
+              <MultiSlider
+                  values={[
+                            this.state.multiSliderValue[0],
+                            this.state.multiSliderValue[1],
+                        ]}
+                  sliderLength={320}
+                  onValuesChange={this.multiSliderValuesChange}
+                  min={18}
+                  max={110}
+                  step={1}
+                  allowOverlap
+                  snapped
+                  trackStyle={{
+                    //height: 10,
+                    shadowColor: 'red',
+                }}
+                  
+                        />
+                      
+                {/* <Slider
                   functionListener={this.setAgeRange}
                   minimumValue={18}
                   maximumValue={110}
                   leftBound={"18"}
                   rightBound={"110"}
-                />
+                /> */}
               </View>
               <Text style={styles.textTop2}>
                 Preferred match radius (miles)
@@ -213,6 +250,9 @@ const styles = StyleSheet.create({
     fontSize: 48,
     textAlign: "center",
     fontWeight: "100"
+  },
+  text2:{
+    color:'white',
   },
   titleText2:{
     margin:10,
@@ -274,6 +314,16 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: "#fff",
     width: "55%"
+  },
+  flexContainer: {
+    
+    //top: height *.45,
+    flexDirection: 'row',
+    justifyContent:'space-between',
+    //position:'absolute',
+    alignItems:'stretch',
+    
+    
   },
   buttonWomen: {
     alignItems: "center",

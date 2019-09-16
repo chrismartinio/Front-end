@@ -15,10 +15,10 @@ import { LinearGradient } from 'expo';
 var pic1='https://media.gq.com/photos/56d4902a9acdcf20275ef34c/master/w_806,h_1173,c_limit/tom-hardy-lead-840.jpg';
 
 class Hello extends React.Component {
-  
+
   render() {
     return <View>
-            <Image 
+            <Image
               style={{top:-10,width:60,height:60,borderRadius:30,borderWidth:2,borderColor:"white"}}
               blurRadius={9}
               source={{uri: this.props.image}}
@@ -31,7 +31,7 @@ class Hello extends React.Component {
             </TouchableHighlight> */}
             </View>
 
-            
+
     ;
   }
 }

@@ -13,13 +13,20 @@ import {
   Image,
   ScrollView,
   TouchableOpacity,
-  ImageBackground
+  ImageBackground,
+  Separator, Thumbnail, List, ListItem,
 } from "react-native";
 import { LinearGradient } from "expo";
 import { connect } from "react-redux";
 import SetUserDataAction from "../../storage/actions/SetUserDataAction";
 import firebase from "../../utils/mainFire";
-
+import { Collapse, CollapseHeader, CollapseBody } from "accordion-collapse-react-native";
+import SignupPage from "./AccordianCollapse/SignupPage";
+import AboutYou from "./AccordianCollapse/AboutYou";
+import ImInterestedIn from "./AccordianCollapse/ImInterestedIn";
+import TellUsMore from "./AccordianCollapse/TellUsMore";
+import WouldRather from "./AccordianCollapse/WouldRather";
+import SpendWeekend from "./AccordianCollapse/SpendAWeekend";
 class Welcome extends Component {
   constructor(props) {
     super(props);
@@ -120,59 +127,65 @@ class Welcome extends Component {
           <SafeAreaView style={styles.container}>
             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
               <View style={styles.inner}>
-                <Text style={styles.titleText}>Sign Up</Text>
-                <TextInput
-                  style={styles._textInput}
-                  placeholder="email"
-                  placeholderTextColor="#fff"
-                  onChangeText={email => this.setState({ email })}
-                  autoCompleteType={false}
-                  autoCapitalize="none"
-                  autoCorrect={false}
-                  //value={this.state.email}
-                />
-                <TextInput
-                  style={styles._textInput}
-                  placeholder="confirm email"
-                  placeholderTextColor="#fff"
-                  onChangeText={emailCheck => this.setState({ emailCheck })}
-                  autoCompleteType={false}
-                  autoCapitalize="none"
-                  autoCorrect={false}
-                />
-                <TextInput
-                  style={styles._textInput}
-                  placeholder="password"
-                  placeholderTextColor="#fff"
-                  onChangeText={password => this.setState({ password })}
-                  autoCompleteType={false}
-                  autoCapitalize="none"
-                  autoCorrect={false}
-                  secureTextEntry={true}
-                />
-                <TextInput
-                  style={styles._textInput}
-                  placeholder="confrim password"
-                  placeholderTextColor="#fff"
-                  onChangeText={passwordCheck =>
-                    this.setState({ passwordCheck })
-                  }
-                  autoCompleteType={false}
-                  autoCapitalize="none"
-                  secureTextEntry={true}
-                  autoCorrect={false}
-                />
-                <Text style={styles.smallText}>*all fields required</Text>
-                <Text />
-                <View alignItems="center">
-                  <TouchableOpacity
-                    style={styles.button2}
-                    onPress={this.handleSubmit}
-                  >
-                    <Text style={styles.button}>Next</Text>
-                  </TouchableOpacity>
-                </View>
-                <View style={{ flex: 1 }} />
+              <View>
+    <Collapse>
+      <CollapseHeader>
+          <Text>Sign Up</Text>
+      </CollapseHeader>
+      <CollapseBody>
+          <SignupPage/>
+      </CollapseBody>
+    </Collapse>
+    <Collapse>
+      <CollapseHeader>
+          <Text>About You</Text>
+      </CollapseHeader>
+      <CollapseBody>
+          <AboutYou/>
+
+      </CollapseBody>
+    </Collapse>
+    <Collapse>
+      <CollapseHeader>
+          <Text>ImInterestedIn</Text>
+      </CollapseHeader>
+      <CollapseBody>
+          <ImInterestedIn/>
+
+      </CollapseBody>
+    </Collapse>
+    <Collapse>
+      <CollapseHeader>
+          <Text>TellUsMore</Text>
+      </CollapseHeader>
+      <CollapseBody>
+          <TellUsMore/>
+
+      </CollapseBody>
+    </Collapse>
+
+    <Collapse>
+      <CollapseHeader>
+          <Text>WouldRather</Text>
+      </CollapseHeader>
+      <CollapseBody>
+          <WouldRather/>
+
+      </CollapseBody>
+    </Collapse>
+
+    <Collapse>
+      <CollapseHeader>
+          <Text>SpendAWeekend</Text>
+      </CollapseHeader>
+      <CollapseBody>
+          <SpendWeekend/>
+
+      </CollapseBody>
+    </Collapse>
+
+
+  </View>
               </View>
             </TouchableWithoutFeedback>
           </SafeAreaView>
