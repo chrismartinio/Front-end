@@ -1,40 +1,33 @@
 import React, { Component } from "react";
 import {
   Button,
-  Keyboard,
-  KeyboardAvoidingView,
-  Platform,
-  SafeAreaView,
   StyleSheet,
   Text,
   TextInput,
-  TouchableWithoutFeedback,
   View,
   Image,
   ScrollView,
-  TouchableOpacity,
-  ImageBackground
+  TouchableOpacity
 } from "react-native";
-import { LinearGradient } from "expo";
+
+//Redux
 import { connect } from "react-redux";
-//import SetProfilePersonalAction from "../../storage/actions/SetProfilePersonalAction";
-import SetProfilePersonalAction from "../../../storage/actions/SetProfilePersonalAction";
-//import firebase from "../../utils/mainFire";
-import firebase from "../../../utils/mainFire";
+import SetAboutYouDataAction from "../../../../storage/actions/RegistrationActions/SetAboutYouDataAction";
+
+//pickers
 import DatePicker from "react-native-datepicker";
 import RNPickerSelect from "react-native-picker-select";
-//import { countries, genders } from "./someData.js";
-import { countries, genders } from "../someData.js";
+
+//data
+import { countries, genders } from "../Data/CountriesAndGenders.js";
+
+//icons
 import { Icon, Input } from "react-native-elements";
 import { Chevron } from "react-native-shapes";
 
 class AboutYou extends Component {
   constructor(props) {
     super(props);
-    //this.firstNameInputRef = React.createRef();
-    //this.lastNameInputRef = React.createRef();
-    //this.genderPickerRef = React.createRef();
-
     this.state = {
       birthDate: "",
       gender: "",
@@ -49,41 +42,15 @@ class AboutYou extends Component {
       genderWarning: "empty",
       countryWarning: "empty",
       zipCodeWarning: "empty",
-      birthDateWarning: "empty"
+      birthDateWarning: "empty",
+      internalErrorWarning: false
     };
 
     this.mode = "";
     this.gui = "";
   }
 
-  componentDidMount() {
-    this.mode = this.props.CreateProfileReducer.mode;
-
-    //For Undone User
-    if (this.mode === "undone") {
-      let firstName = this.props.CreateProfileReducer.profData.firstName;
-      let lastName = this.props.CreateProfileReducer.profData.lastName;
-      let birthDate = this.props.CreateProfileReducer.profData.birthDate;
-      let gender = this.props.CreateProfileReducer.profData.gender;
-      let country = this.props.CreateProfileReducer.profData.country;
-      let zipCode = this.props.CreateProfileReducer.profData.zipCode;
-
-      this.setState({
-        firstName: firstName,
-        lastName: lastName,
-        birthDate: birthDate,
-        gender: gender,
-        country: country,
-        zipCode: zipCode,
-        firstNameWarning: firstName === "" ? "empty" : "",
-        lastNameWarning: lastName === "" ? "empty" : "",
-        birthDateWarning: birthDate === "" ? "empty" : "",
-        genderWarning: gender === "" ? "empty" : "",
-        countryWarning: country === "" ? "empty" : "",
-        zipCodeWarning: zipCode === "" ? "empty" : ""
-      });
-    }
-  }
+  componentDidMount() {}
 
   componentDidUpdate(prevProps, prevState, snapshot) {
     //if there have any udpate to the warnings by checking this.state and prevState
@@ -101,7 +68,7 @@ class AboutYou extends Component {
     ) {
       this.allChecker();
       //any changes will remove the check mark from CollapsibleComponent CheckMark
-      this.props.handlePassed("aboutYou", false);
+      this.props.handlePassed("aboutYou", 2);
     }
   }
 
@@ -302,49 +269,64 @@ class AboutYou extends Component {
       //if all tests passed, set passed to true and navigate to next screen
 
       //Send data to database
-      fetch("http://74.80.250.210:5000/api/profile/aboutYouSubmit", {
+      fetch("http://74.80.250.210:5000/api/profile/update", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
-          //must call redux gui at here because when navigate onboarding screen,
-          //all on-boarding will be call at the same time
-          //Since we retreive gui after createAccount Screen
-          //Therefore, call redux gui in componentDidMount would return null (we set to null by default)
-          //More, the app require user to finish createAccount before going to this screen
-          //By the time user get to this screen, and created submit, the gui already here for serving
-          gui: this.props.CreateProfileReducer.userData.gui,
-          firstName: this.state.firstName,
-          lastName: this.state.lastName,
-          birthDate: this.state.birthDate,
-          gender: this.state.gender,
-          country: this.state.country,
-          zipCode: this.state.zipCode
+          gui: this.props.CreateProfileDataReducer.gui,
+          collection: "aboutYou",
+          data: {
+            firstName: this.state.firstName,
+            lastName: this.state.lastName,
+            birthDate: this.state.birthDate,
+            gender: this.state.gender,
+            country: this.state.country,
+            zipCode: this.state.zipCode
+          }
         })
-      }).catch(function(error) {
-        console.error(error.message);
-        throw error;
-      });
-
-      //Send Data to Redux
-      this.props.SetProfilePersonalAction({
-        firstName: this.state.firstName,
-        lastName: this.state.lastName,
-        birthDate: this.state.birthDate,
-        gender: this.state.gender,
-        country: this.state.country,
-        zipCode: this.state.zipCode
-      });
-
-      //if successed to passed, it will put the check mark from CollapsibleComponent CheckMark
-      this.props.handlePassed("aboutYou", true);
-    } else {
-      //if failed to passed, it will remove the check mark from CollapsibleComponent CheckMark
-      this.props.handlePassed("aboutYou", false);
+      })
+        .then(res => res.json())
+        .then(res => {
+          let object = JSON.parse(JSON.stringify(res));
+          console.log(object);
+          if (object.success) {
+            //Send Data to Redux
+            this.props.SetAboutYouDataAction({
+              firstName: this.state.firstName,
+              lastName: this.state.lastName,
+              birthDate: this.state.birthDate,
+              gender: this.state.gender,
+              country: this.state.country,
+              zipCode: this.state.zipCode
+            });
+            //if successed to passed, it will put the check mark from CollapsibleComponent CheckMark
+            this.setState(
+              {
+                internalErrorWarning: false
+              },
+              () => {
+                this.props.handlePassed("aboutYou", 1);
+              }
+            );
+          } else {
+            throw new Error("Internal Error ");
+          }
+        })
+        .catch(error => {
+          //if failed to passed, it will remove the check mark from CollapsibleComponent CheckMark
+          this.setState(
+            {
+              internalErrorWarning: true
+            },
+            () => {
+              this.props.handlePassed("aboutYou", 3);
+            }
+          );
+        });
     }
   };
-
   render() {
     let passed = <View style={styles.warningText} />;
 
@@ -377,16 +359,13 @@ class AboutYou extends Component {
     //work for first, last, zip, birth
     let empty = <Text style={styles.warningText}>* Required</Text>;
 
-    let allEmptyWarning =
-      this.state.firstNameWarning === "empty" ||
-      this.state.lastNameWarning === "empty" ||
-      this.state.birthDateWarning === "empty" ||
-      this.state.genderWarning === "empty" ||
-      this.state.countryWarning === "empty" ||
-      this.state.zipCodeWarning === "empty";
+    let internalErrorWarning = (
+      <Text style={styles.warningText}>* Internal Error. Please Try again</Text>
+    );
 
     return (
       <View style={{ flex: 1 }}>
+        {this.state.internalErrorWarning && internalErrorWarning}
         {/*Spaces*/}
         <View
           style={{
@@ -857,8 +836,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    SetProfilePersonalAction: payload =>
-      dispatch(SetProfilePersonalAction(payload))
+    SetAboutYouDataAction: payload => dispatch(SetAboutYouDataAction(payload))
   };
 };
 

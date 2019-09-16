@@ -13,11 +13,6 @@ import {
   Image,
   ScrollView,
   TouchableOpacity,
-  ImageBackground,
-  Separator,
-  Thumbnail,
-  List,
-  ListItem
 } from "react-native";
 import { LinearGradient } from "expo";
 import CollapseComponent from "./Collapsible_ScrollView_Components/TinyComponents/CollapseComponenet.js";
@@ -74,6 +69,19 @@ class Collapsible_ScrollView extends Component {
 
   //TESTING USE BELOW (When onAuth work functionally (login pass data to redux, remove below))
   testcase = () => {
+
+    //decrypt jwt
+    //gui
+    //checlist
+
+    //see if there have checklist
+    //if not checklist, that mean user is firsttime
+    //then initlize data as empty
+
+
+    //if checklist, that mean user is 3rd, 3rd undone, or undone
+    //then we use the gui to query the data and insert into redux
+
     //SETUP DUMMY DATA FOR TESTING
     let mode = "";
 
@@ -446,9 +454,7 @@ class Collapsible_ScrollView extends Component {
           </SafeAreaView>
         </ScrollView>
       </LinearGradient>
-    ) : (
-      <View />
-    );
+    ) : null;
   }
 }
 
