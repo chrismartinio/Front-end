@@ -1,6 +1,6 @@
 const setJwtAction = (JWTdata) => (dispatch) => {
     dispatch({
-        type:"ADD_FACEBOOK_DATA",
+        type:"ADD_JWT",
         PAYLOAD: JWTdata
     })
 }

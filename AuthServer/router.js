@@ -18,7 +18,7 @@ module.exports = function (app) {
     apiRoutes.use('/auth', authRoutes);
 
     // Registration route
-    authRoutes.post('/register', AuthenticationController.register);
+    //authRoutes.post('/register', AuthenticationController.register);
 
     // Login route
     authRoutes.post('/login', AuthenticationController.login);

@@ -40,35 +40,9 @@ class HomeScreen extends React.Component {
     errorMessage: null
   };
 
-  // Aysnc problems
-  // componentWillMount() {
-  //   if (Platform.OS === 'android' && !Constants.isDevice) {
-  //     this.setState({
-  //       errorMessage: 'Oops, this will not work on Sketch in an Android emulator. Try it on your device!',
-  //     });
-  //   } else {
-  //     this._getLocationAsync();
-  //   }
-  // }
-
-  // _getLocationAsync = async () => {
-  //   let { status } = await Permissions.askAsync(Permissions.LOCATION);
-  //   if (status !== 'granted') {
-  //     this.setState({
-  //       errorMessage: 'Permission to access location was denied',
-  //     });
-  //   }
-
-  //   let location = await Location.getCurrentPositionAsync({});
-  //   console.log(location)
-  //   this.setState({ location });
-  // };
-
-  componentDidMount(){
-
-  }
 
   handleEmailAndPasswordSignin = async () => {
+    // needs to have json web token?
     try {
     const { username, password } = this._form.getValue();
     let data = await fetch("http://10.0.0.246:3001/api/auth/login", {
@@ -82,13 +56,14 @@ class HomeScreen extends React.Component {
       body: JSON.stringify({
         password: password,
         username: username,
-        mode: 2
+        mode: 2,
+        authType:'email'
       })
     });
 
     let jsonData = await data.json();
       if (jsonData.token) {
-        this.props.SetJwtAction(jsonData)
+        this.props.SetJwtAction(jsonData.token)
         this.props.navigation.navigate("Chat");
       } else {
         alert(jsonData.error)
@@ -97,69 +72,14 @@ class HomeScreen extends React.Component {
     } catch(e){
       console.log(e)
     }
-
-    // must compare passwords!
   };
 
 
-  handleTestAddUser = async () => {
-    try {
-      const { username, password } = this._form.getValue();
-      // front end check:
-      let data = await fetch("http://10.0.0.246:3001/api/auth/login", {
-        method: "POST",
-        mode: "cors",
-        credentials: "same-origin",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          password: password,
-          username: username
-        })
-      });
-
-      let jsonData = await data.json();
-      console.log(jsonData);
-      this.props.navigation.navigate("Chat");
-    } catch (e) {
-      console.log(e.error);
-    }
-  };
 
   handleSignUp = () => {
     this.props.navigation.navigate("SignUp");
   };
 
-  handleSocialMediaSignIn = event => {
-    const value = this._form.getValue();
-  };
-
-  handleSingleDBCheck = async() => {
-    try {
-      const { username, password } = this._form.getValue();
-      // front end check:
-      let data = await fetch("http://10.0.0.246:5000/api/auth/login", {
-        method: "POST",
-        mode: "cors",
-        credentials: "same-origin",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          password: password,
-          username: username
-        })
-      });
-
-      let jsonData = await data.json();
-      return jsonData
-    } catch (e) {
-      console.log(e.error);
-    }
-  }
 
   DBCheck = async(info) => {
     try {
@@ -187,39 +107,51 @@ class HomeScreen extends React.Component {
 
 
   checkFaceBookValidity = async(signInData) => {
-    //uid": "GKFSGO5NihZRQgtwRaJVul4RvFi1",
-    //GKFSGO5NihZRQgtwRaJVul4RvFi1
 
-    var fbData = signInWithFacebook();
+    try {
+    //const { username, password } = this._form.getValue();
+    var fbData = signInWithFacebook()
     fbData
-      .then(data => {
-        let fullName = data.name.split(' ')
-        let firstName = fullName[0]
-        let lastName = fullName[1]
-        let profData = {
-          firstName: firstName,
-          lastName: lastName,
-          email: data.email,
-          uid: data.id,
-          birthday:data.birthday,
-          undone: 4
-        };
-
-        var userFinished = this.DBCheck(profData)
-        userFinished
-          .then((userData)=>{
-            console.log(userData)
+    .then((data)=>{
+      return data
+    })
+    .then((fbData)=>{
+         fetch("http://10.0.0.246:3001/api/auth/login", {
+            method: "POST",
+            mode: "cors",
+            credentials: "same-origin",
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+              mode: 2,
+              authType:'facebook',
+              data: fbData
+            })
+          }).then((AuthData)=>{
+              return AuthData.json()
+          }).then((data)=>{
+            this.props.SetJwtAction(data.token)
+            this.props.navigation.navigate("Chat")
           }).catch((e)=>{
-            console.log('wrong error')
+            console.log(e)
           })
 
 
+    }).catch((err)=>{
+      console.log(err)
+    })
 
 
-          //this.props.SetFbDataAction(profData);
-      }).catch(err => {
-        console.log(err);
-      });
+
+
+
+
+
+    } catch(e){
+      console.log(e)
+    }
   };
 
   render() {
@@ -266,13 +198,13 @@ class HomeScreen extends React.Component {
 
             <Button
               title="google"
-              onPress={this.handleSocialMediaSignIn}
+              onPress={this.checkFaceBookValidity}
               color="blue"
             />
 
             <Button
               title="twitter"
-              onPress={this.handleSocialMediaSignIn}
+              onPress={this.checkFaceBookValidity}
               color="blue"
             />
           </View>

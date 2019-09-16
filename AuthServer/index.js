@@ -4,10 +4,12 @@ const express = require('express'),
     logger = require('morgan'),
     mongoose = require('mongoose'),
     config = require('./config/main'),
-    cors = require('cors');
+    cors = require('cors')
 
 
-mongoose.connect(config.database, { useNewUrlParser: true }).then(
+
+
+mongoose.connect(config.usersDatabase, { useNewUrlParser: true }).then(
     ()=>{
         console.log('database established')
     },
@@ -15,6 +17,7 @@ mongoose.connect(config.database, { useNewUrlParser: true }).then(
         console.log('Error connecting to the db',err)
     }
 )
+
 
 
 app.use(bodyParser.urlencoded({ extended: false }));
