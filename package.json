@@ -64,8 +64,17 @@
     "react-test-renderer": "^16.8.6"
   },
   "private": true,
-  "name": "blindlyDateRMK",
+  "name": "front-end",
   "version": "1.0.0",
-  "repository": "https://github.com/blindly-date/Front-end.git",
-  "license": "MIT"
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/blindly-date/Front-end.git"
+  },
+  "license": "MIT",
+  "description": "Inside Project directory",
+  "bugs": {
+    "url": "https://github.com/blindly-date/Front-end/issues"
+  },
+  "homepage": "https://github.com/blindly-date/Front-end#readme",
+  "author": ""
 }

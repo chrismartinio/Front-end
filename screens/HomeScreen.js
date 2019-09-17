@@ -44,8 +44,9 @@ class HomeScreen extends React.Component {
   handleEmailAndPasswordSignin = async () => {
     // needs to have json web token?
     try {
+      console.log('in email')
     const { username, password } = this._form.getValue();
-    let data = await fetch("http://10.0.0.246:3001/api/auth/login", {
+    let data = await fetch("http://10.0.0.246:3002/api/auth/login", {
       method: "POST",
       mode: "cors",
       credentials: "same-origin",
@@ -64,7 +65,7 @@ class HomeScreen extends React.Component {
     let jsonData = await data.json();
       if (jsonData.token) {
         this.props.SetJwtAction(jsonData.token)
-        this.props.navigation.navigate("Chat");
+        //jthis.props.navigation.navigate("Chat");
       } else {
         alert(jsonData.error)
       }
@@ -109,14 +110,14 @@ class HomeScreen extends React.Component {
   checkFaceBookValidity = async(signInData) => {
 
     try {
-    //const { username, password } = this._form.getValue();
     var fbData = signInWithFacebook()
     fbData
     .then((data)=>{
       return data
     })
     .then((fbData)=>{
-         fetch("http://10.0.0.246:3001/api/auth/login", {
+
+         fetch("http://10.0.0.246:3002/api/auth/login", {
             method: "POST",
             mode: "cors",
             credentials: "same-origin",
@@ -132,8 +133,10 @@ class HomeScreen extends React.Component {
           }).then((AuthData)=>{
               return AuthData.json()
           }).then((data)=>{
+            console.log(data)
             this.props.SetJwtAction(data.token)
-            this.props.navigation.navigate("Chat")
+              // breaks code
+            //this.props.navigation.navigate("Chat")
           }).catch((e)=>{
             console.log(e)
           })
@@ -142,12 +145,6 @@ class HomeScreen extends React.Component {
     }).catch((err)=>{
       console.log(err)
     })
-
-
-
-
-
-
 
     } catch(e){
       console.log(e)
