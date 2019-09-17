@@ -103,7 +103,7 @@ class CollapisbleRegistration extends Component {
       //gui: "5d75b9b2742ce270014297af",
       //checklist: [true, false, false, true, true, false]
       gui: "",
-      checklist: [false, false, false, false, false, false]
+      checklist: [true, false, false, false, false, false]
     };
   };
 

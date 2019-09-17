@@ -19,6 +19,7 @@ import {
 //Redux
 import { connect } from "react-redux";
 import SetInterestsDataAction from "../../../../storage/actions/RegistrationActions/SetInterestsDataAction";
+import SetChecklistAction from "../../../../storage/actions/RegistrationActions/SetChecklistAction";
 
 //Components
 import DatePicker from "react-native-datepicker";
@@ -72,6 +73,18 @@ class Interests extends Component {
 
   handleSubmit = () => {
     if (this.state.passed) {
+      //Set the screen's checklist index to true
+      let checklist = this.props.CreateProfileDataReducer.checklist;
+      let index = 3;
+      checklist = [
+        ...checklist.slice(0, index),
+        true,
+        ...checklist.slice(index + 1)
+      ];
+      this.props.SetChecklistAction({
+        checklist: checklist
+      });
+
       //Send data to database
       fetch("http://74.80.250.210:5000/api/profile/update", {
         method: "POST",
@@ -82,7 +95,8 @@ class Interests extends Component {
           gui: this.props.CreateProfileDataReducer.gui,
           collection: "interests",
           data: {
-            likesArray: this.state.likesArray
+            likesArray: this.state.likesArray,
+            checklist: checklist
           }
         })
       })
@@ -370,7 +384,9 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    SetInterestsDataAction: payload => dispatch(SetInterestsDataAction(payload))
+    SetInterestsDataAction: payload =>
+      dispatch(SetInterestsDataAction(payload)),
+    SetChecklistAction: payload => dispatch(SetChecklistAction(payload))
   };
 };
 

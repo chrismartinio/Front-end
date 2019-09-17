@@ -1,7 +1,7 @@
 const CreateProfileDataReducer = (
   state = {
     isContinueUser: false,
-    checklist: [false, false, false, false, false, false],
+    checklist: [true, false, false, false, false, false],
     gui: null,
     createAccountData: null,
     aboutYouData: null,
@@ -55,6 +55,11 @@ const CreateProfileDataReducer = (
         interestsData: action.PAYLOAD.interestsData,
         wouldYouRatherData: action.PAYLOAD.wouldYouRatherData,
         localDestinationData: action.PAYLOAD.localDestinationData
+      };
+    case "SET_CHECKLIST":
+      return {
+        ...state,
+        checklist: action.PAYLOAD.checklist
       };
     default:
       return state;

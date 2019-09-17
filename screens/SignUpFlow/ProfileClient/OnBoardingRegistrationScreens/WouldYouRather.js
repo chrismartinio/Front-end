@@ -12,6 +12,7 @@ import {
 //Redux
 import { connect } from "react-redux";
 import SetWouldYouRatherDataAction from "../../../../storage/actions/RegistrationActions/SetWouldYouRatherDataAction";
+import SetChecklistAction from "../../../../storage/actions/RegistrationActions/SetChecklistAction";
 
 //component
 import Slider from "../Components/Sliders/WouldYouRatherSlider";
@@ -44,6 +45,18 @@ class WouldYouRather extends Component {
   componentDidMount() {}
 
   handleSubmit = () => {
+    //Set the screen's checklist index to true
+    let checklist = this.props.CreateProfileDataReducer.checklist;
+    let index = 4;
+    checklist = [
+      ...checklist.slice(0, index),
+      true,
+      ...checklist.slice(index + 1)
+    ];
+    this.props.SetChecklistAction({
+      checklist: checklist
+    });
+
     //Send data to database
     fetch("http://74.80.250.210:5000/api/profile/update", {
       method: "POST",
@@ -59,7 +72,8 @@ class WouldYouRather extends Component {
           s2r1: this.s2r1,
           s2r2: this.s2r2,
           s3r1: this.s3r1,
-          s3r2: this.s3r2
+          s3r2: this.s3r2,
+          checklist: checklist
         }
       })
     })
@@ -285,7 +299,8 @@ const mapStateToProps = state => ({
 });
 const mapDispatchToProps = dispatch => ({
   SetWouldYouRatherDataAction: payload =>
-    dispatch(SetWouldYouRatherDataAction(payload))
+    dispatch(SetWouldYouRatherDataAction(payload)),
+  SetChecklistAction: payload => dispatch(SetChecklistAction(payload))
 });
 
 export default connect(

@@ -13,6 +13,7 @@ import {
 //Redux
 import { connect } from "react-redux";
 import SetAboutYouDataAction from "../../../../storage/actions/RegistrationActions/SetAboutYouDataAction";
+import SetChecklistAction from "../../../../storage/actions/RegistrationActions/SetChecklistAction";
 
 //pickers
 import DatePicker from "react-native-datepicker";
@@ -266,9 +267,19 @@ class AboutYou extends Component {
   //next button : valid all input fields
   handleSubmit = evt => {
     if (this.state.passed) {
-      //if all tests passed, set passed to true and navigate to next screen
 
-      //Send data to database
+      //Set the screen's checklist index to true
+      let checklist = this.props.CreateProfileDataReducer.checklist;
+      let index = 1;
+      checklist = [
+        ...checklist.slice(0, index),
+        true,
+        ...checklist.slice(index + 1)
+      ];
+      this.props.SetChecklistAction({
+        checklist: checklist
+      });
+
       fetch("http://74.80.250.210:5000/api/profile/update", {
         method: "POST",
         headers: {
@@ -283,7 +294,8 @@ class AboutYou extends Component {
             birthDate: this.state.birthDate,
             gender: this.state.gender,
             country: this.state.country,
-            zipCode: this.state.zipCode
+            zipCode: this.state.zipCode,
+            checklist: checklist
           }
         })
       })
@@ -836,7 +848,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    SetAboutYouDataAction: payload => dispatch(SetAboutYouDataAction(payload))
+    SetAboutYouDataAction: payload => dispatch(SetAboutYouDataAction(payload)),
+    SetChecklistAction: payload => dispatch(SetChecklistAction(payload))
   };
 };
 

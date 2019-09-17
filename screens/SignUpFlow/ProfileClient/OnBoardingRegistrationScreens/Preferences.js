@@ -16,6 +16,7 @@ import {
 //Redux
 import { connect } from "react-redux";
 import SetPreferencesDataAction from "../../../../storage/actions/RegistrationActions/SetPreferencesDataAction";
+import SetChecklistAction from "../../../../storage/actions/RegistrationActions/SetChecklistAction";
 
 //Components
 import Slider from "../Components/Sliders/PreferencesSlider";
@@ -183,6 +184,7 @@ class Preferences extends Component {
 
   handleSubmit = () => {
     if (this.state.passed) {
+      //check the user's interestGender and pass to redux and db
       let interestedGender = "";
       if (this.state.pickedMen && this.state.pickedWomen) {
         interestedGender = "both";
@@ -193,6 +195,18 @@ class Preferences extends Component {
       } else {
         interestedGender = "";
       }
+
+      //Set the screen's checklist index to true
+      let checklist = this.props.CreateProfileDataReducer.checklist;
+      let index = 2;
+      checklist = [
+        ...checklist.slice(0, index),
+        true,
+        ...checklist.slice(index + 1)
+      ];
+      this.props.SetChecklistAction({
+        checklist: checklist
+      });
 
       //Send data to database
       fetch("http://74.80.250.210:5000/api/profile/update", {
@@ -206,7 +220,8 @@ class Preferences extends Component {
           data: {
             ageRange: this.state.ageRange,
             distanceRange: this.state.distanceRange,
-            interestedGender: interestedGender
+            interestedGender: interestedGender,
+            checklist: checklist
           }
         })
       })
@@ -588,7 +603,8 @@ const mapStateToProps = state => ({
 });
 const mapDispatchToProps = dispatch => ({
   SetPreferencesDataAction: payload =>
-    dispatch(SetPreferencesDataAction(payload))
+    dispatch(SetPreferencesDataAction(payload)),
+  SetChecklistAction: payload => dispatch(SetChecklistAction(payload))
 });
 
 export default connect(

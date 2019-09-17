@@ -16,6 +16,7 @@ import {
 //Redux
 import { connect } from "react-redux";
 import SetLocalDestinationDataAction from "../../../../storage/actions/RegistrationActions/SetLocalDestinationDataAction";
+import SetChecklistAction from "../../../../storage/actions/RegistrationActions/SetChecklistAction";
 
 //Icons
 import { Icon } from "react-native-elements";
@@ -136,6 +137,18 @@ class LocationDestinations extends Component {
   };
 
   handleSubmit = () => {
+    //Set the screen's checklist index to true
+    let checklist = this.props.CreateProfileDataReducer.checklist;
+    let index = 5;
+    checklist = [
+      ...checklist.slice(0, index),
+      true,
+      ...checklist.slice(index + 1)
+    ];
+    this.props.SetChecklistAction({
+      checklist: checklist
+    });
+
     if (this.state.passed) {
       //Send data to database
       fetch("http://74.80.250.210:5000/api/profile/update", {
@@ -147,7 +160,8 @@ class LocationDestinations extends Component {
           gui: this.props.CreateProfileDataReducer.gui,
           collection: "localDestination",
           data: {
-            localDestination: this.state.localDestination
+            localDestination: this.state.localDestination,
+            checklist: checklist
           }
         })
       })
@@ -365,7 +379,8 @@ const mapStateToProps = state => ({
 });
 const mapDispatchToProps = dispatch => ({
   SetLocalDestinationDataAction: payload =>
-    dispatch(SetLocalDestinationDataAction(payload))
+    dispatch(SetLocalDestinationDataAction(payload)),
+  SetChecklistAction: payload => dispatch(SetChecklistAction(payload))
 });
 
 export default connect(
