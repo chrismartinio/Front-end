@@ -100,28 +100,46 @@ class CollapisbleRegistration extends Component {
     //gui is empty? = first time local user
     //gui is not empty? = third parties user, third parties continue user, local continue user
     return {
-      //gui: "5d802e2ec155b38f34ab07a2",
-      //checklist: [true, false, false, true, true, false]
-      gui: "",
-      checklist: [true, false, false, true, false, false]
+      //For isContinueUser
+      gui: "5d802e2ec155b38f34ab07a2",
+      checklist: [true, true, false, false, false, false]
+
+      //For new User
+      //gui: "",
+      //checklist: [true, false, false, false, false, false]
     };
   };
 
   setUserStatus = jwtObject => {
+    //mark the user as continue user
+    //and store the checklist in redux
     this.props.SetIsContinueUserAction({
       isContinueUser: true,
       checklist: jwtObject.checklist
     });
+    //pass gui
     this.props.SetGUIAction({
       gui: jwtObject.gui
     });
+
+    //set fb,twitter,ig,... user name
+    //even they have firstname, lastname
+    //doesn't mean checklist[1] is true 
+
+    //set the status for screen
     this.setState({
       createAccountPassed: jwtObject.checklist[0],
       aboutYouPassed: jwtObject.checklist[1],
       preferencesPassed: jwtObject.checklist[2],
       interestsPassed: jwtObject.checklist[3],
       wouldYouRatherPassed: jwtObject.checklist[4],
-      localDestinationPassed: jwtObject.checklist[5]
+      localDestinationPassed: jwtObject.checklist[5],
+      createAccountStatus: "passed", //isContinueUser always true for createAccountStatus
+      aboutYouStatus: jwtObject.checklist[1]? "passed" : "empty",
+      preferencesStatus: jwtObject.checklist[2]? "passed" : "empty",
+      interestsStatus: jwtObject.checklist[3]? "passed" : "empty",
+      wouldYouRatherStatus: jwtObject.checklist[4]? "passed" : "empty",
+      localDestinationStatus: jwtObject.checklist[5]? "passed" : "empty",
     });
   };
 

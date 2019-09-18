@@ -43,7 +43,6 @@ class CreateAccount extends Component {
       isLoading: true
     };
     this.isContinueUserFetched = false;
-    this.mode = "";
   }
 
   getData = async () => {
@@ -53,35 +52,30 @@ class CreateAccount extends Component {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        gui: "5d802e2ec155b38f34ab07a2",
+        gui: this.props.CreateProfileDataReducer.gui,
         collection: "createAccount"
       })
     })
       .then(res => res.json())
       .then(res => {
         let object = JSON.parse(JSON.stringify(res));
-        console.log(object);
         if (object.success) {
-          this.setState(
-            {
-              email: object.result.email,
-              confirmEmail: object.result.email,
-              password: "Password",
-              confirmPassword: "Password",
-              emailWarning: "",
-              confirmEmailWarning: "",
-              passwordWarning: "",
-              confirmPasswordWarning: "",
-              password_UpperLowerCaseWarning: false,
-              password_NumberSymbolWarning: false,
-              password_LengthWarning: false,
-              isLoading: true,
-              editable: false
-            },
-            () => {
-              this.props.handlePassed("createAccount", 1);
-            }
-          );
+          this.setState({
+            email: object.result.email,
+            confirmEmail: object.result.email,
+            password: "Password",
+            confirmPassword: "Password",
+            emailWarning: "",
+            confirmEmailWarning: "",
+            passwordWarning: "",
+            confirmPasswordWarning: "",
+            password_UpperLowerCaseWarning: false,
+            password_NumberSymbolWarning: false,
+            password_LengthWarning: false,
+            isLoading: true,
+            editable: false,
+            passed: true
+          });
         } else {
           throw new Error("internal Error");
         }
@@ -123,8 +117,10 @@ class CreateAccount extends Component {
       this.state.confirmPasswordWarning !== prevState.confirmPasswordWarning
     ) {
       this.allChecker();
-      //any changes will remove the check mark from CollapsibleComponent CheckMark
-      this.props.handlePassed("createAccount", 2);
+      //For new user only, if something is modified, remove the check icon
+      if (!this.props.CreateProfileDataReducer.isContinueUser) {
+        this.props.handlePassed("createAccount", 2);
+      }
       //reset internalErrorWarning
     }
     if (

@@ -26,6 +26,9 @@ import { countries, genders } from "../Data/CountriesAndGenders.js";
 import { Icon, Input } from "react-native-elements";
 import { Chevron } from "react-native-shapes";
 
+//Collapsible Components
+import LoadingScreen from "../Components/LoadingScreen";
+
 class AboutYou extends Component {
   constructor(props) {
     super(props);
@@ -36,7 +39,6 @@ class AboutYou extends Component {
       firstName: "",
       lastName: "",
       zipCode: "",
-      //empty: false,
       passed: false,
       firstNameWarning: "empty",
       lastNameWarning: "empty",
@@ -44,14 +46,58 @@ class AboutYou extends Component {
       countryWarning: "empty",
       zipCodeWarning: "empty",
       birthDateWarning: "empty",
-      internalErrorWarning: false
+      internalErrorWarning: false,
+      isLoading: true
     };
     this.isContinueUserFetched = false;
-    this.mode = "";
-    this.gui = "";
   }
 
-  componentDidMount() {}
+  getData = async () => {
+    //do something with redux
+    
+    await fetch("http://74.80.250.210:5000/api/profile/query", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        gui: this.props.CreateProfileDataReducer.gui,
+        collection: "aboutYou"
+      })
+    })
+      .then(res => res.json())
+      .then(res => {
+        let object = JSON.parse(JSON.stringify(res));
+        console.log(object);
+        if (object.success) {
+          this.setState({
+            firstName: object.result.firstName,
+            lastName: object.result.lastName,
+            birthDate: object.result.birthDate,
+            gender: object.result.gender,
+            country: object.result.country,
+            zipCode: object.result.zipCode,
+            firstNameWarning: "",
+            lastNameWarning: "",
+            birthDateWarning: "",
+            genderWarning: "",
+            countryWarning: "",
+            zipCodeWarning: "",
+            isLoading: true,
+            passed: true
+          });
+        } else {
+          throw new Error("internal Error");
+        }
+      })
+      .catch(err => {
+        //throw to is loading screen or ask user to click a button for refetch
+        //to fetch the data
+        this.setState({
+          isLoading: false
+        });
+      });
+  };
 
   componentDidUpdate(prevProps, prevState, snapshot) {
     //if there have any udpate to the warnings by checking this.state and prevState
@@ -71,20 +117,18 @@ class AboutYou extends Component {
       //any changes will remove the check mark from CollapsibleComponent CheckMark
       this.props.handlePassed("aboutYou", 2);
     }
-    /*
+
     if (prevProps.aboutYouToggle !== this.props.aboutYouToggle) {
       if (
         this.props.aboutYouToggle &&
         this.props.CreateProfileDataReducer.isContinueUser
       ) {
         if (!this.isContinueUserFetched) {
-
-
+          this.getData();
           this.isContinueUserFetched = true;
         }
       }
     }
-    */
   }
 
   //format checker below
@@ -352,7 +396,8 @@ class AboutYou extends Component {
         });
     }
   };
-  render() {
+
+  SuccessScreen = () => {
     let passed = <View style={styles.warningText} />;
 
     let invalidFirstNameWarning = (
@@ -674,6 +719,15 @@ class AboutYou extends Component {
         />
       </View>
     );
+  };
+
+  loadingScreen = () => {
+    //display fetching data
+    return <LoadingScreen />;
+  };
+
+  render() {
+    return this.state.isLoading ? this.SuccessScreen() : this.loadingScreen();
   }
 }
 
