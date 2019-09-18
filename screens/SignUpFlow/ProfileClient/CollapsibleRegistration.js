@@ -66,7 +66,7 @@ class CollapisbleRegistration extends Component {
       interestsToggle: false,
       wouldYouRatherToggle: false,
       localDestinationToggle: false,
-      createAccountPassed: false, //true or false
+      createAccountPassed: true, //true or false
       aboutYouPassed: false,
       preferencesPassed: false,
       interestsPassed: false,
@@ -100,10 +100,10 @@ class CollapisbleRegistration extends Component {
     //gui is empty? = first time local user
     //gui is not empty? = third parties user, third parties continue user, local continue user
     return {
-      //gui: "5d75b9b2742ce270014297af",
+      //gui: "5d802e2ec155b38f34ab07a2",
       //checklist: [true, false, false, true, true, false]
       gui: "",
-      checklist: [true, false, false, false, false, false]
+      checklist: [true, false, false, true, false, false]
     };
   };
 
@@ -132,7 +132,10 @@ class CollapisbleRegistration extends Component {
     //check if the user is a continue user.
     //if there have at least one true inside the checklist array,
     //then the user is a continue user
-    let isContinueUser = jwtObject.checklist.find(screens => {
+    //Note, checklist[0], createAccount screen is set to true by default
+    //because users must submit createAcctoun screen in order to create a profile on db
+    //that begin said, createAccount screen must always true if they are continue user
+    let isContinueUser = jwtObject.checklist.slice(1).find(screens => {
       return screens;
     });
     isContinueUser = isContinueUser === undefined ? false : true;

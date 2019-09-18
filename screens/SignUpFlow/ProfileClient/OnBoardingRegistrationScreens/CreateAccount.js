@@ -19,8 +19,8 @@ import SetGUIAction from "../../../../storage/actions/RegistrationActions/SetGUI
 import { Icon, Input } from "react-native-elements";
 import { Chevron } from "react-native-shapes";
 
-//api call
-import axios from "axios";
+//Collapsible Components
+import LoadingScreen from "../Components/LoadingScreen";
 
 class CreateAccount extends Component {
   constructor(props) {
@@ -39,47 +39,75 @@ class CreateAccount extends Component {
       password_LengthWarning: true,
       passed: false,
       editable: true,
-      internalErrorWarning: false
+      internalErrorWarning: false,
+      isLoading: true
     };
-
+    this.isContinueUserFetched = false;
     this.mode = "";
   }
 
   getData = async () => {
-    await fetch("http://74.80.250.210:5000/api/profile/update", {
+    await fetch("http://74.80.250.210:5000/api/profile/query", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        gui: "5d7aa6356f95fe34bc25fc30",
-        collection: "interests",
-        data: { likesArray: ["Shopping", "Cooking", "Sport"] }
+        gui: "5d802e2ec155b38f34ab07a2",
+        collection: "createAccount"
       })
     })
       .then(res => res.json())
       .then(res => {
         let object = JSON.parse(JSON.stringify(res));
         console.log(object);
+        if (object.success) {
+          this.setState(
+            {
+              email: object.result.email,
+              confirmEmail: object.result.email,
+              password: "Password",
+              confirmPassword: "Password",
+              emailWarning: "",
+              confirmEmailWarning: "",
+              passwordWarning: "",
+              confirmPasswordWarning: "",
+              password_UpperLowerCaseWarning: false,
+              password_NumberSymbolWarning: false,
+              password_LengthWarning: false,
+              isLoading: true,
+              editable: false
+            },
+            () => {
+              this.props.handlePassed("createAccount", 1);
+            }
+          );
+        } else {
+          throw new Error("internal Error");
+        }
       })
-      .catch(function(error) {
-        console.error(error.message);
-        throw error;
+      .catch(err => {
+        //throw to is loading screen or ask user to click a button for refetch
+        //to fetch the data
+        this.setState({
+          isLoading: false
+        });
       });
   };
 
   async componentDidMount() {
-    //approach # 1
-    //after gui and checklist pass to redux
-    //fetch data when user (async )
-    //approach # 2
-    //for other screens (let use aboutyou):
-    //on componentDidUpdate
-    //if props toggle has changed and is true and checklist is true and this.state.firstname is empty
-    //fetch from db
-    //for the loading screen, if network failaure, the loading screen, the set a state say loading or fail
-    //if failed, then display fail and have a button for them to fetch data again
-    //await this.getData();
+    //For createAccount only, not allow continue user to edit the createAccount
+    if (this.props.CreateProfileDataReducer.isContinueUser) {
+      this.setState({
+        editable: false
+      });
+    }
+
+    //not sure sometimes would take a long time for fetching without the following,
+    //keep the following for in case
+    //this.setState({
+    //  isLoading: true
+    //});
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
@@ -98,6 +126,15 @@ class CreateAccount extends Component {
       //any changes will remove the check mark from CollapsibleComponent CheckMark
       this.props.handlePassed("createAccount", 2);
       //reset internalErrorWarning
+    }
+    if (
+      this.props.createAccountToggle &&
+      this.props.CreateProfileDataReducer.isContinueUser
+    ) {
+      if (!this.isContinueUserFetched) {
+        this.getData();
+        this.isContinueUserFetched = true;
+      }
     }
   }
 
@@ -324,7 +361,7 @@ class CreateAccount extends Component {
               },
               () => {
                 //if successed to passed, it will put the check mark from CollapsibleComponent CheckMark
-                this.props.handlePassed("createAccount", 1); //delete this if error
+                this.props.handlePassed("createAccount", 1);
               }
             );
           } else if (object.success === false && object.status === 409) {
@@ -360,7 +397,7 @@ class CreateAccount extends Component {
     }
   };
 
-  render() {
+  SuccessScreen = () => {
     let emptyEmail = (
       <Text style={styles.warningText}>* Please enter a email</Text>
     );
@@ -393,7 +430,6 @@ class CreateAccount extends Component {
     let internalErrorWarning = (
       <Text style={styles.warningText}>* Internal Error. Please Try again</Text>
     );
-
     return (
       <View style={{ flex: 1 }}>
         {this.state.internalErrorWarning && internalErrorWarning}
@@ -637,6 +673,15 @@ class CreateAccount extends Component {
         <View style={styles.space} />
       </View>
     );
+  };
+
+  loadingScreen = () => {
+    //display fetching data
+    return <LoadingScreen />;
+  };
+
+  render() {
+    return this.state.isLoading ? this.SuccessScreen() : this.loadingScreen();
   }
 }
 

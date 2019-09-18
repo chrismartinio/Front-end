@@ -21,16 +21,23 @@ export default function CollapsibleScreenTab(props) {
           <CreateAccount
             handlePassed={props.handlePassed}
             handleToggle={props.handleToggle}
+            createAccountToggle={props.componentToggle}
           />
         );
 
       case "aboutYou":
-        return <AboutYou handlePassed={props.handlePassed} gui={props.gui} />;
+        return (
+          <AboutYou
+            handlePassed={props.handlePassed}
+            aboutYouToggle={props.componentToggle}
+          />
+        );
 
       case "preferences":
         return (
           <Preferences
             handlePassed={props.handlePassed}
+            preferencesToggle={props.componentToggle}
             currentScreenTopY={props.currentScreenTopY}
           />
         );
@@ -39,17 +46,24 @@ export default function CollapsibleScreenTab(props) {
         return (
           <Interests
             handlePassed={props.handlePassed}
+            interestsToggle={props.componentToggle}
             currentScreenTopY={props.currentScreenTopY}
           />
         );
 
       case "wouldYouRather":
-        return <WouldYouRather handlePassed={props.handlePassed} />;
+        return (
+          <WouldYouRather
+            handlePassed={props.handlePassed}
+            wouldYouRatherToggle={props.componentToggle}
+          />
+        );
 
       case "localDestination":
         return (
           <LocalDestination
             handlePassed={props.handlePassed}
+            localDestinationToggle={props.componentToggle}
             currentScreenTopY={props.currentScreenTopY}
           />
         );

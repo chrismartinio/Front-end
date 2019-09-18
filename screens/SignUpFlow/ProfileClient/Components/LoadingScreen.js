@@ -4,5 +4,37 @@ import { Text, View, TouchableOpacity } from "react-native";
 import { LinearGradient } from "expo";
 
 export default function LoadingScreen(props) {
-  return <View />;
+  return (
+    <View
+      style={{
+        flex: 1,
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center"
+      }}
+    >
+      {/*Spaces*/}
+      <View
+        style={{
+          padding: "20%"
+          //borderRadius: 4,
+          //borderWidth: 0.5,
+          //borderColor: "#d6d7da"
+        }}
+      />
+      {/*Loading Text*/}
+      <View alignItems="center">
+        <Text style={{ color: "#fff", fontSize: 15 }}>Getting Data...</Text>
+      </View>
+      {/*Spaces*/}
+      <View
+        style={{
+          padding: "20%"
+          //borderRadius: 4,
+          //borderWidth: 0.5,
+          //borderColor: "#d6d7da"
+        }}
+      />
+    </View>
+  );
 }

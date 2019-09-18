@@ -27,40 +27,8 @@ import { Icon, Input } from "react-native-elements";
 class RegistrationComplete extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      createAccountToggle: false,
-      aboutYouToggle: false,
-      preferencesToggle: false,
-      interestsToggle: false,
-      wouldYouRatherToggle: false,
-      localDestinationsToggle: false,
-      createAccountPassed: false,
-      aboutYouPassed: false,
-      preferencesPassed: false,
-      interestsPassed: false,
-      wouldYouRatherPassed: false,
-      localDestinationsPassed: false
-    };
+    this.state = {};
   }
-
-  handleBackToSignIn = () => {
-    this.props.navigation.navigate("SignIn");
-  };
-  static navigationOptions = {
-    //header: null,
-    //title: 'Match Chat',
-    headerStyle: {
-      backgroundColor: "#18cdf6"
-    },
-    footerStyle: {
-      backgroundColor: "#fff"
-    },
-    headerTintColor: "#fff",
-    headerTitleStyle: {
-      fontWeight: "bold",
-      fontSize: 24
-    }
-  };
 
   render() {
     return (

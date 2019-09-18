@@ -46,7 +46,7 @@ class AboutYou extends Component {
       birthDateWarning: "empty",
       internalErrorWarning: false
     };
-
+    this.isContinueUserFetched = false;
     this.mode = "";
     this.gui = "";
   }
@@ -71,6 +71,20 @@ class AboutYou extends Component {
       //any changes will remove the check mark from CollapsibleComponent CheckMark
       this.props.handlePassed("aboutYou", 2);
     }
+    /*
+    if (prevProps.aboutYouToggle !== this.props.aboutYouToggle) {
+      if (
+        this.props.aboutYouToggle &&
+        this.props.CreateProfileDataReducer.isContinueUser
+      ) {
+        if (!this.isContinueUserFetched) {
+
+
+          this.isContinueUserFetched = true;
+        }
+      }
+    }
+    */
   }
 
   //format checker below
@@ -267,7 +281,6 @@ class AboutYou extends Component {
   //next button : valid all input fields
   handleSubmit = evt => {
     if (this.state.passed) {
-
       //Set the screen's checklist index to true
       let checklist = this.props.CreateProfileDataReducer.checklist;
       let index = 1;
