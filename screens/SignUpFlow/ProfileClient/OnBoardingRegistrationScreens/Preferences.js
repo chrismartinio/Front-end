@@ -44,8 +44,8 @@ class Preferences extends Component {
       interestedGenderWarning: "empty",
       passed: false,
       distanceRange: 0,
-      internalErrorWarning: false
-      //distanceWarning: "empty",
+      internalErrorWarning: false,
+      isLoading: true
     };
 
     //Control Button Text Color based on Current Screen's Position
@@ -119,8 +119,10 @@ class Preferences extends Component {
       this.state.distanceRange !== prevState.distanceRange
     ) {
       this.allChecker();
-      //any changes will remove the check mark from CollapsibleComponent CheckMark
-      this.props.handlePassed("preferences", 2);
+      //For new user only, if something is modified, remove the check icon
+      if (!this.props.CreateProfileDataReducer.isContinueUser) {
+        this.props.handlePassed("preferences", 2);
+      }
     }
 
     if (prevProps.preferencesToggle !== this.props.preferencesToggle) {
@@ -326,7 +328,7 @@ class Preferences extends Component {
     }
   };
 
-  SuccessScreen = () => {
+  successScreen = () => {
     let emptyGenderWarning = (
       <View style={{ alignItems: "center" }}>
         <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
@@ -554,7 +556,7 @@ class Preferences extends Component {
   };
 
   render() {
-    return this.state.isLoading ? this.SuccessScreen() : this.loadingScreen();
+    return this.state.isLoading ? this.successScreen() : this.loadingScreen();
   }
 }
 

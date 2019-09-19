@@ -101,12 +101,12 @@ class CollapisbleRegistration extends Component {
     //gui is not empty? = third parties user, third parties continue user, local continue user
     return {
       //For isContinueUser
-      gui: "5d802e2ec155b38f34ab07a2",
-      checklist: [true, true, true, false, false, false]
+      //gui: "5d802e2ec155b38f34ab07a2",
+      //checklist: [true, true, true, true, false, true]
 
       //For new User
-      //gui: "",
-      //checklist: [true, false, false, false, false, false]
+      gui: "",
+      checklist: [true, false, false, false, false, false]
     };
   };
 
@@ -135,15 +135,22 @@ class CollapisbleRegistration extends Component {
       wouldYouRatherPassed: jwtObject.checklist[4],
       localDestinationPassed: jwtObject.checklist[5],
       createAccountStatus: "passed", //isContinueUser always true for createAccountStatus
-      aboutYouStatus: jwtObject.checklist[1]? "passed" : "empty",
-      preferencesStatus: jwtObject.checklist[2]? "passed" : "empty",
-      interestsStatus: jwtObject.checklist[3]? "passed" : "empty",
-      wouldYouRatherStatus: jwtObject.checklist[4]? "passed" : "empty",
-      localDestinationStatus: jwtObject.checklist[5]? "passed" : "empty",
+      aboutYouStatus: jwtObject.checklist[1] ? "passed" : "empty",
+      preferencesStatus: jwtObject.checklist[2] ? "passed" : "empty",
+      interestsStatus: jwtObject.checklist[3] ? "passed" : "empty",
+      wouldYouRatherStatus: jwtObject.checklist[4] ? "passed" : "empty",
+      localDestinationStatus: jwtObject.checklist[5] ? "passed" : "empty"
     });
   };
 
   async componentDidMount() {
+    //a warning that if checklist is [true, true, true, true, true, true]
+    //Since Auth will handle if the checklist is a continue user or new user
+    //continue user : [true, false, false, true, true, true]
+    //new user : [true, false, false, false, false, false]
+    //third parties user / continue user : [true, true, false, false, false, false]
+    //If [true, true, true, true, true, true], Auth will pass user to profile instead of registration
+
     //get the gui and checklist from decrypted jwt
     let jwtObject = this.decryptJWT(this.getJWT());
 

@@ -393,7 +393,7 @@ class CreateAccount extends Component {
     }
   };
 
-  SuccessScreen = () => {
+  successScreen = () => {
     let emptyEmail = (
       <Text style={styles.warningText}>* Please enter a email</Text>
     );
@@ -677,7 +677,7 @@ class CreateAccount extends Component {
   };
 
   render() {
-    return this.state.isLoading ? this.SuccessScreen() : this.loadingScreen();
+    return this.state.isLoading ? this.successScreen() : this.loadingScreen();
   }
 }
 

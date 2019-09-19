@@ -17,6 +17,9 @@ import SetChecklistAction from "../../../../storage/actions/RegistrationActions/
 //component
 import Slider from "../Components/Sliders/WouldYouRatherSlider";
 
+//Collapsible Components
+import LoadingScreen from "../Components/LoadingScreen";
+
 class WouldYouRather extends Component {
   static navigationOptions = {
     header: null
@@ -29,7 +32,8 @@ class WouldYouRather extends Component {
       displaySlider2Value: 0,
       displaySlider3Value: 0,
       passed: true,
-      internalErrorWarning: false
+      internalErrorWarning: false,
+      isLoading: true
     };
     this.s1r1 = 50;
     this.s1r2 = 50;
@@ -38,11 +42,59 @@ class WouldYouRather extends Component {
     this.s3r1 = 50;
     this.s3r2 = 50;
 
-    this.mode = "";
-    this.gui = "";
+    this.isContinueUserFetched = false;
   }
 
-  componentDidMount() {}
+  getData = async () => {
+    //do something with redux
+    await fetch("http://74.80.250.210:5000/api/profile/query", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        gui: this.props.CreateProfileDataReducer.gui,
+        collection: "wouldYouRather"
+      })
+    })
+      .then(res => res.json())
+      .then(res => {
+        let object = JSON.parse(JSON.stringify(res));
+        console.log(object);
+        if (object.success) {
+          this.setState({
+            displaySlider1Value: object.result.s1r2 - 50,
+            displaySlider2Value: object.result.s2r2 - 50,
+            displaySlider3Value: object.result.s3r2 - 50,
+            isLoading: true,
+            passed: true
+          });
+        } else {
+          throw new Error("internal Error");
+        }
+      })
+      .catch(err => {
+        //throw to is loading screen or ask user to click a button for refetch
+        //to fetch the data
+        this.setState({
+          isLoading: false
+        });
+      });
+  };
+
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    if (prevProps.wouldYouRatherToggle !== this.props.wouldYouRatherToggle) {
+      if (
+        this.props.wouldYouRatherToggle &&
+        this.props.CreateProfileDataReducer.isContinueUser
+      ) {
+        if (!this.isContinueUserFetched) {
+          this.getData();
+          this.isContinueUserFetched = true;
+        }
+      }
+    }
+  }
 
   handleSubmit = () => {
     //Set the screen's checklist index to true
@@ -130,7 +182,8 @@ class WouldYouRather extends Component {
     this.s3r1 = 50 - arg;
     this.s3r2 = 50 + arg;
   };
-  render() {
+
+  successScreen = () => {
     let internalErrorWarning = (
       <Text style={styles.warningText}>* Internal Error. Please Try again</Text>
     );
@@ -215,6 +268,15 @@ class WouldYouRather extends Component {
         />
       </View>
     );
+  };
+
+  loadingScreen = () => {
+    //display fetching data
+    return <LoadingScreen />;
+  };
+
+  render() {
+    return this.state.isLoading ? this.successScreen() : this.loadingScreen();
   }
 }
 

@@ -54,6 +54,14 @@ class AboutYou extends Component {
 
   getData = async () => {
     //do something with redux
+
+    //If third parties user, we can retrieve their firstName, lastName by default
+    //We send their firstName, lastName to redux in CollapisbleRegistration.js
+    //then we check if there have data of aboutYou in redux
+    //if yes, mark them as isThirdPartiesUser to true
+    let isThirdPartiesUser =
+      this.props.CreateProfileDataReducer.aboutYouData !== null ? true : false;
+
     await fetch("http://74.80.250.210:5000/api/profile/query", {
       method: "POST",
       headers: {
@@ -69,21 +77,32 @@ class AboutYou extends Component {
         let object = JSON.parse(JSON.stringify(res));
         console.log(object);
         if (object.success) {
+          let {
+            firstName,
+            lastName,
+            birthDate,
+            gender,
+            country,
+            zipCode
+          } = isThirdPartiesUser
+            ? this.props.CreateProfileDataReducer.aboutYouData
+            : object.result;
+
           this.setState({
-            firstName: object.result.firstName,
-            lastName: object.result.lastName,
-            birthDate: object.result.birthDate,
-            gender: object.result.gender,
-            country: object.result.country,
-            zipCode: object.result.zipCode,
-            firstNameWarning: "",
-            lastNameWarning: "",
-            birthDateWarning: "",
-            genderWarning: "",
-            countryWarning: "",
-            zipCodeWarning: "",
+            firstName: firstName,
+            lastName: lastName,
+            birthDate: birthDate,
+            gender: gender,
+            country: country,
+            zipCode: zipCode,
+            firstNameWarning: firstName === "" ? "empty" : "",
+            lastNameWarning: lastName === "" ? "empty" : "",
+            birthDateWarning: birthDate === "" ? "empty" : "",
+            genderWarning: gender === "" ? "empty" : "",
+            countryWarning: country === "" ? "empty" : "",
+            zipCodeWarning: zipCode === "" ? "empty" : "",
             isLoading: true,
-            passed: true
+            passed: isThirdPartiesUser ? false : true
           });
         } else {
           throw new Error("internal Error");
@@ -113,8 +132,10 @@ class AboutYou extends Component {
       this.state.zipCodeWarning !== prevState.zipCodeWarning
     ) {
       this.allChecker();
-      //any changes will remove the check mark from CollapsibleComponent CheckMark
-      this.props.handlePassed("aboutYou", 2);
+      //For new user only, if something is modified, remove the check icon
+      if (!this.props.CreateProfileDataReducer.isContinueUser) {
+        this.props.handlePassed("aboutYou", 2);
+      }
     }
 
     if (prevProps.aboutYouToggle !== this.props.aboutYouToggle) {
@@ -396,7 +417,7 @@ class AboutYou extends Component {
     }
   };
 
-  SuccessScreen = () => {
+  successScreen = () => {
     let passed = <View style={styles.warningText} />;
 
     let invalidFirstNameWarning = (
@@ -726,7 +747,7 @@ class AboutYou extends Component {
   };
 
   render() {
-    return this.state.isLoading ? this.SuccessScreen() : this.loadingScreen();
+    return this.state.isLoading ? this.successScreen() : this.loadingScreen();
   }
 }
 

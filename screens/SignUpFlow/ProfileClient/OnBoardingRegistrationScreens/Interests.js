@@ -31,13 +31,17 @@ import { Icon } from "react-native-elements";
 //ScrollView
 const screenHeight = Math.round(Dimensions.get("window").height);
 
+//Collapsible Components
+import LoadingScreen from "../Components/LoadingScreen";
+
 class Interests extends Component {
   constructor(props) {
     super(props);
     this.state = {
       passed: false,
       likesArray: [],
-      internalErrorWarning: false
+      internalErrorWarning: false,
+      isLoading: true
     };
 
     //Control Button Text Color based on Current Screen's Position
@@ -51,11 +55,43 @@ class Interests extends Component {
     this.b8y = 0;
     this.b9y = 0;
 
-    this.mode = "";
-    this.gui = "";
+    this.isContinueUserFetched = false;
   }
 
-  componentDidMount() {}
+  getData = async () => {
+    //do something with redux
+    await fetch("http://74.80.250.210:5000/api/profile/query", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        gui: this.props.CreateProfileDataReducer.gui,
+        collection: "interests"
+      })
+    })
+      .then(res => res.json())
+      .then(res => {
+        let object = JSON.parse(JSON.stringify(res));
+        console.log(object);
+        if (object.success) {
+          this.setState({
+            likesArray: object.result.likesArray,
+            isLoading: true,
+            passed: true
+          });
+        } else {
+          throw new Error("internal Error");
+        }
+      })
+      .catch(err => {
+        //throw to is loading screen or ask user to click a button for refetch
+        //to fetch the data
+        this.setState({
+          isLoading: false
+        });
+      });
+  };
 
   componentDidUpdate(prevProps, prevState, snapshot) {
     //if there have any udpate to the warnings by checking this.state and prevState
@@ -66,8 +102,22 @@ class Interests extends Component {
 
     if (prevState.likesArray !== this.state.likesArray) {
       this.allChecker();
-      //any changes will remove the check mark from CollapsibleComponent CheckMark
-      this.props.handlePassed("interests", 2);
+      //For new user only, if something is modified, remove the check icon
+      if (!this.props.CreateProfileDataReducer.isContinueUser) {
+        this.props.handlePassed("interests", 2);
+      }
+    }
+
+    if (prevProps.interestsToggle !== this.props.interestsToggle) {
+      if (
+        this.props.interestsToggle &&
+        this.props.CreateProfileDataReducer.isContinueUser
+      ) {
+        if (!this.isContinueUserFetched) {
+          this.getData();
+          this.isContinueUserFetched = true;
+        }
+      }
     }
   }
 
@@ -190,7 +240,8 @@ class Interests extends Component {
       });
     }
   };
-  render() {
+
+  successScreen = () => {
     let invalidLikesWarning = (
       <View style={{ alignItems: "center" }}>
         <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
@@ -319,6 +370,15 @@ class Interests extends Component {
         />
       </View>
     );
+  };
+
+  loadingScreen = () => {
+    //display fetching data
+    return <LoadingScreen />;
+  };
+
+  render() {
+    return this.state.isLoading ? this.successScreen() : this.loadingScreen();
   }
 }
 
