@@ -54,7 +54,6 @@ class AboutYou extends Component {
 
   getData = async () => {
     //do something with redux
-    
     await fetch("http://74.80.250.210:5000/api/profile/query", {
       method: "POST",
       headers: {

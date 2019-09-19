@@ -102,7 +102,7 @@ class CollapisbleRegistration extends Component {
     return {
       //For isContinueUser
       gui: "5d802e2ec155b38f34ab07a2",
-      checklist: [true, true, false, false, false, false]
+      checklist: [true, true, true, false, false, false]
 
       //For new User
       //gui: "",
@@ -124,7 +124,7 @@ class CollapisbleRegistration extends Component {
 
     //set fb,twitter,ig,... user name
     //even they have firstname, lastname
-    //doesn't mean checklist[1] is true 
+    //doesn't mean checklist[1] is true
 
     //set the status for screen
     this.setState({
