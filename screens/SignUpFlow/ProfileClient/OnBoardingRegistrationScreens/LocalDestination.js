@@ -187,53 +187,61 @@ class LocationDestinations extends Component {
     });
 
     if (this.state.passed) {
-      //Send data to database
-      fetch("http://74.80.250.210:5000/api/profile/update", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
+      this.setState(
+        {
+          isDelaying: true
         },
-        body: JSON.stringify({
-          gui: this.props.CreateProfileDataReducer.gui,
-          collection: "localDestination",
-          data: {
-            localDestination: this.state.localDestination,
-            checklist: checklist
-          }
-        })
-      })
-        .then(res => res.json())
-        .then(res => {
-          let object = JSON.parse(JSON.stringify(res));
-          console.log(object);
-          if (object.success) {
-            //Send Data to Redux
-            this.props.SetLocalDestinationDataAction({
-              localDestination: this.state.localDestination
-            });
-            //if successed to passed, it will put the check mark from CollapsibleComponent CheckMark
-            this.setState(
-              {
-                internalErrorWarning: false
-              },
-              () => {
-                this.props.handlePassed("localDestination", 1);
-              }
-            );
-          } else {
-            throw new Error("Internal Error ");
-          }
-        })
-        .catch(error => {
-          this.setState(
-            {
-              internalErrorWarning: true
+        () => {
+          //Send data to database
+          fetch("http://74.80.250.210:5000/api/profile/update", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
             },
-            () => {
-              this.props.handlePassed("localDestination", 3);
-            }
-          );
-        });
+            body: JSON.stringify({
+              gui: this.props.CreateProfileDataReducer.gui,
+              collection: "localDestination",
+              data: {
+                localDestination: this.state.localDestination,
+                checklist: checklist
+              }
+            })
+          })
+            .then(res => res.json())
+            .then(res => {
+              let object = JSON.parse(JSON.stringify(res));
+              console.log(object);
+              if (object.success) {
+                //Send Data to Redux
+                this.props.SetLocalDestinationDataAction({
+                  localDestination: this.state.localDestination
+                });
+                //if successed to passed, it will put the check mark from CollapsibleComponent CheckMark
+                this.setState(
+                  {
+                    internalErrorWarning: false
+                  },
+                  () => {
+                    this.props.handlePassed("localDestination", 1);
+                  }
+                );
+              } else {
+                throw new Error("Internal Error ");
+              }
+            })
+            .catch(error => {
+              this.setState(
+                {
+                  internalErrorWarning: true,
+                  isDelaying: false
+                },
+                () => {
+                  this.props.handlePassed("localDestination", 3);
+                }
+              );
+            });
+        }
+      );
     }
   };
 
@@ -338,9 +346,15 @@ class LocationDestinations extends Component {
           <TouchableOpacity
             style={styles.nextButton}
             onPress={this.handleSubmit}
-            disabled={!this.state.passed}
+            disabled={
+              (this.state.passed && this.state.isDelaying) || !this.state.passed
+            }
           >
-            <Text style={styles.button}>Next</Text>
+            <Text style={styles.button}>
+              {this.state.passed && this.state.isDelaying
+                ? "Submitting"
+                : "Next"}
+            </Text>
           </TouchableOpacity>
         </View>
         {/*Spaces*/}

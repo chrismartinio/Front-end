@@ -45,7 +45,8 @@ class Preferences extends Component {
       passed: false,
       distanceRange: 0,
       internalErrorWarning: false,
-      isLoading: true
+      isLoading: true,
+      isDelaying: false
     };
 
     //Control Button Text Color based on Current Screen's Position
@@ -274,57 +275,65 @@ class Preferences extends Component {
         checklist: checklist
       });
 
-      //Send data to database
-      fetch("http://74.80.250.210:5000/api/profile/update", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
+      this.setState(
+        {
+          isDelaying: true
         },
-        body: JSON.stringify({
-          gui: this.props.CreateProfileDataReducer.gui,
-          collection: "preferences",
-          data: {
-            ageRange: this.state.ageRange,
-            distanceRange: this.state.distanceRange,
-            interestedGender: interestedGender,
-            checklist: checklist
-          }
-        })
-      })
-        .then(res => res.json())
-        .then(res => {
-          let object = JSON.parse(JSON.stringify(res));
-          console.log(object);
-          if (object.success) {
-            //Send Data to Redux
-            this.props.SetPreferencesDataAction({
-              ageRange: this.state.ageRange,
-              distanceRange: this.state.distanceRange,
-              interestedGender: interestedGender
-            });
-            //if successed to passed, it will put the check mark from CollapsibleComponent CheckMark
-            this.setState(
-              {
-                internalErrorWarning: false
-              },
-              () => {
-                this.props.handlePassed("preferences", 1);
-              }
-            );
-          } else {
-            throw new Error("Internal Error ");
-          }
-        })
-        .catch(error => {
-          this.setState(
-            {
-              internalErrorWarning: true
+        () => {
+          //Send data to database
+          fetch("http://74.80.250.210:5000/api/profile/update", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
             },
-            () => {
-              this.props.handlePassed("preferences", 3);
-            }
-          );
-        });
+            body: JSON.stringify({
+              gui: this.props.CreateProfileDataReducer.gui,
+              collection: "preferences",
+              data: {
+                ageRange: this.state.ageRange,
+                distanceRange: this.state.distanceRange,
+                interestedGender: interestedGender,
+                checklist: checklist
+              }
+            })
+          })
+            .then(res => res.json())
+            .then(res => {
+              let object = JSON.parse(JSON.stringify(res));
+              console.log(object);
+              if (object.success) {
+                //Send Data to Redux
+                this.props.SetPreferencesDataAction({
+                  ageRange: this.state.ageRange,
+                  distanceRange: this.state.distanceRange,
+                  interestedGender: interestedGender
+                });
+                //if successed to passed, it will put the check mark from CollapsibleComponent CheckMark
+                this.setState(
+                  {
+                    internalErrorWarning: false,
+                    isDelaying: false
+                  },
+                  () => {
+                    this.props.handlePassed("preferences", 1);
+                  }
+                );
+              } else {
+                throw new Error("Internal Error ");
+              }
+            })
+            .catch(error => {
+              this.setState(
+                {
+                  internalErrorWarning: true
+                },
+                () => {
+                  this.props.handlePassed("preferences", 3);
+                }
+              );
+            });
+        }
+      );
     }
   };
 
@@ -532,18 +541,21 @@ class Preferences extends Component {
           <TouchableOpacity
             style={styles.nextButton}
             onPress={this.handleSubmit}
-            disabled={!this.state.passed}
+            disabled={
+              (this.state.passed && this.state.isDelaying) || !this.state.passed
+            }
           >
-            <Text style={styles.button}>Next</Text>
+            <Text style={styles.button}>
+              {this.state.passed && this.state.isDelaying
+                ? "Submitting"
+                : "Next"}
+            </Text>
           </TouchableOpacity>
         </View>
         {/*Spaces*/}
         <View
           style={{
             padding: "3%"
-            //borderRadius: 4,
-            //borderWidth: 0.5,
-            //borderColor: "#d6d7da"
           }}
         />
       </View>

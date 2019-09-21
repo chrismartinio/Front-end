@@ -37,6 +37,7 @@ const CreateProfileDataReducer = (
       return {
         ...state,
         gui: null,
+        checklist: [true, false, false, false, false, false],
         isContinueUser: false,
         createAccountData: null,
         aboutYouData: null,

@@ -33,7 +33,8 @@ class WouldYouRather extends Component {
       displaySlider3Value: 0,
       passed: true,
       internalErrorWarning: false,
-      isLoading: true
+      isLoading: true,
+      isDelaying: false
     };
     this.s1r1 = 50;
     this.s1r2 = 50;
@@ -109,63 +110,71 @@ class WouldYouRather extends Component {
       checklist: checklist
     });
 
-    //Send data to database
-    fetch("http://74.80.250.210:5000/api/profile/update", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
+    this.setState(
+      {
+        isDelaying: true
       },
-      body: JSON.stringify({
-        gui: this.props.CreateProfileDataReducer.gui,
-        collection: "wouldYouRather",
-        data: {
-          s1r1: this.s1r1,
-          s1r2: this.s1r2,
-          s2r1: this.s2r1,
-          s2r2: this.s2r2,
-          s3r1: this.s3r1,
-          s3r2: this.s3r2,
-          checklist: checklist
-        }
-      })
-    })
-      .then(res => res.json())
-      .then(res => {
-        let object = JSON.parse(JSON.stringify(res));
-        console.log(object);
-        if (object.success) {
-          //Send Data to Redux
-          this.props.SetWouldYouRatherDataAction({
-            s1r1: this.s1r1,
-            s1r2: this.s1r2,
-            s2r1: this.s2r1,
-            s2r2: this.s2r2,
-            s3r1: this.s3r1,
-            s3r2: this.s3r2
-          });
-          //if successed to passed, it will put the check mark from CollapsibleComponent CheckMark
-          this.setState(
-            {
-              internalErrorWarning: false
-            },
-            () => {
-              this.props.handlePassed("wouldYouRather", 1);
-            }
-          );
-        } else {
-          throw new Error("Internal Error ");
-        }
-      })
-      .catch(error => {
-        this.setState(
-          {
-            internalErrorWarning: true
+      () => {
+        //Send data to database
+        fetch("http://74.80.250.210:5000/api/profile/update", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
           },
-          () => {
-            this.props.handlePassed("wouldYouRather", 3);
-          }
-        );
-      });
+          body: JSON.stringify({
+            gui: this.props.CreateProfileDataReducer.gui,
+            collection: "wouldYouRather",
+            data: {
+              s1r1: this.s1r1,
+              s1r2: this.s1r2,
+              s2r1: this.s2r1,
+              s2r2: this.s2r2,
+              s3r1: this.s3r1,
+              s3r2: this.s3r2,
+              checklist: checklist
+            }
+          })
+        })
+          .then(res => res.json())
+          .then(res => {
+            let object = JSON.parse(JSON.stringify(res));
+            console.log(object);
+            if (object.success) {
+              //Send Data to Redux
+              this.props.SetWouldYouRatherDataAction({
+                s1r1: this.s1r1,
+                s1r2: this.s1r2,
+                s2r1: this.s2r1,
+                s2r2: this.s2r2,
+                s3r1: this.s3r1,
+                s3r2: this.s3r2
+              });
+              //if successed to passed, it will put the check mark from CollapsibleComponent CheckMark
+              this.setState(
+                {
+                  internalErrorWarning: false
+                },
+                () => {
+                  this.props.handlePassed("wouldYouRather", 1);
+                }
+              );
+            } else {
+              throw new Error("Internal Error ");
+            }
+          })
+          .catch(error => {
+            this.setState(
+              {
+                internalErrorWarning: true,
+                isDelaying: false
+              },
+              () => {
+                this.props.handlePassed("wouldYouRather", 3);
+              }
+            );
+          });
+      }
+    );
   };
 
   handleListener1 = arg => {
@@ -255,9 +264,15 @@ class WouldYouRather extends Component {
           <TouchableOpacity
             style={styles.nextButton}
             onPress={this.handleSubmit}
-            disabled={!this.state.passed}
+            disabled={
+              (this.state.passed && this.state.isDelaying) || !this.state.passed
+            }
           >
-            <Text style={styles.button}>Next</Text>
+            <Text style={styles.button}>
+              {this.state.passed && this.state.isDelaying
+                ? "Submitting"
+                : "Next"}
+            </Text>
           </TouchableOpacity>
         </View>
         {/*Spaces*/}
