@@ -325,7 +325,8 @@ class Preferences extends Component {
             .catch(error => {
               this.setState(
                 {
-                  internalErrorWarning: true
+                  internalErrorWarning: true,
+                  isDelaying: false
                 },
                 () => {
                   this.props.handlePassed("preferences", 3);

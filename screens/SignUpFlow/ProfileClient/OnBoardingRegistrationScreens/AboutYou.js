@@ -414,7 +414,8 @@ class AboutYou extends Component {
               //if failed to passed, it will remove the check mark from CollapsibleComponent CheckMark
               this.setState(
                 {
-                  internalErrorWarning: true
+                  internalErrorWarning: true,
+                  isDelaying: false
                 },
                 () => {
                   this.props.handlePassed("aboutYou", 3);

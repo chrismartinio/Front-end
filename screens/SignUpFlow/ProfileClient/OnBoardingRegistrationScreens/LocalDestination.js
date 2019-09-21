@@ -219,7 +219,8 @@ class LocationDestinations extends Component {
                 //if successed to passed, it will put the check mark from CollapsibleComponent CheckMark
                 this.setState(
                   {
-                    internalErrorWarning: false
+                    internalErrorWarning: false,
+                    isDelaying: false
                   },
                   () => {
                     this.props.handlePassed("localDestination", 1);
