@@ -688,7 +688,7 @@ class AboutYou extends Component {
               placeholderTextColor="#fff"
               containerStyle={styles.inputContainerStyle}
               inputStyle={styles.inputStyle}
-              autoCompleteType={false}
+              autoCompleteType={"off"}
               autoCapitalize="none"
               autoCorrect={false}
               keyboardType="numeric"

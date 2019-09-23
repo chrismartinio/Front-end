@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Text, View, TouchableOpacity } from "react-native";
 //background color
-import { LinearGradient } from "expo";
+import { LinearGradient } from 'expo-linear-gradient'
 
 export default function LoadingScreen(props) {
   return (

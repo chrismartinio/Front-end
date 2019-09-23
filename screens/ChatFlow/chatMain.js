@@ -4,7 +4,7 @@ import { ChatManager, TokenProvider } from "@pusher/chatkit-client";
 
 import Login from "./Login";
 import Users from "./Users";
-import Chat from "./Chat";
+//import Chat from "./Chat";
 
 //this should be data sent from the back end
 const instanceLocatorId = "0c189a30-bee2-488b-a6db-6797b29c25f2";

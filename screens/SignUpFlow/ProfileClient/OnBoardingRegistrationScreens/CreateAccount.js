@@ -452,7 +452,7 @@ class CreateAccount extends Component {
               )
             }
             editable={this.state.editable}
-            autoCompleteType={false}
+            autoCompleteType={"off"}
             autoCapitalize="none"
             autoCorrect={false}
             onChangeText={email =>
@@ -488,7 +488,7 @@ class CreateAccount extends Component {
               )
             }
             editable={this.state.editable}
-            autoCompleteType={false}
+            autoCompleteType={"off"}
             autoCapitalize="none"
             autoCorrect={false}
             ref={input => {
@@ -527,7 +527,7 @@ class CreateAccount extends Component {
               )
             }
             editable={this.state.editable}
-            autoCompleteType={false}
+            autoCompleteType={"off"}
             autoCapitalize="none"
             autoCorrect={false}
             secureTextEntry={true}
@@ -563,7 +563,7 @@ class CreateAccount extends Component {
               )
             }
             editable={this.state.editable}
-            autoCompleteType={false}
+            autoCompleteType={"off"}
             autoCapitalize="none"
             autoCorrect={false}
             secureTextEntry={true}
