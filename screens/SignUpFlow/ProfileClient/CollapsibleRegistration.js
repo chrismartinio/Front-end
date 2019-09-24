@@ -43,7 +43,7 @@ import SetGUIAction from "../../../storage/actions/RegistrationActions/SetGUIAct
 class CollapisbleRegistration extends Component {
   //LinksScreen Test Tool
   static navigationOptions = {
-    title: "Welcome!",
+    title: "Welcomes!",
     headerStyle: {
       backgroundColor: "#18cdf6"
     },
