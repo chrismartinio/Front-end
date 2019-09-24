@@ -2,7 +2,7 @@ import React from 'react'
 import {
    View, Text, Slider , StyleSheet, Dimensions
 } from 'react-native';
-import { LinearGradient } from 'expo';
+import { LinearGradient } from 'expo-linear-gradient'
 //import Slider from '@react-native-community/slider';
 let val =0;
 class CSlider extends React.Component {
@@ -57,8 +57,8 @@ class CSlider extends React.Component {
          value={0}
          minimumValue={this.props.minimumValue}
          maximumValue={this.props.maximumValue}
-         minimumTrackTintColor={'grey'}
-         maximumTrackTintColor={'grey'}
+         minimumTrackTintColor={'#fff'}
+         maximumTrackTintColor={'#fff'}
          step={1}
          onSlidingComplete={(value)=>{
            this.handleCallbackListener(value)

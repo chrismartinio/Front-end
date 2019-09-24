@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { View, Image, StyleSheet, Text, Animated, Dimensions } from 'react-native';
-import { BlurView } from 'expo';
+import { BlurView } from 'expo-blur'
 
 
 //take a user picture and display it on the field

@@ -9,7 +9,7 @@ import {
     StyleSheet,
     Dimensions
 } from 'react-native';
-import { LinearGradient } from 'expo';
+import { LinearGradient } from 'expo-linear-gradient'
 import Camera from '../../components/SignUpFlow/Camera';
 import SetProfilePictureAction from '../../storage/actions/SetProfilePictureAction';
 import { connect } from 'react-redux'
@@ -106,7 +106,7 @@ class SelfiePage extends React.Component {
             title='Submit selfie'
             onPress={this.handleSelfieSubmit}
           />
-          </View> 
+          </View>
         </ScrollView>
         </LinearGradient>
       </View>

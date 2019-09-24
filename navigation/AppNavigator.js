@@ -28,17 +28,18 @@ import CreateQuestionaire from "../screens/FindMatchFlow/matchCreateQuestionaire
 import ReplyQuestionaire from "../screens/FindMatchFlow/matchCreateReply";
 import ViewQuestionaire from "../screens/FindMatchFlow/matchViewReply";
 
-//On Boarding Sreen
-import SignupPage from "../screens/SignUpFlow/IndividualScreensTestingNonSync/SignupPage";
-import AboutYou from "../screens/SignUpFlow/IndividualScreensTestingNonSync/AboutYou";
-import ImInterestedIn from "../screens/SignUpFlow/IndividualScreensTestingNonSync/ImInterestedIn";
-import SpendWeekend from "../screens/SignUpFlow/IndividualScreensTestingNonSync/SpendAWeekend";
-import WouldRather from "../screens/SignUpFlow/IndividualScreensTestingNonSync/WouldRather";
-import TellUsMore from "../screens/SignUpFlow/IndividualScreensTestingNonSync/TellUsMore";
-//import Collapsible from "../screens/SignUpFlow/Collapsible_KaChi";
-import Collapsible from "../screens/SignUpFlow/Collapsible_Drew";
-//import LinksScreen from "../screens/LinksScreen";
-import LinksScreen from "../screens/LinksScreen_OnBoarding";
+//On-Boarding Individual Screens
+import SignupPage from "../screens/SignUpFlow/IndividualScreensTestingSync/SignupPage";
+import AboutYou from "../screens/SignUpFlow/IndividualScreensTestingSync/AboutYou";
+import ImInterestedIn from "../screens/SignUpFlow/IndividualScreensTestingSync/ImInterestedIn";
+import SpendWeekend from "../screens/SignUpFlow/IndividualScreensTestingSync/SpendAWeekend";
+import WouldRather from "../screens/SignUpFlow/IndividualScreensTestingSync/WouldRather";
+import TellUsMore from "../screens/SignUpFlow/IndividualScreensTestingSync/TellUsMore";
+import RegistrationComplete from "../screens/SignUpFlow/Collapsible_ScrollView_Components/RegistrationComplete.js";
+
+//On-Boarding Collapsible Screen (Includes all on-boarding screens)
+import Collapsible from "../screens/SignUpFlow/ProfileClient/CollapsibleRegistration";
+import LinksScreen from "../screens/LinksScreen";
 
 const TestStack = createStackNavigator({
   TestLinksScreen: LinksScreen,
@@ -57,11 +58,11 @@ const TestStack = createStackNavigator({
   TestSpendWeekend: SpendWeekend,
   TestImInterestedIn: ImInterestedIn,
   TestCollapsible: Collapsible,
-
+  TestRegistrationComplete: RegistrationComplete
 });
 
 const AuthStack = createStackNavigator({
-  SignUp: SignupPage,
+  SignUp: Collapsible,
   Registration: RegistrationPage,
   Selfie: SelfiePage,
   Profile: ProfilePage

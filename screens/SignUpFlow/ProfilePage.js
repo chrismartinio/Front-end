@@ -17,7 +17,8 @@ import {
   ProfileContainer
 } from '../../components/SignUpFlow/Index'
 
-import { LinearGradient } from 'expo'
+import { LinearGradient } from 'expo-linear-gradient'
+
 import axios from 'axios'
 import { connect } from 'react-redux'
 import firebase from '../../utils/mainFire'

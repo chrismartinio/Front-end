@@ -2,7 +2,7 @@ import MatchHeader from './components/Head';
 import InfoText from './components/Info';
 import React, { Component } from 'react';
 import {Animated ,ScrollView, Text, StyleSheet, View, Dimensions, ActivityIndicator, Image, TouchableOpacity } from 'react-native';
-import { LinearGradient } from 'expo';
+import { LinearGradient } from 'expo-linear-gradient'
 import { ProfilePicture } from '../../components/SignUpFlow/ProfilePicture'
 import TimerMixin from 'react-timer-mixin';
 import CircularTimer from './components/circleTimer'

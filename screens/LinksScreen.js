@@ -56,6 +56,8 @@ export default class LinksScreen extends React.Component {
       CurrentScreen: ProfilePage
     };
     this.buttonAry = [
+      "TestCollapsible",
+      "TestRegistrationComplete",
       "TestProfile",
       "TestMatches",
       "TestRegistration",
@@ -69,6 +71,12 @@ export default class LinksScreen extends React.Component {
       "CreateQuestionaire",
       "ReplyQuestionaire",
       "ViewQuestionaire",
+      //"TestSignUp",
+      //"TestAboutYou",
+      //"TestTellUsMore",
+      //"TestImInterestedIn",
+      //"TestSpendWeekend",
+      //"TestWouldRather",
     ];
   }
 
