@@ -66,7 +66,7 @@ class CollapisbleRegistration extends Component {
       interestsToggle: false,
       wouldYouRatherToggle: false,
       localDestinationToggle: false,
-      createAccountPassed: true, //true or false
+      createAccountPassed: false, //true or false
       aboutYouPassed: false,
       preferencesPassed: false,
       interestsPassed: false,
