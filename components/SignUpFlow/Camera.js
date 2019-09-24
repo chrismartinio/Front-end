@@ -1,6 +1,7 @@
 import React from 'react';
 import { Text, View, Image, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
-import { Camera, Permissions } from 'expo';
+import { Camera } from 'expo-camera';
+import * as Permissions from 'expo-permissions';
 const styles = StyleSheet.create({
   imageStyles: {
     //justifyContent: 'space-around'
@@ -77,7 +78,7 @@ export default class CameraExample extends React.Component {
                 }}
                 onPress={this.snap}
                 >
-              
+
                 <Text
                   style={{ fontSize: 18, marginBottom: 0, color: 'white' ,right:15}}>
                   <Image

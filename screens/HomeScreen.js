@@ -19,7 +19,9 @@ import { connect } from "react-redux";
 import SetFbDataAction from "../storage/actions/DataReducerActions/SetFbDataAction";
 import SetJwtAction from "../storage/actions/DataReducerActions/SetJwtAction";
 //import publicIP from "react-native-public-ip";
-import {Location, Permissions, WebBrowser } from "expo";
+import * as WebBrowser from 'expo-web-browser';
+import * as Location from 'expo-location';
+import * as Permissions from 'expo-permissions';
 import Constants from 'expo-constants'
 
 const { manifest } = Constants;
