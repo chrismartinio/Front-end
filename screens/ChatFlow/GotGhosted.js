@@ -2,7 +2,7 @@ import MatchHeader from './components/Head';
 import InfoText from './components/Info'
 import React, { Component } from 'react';
 import { ScrollView, Text, StyleSheet, View, Dimensions } from 'react-native';
-import { LinearGradient } from 'expo';
+import { LinearGradient } from 'expo-linear-gradient'
 import { ProfilePicture } from '../../components/SignUpFlow/ProfilePicture'
 
 

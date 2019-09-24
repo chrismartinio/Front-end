@@ -8,7 +8,8 @@ import {
   ScrollView,
   TouchableOpacity
 } from "react-native";
-import { LinearGradient } from "expo";
+import { LinearGradient } from 'expo-linear-gradient'
+
 import Slider from "../components/Slider";
 import SetWouldRatherDataAction from "../../../storage/actions/SetWouldRatherDataAction";
 import { connect } from "react-redux";

@@ -19,7 +19,8 @@ import {
   List,
   ListItem
 } from "react-native";
-import { LinearGradient } from "expo";
+import { LinearGradient } from 'expo-linear-gradient'
+
 
 import { Chevron } from "react-native-shapes";
 import { Icon, Input } from "react-native-elements";

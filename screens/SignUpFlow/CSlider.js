@@ -2,7 +2,7 @@ import React from 'react'
 import {
    View, Text, Slider , StyleSheet, Dimensions
 } from 'react-native';
-import { LinearGradient } from 'expo';
+import { LinearGradient } from 'expo-linear-gradient'
 //import Slider from '@react-native-community/slider';
 let val =0;
 class CSlider extends React.Component {

@@ -12,7 +12,8 @@ import {
   TextInput,
   Dimensions
 } from "react-native";
-import { LinearGradient } from "expo";
+import { LinearGradient } from 'expo-linear-gradient'
+
 // import Categories from '../../components/SignUpFlow/Categories'
 import t from "tcomb-form-native";
 import { connect } from "react-redux";
@@ -117,8 +118,8 @@ class SignupPage extends React.Component {
     },()=>{//console.log(this.state.multiSliderValue[0])
       //console.log("JJJJ "+ this.state.multiSliderValue[1])
     });
-    
-    
+
+
 
 };
   render() {
@@ -175,7 +176,7 @@ class SignupPage extends React.Component {
 
               <Text style={styles.titleText2}>Set your preferences</Text>
               <Text style={styles.textTop}>Preferred age range</Text>
-              
+
               <View style={styles.slider1}>
               <View style={styles.flexContainer}>
                         <Text style={styles.text2}> {this.state.multiSliderValue[0]}  </Text>
@@ -197,9 +198,9 @@ class SignupPage extends React.Component {
                     //height: 10,
                     shadowColor: 'red',
                 }}
-                  
+
                         />
-                      
+
                 {/* <Slider
                   functionListener={this.setAgeRange}
                   minimumValue={18}
@@ -316,14 +317,14 @@ const styles = StyleSheet.create({
     width: "55%"
   },
   flexContainer: {
-    
+
     //top: height *.45,
     flexDirection: 'row',
     justifyContent:'space-between',
     //position:'absolute',
     alignItems:'stretch',
-    
-    
+
+
   },
   buttonWomen: {
     alignItems: "center",

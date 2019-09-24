@@ -10,7 +10,7 @@ import {
   TouchableHighlight,
   Dimensions
 } from 'react-native';
-import { LinearGradient } from 'expo';
+import { LinearGradient } from 'expo-linear-gradient'
 
 var pic1='https://media.gq.com/photos/56d4902a9acdcf20275ef34c/master/w_806,h_1173,c_limit/tom-hardy-lead-840.jpg';
 

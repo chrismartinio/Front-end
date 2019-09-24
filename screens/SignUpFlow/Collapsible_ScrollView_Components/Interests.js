@@ -15,7 +15,8 @@ import {
   SafeAreaView,
   Dimensions
 } from "react-native";
-import { LinearGradient } from "expo";
+import { LinearGradient } from 'expo-linear-gradient'
+
 import DatePicker from "react-native-datepicker";
 import RNPickerSelect from "react-native-picker-select";
 import { connect } from "react-redux";

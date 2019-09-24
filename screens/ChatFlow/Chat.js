@@ -17,7 +17,8 @@ import ChatMain from './chatMain'
 import Header from "./ComponentHeader";
 //import console = require("console");
 //import { url } from "inspector";
-import { LinearGradient, BlurView } from 'expo';
+import { BlurView } from 'expo';
+import { LinearGradient } from 'expo-linear-gradient'
 //import console = require("console");
 var {height, width}= Dimensions.get('window')
 

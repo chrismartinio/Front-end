@@ -12,7 +12,8 @@ import {
   TextInput,
   Dimensions
 } from "react-native";
-import { LinearGradient } from "expo";
+import { LinearGradient } from 'expo-linear-gradient'
+
 // import Categories from '../../components/SignUpFlow/Categories'
 import t from "tcomb-form-native";
 import { connect } from "react-redux";

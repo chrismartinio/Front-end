@@ -14,7 +14,8 @@ import {
   ScrollView,
   TouchableOpacity,
 } from "react-native";
-import { LinearGradient } from "expo";
+import { LinearGradient } from 'expo-linear-gradient'
+
 import CollapseComponent from "./Collapsible_ScrollView_Components/TinyComponents/CollapseComponenet.js";
 
 import { connect } from "react-redux";

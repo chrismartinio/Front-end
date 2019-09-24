@@ -13,7 +13,7 @@ import {
     Dimensions,
     ImageBackground
 } from 'react-native';
-import { LinearGradient } from 'expo';
+import { LinearGradient } from 'expo-linear-gradient'
 import Hello from './hello'
 
 import SetProfilePictureAction from '../../storage/actions/SetProfilePictureAction';

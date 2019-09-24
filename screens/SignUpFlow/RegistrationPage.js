@@ -9,7 +9,7 @@ import {
   View,
   Button
 } from 'react-native';
-import { LinearGradient } from 'expo';
+import { LinearGradient } from 'expo-linear-gradient'
 import Categories from '../../components/SignUpFlow/Categories'
 
 export default class RegistrationPage extends React.Component {

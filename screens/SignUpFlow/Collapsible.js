@@ -16,7 +16,8 @@ import {
   ImageBackground,
   Separator, Thumbnail, List, ListItem,
 } from "react-native";
-import { LinearGradient } from "expo";
+import { LinearGradient } from 'expo-linear-gradient'
+
 import { connect } from "react-redux";
 import SetUserDataAction from "../../storage/actions/SetUserDataAction";
 import firebase from "../../utils/mainFire";
