@@ -60,7 +60,7 @@ class Collapsible_ScrollView extends Component {
       interestsPassed: false,
       wouldYouRatherPassed: false,
       localDestinationsPassed: false,
-      currentScreenTopY: 0, //screenTopY : slide down increase ; slide up decrease
+      scrollY: 0, //screenTopY : slide down increase ; slide up decrease
       loaded: false //use to make sure if there data inside redux before rendering
     };
     this.interestsPositionY = 0;
@@ -326,18 +326,18 @@ class Collapsible_ScrollView extends Component {
   handleScroll = ({ nativeEvent }) => {
     const { contentOffset } = nativeEvent;
     this.setState({
-      currentScreenTopY: contentOffset.y
+      scrollY: contentOffset.y
     });
-    //console.log(this.state.currentScreenTopY);
+    //console.log(this.state.scrollY);
   };
 
   //Press tab will scroll to that tab position
   scrollToPosition = (componentName, tabPageY) => {
-    //this.state.currentScreenTopY : current screen (not scroll) Y position; changed upon scrolling
+    //this.state.scrollY : current screen (not scroll) Y position; changed upon scrolling
     //tabPageY : the screen tab's Y position in the whole scroll screen view
     let offset; // offset : an offset to prevent screen scroll too high when closing
     componentName === "createAccount" ? (offset = 250) : (offset = 150);
-    const newScrollY = this.state.currentScreenTopY + tabPageY - offset;
+    const newScrollY = this.state.scrollY + tabPageY - offset;
     this.scrollView.scrollTo({ y: newScrollY, animated: true });
   };
 
@@ -401,7 +401,7 @@ class Collapsible_ScrollView extends Component {
                     componentName={"preferences"}
                     handleToggle={this.handleToggle}
                     handlePassed={this.handlePassed}
-                    currentScreenTopY={this.state.currentScreenTopY}
+                    scrollY={this.state.scrollY}
                     preferencesPositionY={this.preferencesPositionY}
                   />
                 </View>
@@ -419,7 +419,7 @@ class Collapsible_ScrollView extends Component {
                     componentName={"interests"}
                     handleToggle={this.handleToggle}
                     handlePassed={this.handlePassed}
-                    currentScreenTopY={this.state.currentScreenTopY}
+                    scrollY={this.state.scrollY}
                     interestsPositionY={this.interestsPositionY}
                   />
                 </View>
@@ -446,7 +446,7 @@ class Collapsible_ScrollView extends Component {
                     componentName={"localDestinations"}
                     handleToggle={this.handleToggle}
                     handlePassed={this.handlePassed}
-                    currentScreenTopY={this.state.currentScreenTopY}
+                    scrollY={this.state.scrollY}
                     localDestinationsPositionY={this.localDestinationsPositionY}
                   />
                 </View>

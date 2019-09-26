@@ -38,7 +38,7 @@ export default function CollapsibleScreenTab(props) {
           <Preferences
             handlePassed={props.handlePassed}
             preferencesToggle={props.componentToggle}
-            currentScreenTopY={props.currentScreenTopY}
+            scrollY={props.scrollY}
           />
         );
 
@@ -47,7 +47,7 @@ export default function CollapsibleScreenTab(props) {
           <Interests
             handlePassed={props.handlePassed}
             interestsToggle={props.componentToggle}
-            currentScreenTopY={props.currentScreenTopY}
+            scrollY={props.scrollY}
           />
         );
 
@@ -64,7 +64,7 @@ export default function CollapsibleScreenTab(props) {
           <LocalDestination
             handlePassed={props.handlePassed}
             localDestinationToggle={props.componentToggle}
-            currentScreenTopY={props.currentScreenTopY}
+            scrollY={props.scrollY}
           />
         );
 

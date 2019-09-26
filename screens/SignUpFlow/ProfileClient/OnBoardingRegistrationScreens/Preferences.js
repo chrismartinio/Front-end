@@ -71,7 +71,7 @@ class Preferences extends Component {
       .then(res => res.json())
       .then(res => {
         let object = JSON.parse(JSON.stringify(res));
-        console.log(object);
+        //console.log(object);
         if (object.success) {
           let pickedMen, pickedWomen;
           if (object.result.interestedGender === "both") {
@@ -231,7 +231,7 @@ class Preferences extends Component {
   };
 
   changeColor = bname => {
-    let topY = this.props.currentScreenTopY;
+    let topY = this.props.scrollY;
 
     const topRed = 24;
     const topGreen = 205;
@@ -489,7 +489,6 @@ class Preferences extends Component {
           </View>
           <MultiSlider
             values={[this.state.ageRange[0], this.state.ageRange[1]]}
-            sliderLength={320}
             onValuesChange={this.ageRangeChange}
             min={18}
             max={110}

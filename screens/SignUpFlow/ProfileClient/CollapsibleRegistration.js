@@ -78,12 +78,9 @@ class CollapisbleRegistration extends Component {
       interestsStatus: "empty",
       wouldYouRatherStatus: "empty",
       localDestinationStatus: "empty",
-      currentScreenTopY: 0, //screenTopY : slide down increase ; slide up decrease
       isLoading: false //use to make sure if there data inside redux before rendering
     };
-    this.interestsPositionY = 0;
-    this.localDestinationPositionY = 0;
-    this.preferencesPositionY = 0;
+    this.scrollY = 0;
   }
 
   getJWT = () => {
@@ -101,12 +98,12 @@ class CollapisbleRegistration extends Component {
     //gui is not empty? = third parties user, third parties continue user, local continue user
     return {
       //For isContinueUser
-      //gui: "5d85d28868f084cede41e913",
-      //checklist: [true, false, true, false, false, false]
+      gui: "5d85d28868f084cede41e913",
+      checklist: [true, false, true, false, false, false]
 
       //For new User
-      gui: "",
-      checklist: [true, false, false, false, false, false]
+      //gui: "",
+      //checklist: [true, false, false, false, false, false]
     };
   };
 
@@ -250,39 +247,19 @@ class CollapisbleRegistration extends Component {
       this.state.createAccountPassed === false
     ) {
       return;
-    } else {
-      let pageY;
-      //If user pressed the screen "Next Button"
-      if (evt === null || evt === undefined) {
-        tabPageY = componentName !== "createAccount" ? 150 : 250;
-      } else {
-        //If user pressed the Toggle
-        tabPageY = evt.nativeEvent.pageY;
-      }
-
-      let toggle = componentName + "Toggle";
-      this.setState({
-        [toggle]: !this.state[toggle]
-      });
-      this.scrollToPosition(componentName, tabPageY);
     }
-  };
 
-  //Press screen tab will scroll to that screen tab position
-  scrollToPosition = (componentName, tabPageY) => {
-    //this.state.currentScreenTopY : current screen (not scroll) Y position; changed upon scrolling
-    //tabPageY : the screen tab's Y position in the whole scroll screen view
-    // offset : an offset to prevent screen scroll too high when closing
-    let offset = componentName === "createAccount" ? 250 : 150;
-    let newScrollY = this.state.currentScreenTopY + tabPageY - offset;
-    this.scrollView.scrollTo({ y: newScrollY, animated: true });
+    let toggle = componentName + "Toggle";
+    this.setState({
+      [toggle]: !this.state[toggle]
+    });
   };
 
   //handlescroll : update current screen top y
   handleScroll = ({ nativeEvent }) => {
     const { contentOffset } = nativeEvent;
     this.setState({
-      currentScreenTopY: contentOffset.y
+      scrollY: contentOffset.y
     });
   };
 
@@ -349,7 +326,7 @@ class CollapisbleRegistration extends Component {
                     componentName={"preferences"}
                     handleToggle={this.handleToggle}
                     handlePassed={this.handlePassed}
-                    currentScreenTopY={this.state.currentScreenTopY}
+                    scrollY={this.scrollY}
                   />
                 </View>
 
@@ -367,7 +344,7 @@ class CollapisbleRegistration extends Component {
                     componentName={"interests"}
                     handleToggle={this.handleToggle}
                     handlePassed={this.handlePassed}
-                    currentScreenTopY={this.state.currentScreenTopY}
+                    scrollY={this.scrollY}
                   />
                 </View>
 
@@ -395,7 +372,7 @@ class CollapisbleRegistration extends Component {
                     componentName={"localDestination"}
                     handleToggle={this.handleToggle}
                     handlePassed={this.handlePassed}
-                    currentScreenTopY={this.state.currentScreenTopY}
+                    scrollY={this.scrollY}
                   />
                 </View>
               </View>

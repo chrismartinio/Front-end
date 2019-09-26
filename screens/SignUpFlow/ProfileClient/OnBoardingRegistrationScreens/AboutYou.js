@@ -76,7 +76,7 @@ class AboutYou extends Component {
       .then(res => res.json())
       .then(res => {
         let object = JSON.parse(JSON.stringify(res));
-        console.log(object);
+        //console.log(object);
         if (object.success) {
           let {
             firstName,

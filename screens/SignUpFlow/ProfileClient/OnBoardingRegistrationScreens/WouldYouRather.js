@@ -61,7 +61,7 @@ class WouldYouRather extends Component {
       .then(res => res.json())
       .then(res => {
         let object = JSON.parse(JSON.stringify(res));
-        console.log(object);
+        //console.log(object);
         if (object.success) {
           this.setState({
             displaySlider1Value: object.result.s1r2 - 50,

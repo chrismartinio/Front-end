@@ -67,7 +67,7 @@ class LocationDestinations extends Component {
       .then(res => res.json())
       .then(res => {
         let object = JSON.parse(JSON.stringify(res));
-        console.log(object);
+        //console.log(object);
         if (object.success) {
           this.setState({
             localDestination: object.result.localDestination,
@@ -155,7 +155,7 @@ class LocationDestinations extends Component {
   };
 
   changeColor = bname => {
-    let topY = this.props.currentScreenTopY;
+    let topY = this.props.scrollY;
 
     const topRed = 24;
     const topGreen = 205;
@@ -387,13 +387,16 @@ const styles = StyleSheet.create({
   },
   locationsButtonWrap: {
     alignItems: "center",
-    padding: 15,
+    padding: width / 37.5,
     borderRadius: 40,
     borderWidth: 2,
     borderColor: "#fff",
     width: "auto",
     minWidth: "45%",
-    margin: 5
+    marginLeft: 5,
+    marginRight: 5,
+    marginTop: 10,
+    marginBottom: 10,
   },
   button: {
     color: "#fff",

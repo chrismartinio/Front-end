@@ -74,7 +74,7 @@ class Interests extends Component {
       .then(res => res.json())
       .then(res => {
         let object = JSON.parse(JSON.stringify(res));
-        console.log(object);
+        //console.log(object);
         if (object.success) {
           this.setState({
             likesArray: object.result.likesArray,
@@ -215,7 +215,7 @@ class Interests extends Component {
   };
 
   changeColor = bname => {
-    let topY = this.props.currentScreenTopY;
+    let topY = this.props.scrollY;
 
     const topRed = 24;
     const topGreen = 205;
@@ -395,6 +395,8 @@ class Interests extends Component {
   }
 }
 
+const { height, width } = Dimensions.get("window");
+
 const styles = StyleSheet.create({
   likeButton: {
     color: "#fff",
@@ -402,13 +404,16 @@ const styles = StyleSheet.create({
   },
   likeButtonWrap: {
     alignItems: "center",
-    padding: 15,
+    padding: width / 37.5,
     borderRadius: 40,
     borderWidth: 2,
     borderColor: "#fff",
     width: "auto",
     minWidth: "25%",
-    margin: 5
+    marginLeft: 3,
+    marginRight: 3,
+    marginTop: 10,
+    marginBottom: 10,
   },
   button: {
     color: "#fff",
