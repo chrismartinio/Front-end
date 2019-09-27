@@ -33,11 +33,6 @@ import SetIsContinueUserAction from "../../../storage/actions/RegistrationAction
 import SetUserAllDataAction from "../../../storage/actions/RegistrationActions/SetUserAllDataAction";
 import SetGUIAction from "../../../storage/actions/RegistrationActions/SetGUIAction";
 
-//grant wants when inserting/updating data, he wants profile service to store in 6 different db
-//but he didn't mention for undone user, therefore, for undone user, do the same thing as before that
-//query all data at once and pass to redux
-//but for inserting, store in two ways : 1. big collection 2. 6 seperate collections
-
 //direction: decrypt jwt -> retrieve gui and checklist -> store gui into redux ->
 
 class CollapisbleRegistration extends Component {
@@ -248,19 +243,30 @@ class CollapisbleRegistration extends Component {
     ) {
       return;
     }
-
+    let pageY = evt.nativeEvent.pageY;
+    let offset = 125;
     let toggle = componentName + "Toggle";
-    this.setState({
-      [toggle]: !this.state[toggle]
-    });
+    this.setState(
+      {
+        [toggle]: !this.state[toggle]
+      },
+      () => {
+        if (this.state[toggle]) {
+          this.scrollView.scrollTo({
+            y: this.scrollY + pageY - offset,
+            animated: true
+          });
+        } else {
+          this.scrollView.scrollTo({ y: 0, animated: true });
+        }
+      }
+    );
   };
 
   //handlescroll : update current screen top y
   handleScroll = ({ nativeEvent }) => {
     const { contentOffset } = nativeEvent;
-    this.setState({
-      scrollY: contentOffset.y
-    });
+    this.scrollY = contentOffset.y;
   };
 
   SuccessScreen = () => {
@@ -293,24 +299,40 @@ class CollapisbleRegistration extends Component {
                 />
 
                 {/*Create Account*/}
-                <CollapsibleScreenTab
-                  componentToggle={this.state.createAccountToggle}
-                  componentPassed={this.state.createAccountPassed}
-                  componentStatus={this.state.createAccountStatus}
-                  componentName={"createAccount"}
-                  handleToggle={this.handleToggle}
-                  handlePassed={this.handlePassed}
-                />
+                <View
+                  onLayout={event => {
+                    const layout = event.nativeEvent.layout;
+                    this.createAccountPositionY = layout.y;
+                  }}
+                >
+                  <CollapsibleScreenTab
+                    componentToggle={this.state.createAccountToggle}
+                    componentPassed={this.state.createAccountPassed}
+                    componentStatus={this.state.createAccountStatus}
+                    componentName={"createAccount"}
+                    handleToggle={this.handleToggle}
+                    handlePassed={this.handlePassed}
+                    scrollView={this.scrollView}
+                  />
+                </View>
 
                 {/*About You*/}
-                <CollapsibleScreenTab
-                  componentToggle={this.state.aboutYouToggle}
-                  componentPassed={this.state.aboutYouPassed}
-                  componentStatus={this.state.aboutYouStatus}
-                  componentName={"aboutYou"}
-                  handleToggle={this.handleToggle}
-                  handlePassed={this.handlePassed}
-                />
+                <View
+                  onLayout={event => {
+                    const layout = event.nativeEvent.layout;
+                    this.aboutYouPositionY = layout.y;
+                  }}
+                >
+                  <CollapsibleScreenTab
+                    componentToggle={this.state.aboutYouToggle}
+                    componentPassed={this.state.aboutYouPassed}
+                    componentStatus={this.state.aboutYouStatus}
+                    componentName={"aboutYou"}
+                    handleToggle={this.handleToggle}
+                    handlePassed={this.handlePassed}
+                    scrollView={this.scrollView}
+                  />
+                </View>
 
                 {/*Preferences*/}
                 <View
@@ -327,6 +349,7 @@ class CollapisbleRegistration extends Component {
                     handleToggle={this.handleToggle}
                     handlePassed={this.handlePassed}
                     scrollY={this.scrollY}
+                    scrollView={this.scrollView}
                   />
                 </View>
 
@@ -345,18 +368,27 @@ class CollapisbleRegistration extends Component {
                     handleToggle={this.handleToggle}
                     handlePassed={this.handlePassed}
                     scrollY={this.scrollY}
+                    scrollView={this.scrollView}
                   />
                 </View>
 
                 {/*wouldYouRather*/}
-                <CollapsibleScreenTab
-                  componentToggle={this.state.wouldYouRatherToggle}
-                  componentPassed={this.state.wouldYouRatherPassed}
-                  componentStatus={this.state.wouldYouRatherStatus}
-                  componentName={"wouldYouRather"}
-                  handleToggle={this.handleToggle}
-                  handlePassed={this.handlePassed}
-                />
+                <View
+                  onLayout={event => {
+                    const layout = event.nativeEvent.layout;
+                    this.wouldYouRatherPositionY = layout.y;
+                  }}
+                >
+                  <CollapsibleScreenTab
+                    componentToggle={this.state.wouldYouRatherToggle}
+                    componentPassed={this.state.wouldYouRatherPassed}
+                    componentStatus={this.state.wouldYouRatherStatus}
+                    componentName={"wouldYouRather"}
+                    handleToggle={this.handleToggle}
+                    handlePassed={this.handlePassed}
+                    scrollView={this.scrollView}
+                  />
+                </View>
 
                 {/*localDestination*/}
                 <View
@@ -373,8 +405,11 @@ class CollapisbleRegistration extends Component {
                     handleToggle={this.handleToggle}
                     handlePassed={this.handlePassed}
                     scrollY={this.scrollY}
+                    scrollView={this.scrollView}
                   />
                 </View>
+                {/*Temporay solution for scrollView; without this would not scroll properly*/}
+                <View style={{ padding: "100%" }} />
               </View>
             </TouchableWithoutFeedback>
           </SafeAreaView>

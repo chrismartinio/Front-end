@@ -39,6 +39,7 @@ import RegistrationComplete from "../screens/SignUpFlow/Collapsible_ScrollView_C
 
 //On-Boarding Collapsible Screen (Includes all on-boarding screens)
 import Collapsible from "../screens/SignUpFlow/ProfileClient/CollapsibleRegistration";
+import TestScrollView from "../screens/SignUpFlow/ProfileClient/TestScrollView";
 import LinksScreen from "../screens/LinksScreen";
 
 const TestStack = createStackNavigator({
@@ -58,7 +59,8 @@ const TestStack = createStackNavigator({
   TestSpendWeekend: SpendWeekend,
   TestImInterestedIn: ImInterestedIn,
   TestCollapsible: Collapsible,
-  TestRegistrationComplete: RegistrationComplete
+  TestRegistrationComplete: RegistrationComplete,
+  TestScrollView: TestScrollView
 });
 
 const AuthStack = createStackNavigator({
