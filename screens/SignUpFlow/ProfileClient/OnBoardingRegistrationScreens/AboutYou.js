@@ -102,8 +102,7 @@ class AboutYou extends Component {
             genderWarning: gender === "" ? "empty" : "",
             countryWarning: country === "" ? "empty" : "",
             zipCodeWarning: zipCode === "" ? "empty" : "",
-            isLoading: true,
-            passed: isThirdPartiesUser ? false : true
+            isLoading: true
           });
         } else {
           throw new Error("internal Error");

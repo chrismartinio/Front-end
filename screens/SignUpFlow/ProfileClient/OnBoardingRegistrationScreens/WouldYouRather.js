@@ -68,7 +68,6 @@ class WouldYouRather extends Component {
             displaySlider2Value: object.result.s2r2 - 50,
             displaySlider3Value: object.result.s3r2 - 50,
             isLoading: true,
-            passed: true
           });
         } else {
           throw new Error("internal Error");

@@ -72,7 +72,6 @@ class LocationDestinations extends Component {
           this.setState({
             localDestination: object.result.localDestination,
             isLoading: true,
-            passed: true
           });
         } else {
           throw new Error("internal Error");

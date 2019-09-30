@@ -93,8 +93,8 @@ class CollapisbleRegistration extends Component {
     //gui is not empty? = third parties user, third parties continue user, local continue user
     return {
       //For isContinueUser
-      gui: "5d85d28868f084cede41e913",
-      checklist: [true, false, true, false, false, false]
+      gui: "5d91a94672f1da597b8a6d9f",
+      checklist: [true, false, true, true, true, true]
 
       //For new User
       //gui: "",
@@ -214,11 +214,16 @@ class CollapisbleRegistration extends Component {
 
     //Handle Duplicate Email; let the createAccount screen stay remain
     if (passed === 1) {
-      this.setState({
-        [passName]: true,
-        [statusName]: "passed",
-        [toggleName]: false
-      });
+      this.setState(
+        {
+          [passName]: true,
+          [statusName]: "passed",
+          [toggleName]: false
+        },
+        () => {
+          this.scrollView.scrollTo({ y: 0, animated: true });
+        }
+      );
     } else if (passed === 2) {
       this.setState({
         [passName]: false,
@@ -243,7 +248,8 @@ class CollapisbleRegistration extends Component {
     ) {
       return;
     }
-    let pageY = evt.nativeEvent.pageY;
+
+    let pageY = evt !== null ? evt.nativeEvent.pageY : 0;
     let offset = 125;
     let toggle = componentName + "Toggle";
     this.setState(

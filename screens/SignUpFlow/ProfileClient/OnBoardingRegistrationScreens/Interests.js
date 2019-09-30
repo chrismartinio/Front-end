@@ -79,7 +79,6 @@ class Interests extends Component {
           this.setState({
             likesArray: object.result.likesArray,
             isLoading: true,
-            passed: true
           });
         } else {
           throw new Error("internal Error");

@@ -40,7 +40,8 @@ class CreateAccount extends Component {
       passed: false,
       editable: true,
       internalErrorWarning: false,
-      isLoading: true
+      isLoading: true,
+      isDelaying: false
     };
     this.isContinueUserFetched = false;
   }
@@ -323,75 +324,82 @@ class CreateAccount extends Component {
       //set editable to true so the user cannot resubmit other email
       //We do not want the user to submit other one (generate a new gui) on the same registration
       //the editable will lock the input to prevent changing email or password
-      this.setState({
-        editable: false
-      });
-
-      //insert a profile into database
-      fetch("http://74.80.250.210:5000/api/profile/insert", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
+      this.setState(
+        {
+          editable: false,
+          isDelaying: true
         },
-        body: JSON.stringify({
-          collection: "createAccount",
-          data: { email: this.state.email, password: this.state.password }
-        })
-      })
-        .then(res => res.json())
-        .then(res => {
-          let object = JSON.parse(JSON.stringify(res));
-          //console.log(object);
-          if (object.success) {
-            //pass data into Redux
-            this.props.SetCreateAccountDataAction({
-              email: this.state.email,
-              password: this.state.password
-            });
-            this.props.SetGUIAction({
-              gui: object.gui
-            });
-            //if successed to passed,
-            this.setState(
-              {
-                internalErrorWarning: false
-              },
-              () => {
-                //it will put a check mark for createAccount screen
-                this.props.handlePassed("createAccount", 1);
-              }
-            );
-          } else if (object.success === false && object.status === 409) {
-            //duplicate email,
-            this.setState(
-              {
-                emailWarning: "duplicate",
-                editable: true,
-                internalErrorWarning: false
-              },
-              () => {
-                //put a error marker for createAccount
-                this.props.handlePassed("createAccount", 3);
-              }
-            );
-          } else {
-            //internal error
-            throw new Error("Internal Error ");
-          }
-        })
-        .catch(error => {
-          //handle error
-          this.setState(
-            {
-              editable: true,
-              internalErrorWarning: true
+        () => {
+          //insert a profile into database
+          fetch("http://74.80.250.210:5000/api/profile/insert", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
             },
-            () => {
-              //put a error marker for createAccount
-              this.props.handlePassed("createAccount", 3);
-            }
-          );
-        });
+            body: JSON.stringify({
+              collection: "createAccount",
+              data: { email: this.state.email, password: this.state.password }
+            })
+          })
+            .then(res => res.json())
+            .then(res => {
+              let object = JSON.parse(JSON.stringify(res));
+              //console.log(object);
+              if (object.success) {
+                //pass data into Redux
+                this.props.SetCreateAccountDataAction({
+                  email: this.state.email,
+                  password: this.state.password
+                });
+                this.props.SetGUIAction({
+                  gui: object.gui
+                });
+                //if successed to passed,
+                this.setState(
+                  {
+                    internalErrorWarning: false,
+                    isDelaying: false
+                  },
+                  () => {
+                    //it will put a check mark for createAccount screen
+                    this.props.handlePassed("createAccount", 1);
+                  }
+                );
+              } else if (object.success === false && object.status === 409) {
+                //duplicate email,
+                this.setState(
+                  {
+                    emailWarning: "duplicate",
+                    editable: true,
+                    internalErrorWarning: false,
+                    isDelaying: false
+                  },
+                  () => {
+                    //put a error marker for createAccount
+                    this.props.handlePassed("createAccount", 3);
+                  }
+                );
+              } else {
+                //internal error
+                throw new Error("Internal Error ");
+              }
+            })
+            .catch(error => {
+              //handle error
+              this.setState(
+                {
+                  editable: true,
+                  internalErrorWarning: true,
+                  isDelaying: false
+                },
+                () => {
+                  //put a error marker for createAccount
+                  this.props.handlePassed("createAccount", 3);
+                }
+              );
+            });
+        }
+      );
     }
   };
 
@@ -661,9 +669,15 @@ class CreateAccount extends Component {
           <TouchableOpacity
             style={styles.nextButton}
             onPress={this.handleSubmit}
-            disabled={!this.state.passed}
+            disabled={
+              (this.state.passed && this.state.isDelaying) || !this.state.passed
+            }
           >
-            <Text style={styles.button}>Next</Text>
+            <Text style={styles.button}>
+              {this.state.passed && this.state.isDelaying
+                ? "Submitting"
+                : "Next"}
+            </Text>
           </TouchableOpacity>
         </View>
 

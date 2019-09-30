@@ -93,7 +93,6 @@ class Preferences extends Component {
             ageRange: object.result.ageRange,
             distanceRange: object.result.distanceRange,
             isLoading: true,
-            passed: true
           });
         } else {
           throw new Error("internal Error");
