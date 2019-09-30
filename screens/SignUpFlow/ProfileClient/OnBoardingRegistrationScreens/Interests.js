@@ -123,7 +123,8 @@ class Interests extends Component {
   }
 
   handleSubmit = () => {
-    if (this.state.passed) {
+    //if the screen passed and gui is not null (that means user had finished createAccount)
+    if (this.state.passed && this.props.CreateProfileDataReducer.gui !== null) {
       //Set the screen's checklist index to true
       let checklist = this.props.CreateProfileDataReducer.checklist;
       let index = 3;
@@ -165,13 +166,14 @@ class Interests extends Component {
                 this.props.SetInterestsDataAction({
                   likesArray: this.state.likesArray
                 });
-                //if successed to passed, it will put the check mark from CollapsibleComponent CheckMark
+                //if successed to passed,
                 this.setState(
                   {
                     internalErrorWarning: false,
                     isDelaying: false
                   },
                   () => {
+                    //it will put a check mark for interests
                     this.props.handlePassed("interests", 1);
                   }
                 );
@@ -180,16 +182,36 @@ class Interests extends Component {
               }
             })
             .catch(error => {
+              //if error,
               this.setState(
                 {
                   internalErrorWarning: true,
                   isDelaying: false
                 },
                 () => {
+                  //put a error marker for interests
                   this.props.handlePassed("interests", 3);
                 }
               );
             });
+        }
+      );
+    } else {
+      //if gui is null
+
+      //User must has a gui retrieve from the createAccount screen before get to this screen
+      //if there are no gui, give an error warning
+      //the reason of no gui may come from internal error when inserting email/password into createAccount Collection
+      //and error had thrown and gui didn't return back to client
+      //user may need to re-sign in as continue user?
+
+      this.setState(
+        {
+          internalErrorWarning: true,
+          isDelaying: false
+        },
+        () => {
+          this.props.handlePassed("interests", 3);
         }
       );
     }
@@ -413,7 +435,7 @@ const styles = StyleSheet.create({
     marginLeft: 3,
     marginRight: 3,
     marginTop: 10,
-    marginBottom: 10,
+    marginBottom: 10
   },
   button: {
     color: "#fff",

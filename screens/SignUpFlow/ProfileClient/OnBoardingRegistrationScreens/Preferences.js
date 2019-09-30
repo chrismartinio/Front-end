@@ -250,7 +250,8 @@ class Preferences extends Component {
   };
 
   handleSubmit = () => {
-    if (this.state.passed) {
+    //if the screen passed and gui is not null (that means user had finished createAccount)
+    if (this.state.passed && this.props.CreateProfileDataReducer.gui !== null) {
       //check the user's interestGender and pass to redux and db
       let interestedGender = "";
       if (this.state.pickedMen && this.state.pickedWomen) {
@@ -308,13 +309,14 @@ class Preferences extends Component {
                   distanceRange: this.state.distanceRange,
                   interestedGender: interestedGender
                 });
-                //if successed to passed, it will put the check mark from CollapsibleComponent CheckMark
+                //if successed to passed,
                 this.setState(
                   {
                     internalErrorWarning: false,
                     isDelaying: false
                   },
                   () => {
+                    //it will put a check mark for preferences
                     this.props.handlePassed("preferences", 1);
                   }
                 );
@@ -323,16 +325,36 @@ class Preferences extends Component {
               }
             })
             .catch(error => {
+              //if error,
               this.setState(
                 {
                   internalErrorWarning: true,
                   isDelaying: false
                 },
                 () => {
+                  //put a error marker for preferences
                   this.props.handlePassed("preferences", 3);
                 }
               );
             });
+        }
+      );
+    } else {
+      //if gui is null
+
+      //User must has a gui retrieve from the createAccount screen before get to this screen
+      //if there are no gui, give an error warning
+      //the reason of no gui may come from internal error when inserting email/password into createAccount Collection
+      //and error had thrown and gui didn't return back to client
+      //user may need to re-sign in as continue user?
+
+      this.setState(
+        {
+          internalErrorWarning: true,
+          isDelaying: false
+        },
+        () => {
+          this.props.handlePassed("preferences", 3);
         }
       );
     }

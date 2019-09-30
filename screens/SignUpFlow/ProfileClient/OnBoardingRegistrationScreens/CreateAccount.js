@@ -351,25 +351,26 @@ class CreateAccount extends Component {
             this.props.SetGUIAction({
               gui: object.gui
             });
+            //if successed to passed,
             this.setState(
               {
                 internalErrorWarning: false
               },
               () => {
-                //if successed to passed, it will put the check mark from CollapsibleComponent CheckMark
+                //it will put a check mark for createAccount screen
                 this.props.handlePassed("createAccount", 1);
               }
             );
           } else if (object.success === false && object.status === 409) {
-            //duplicate email
+            //duplicate email,
             this.setState(
               {
                 emailWarning: "duplicate",
                 editable: true,
                 internalErrorWarning: false
               },
-              //make another fetch to call deleteOne api which one delete that error gui on db
               () => {
+                //put a error marker for createAccount
                 this.props.handlePassed("createAccount", 3);
               }
             );
@@ -386,6 +387,7 @@ class CreateAccount extends Component {
               internalErrorWarning: true
             },
             () => {
+              //put a error marker for createAccount
               this.props.handlePassed("createAccount", 3);
             }
           );

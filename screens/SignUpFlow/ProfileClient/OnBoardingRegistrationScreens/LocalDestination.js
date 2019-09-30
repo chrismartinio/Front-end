@@ -174,19 +174,20 @@ class LocationDestinations extends Component {
   };
 
   handleSubmit = () => {
-    //Set the screen's checklist index to true
-    let checklist = this.props.CreateProfileDataReducer.checklist;
-    let index = 5;
-    checklist = [
-      ...checklist.slice(0, index),
-      true,
-      ...checklist.slice(index + 1)
-    ];
-    this.props.SetChecklistAction({
-      checklist: checklist
-    });
+    //if the screen passed and gui is not null (that means user had finished createAccount)
+    if (this.state.passed && this.props.CreateProfileDataReducer.gui !== null) {
+      //Set the screen's checklist index to true
+      let checklist = this.props.CreateProfileDataReducer.checklist;
+      let index = 5;
+      checklist = [
+        ...checklist.slice(0, index),
+        true,
+        ...checklist.slice(index + 1)
+      ];
+      this.props.SetChecklistAction({
+        checklist: checklist
+      });
 
-    if (this.state.passed) {
       this.setState(
         {
           isDelaying: true
@@ -216,13 +217,14 @@ class LocationDestinations extends Component {
                 this.props.SetLocalDestinationDataAction({
                   localDestination: this.state.localDestination
                 });
-                //if successed to passed, it will put the check mark from CollapsibleComponent CheckMark
+                //if successed to passed,
                 this.setState(
                   {
                     internalErrorWarning: false,
                     isDelaying: false
                   },
                   () => {
+                    //it will put a check mark for LocationDestination
                     this.props.handlePassed("localDestination", 1);
                   }
                 );
@@ -231,16 +233,36 @@ class LocationDestinations extends Component {
               }
             })
             .catch(error => {
+              //if error,
               this.setState(
                 {
                   internalErrorWarning: true,
                   isDelaying: false
                 },
                 () => {
+                  //put a error marker for localDestination
                   this.props.handlePassed("localDestination", 3);
                 }
               );
             });
+        }
+      );
+    } else {
+      //if gui is null
+
+      //User must has a gui retrieve from the createAccount screen before get to this screen
+      //if there are no gui, give an error warning
+      //the reason of no gui may come from internal error when inserting email/password into createAccount Collection
+      //and error had thrown and gui didn't return back to client
+      //user may need to re-sign in as continue user?
+
+      this.setState(
+        {
+          internalErrorWarning: true,
+          isDelaying: false
+        },
+        () => {
+          this.props.handlePassed("localDestination", 3);
         }
       );
     }
@@ -396,7 +418,7 @@ const styles = StyleSheet.create({
     marginLeft: 5,
     marginRight: 5,
     marginTop: 10,
-    marginBottom: 10,
+    marginBottom: 10
   },
   button: {
     color: "#fff",
