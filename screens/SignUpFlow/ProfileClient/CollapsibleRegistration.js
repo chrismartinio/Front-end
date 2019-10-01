@@ -93,8 +93,13 @@ class CollapisbleRegistration extends Component {
     //gui is not empty? = third parties user, third parties continue user, local continue user
     return {
       //For isContinueUser
-      gui: "5d92b22bea28f4c472dfb42b",
-      checklist: [true, true, false, false, true, true]
+      gui: "5d92c7fa6ef207cd57b261ca",
+      checklist: [true, true, true, true, false, false]
+      //Error: if checklist not match to screen
+      //let say if intersts screen has not submit but checklist[3] shows is true
+      //since checklist[3] is true, the screen would try to fetch data
+      //since no data, it will return null, and object.result.likesArray = null which will throw err
+      //but this structure is built intend
 
       //For new User
       //gui: "",

@@ -29,7 +29,7 @@ import { Icon } from "react-native-elements";
 const screenHeight = Math.round(Dimensions.get("window").height);
 
 //Collapsible Components
-import LoadingScreen from "../Components/LoadingScreen";
+import FailScreen from "../Components/FailScreen";
 
 class Preferences extends Component {
   //having null header means no back  button is present!
@@ -45,7 +45,7 @@ class Preferences extends Component {
       passed: false,
       distanceRange: 0,
       internalErrorWarning: false,
-      isLoading: true,
+      isSuccess: true,
       isDelaying: false
     };
 
@@ -96,9 +96,8 @@ class Preferences extends Component {
               pickedMen === "" && pickedWomen === "" ? "empty" : "",
             ageRange: object.result.ageRange,
             distanceRange: object.result.distanceRange,
-            isLoading: true,
+            isSuccess: true
           });
-
 
           //Send Data to Redux
           this.props.SetPreferencesDataAction({
@@ -106,16 +105,14 @@ class Preferences extends Component {
             distanceRange: object.result.distanceRange,
             interestedGender: object.result.interestedGender
           });
-
         } else {
           throw new Error("internal Error");
         }
       })
       .catch(err => {
-        //throw to is loading screen or ask user to click a button for refetch
-        //to fetch the data
+        //If error while fetching, direct user to fail screen
         this.setState({
-          isLoading: false
+          isSuccess: false
         });
       });
   };
@@ -211,25 +208,6 @@ class Preferences extends Component {
         interestedGenderWarning: ""
       });
     }
-
-    /*
-    if (!this.distanceChecker()) {
-      distance = false;
-      this.setState(
-        {
-          distanceWarning: "empty"
-        },
-        () => {
-          return;
-        }
-      );
-    } else {
-      distance = true;
-      this.setState({
-        distanceWarning: "empty"
-      });
-    }
-    */
 
     if (gender && distance) {
       this.setState({
@@ -596,13 +574,14 @@ class Preferences extends Component {
     );
   };
 
-  loadingScreen = () => {
-    //display fetching data
-    return <LoadingScreen />;
+  failScreen = () => {
+    //For isContinueUser Only
+    //If fail on fetching, then display a screen to tell them try again
+    return <FailScreen getDataFunction={this.getData} />;
   };
 
   render() {
-    return this.state.isLoading ? this.successScreen() : this.loadingScreen();
+    return this.state.isSuccess ? this.successScreen() : this.failScreen();
   }
 }
 

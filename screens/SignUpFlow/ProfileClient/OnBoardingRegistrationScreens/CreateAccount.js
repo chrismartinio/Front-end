@@ -20,7 +20,7 @@ import { Icon, Input } from "react-native-elements";
 import { Chevron } from "react-native-shapes";
 
 //Collapsible Components
-import LoadingScreen from "../Components/LoadingScreen";
+import FailScreen from "../Components/FailScreen";
 
 class CreateAccount extends Component {
   constructor(props) {
@@ -40,7 +40,7 @@ class CreateAccount extends Component {
       passed: false,
       editable: true,
       internalErrorWarning: false,
-      isLoading: true,
+      isSuccess: true,
       isDelaying: false
     };
     this.isContinueUserFetched = false;
@@ -73,7 +73,7 @@ class CreateAccount extends Component {
             password_UpperLowerCaseWarning: false,
             password_NumberSymbolWarning: false,
             password_LengthWarning: false,
-            isLoading: true,
+            isSuccess: true,
             editable: false,
             passed: true
           });
@@ -83,16 +83,14 @@ class CreateAccount extends Component {
             email: object.result.email,
             password: "Password"
           });
-
         } else {
           throw new Error("internal Error");
         }
       })
       .catch(err => {
-        //throw to is loading screen or ask user to click a button for refetch
-        //to fetch the data
+        //If error while fetching, direct user to failScreen
         this.setState({
-          isLoading: false
+          isSuccess: false
         });
       });
   };
@@ -104,12 +102,6 @@ class CreateAccount extends Component {
         editable: false
       });
     }
-
-    //not sure sometimes would take a long time for fetching without the following,
-    //keep the following for in case
-    //this.setState({
-    //  isLoading: true
-    //});
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
@@ -694,13 +686,14 @@ class CreateAccount extends Component {
     );
   };
 
-  loadingScreen = () => {
-    //display fetching data
-    return <LoadingScreen />;
+  failScreen = () => {
+    //For isContinueUser Only
+    //If fail on fetching, then display a screen to tell them try again
+    return <FailScreen getDataFunction={this.getData} />;
   };
 
   render() {
-    return this.state.isLoading ? this.successScreen() : this.loadingScreen();
+    return this.state.isSuccess ? this.successScreen() : this.failScreen();
   }
 }
 

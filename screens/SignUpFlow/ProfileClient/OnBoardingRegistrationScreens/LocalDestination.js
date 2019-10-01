@@ -25,7 +25,7 @@ import { Icon } from "react-native-elements";
 const screenHeight = Math.round(Dimensions.get("window").height);
 
 //Collapsible Components
-import LoadingScreen from "../Components/LoadingScreen";
+import FailScreen from "../Components/FailScreen";
 
 class LocationDestinations extends Component {
   //having null header means no back  button is present!
@@ -35,7 +35,7 @@ class LocationDestinations extends Component {
       localDestination: "",
       passed: false,
       internalErrorWarning: false,
-      isLoading: true
+      isSuccess: true
     };
 
     //Control Button Text Color based on Current Screen's Position
@@ -75,7 +75,7 @@ class LocationDestinations extends Component {
         if (object.success) {
           this.setState({
             localDestination: object.result.localDestination,
-            isLoading: true
+            isSuccess: true
           });
           //Send Data to Redux
           this.props.SetLocalDestinationDataAction({
@@ -86,10 +86,9 @@ class LocationDestinations extends Component {
         }
       })
       .catch(err => {
-        //throw to is loading screen or ask user to click a button for refetch
-        //to fetch the data
+        //if error while fetching, direct user to fail screen
         this.setState({
-          isLoading: false
+          isSuccess: false
         });
       });
   };
@@ -397,13 +396,14 @@ class LocationDestinations extends Component {
     );
   };
 
-  loadingScreen = () => {
-    //display fetching data
-    return <LoadingScreen />;
+  failScreen = () => {
+    //For isContinueUser Only
+    //If fail on fetching, then display a screen to tell them try again
+    return <FailScreen getDataFunction={this.getData} />;
   };
 
   render() {
-    return this.state.isLoading ? this.successScreen() : this.loadingScreen();
+    return this.state.isSuccess ? this.successScreen() : this.failScreen();
   }
 }
 

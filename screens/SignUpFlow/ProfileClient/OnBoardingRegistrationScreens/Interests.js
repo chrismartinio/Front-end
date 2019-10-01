@@ -32,7 +32,7 @@ import { Icon } from "react-native-elements";
 const screenHeight = Math.round(Dimensions.get("window").height);
 
 //Collapsible Components
-import LoadingScreen from "../Components/LoadingScreen";
+import FailScreen from "../Components/FailScreen";
 
 class Interests extends Component {
   constructor(props) {
@@ -41,7 +41,7 @@ class Interests extends Component {
       passed: false,
       likesArray: [],
       internalErrorWarning: false,
-      isLoading: true,
+      isSuccess: true,
       isDelaying: false
     };
 
@@ -82,7 +82,7 @@ class Interests extends Component {
         if (object.success) {
           this.setState({
             likesArray: object.result.likesArray,
-            isLoading: true,
+            isSuccess: true,
           });
           //Send Data to Redux
           this.props.SetInterestsDataAction({
@@ -93,10 +93,10 @@ class Interests extends Component {
         }
       })
       .catch(err => {
-        //throw to is loading screen or ask user to click a button for refetch
-        //to fetch the data
+        console.log(err)
+        //if fail while fetching, direct user to failScreen
         this.setState({
-          isLoading: false
+          isSuccess: false
         });
       });
   };
@@ -414,13 +414,14 @@ class Interests extends Component {
     );
   };
 
-  loadingScreen = () => {
-    //display fetching data
-    return <LoadingScreen />;
+  failScreen = () => {
+    //For isContinueUser Only
+    //If fail on fetching, then display a screen to tell them try again
+    return <FailScreen getDataFunction={this.getData} />;
   };
 
   render() {
-    return this.state.isLoading ? this.successScreen() : this.loadingScreen();
+    return this.state.isSuccess ? this.successScreen() : this.failScreen();
   }
 }
 

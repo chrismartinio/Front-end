@@ -18,7 +18,7 @@ import SetChecklistAction from "../../../../storage/actions/RegistrationActions/
 import Slider from "../Components/Sliders/WouldYouRatherSlider";
 
 //Collapsible Components
-import LoadingScreen from "../Components/LoadingScreen";
+import FailScreen from "../Components/FailScreen";
 
 class WouldYouRather extends Component {
   static navigationOptions = {
@@ -33,7 +33,7 @@ class WouldYouRather extends Component {
       displaySlider3Value: 0,
       passed: true,
       internalErrorWarning: false,
-      isLoading: true,
+      isSuccess: true,
       isDelaying: false
     };
     this.s1r1 = 50;
@@ -71,7 +71,7 @@ class WouldYouRather extends Component {
             displaySlider1Value: object.result.s1r2 - 50,
             displaySlider2Value: object.result.s2r2 - 50,
             displaySlider3Value: object.result.s3r2 - 50,
-            isLoading: true,
+            isSuccess: true,
           });
 
           //Send Data to Redux
@@ -89,10 +89,9 @@ class WouldYouRather extends Component {
         }
       })
       .catch(err => {
-        //throw to is loading screen or ask user to click a button for refetch
-        //to fetch the data
+        //if error while fetching, direct user to failscreen
         this.setState({
-          isLoading: false
+          isSuccess: false
         });
       });
   };
@@ -324,13 +323,14 @@ class WouldYouRather extends Component {
     );
   };
 
-  loadingScreen = () => {
-    //display fetching data
-    return <LoadingScreen />;
+  failScreen = () => {
+    //For isContinueUser Only
+    //If fail on fetching, then display a screen to tell them try again
+    return <FailScreen getDataFunction={this.getData} />;
   };
 
   render() {
-    return this.state.isLoading ? this.successScreen() : this.loadingScreen();
+    return this.state.isSuccess ? this.successScreen() : this.failScreen();
   }
 }
 

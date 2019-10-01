@@ -27,7 +27,7 @@ import { Icon, Input } from "react-native-elements";
 import { Chevron } from "react-native-shapes";
 
 //Collapsible Components
-import LoadingScreen from "../Components/LoadingScreen";
+import FailScreen from "../Components/FailScreen";
 
 class AboutYou extends Component {
   constructor(props) {
@@ -47,7 +47,7 @@ class AboutYou extends Component {
       zipCodeWarning: "empty",
       birthDateWarning: "empty",
       internalErrorWarning: false,
-      isLoading: true,
+      isSuccess: true,
       isDelaying: false
     };
     this.isContinueUserFetched = false;
@@ -105,7 +105,7 @@ class AboutYou extends Component {
             genderWarning: gender === "" ? "empty" : "",
             countryWarning: country === "" ? "empty" : "",
             zipCodeWarning: zipCode === "" ? "empty" : "",
-            isLoading: true
+            isSuccess: true
           });
 
           this.props.SetAboutYouDataAction({
@@ -122,10 +122,9 @@ class AboutYou extends Component {
         }
       })
       .catch(err => {
-        //throw to is loading screen or ask user to click a button for refetch
-        //to fetch the data
+        //If error while fetching, direct user to failScreen
         this.setState({
-          isLoading: false
+          isSuccess: false
         });
       });
   };
@@ -787,13 +786,14 @@ class AboutYou extends Component {
     );
   };
 
-  loadingScreen = () => {
-    //display fetching data
-    return <LoadingScreen />;
+  failScreen = () => {
+    //For isContinueUser Only
+    //If fail on fetching, then display a screen to tell them try again
+    return <FailScreen getDataFunction={this.getData} />;
   };
 
   render() {
-    return this.state.isLoading ? this.successScreen() : this.loadingScreen();
+    return this.state.isSuccess ? this.successScreen() : this.failScreen();
   }
 }
 
