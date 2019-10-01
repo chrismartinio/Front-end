@@ -54,7 +54,10 @@ class AboutYou extends Component {
   }
 
   getData = async () => {
-    //do something with redux
+    //if checklist says this screen is not complete, return (don't do query)
+    if (!this.props.CreateProfileDataReducer.checklist[1]) {
+      return;
+    }
 
     //If third parties user, we can retrieve their firstName, lastName by default
     //We send their firstName, lastName to redux in CollapisbleRegistration.js
@@ -104,6 +107,16 @@ class AboutYou extends Component {
             zipCodeWarning: zipCode === "" ? "empty" : "",
             isLoading: true
           });
+
+          this.props.SetAboutYouDataAction({
+            firstName: firstName,
+            lastName: lastName,
+            birthDate: birthDate,
+            gender: gender,
+            country: country,
+            zipCode: zipCode
+          });
+
         } else {
           throw new Error("internal Error");
         }

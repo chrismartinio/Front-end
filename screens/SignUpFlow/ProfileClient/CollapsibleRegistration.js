@@ -93,8 +93,8 @@ class CollapisbleRegistration extends Component {
     //gui is not empty? = third parties user, third parties continue user, local continue user
     return {
       //For isContinueUser
-      gui: "5d91a94672f1da597b8a6d9f",
-      checklist: [true, false, true, true, true, true]
+      gui: "5d92b22bea28f4c472dfb42b",
+      checklist: [true, true, false, false, true, true]
 
       //For new User
       //gui: "",

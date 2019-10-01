@@ -47,7 +47,11 @@ class WouldYouRather extends Component {
   }
 
   getData = async () => {
-    //do something with redux
+    //if checklist says this screen is not complete, return (don't do query)
+    if (!this.props.CreateProfileDataReducer.checklist[4]) {
+      return;
+    }
+
     await fetch("http://74.80.250.210:5000/api/profile/query", {
       method: "POST",
       headers: {
@@ -69,6 +73,17 @@ class WouldYouRather extends Component {
             displaySlider3Value: object.result.s3r2 - 50,
             isLoading: true,
           });
+
+          //Send Data to Redux
+          this.props.SetWouldYouRatherDataAction({
+            s1r1: object.result.s1r1,
+            s1r2: object.result.s1r2,
+            s2r1: object.result.s2r1,
+            s2r2: object.result.s2r2,
+            s3r1: object.result.s3r1,
+            s3r2: object.result.s3r2
+          });
+
         } else {
           throw new Error("internal Error");
         }

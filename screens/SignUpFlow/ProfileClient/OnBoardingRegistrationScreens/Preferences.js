@@ -57,7 +57,11 @@ class Preferences extends Component {
   }
 
   getData = async () => {
-    //do something with redux
+    //if checklist says this screen is not complete, return (don't do query)
+    if (!this.props.CreateProfileDataReducer.checklist[2]) {
+      return;
+    }
+
     await fetch("http://74.80.250.210:5000/api/profile/query", {
       method: "POST",
       headers: {
@@ -94,6 +98,15 @@ class Preferences extends Component {
             distanceRange: object.result.distanceRange,
             isLoading: true,
           });
+
+
+          //Send Data to Redux
+          this.props.SetPreferencesDataAction({
+            ageRange: object.result.ageRange,
+            distanceRange: object.result.distanceRange,
+            interestedGender: object.result.interestedGender
+          });
+
         } else {
           throw new Error("internal Error");
         }

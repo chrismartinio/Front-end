@@ -53,7 +53,11 @@ class LocationDestinations extends Component {
   }
 
   getData = async () => {
-    //do something with redux
+    //if checklist says this screen is not complete, return (don't do query)
+    if (!this.props.CreateProfileDataReducer.checklist[5]) {
+      return;
+    }
+
     await fetch("http://74.80.250.210:5000/api/profile/query", {
       method: "POST",
       headers: {
@@ -71,7 +75,11 @@ class LocationDestinations extends Component {
         if (object.success) {
           this.setState({
             localDestination: object.result.localDestination,
-            isLoading: true,
+            isLoading: true
+          });
+          //Send Data to Redux
+          this.props.SetLocalDestinationDataAction({
+            localDestination: object.result.localDestination
           });
         } else {
           throw new Error("internal Error");

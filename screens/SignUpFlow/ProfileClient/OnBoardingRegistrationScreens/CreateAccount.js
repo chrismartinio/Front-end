@@ -77,6 +77,13 @@ class CreateAccount extends Component {
             editable: false,
             passed: true
           });
+
+          //send to redux
+          this.props.SetCreateAccountDataAction({
+            email: object.result.email,
+            password: "Password"
+          });
+
         } else {
           throw new Error("internal Error");
         }
