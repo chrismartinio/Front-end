@@ -116,7 +116,6 @@ class AboutYou extends Component {
             country: country,
             zipCode: zipCode
           });
-
         } else {
           throw new Error("internal Error");
         }
@@ -492,7 +491,9 @@ class AboutYou extends Component {
     let empty = <Text style={styles.warningText}>* Required</Text>;
 
     let internalErrorWarning = (
-      <Text style={styles.warningText}>* Internal Error. Please Try again</Text>
+      <Text style={styles.warningText}>
+        * Some error occurred. Please try again!
+      </Text>
     );
 
     return (

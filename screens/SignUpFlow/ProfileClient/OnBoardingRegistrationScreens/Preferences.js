@@ -382,7 +382,9 @@ class Preferences extends Component {
     );
 
     let internalErrorWarning = (
-      <Text style={styles.warningText}>* Internal Error. Please Try again</Text>
+      <Text style={styles.warningText}>
+        * Some error occurred. Please try again!
+      </Text>
     );
 
     return (

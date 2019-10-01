@@ -82,7 +82,7 @@ class Interests extends Component {
         if (object.success) {
           this.setState({
             likesArray: object.result.likesArray,
-            isSuccess: true,
+            isSuccess: true
           });
           //Send Data to Redux
           this.props.SetInterestsDataAction({
@@ -93,7 +93,7 @@ class Interests extends Component {
         }
       })
       .catch(err => {
-        console.log(err)
+        console.log(err);
         //if fail while fetching, direct user to failScreen
         this.setState({
           isSuccess: false
@@ -298,7 +298,9 @@ class Interests extends Component {
     );
 
     let internalErrorWarning = (
-      <Text style={styles.warningText}>* Internal Error. Please Try again</Text>
+      <Text style={styles.warningText}>
+        * Some error occurred. Please try again!
+      </Text>
     );
 
     let displaylikes = likes.map((e, index = 0) => {

@@ -21,7 +21,8 @@ export default function FailScreen(props) {
       />
       {/*Loading Text*/}
       <View alignItems="center">
-        <Text style={{ color: "#fff", fontSize: 15 }}>Getting Data...</Text>
+        <Text style={{ color: "#fff", fontSize: 15 }}>Fail to retrieve your data.</Text>
+        <Text style={{ color: "#fff", fontSize: 15 }}>Please try again!</Text>
         {/*Spaces*/}
         <View
           style={{
@@ -29,7 +30,7 @@ export default function FailScreen(props) {
           }}
         />
         <TouchableOpacity onPress={props.getDataFunction}>
-          <Text style={{ color: "#fff", fontSize: 15 }}> Try again </Text>
+          <Text style={{ color: "#fff", fontSize: 15 }}>get Data</Text>
         </TouchableOpacity>
       </View>
       {/*Spaces*/}

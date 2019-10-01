@@ -71,7 +71,7 @@ class WouldYouRather extends Component {
             displaySlider1Value: object.result.s1r2 - 50,
             displaySlider2Value: object.result.s2r2 - 50,
             displaySlider3Value: object.result.s3r2 - 50,
-            isSuccess: true,
+            isSuccess: true
           });
 
           //Send Data to Redux
@@ -83,7 +83,6 @@ class WouldYouRather extends Component {
             s3r1: object.result.s3r1,
             s3r2: object.result.s3r2
           });
-
         } else {
           throw new Error("internal Error");
         }
@@ -232,7 +231,9 @@ class WouldYouRather extends Component {
 
   successScreen = () => {
     let internalErrorWarning = (
-      <Text style={styles.warningText}>* Internal Error. Please Try again</Text>
+      <Text style={styles.warningText}>
+        * Some error occurred. Please try again!
+      </Text>
     );
     return (
       <View>
