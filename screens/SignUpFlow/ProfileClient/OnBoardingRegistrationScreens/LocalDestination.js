@@ -93,6 +93,12 @@ class LocationDestinations extends Component {
       });
   };
 
+  startwithEmpty = () => {
+    this.setState({
+      isSuccess: true
+    });
+  };
+
   //header : navigate to sign in screen
   handleBackToSignIn = () => {
     this.props.navigation.navigate("SignIn");
@@ -401,7 +407,12 @@ class LocationDestinations extends Component {
   failScreen = () => {
     //For isContinueUser Only
     //If fail on fetching, then display a screen to tell them try again
-    return <FailScreen getDataFunction={this.getData} />;
+    return (
+      <FailScreen
+        getDataFunction={this.getData}
+        startwithEmpty={this.startwithEmpty}
+      />
+    );
   };
 
   render() {

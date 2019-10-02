@@ -88,42 +88,56 @@ class CollapisbleRegistration extends Component {
 
   decryptJWT = jwt => {
     //console.log('jwt', jwt)
-    //do something to retrieve gui and check from the jwt
-    //gui is empty? = first time local user
-    //gui is not empty? = third parties user, third parties continue user, local continue user
-    return {
-      //For isContinueUser
-      gui: "5d92c7fa6ef207cd57b261ca",
-      checklist: [true, true, true, true, false, false]
-      //Error: if checklist not match to screen
-      //let say if intersts screen has not submit but checklist[3] shows is true
-      //since checklist[3] is true, the screen would try to fetch data
-      //since no data, it will return null, and object.result.likesArray = null which will throw err
-      //but this structure is built intend
 
-      //For new User
-      //gui: "",
-      //checklist: [true, false, false, false, false, false]
+    //For demo use only
+    //make the jwt has something to prevent jwt === ""
+    jwt = true;
+    //For demo use only
+
+    //If some cases that the jwt is empty, then return as a new User
+    //new user
+    if (jwt === "") {
+      return { gui: "", checklist: [true, false, false, false, false, false] };
+    }
+
+    //assume we decrypted the jwt and retrieve the gui and checklist
+    //New User
+    //let gui = "";
+    //let checklist = [true, false, false, false, false, false];
+
+    //Continue User or Third Parties Services User
+    //For Third Parties Services User - since onAuth would store those user to db
+    //when onAuth pass the user (gui) to profile, they are similar with Continue User
+    let gui = "5d92c7fa6ef207cd57b261ca";
+    let checklist = [true, true, true, true, false, false];
+
+    //rare error: if db data and checklist are not match
+    //let say aboutYou data is null but checklist[1] = true,
+    //Because of checklist[1] is true, the screen would try to retrieve data
+    //However, since aboutYou data is null, then the screen will fetch a null object
+    //The screen call object.result.firstname; object is null, this will create a error
+    //error get throw and call the failscreen forever; make sure checklist and db data is match
+
+    return {
+      gui: gui,
+      checklist: checklist
     };
   };
 
   setUserStatus = jwtObject => {
-    //mark the user as continue user
-    //and store the checklist in redux
+    //Set the user as continue user in redux
+    //Store the checklist in redux
     this.props.SetIsContinueUserAction({
       isContinueUser: true,
       checklist: jwtObject.checklist
     });
-    //pass gui
+
+    //Pass gui into redux
     this.props.SetGUIAction({
       gui: jwtObject.gui
     });
 
-    //set fb,twitter,ig,... user name
-    //even they have firstname, lastname
-    //doesn't mean checklist[1] is true
-
-    //set the status for screen
+    //Set the status for screen
     this.setState({
       createAccountPassed: jwtObject.checklist[0],
       aboutYouPassed: jwtObject.checklist[1],

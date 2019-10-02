@@ -59,13 +59,6 @@ class AboutYou extends Component {
       return;
     }
 
-    //If third parties user, we can retrieve their firstName, lastName by default
-    //We send their firstName, lastName to redux in CollapisbleRegistration.js
-    //then we check if there have data of aboutYou in redux
-    //if yes, mark them as isThirdPartiesUser to true
-    let isThirdPartiesUser =
-      this.props.CreateProfileDataReducer.aboutYouData !== null ? true : false;
-
     await fetch("http://74.80.250.210:5000/api/profile/query", {
       method: "POST",
       headers: {
@@ -88,9 +81,7 @@ class AboutYou extends Component {
             gender,
             country,
             zipCode
-          } = isThirdPartiesUser
-            ? this.props.CreateProfileDataReducer.aboutYouData
-            : object.result;
+          } = object.result;
 
           this.setState({
             firstName: firstName,
@@ -126,6 +117,12 @@ class AboutYou extends Component {
           isSuccess: false
         });
       });
+  };
+
+  startwithEmpty = () => {
+    this.setState({
+      isSuccess: true
+    });
   };
 
   componentDidUpdate(prevProps, prevState, snapshot) {
@@ -790,7 +787,12 @@ class AboutYou extends Component {
   failScreen = () => {
     //For isContinueUser Only
     //If fail on fetching, then display a screen to tell them try again
-    return <FailScreen getDataFunction={this.getData} />;
+    return (
+      <FailScreen
+        getDataFunction={this.getData}
+        startwithEmpty={this.startwithEmpty}
+      />
+    );
   };
 
   render() {

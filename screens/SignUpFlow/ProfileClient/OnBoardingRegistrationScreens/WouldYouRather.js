@@ -214,6 +214,12 @@ class WouldYouRather extends Component {
     }
   };
 
+  startwithEmpty = () => {
+    this.setState({
+      isSuccess: true
+    });
+  };
+
   handleListener1 = arg => {
     this.s1r1 = 50 - arg;
     this.s1r2 = 50 + arg;
@@ -327,7 +333,12 @@ class WouldYouRather extends Component {
   failScreen = () => {
     //For isContinueUser Only
     //If fail on fetching, then display a screen to tell them try again
-    return <FailScreen getDataFunction={this.getData} />;
+    return (
+      <FailScreen
+        getDataFunction={this.getData}
+        startwithEmpty={this.startwithEmpty}
+      />
+    );
   };
 
   render() {

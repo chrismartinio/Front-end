@@ -5,16 +5,6 @@ const CreateProfileDataReducer = (
     gui: null,
     createAccountData: null,
     aboutYouData: null,
-    /*
-    aboutYouData: {
-      firstName: "jack",
-      lastname: "rim",
-      birthDate: "",
-      gender: "",
-      country: "",
-      zipCode: ""
-    },
-    */
     preferencesData: null,
     interestsData: null,
     wouldYouRatherData: null,

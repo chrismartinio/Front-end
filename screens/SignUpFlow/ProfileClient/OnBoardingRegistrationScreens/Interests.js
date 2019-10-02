@@ -101,6 +101,12 @@ class Interests extends Component {
       });
   };
 
+  startwithEmpty = () => {
+    this.setState({
+      isSuccess: true
+    });
+  };
+
   componentDidUpdate(prevProps, prevState, snapshot) {
     //if there have any udpate to the warnings by checking this.state and prevState
     //then call the allChecker()
@@ -419,7 +425,12 @@ class Interests extends Component {
   failScreen = () => {
     //For isContinueUser Only
     //If fail on fetching, then display a screen to tell them try again
-    return <FailScreen getDataFunction={this.getData} />;
+    return (
+      <FailScreen
+        getDataFunction={this.getData}
+        startwithEmpty={this.startwithEmpty}
+      />
+    );
   };
 
   render() {
