@@ -13,7 +13,8 @@ import {
   DatePickerIOS,
   TouchableHighlight,
   SafeAreaView,
-  Dimensions
+  Dimensions,
+  ActivityIndicator
 } from "react-native";
 
 //Redux
@@ -405,11 +406,11 @@ class Interests extends Component {
               (this.state.passed && this.state.isDelaying) || !this.state.passed
             }
           >
-            <Text style={styles.button}>
-              {this.state.passed && this.state.isDelaying
-                ? "Submitting"
-                : "Next"}
-            </Text>
+            {this.state.passed && this.state.isDelaying ? (
+              <ActivityIndicator size="small" color="white" />
+            ) : (
+              <Text style={styles.button}>Next</Text>
+            )}
           </TouchableOpacity>
         </View>
         {/*Spaces*/}
