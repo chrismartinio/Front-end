@@ -91,7 +91,8 @@ class CollapisbleRegistration extends Component {
 
     //For demo use only
     //make the jwt has something to prevent jwt === ""
-    jwt = true;
+    jwt = true
+    //jwt = "";
     //For demo use only
 
     //If some cases that the jwt is empty, then return as a new User
@@ -108,7 +109,7 @@ class CollapisbleRegistration extends Component {
     //Continue User or Third Parties Services User
     //For Third Parties Services User - since onAuth would store those user to db
     //when onAuth pass the user (gui) to profile, they are similar with Continue User
-    let gui = "5d92c7fa6ef207cd57b261ca";
+    let gui = "5d93ed502048f47fae224593";
     let checklist = [true, true, true, true, false, false];
 
     //rare error: if db data and checklist are not match

@@ -37,7 +37,7 @@ export default function FailScreen(props) {
         {/*Spaces*/}
         <View
           style={{
-            padding: "3%"
+            padding: "10%"
           }}
         />
         <TouchableOpacity onPress={props.startwithEmpty}>
