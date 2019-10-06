@@ -733,7 +733,6 @@ const styles = StyleSheet.create({
   inputStyle: {
     color: "#fff",
     fontSize: 15,
-    fontWeight: "100"
   },
   warningText: {
     color: "#fff",

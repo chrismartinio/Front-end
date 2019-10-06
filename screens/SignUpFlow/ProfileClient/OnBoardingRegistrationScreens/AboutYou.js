@@ -835,14 +835,6 @@ const styles = StyleSheet.create({
     borderColor: "#fff",
     width: "55%"
   },
-  aboutMeText: {
-    color: "#fff",
-    fontSize: 45,
-    fontWeight: "100"
-  },
-  aboutMeTextWrap: {
-    alignItems: "center"
-  },
   inputContainerStyle: {
     borderTopWidth: 0,
     borderLeftWidth: 0,
@@ -853,7 +845,6 @@ const styles = StyleSheet.create({
   inputStyle: {
     color: "#fff",
     fontSize: 15,
-    fontWeight: "100"
   },
   nameInputBox: {
     color: "white",
@@ -861,7 +852,6 @@ const styles = StyleSheet.create({
     textAlign: "left",
     borderBottomWidth: 1,
     borderColor: "#fff",
-    fontWeight: "100",
     paddingVertical: 9
     //borderRadius: 4,
     //borderWidth: 0.5,
@@ -895,7 +885,6 @@ const styles = StyleSheet.create({
     textAlign: "left",
     borderBottomWidth: 1,
     borderColor: "#fff",
-    fontWeight: "100",
     paddingVertical: 9
   },
   zipCodeInputWrap: {
@@ -922,13 +911,11 @@ const genderPicker = {
     borderBottomWidth: 1,
     borderColor: "#fff",
     fontSize: 15,
-    fontWeight: "100",
     paddingVertical: 10.5,
     paddingHorizontal: 9
   },
   placeholder: {
     color: "#fff",
-    fontWeight: "100"
   }
 };
 
@@ -948,7 +935,6 @@ const birthdatePickerCustom = {
     fontSize: 13,
     position: "absolute",
     left: "0%",
-    fontWeight: "100",
     paddingHorizontal: 9
   },
   placeholderText: {
@@ -956,7 +942,6 @@ const birthdatePickerCustom = {
     fontSize: 15,
     position: "absolute",
     left: "0%",
-    fontWeight: "100",
     paddingHorizontal: 9
   }
 };
@@ -968,13 +953,11 @@ const countryPicker = {
     borderBottomWidth: 1,
     borderColor: "#fff",
     fontSize: 15,
-    fontWeight: "100",
     paddingVertical: 9,
     paddingHorizontal: 9
   },
   placeholder: {
     color: "#fff",
-    fontWeight: "100",
     paddingVertical: 9
   }
 };
