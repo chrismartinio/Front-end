@@ -32,6 +32,7 @@ import ResetReduxDataAction from "../../../storage/actions/RegistrationActions/R
 import SetIsContinueUserAction from "../../../storage/actions/RegistrationActions/SetIsContinueUserAction";
 import SetUserAllDataAction from "../../../storage/actions/RegistrationActions/SetUserAllDataAction";
 import SetGUIAction from "../../../storage/actions/RegistrationActions/SetGUIAction";
+import SetIsThirdPartyServicesUserAction from "../../../storage/actions/RegistrationActions/SetIsThirdPartyServicesUserAction";
 
 //direction: decrypt jwt -> retrieve gui and checklist -> store gui into redux ->
 
@@ -98,19 +99,31 @@ class CollapisbleRegistration extends Component {
     //If some cases that the jwt is empty, then return as a new User
     //new user
     if (jwt === "") {
-      return { gui: "", checklist: [true, false, false, false, false, false] };
+      return {
+        gui: "",
+        checklist: [true, false, false, false, false, false],
+        isThirdPartiesServiceUser: false
+      };
     }
 
     //assume we decrypted the jwt and retrieve the gui and checklist
     //New User
     //let gui = "";
     //let checklist = [true, false, false, false, false, false];
+    //let isThirdPartiesServiceUser = false;
 
     //Continue User or Third Parties Services User
     //For Third Parties Services User - since onAuth would store those user to db
     //when onAuth pass the user (gui) to profile, they are similar with Continue User
     let gui = "5d93ed502048f47fae224593";
     let checklist = [true, true, true, true, false, true];
+    let isThirdPartiesServiceUser = false; //set true if third parties user
+
+    //third party services user (goal: query from db )
+    //checklist (true) and isThirdPartiesServiceUser (true), it would query from db
+    //checklist (false) and isThirdPartiesServiceUser (true), it would query from db as a ThirdPartiesServiceUser
+    //checklist (true) and isThirdPartiesServiceUser (false), it would query from db as a continue user (screen filled before)
+    //checklist (false) and isThirdPartiesServiceUser (false), it would not query from db as a continue user (screen not filled before)
 
     //rare error: if db data and checklist are not match
     //let say aboutYou data is null but checklist[1] = true,
@@ -121,7 +134,8 @@ class CollapisbleRegistration extends Component {
 
     return {
       gui: gui,
-      checklist: checklist
+      checklist: checklist,
+      isThirdPartiesServiceUser: isThirdPartiesServiceUser
     };
   };
 
@@ -136,6 +150,11 @@ class CollapisbleRegistration extends Component {
     //Pass gui into redux
     this.props.SetGUIAction({
       gui: jwtObject.gui
+    });
+
+    //Set third party services user
+    this.props.SetIsThirdPartyServicesUserAction({
+      isThirdPartiesServiceUser: jwtObject.isThirdPartiesServiceUser
     });
 
     //Set the status for screen
@@ -548,7 +567,9 @@ const mapDispatchToProps = dispatch => {
     SetIsContinueUserAction: payload =>
       dispatch(SetIsContinueUserAction(payload)),
     SetUserAllDataAction: payload => dispatch(SetUserAllDataAction(payload)),
-    SetGUIAction: payload => dispatch(SetGUIAction(payload))
+    SetGUIAction: payload => dispatch(SetGUIAction(payload)),
+    SetIsThirdPartyServicesUserAction: payload =>
+      dispatch(SetIsThirdPartyServicesUserAction(payload))
   };
 };
 

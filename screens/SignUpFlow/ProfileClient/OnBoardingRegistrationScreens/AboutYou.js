@@ -55,9 +55,13 @@ class AboutYou extends Component {
   }
 
   getData = async () => {
-    //if checklist says this screen is not complete, return (don't do query)
-    if (!this.props.CreateProfileDataReducer.checklist[1]) {
-      return;
+    //if it is not ThirdPartiesServiceUser, it will check if it is continue user using checklist
+    if (!this.props.CreateProfileDataReducer.isThirdPartiesServiceUser) {
+      //continue user
+      //if the checklist says this screen is not complete, return (do not query anything)
+      if (!this.props.CreateProfileDataReducer.checklist[1]) {
+        return;
+      }
     }
 
     await fetch("http://74.80.250.210:4000/api/profile/query", {
@@ -788,12 +792,7 @@ class AboutYou extends Component {
   failScreen = () => {
     //For isContinueUser Only
     //If fail on fetching, then display a screen to tell them try again
-    return (
-      <FailScreen
-        getDataFunction={this.getData}
-        reset={this.reset}
-      />
-    );
+    return <FailScreen getDataFunction={this.getData} reset={this.reset} />;
   };
 
   render() {
@@ -844,7 +843,7 @@ const styles = StyleSheet.create({
   },
   inputStyle: {
     color: "#fff",
-    fontSize: 15,
+    fontSize: 15
   },
   nameInputBox: {
     color: "white",
@@ -915,7 +914,7 @@ const genderPicker = {
     paddingHorizontal: 9
   },
   placeholder: {
-    color: "#fff",
+    color: "#fff"
   }
 };
 

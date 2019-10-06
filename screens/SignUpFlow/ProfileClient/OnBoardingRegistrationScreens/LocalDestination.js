@@ -193,15 +193,22 @@ class LocationDestinations extends Component {
     let pos = (this[bname] - topY) / screenHeight;
 
     let colorRed =
-      (topRed + (bottomRed - topRed) * pos) * speedOfYChange + 51 + otherScreenOffset1;
+      (topRed + (bottomRed - topRed) * pos) * speedOfYChange +
+      51 +
+      otherScreenOffset1;
     let colorGreen =
       (topGreen + (bottomGreen - topGreen) * pos) * speedOfYChange -
       263 -
       otherScreenOffset2;
     let colorBlue =
-      (topBlue + (bottomBlue - topBlue) * pos) * speedOfYChange - 186 - otherScreenOffset3;
+      (topBlue + (bottomBlue - topBlue) * pos) * speedOfYChange -
+      186 -
+      otherScreenOffset3;
 
-    console.log(`localDestination: ${colorRed} , ${colorGreen}, ${colorBlue}`);
+    //default
+    colorRed = 67;
+    colorGreen = 33;
+    colorBlue = 140;
 
     return `rgb(${colorRed},${colorGreen},${colorBlue})`;
   };

@@ -253,19 +253,26 @@ class Preferences extends Component {
     let pos = (this[bname] - topY) / screenHeight;
 
     //not the best solution (kinda hard code)
-    //the toggle above will add up Offset for other screens 
+    //the toggle above will add up Offset for other screens
     //and there also a constant number which is the current screen otherScreenOffset
 
     let colorRed =
-      (topRed + (bottomRed - topRed) * pos) * speedOfYChange + 24 + otherScreenOffset1;
+      (topRed + (bottomRed - topRed) * pos) * speedOfYChange +
+      24 +
+      otherScreenOffset1;
     let colorGreen =
       (topGreen + (bottomGreen - topGreen) * pos) * speedOfYChange -
       150 -
       otherScreenOffset2;
     let colorBlue =
-      (topBlue + (bottomBlue - topBlue) * pos) * speedOfYChange - 116 - otherScreenOffset3;
+      (topBlue + (bottomBlue - topBlue) * pos) * speedOfYChange -
+      116 -
+      otherScreenOffset3;
 
-    console.log(`Preferences : ${colorRed} , ${colorGreen}, ${colorBlue}`);
+    //default
+    colorRed = 67;
+    colorGreen = 33;
+    colorBlue = 140;
 
     return `rgb(${colorRed},${colorGreen},${colorBlue})`;
   };

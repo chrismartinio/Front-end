@@ -272,15 +272,22 @@ class Interests extends Component {
     let pos = (this[bname] - topY) / screenHeight;
 
     let colorRed =
-      (topRed + (bottomRed - topRed) * pos) * speedOfYChange + 38 + otherScreenOffset1;
+      (topRed + (bottomRed - topRed) * pos) * speedOfYChange +
+      38 +
+      otherScreenOffset1;
     let colorGreen =
       (topGreen + (bottomGreen - topGreen) * pos) * speedOfYChange -
       209 -
       otherScreenOffset2;
     let colorBlue =
-      (topBlue + (bottomBlue - topBlue) * pos) * speedOfYChange - 151 - otherScreenOffset3;
+      (topBlue + (bottomBlue - topBlue) * pos) * speedOfYChange -
+      151 -
+      otherScreenOffset3;
 
-    console.log(`interests: ${colorRed} , ${colorGreen}, ${colorBlue}`);
+    //default
+    colorRed = 67;
+    colorGreen = 33;
+    colorBlue = 140;
 
     return `rgb(${colorRed},${colorGreen},${colorBlue})`;
   };
