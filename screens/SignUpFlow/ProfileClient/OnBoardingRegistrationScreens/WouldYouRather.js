@@ -53,7 +53,7 @@ class WouldYouRather extends Component {
       return;
     }
 
-    await fetch("http://74.80.250.210:5000/api/profile/query", {
+    await fetch("http://74.80.250.210:4000/api/profile/query", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -131,7 +131,7 @@ class WouldYouRather extends Component {
         },
         () => {
           //Send data to database
-          fetch("http://74.80.250.210:5000/api/profile/update", {
+          fetch("http://74.80.250.210:4000/api/profile/update", {
             method: "POST",
             headers: {
               "Content-Type": "application/json"
@@ -215,7 +215,7 @@ class WouldYouRather extends Component {
     }
   };
 
-  startwithEmpty = () => {
+  reset = () => {
     this.setState({
       isSuccess: true
     });
@@ -337,7 +337,7 @@ class WouldYouRather extends Component {
     return (
       <FailScreen
         getDataFunction={this.getData}
-        startwithEmpty={this.startwithEmpty}
+        reset={this.reset}
       />
     );
   };

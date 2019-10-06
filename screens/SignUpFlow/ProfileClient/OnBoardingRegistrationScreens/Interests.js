@@ -46,17 +46,6 @@ class Interests extends Component {
       isDelaying: false
     };
 
-    //Control Button Text Color based on Current Screen's Position
-    this.b1y = 0;
-    this.b2y = 0;
-    this.b3y = 0;
-    this.b4y = 0;
-    this.b5y = 0;
-    this.b6y = 0;
-    this.b7y = 0;
-    this.b8y = 0;
-    this.b9y = 0;
-
     this.isContinueUserFetched = false;
   }
 
@@ -66,7 +55,7 @@ class Interests extends Component {
       return;
     }
 
-    await fetch("http://74.80.250.210:5000/api/profile/query", {
+    await fetch("http://74.80.250.210:4000/api/profile/query", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -102,7 +91,7 @@ class Interests extends Component {
       });
   };
 
-  startwithEmpty = () => {
+  reset = () => {
     this.setState({
       isSuccess: true
     });
@@ -157,7 +146,7 @@ class Interests extends Component {
         },
         () => {
           //Send data to database
-          fetch("http://74.80.250.210:5000/api/profile/update", {
+          fetch("http://74.80.250.210:4000/api/profile/update", {
             method: "POST",
             headers: {
               "Content-Type": "application/json"
@@ -252,19 +241,46 @@ class Interests extends Component {
 
   changeColor = bname => {
     let topY = this.props.scrollY;
+    let otherScreenOffset1 = 0,
+      otherScreenOffset2 = 0,
+      otherScreenOffset3 = 0,
+      speedOfYChange = 1.2;
+
+    this.props.otherToggle.forEach((toggle, i = 0) => {
+      if (toggle) {
+        if (i === 2) {
+          otherScreenOffset1 += 41;
+          otherScreenOffset2 += 161;
+          otherScreenOffset3 += 100;
+        } else {
+          otherScreenOffset1 += 26;
+          otherScreenOffset2 += 105;
+          otherScreenOffset3 += 65;
+        }
+      }
+      i++;
+    });
 
     const topRed = 24;
     const topGreen = 205;
     const topBlue = 246;
+
     const bottomRed = 67;
     const bottomGreen = 33;
     const bottomBlue = 140;
 
     let pos = (this[bname] - topY) / screenHeight;
 
-    let colorRed = topRed + (bottomRed - topRed) * pos;
-    let colorGreen = topGreen + (bottomGreen - topGreen) * pos;
-    let colorBlue = topBlue + (bottomBlue - topBlue) * pos;
+    let colorRed =
+      (topRed + (bottomRed - topRed) * pos) * speedOfYChange + 38 + otherScreenOffset1;
+    let colorGreen =
+      (topGreen + (bottomGreen - topGreen) * pos) * speedOfYChange -
+      209 -
+      otherScreenOffset2;
+    let colorBlue =
+      (topBlue + (bottomBlue - topBlue) * pos) * speedOfYChange - 151 - otherScreenOffset3;
+
+    console.log(`interests: ${colorRed} , ${colorGreen}, ${colorBlue}`);
 
     return `rgb(${colorRed},${colorGreen},${colorBlue})`;
   };
@@ -426,12 +442,7 @@ class Interests extends Component {
   failScreen = () => {
     //For isContinueUser Only
     //If fail on fetching, then display a screen to tell them try again
-    return (
-      <FailScreen
-        getDataFunction={this.getData}
-        startwithEmpty={this.startwithEmpty}
-      />
-    );
+    return <FailScreen getDataFunction={this.getData} reset={this.reset} />;
   };
 
   render() {

@@ -63,7 +63,7 @@ class Preferences extends Component {
       return;
     }
 
-    await fetch("http://74.80.250.210:5000/api/profile/query", {
+    await fetch("http://74.80.250.210:4000/api/profile/query", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -118,7 +118,7 @@ class Preferences extends Component {
       });
   };
 
-  startwithEmpty = () => {
+  reset = () => {
     this.setState({
       isSuccess: true
     });
@@ -229,19 +229,43 @@ class Preferences extends Component {
 
   changeColor = bname => {
     let topY = this.props.scrollY;
+    let otherScreenOffset1 = 0,
+      otherScreenOffset2 = 0,
+      otherScreenOffset3 = 0,
+      speedOfYChange = 1.2;
+
+    this.props.otherToggle.forEach(toggle => {
+      if (toggle) {
+        otherScreenOffset1 += 25;
+        otherScreenOffset2 += 100;
+        otherScreenOffset3 += 61;
+      }
+    });
 
     const topRed = 24;
     const topGreen = 205;
     const topBlue = 246;
+
     const bottomRed = 67;
     const bottomGreen = 33;
     const bottomBlue = 140;
 
     let pos = (this[bname] - topY) / screenHeight;
 
-    let colorRed = topRed + (bottomRed - topRed) * pos;
-    let colorGreen = topGreen + (bottomGreen - topGreen) * pos;
-    let colorBlue = topBlue + (bottomBlue - topBlue) * pos;
+    //not the best solution (kinda hard code)
+    //the toggle above will add up Offset for other screens 
+    //and there also a constant number which is the current screen otherScreenOffset
+
+    let colorRed =
+      (topRed + (bottomRed - topRed) * pos) * speedOfYChange + 24 + otherScreenOffset1;
+    let colorGreen =
+      (topGreen + (bottomGreen - topGreen) * pos) * speedOfYChange -
+      150 -
+      otherScreenOffset2;
+    let colorBlue =
+      (topBlue + (bottomBlue - topBlue) * pos) * speedOfYChange - 116 - otherScreenOffset3;
+
+    console.log(`Preferences : ${colorRed} , ${colorGreen}, ${colorBlue}`);
 
     return `rgb(${colorRed},${colorGreen},${colorBlue})`;
   };
@@ -279,7 +303,7 @@ class Preferences extends Component {
         },
         () => {
           //Send data to database
-          fetch("http://74.80.250.210:5000/api/profile/update", {
+          fetch("http://74.80.250.210:4000/api/profile/update", {
             method: "POST",
             headers: {
               "Content-Type": "application/json"
@@ -586,12 +610,7 @@ class Preferences extends Component {
   failScreen = () => {
     //For isContinueUser Only
     //If fail on fetching, then display a screen to tell them try again
-    return (
-      <FailScreen
-        getDataFunction={this.getData}
-        startwithEmpty={this.startwithEmpty}
-      />
-    );
+    return <FailScreen getDataFunction={this.getData} reset={this.reset} />;
   };
 
   render() {

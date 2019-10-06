@@ -73,9 +73,9 @@ class CollapisbleRegistration extends Component {
       interestsStatus: "empty",
       wouldYouRatherStatus: "empty",
       localDestinationStatus: "empty",
-      isLoading: false //use to make sure if there data inside redux before rendering
+      isLoading: false, //use to make sure if there data inside redux before rendering
+      scrollY: 0
     };
-    this.scrollY = 0;
   }
 
   getJWT = () => {
@@ -91,8 +91,8 @@ class CollapisbleRegistration extends Component {
 
     //For demo use only
     //make the jwt has something to prevent jwt === ""
-    //jwt = true
-    jwt = "";
+    jwt = true;
+    //jwt = "";
     //For demo use only
 
     //If some cases that the jwt is empty, then return as a new User
@@ -110,7 +110,7 @@ class CollapisbleRegistration extends Component {
     //For Third Parties Services User - since onAuth would store those user to db
     //when onAuth pass the user (gui) to profile, they are similar with Continue User
     let gui = "5d93ed502048f47fae224593";
-    let checklist = [true, true, true, true, false, false];
+    let checklist = [true, true, true, true, false, true];
 
     //rare error: if db data and checklist are not match
     //let say aboutYou data is null but checklist[1] = true,
@@ -279,7 +279,7 @@ class CollapisbleRegistration extends Component {
       () => {
         if (this.state[toggle]) {
           this.scrollView.scrollTo({
-            y: this.scrollY + pageY - offset,
+            y: this.state.scrollY + pageY - offset,
             animated: true
           });
         } else {
@@ -292,7 +292,9 @@ class CollapisbleRegistration extends Component {
   //handlescroll : update current screen top y
   handleScroll = ({ nativeEvent }) => {
     const { contentOffset } = nativeEvent;
-    this.scrollY = contentOffset.y;
+    this.setState({
+      scrollY: contentOffset.y
+    });
   };
 
   SuccessScreen = () => {
@@ -338,7 +340,6 @@ class CollapisbleRegistration extends Component {
                     componentName={"createAccount"}
                     handleToggle={this.handleToggle}
                     handlePassed={this.handlePassed}
-                    scrollView={this.scrollView}
                   />
                 </View>
 
@@ -356,7 +357,6 @@ class CollapisbleRegistration extends Component {
                     componentName={"aboutYou"}
                     handleToggle={this.handleToggle}
                     handlePassed={this.handlePassed}
-                    scrollView={this.scrollView}
                   />
                 </View>
 
@@ -374,8 +374,11 @@ class CollapisbleRegistration extends Component {
                     componentName={"preferences"}
                     handleToggle={this.handleToggle}
                     handlePassed={this.handlePassed}
-                    scrollY={this.scrollY}
-                    scrollView={this.scrollView}
+                    otherToggle={[
+                      this.state.createAccountToggle,
+                      this.state.aboutYouToggle
+                    ]}
+                    scrollY={this.state.scrollY}
                   />
                 </View>
 
@@ -393,8 +396,12 @@ class CollapisbleRegistration extends Component {
                     componentName={"interests"}
                     handleToggle={this.handleToggle}
                     handlePassed={this.handlePassed}
-                    scrollY={this.scrollY}
-                    scrollView={this.scrollView}
+                    otherToggle={[
+                      this.state.createAccountToggle,
+                      this.state.aboutYouToggle,
+                      this.state.preferencesToggle
+                    ]}
+                    scrollY={this.state.scrollY}
                   />
                 </View>
 
@@ -412,7 +419,6 @@ class CollapisbleRegistration extends Component {
                     componentName={"wouldYouRather"}
                     handleToggle={this.handleToggle}
                     handlePassed={this.handlePassed}
-                    scrollView={this.scrollView}
                   />
                 </View>
 
@@ -430,8 +436,14 @@ class CollapisbleRegistration extends Component {
                     componentName={"localDestination"}
                     handleToggle={this.handleToggle}
                     handlePassed={this.handlePassed}
-                    scrollY={this.scrollY}
-                    scrollView={this.scrollView}
+                    otherToggle={[
+                      this.state.createAccountToggle,
+                      this.state.aboutYouToggle,
+                      this.state.preferencesToggle,
+                      this.state.interestsToggle,
+                      this.state.wouldYouRatherToggle
+                    ]}
+                    scrollY={this.state.scrollY}
                   />
                 </View>
                 {/*Temporay solution for scrollView; without this would not scroll properly*/}

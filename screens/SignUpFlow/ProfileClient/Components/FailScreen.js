@@ -32,17 +32,19 @@ export default function FailScreen(props) {
           }}
         />
         <TouchableOpacity onPress={props.getDataFunction}>
-          <Text style={{ color: "#fff", fontSize: 15 }}>get Data</Text>
+          <Text style={{ color: "#fff", fontSize: 15 }}>Retry</Text>
         </TouchableOpacity>
         {/*Spaces*/}
         <View
           style={{
-            padding: "10%"
+            padding: "7%"
           }}
         />
-        <TouchableOpacity onPress={props.startwithEmpty}>
-          <Text style={{ color: "#fff", fontSize: 15 }}>start with Empty</Text>
-        </TouchableOpacity>
+        {props.reset && (
+          <TouchableOpacity onPress={props.reset}>
+            <Text style={{ color: "#fff", fontSize: 15 }}>Reset data</Text>
+          </TouchableOpacity>
+        )}
       </View>
       {/*Spaces*/}
       <View
