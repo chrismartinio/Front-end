@@ -25,8 +25,20 @@ import { Icon } from "react-native-elements";
 //ScrollView
 const screenHeight = Math.round(Dimensions.get("window").height);
 
+//data
+import { locations } from "../Data/Locations.js";
+
 //Collapsible Components
 import FailScreen from "../Components/FailScreen";
+
+//checker functions
+import { locationsChecker } from "../Util/OnBoardingRegistrationScreenCheckers.js";
+
+//warnings
+import {
+  internalErrorWarning,
+  emptyCityWarning
+} from "../Util/OnBoardingRegistrationScreenWarnings.js";
 
 class LocationDestinations extends Component {
   //having null header means no back  button is present!
@@ -137,15 +149,8 @@ class LocationDestinations extends Component {
     }
   };
 
-  locationsChecker = () => {
-    if (this.state.localDestination !== "") {
-      return true;
-    }
-    return false;
-  };
-
   allChecker = () => {
-    if (this.locationsChecker()) {
+    if (locationsChecker(this.state.localDestination)) {
       this.setState({
         passed: true
       });
@@ -309,26 +314,6 @@ class LocationDestinations extends Component {
   };
 
   successScreen = () => {
-    let emptyCityWarning = (
-      <View style={{ alignItems: "center" }}>
-        <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
-          <Icon
-            type="font-awesome"
-            name="exclamation-circle"
-            color="#fff"
-            iconStyle={{ top: 3 }}
-          />
-          <Text style={styles.warningText}>{"   "}Please select a city</Text>
-        </View>
-      </View>
-    );
-
-    let internalErrorWarning = (
-      <Text style={styles.warningText}>
-        * Some error occurred. Please try again!
-      </Text>
-    );
-
     let displayLocation = locations.map((e, index = 0) => {
       return (
         <View
@@ -491,17 +476,6 @@ const styles = StyleSheet.create({
     fontWeight: "bold"
   }
 });
-
-const locations = [
-  "San Francisco",
-  "Tahoe",
-  "Monterey",
-  "Big Sur",
-  "Napa",
-  "Santa Cruz",
-  "Yosemite",
-  "Morro Bay"
-];
 
 const mapStateToProps = state => ({
   ...state

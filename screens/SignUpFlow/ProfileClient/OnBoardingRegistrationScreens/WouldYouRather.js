@@ -21,6 +21,9 @@ import Slider from "../Components/Sliders/WouldYouRatherSlider";
 //Collapsible Components
 import FailScreen from "../Components/FailScreen";
 
+//warnings
+import { internalErrorWarning } from "../Util/OnBoardingRegistrationScreenWarnings.js";
+
 class WouldYouRather extends Component {
   static navigationOptions = {
     header: null
@@ -237,11 +240,6 @@ class WouldYouRather extends Component {
   };
 
   successScreen = () => {
-    let internalErrorWarning = (
-      <Text style={styles.warningText}>
-        * Some error occurred. Please try again!
-      </Text>
-    );
     return (
       <View>
         {this.state.internalErrorWarning && internalErrorWarning}
@@ -334,12 +332,7 @@ class WouldYouRather extends Component {
   failScreen = () => {
     //For isContinueUser Only
     //If fail on fetching, then display a screen to tell them try again
-    return (
-      <FailScreen
-        getDataFunction={this.getData}
-        reset={this.reset}
-      />
-    );
+    return <FailScreen getDataFunction={this.getData} reset={this.reset} />;
   };
 
   render() {

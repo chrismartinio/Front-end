@@ -26,6 +26,9 @@ import SetChecklistAction from "../../../../storage/actions/RegistrationActions/
 import DatePicker from "react-native-datepicker";
 import RNPickerSelect from "react-native-picker-select";
 
+//data
+import { likes } from "../Data/Likes.js";
+
 //Icons
 import { Icon } from "react-native-elements";
 
@@ -34,6 +37,15 @@ const screenHeight = Math.round(Dimensions.get("window").height);
 
 //Collapsible Components
 import FailScreen from "../Components/FailScreen";
+
+//checker functions
+import { likesChecker } from "../Util/OnBoardingRegistrationScreenCheckers.js";
+
+//warnings
+import {
+  invalidLikesWarning,
+  internalErrorWarning
+} from "../Util/OnBoardingRegistrationScreenWarnings.js";
 
 class Interests extends Component {
   constructor(props) {
@@ -220,15 +232,8 @@ class Interests extends Component {
     }
   };
 
-  likesChecker = () => {
-    if (this.state.likesArray.length >= 3) {
-      return true;
-    }
-    return false;
-  };
-
   allChecker = () => {
-    if (this.likesChecker()) {
+    if (likesChecker(this.state.likesArray.length)) {
       this.setState({
         passed: true
       });
@@ -311,28 +316,6 @@ class Interests extends Component {
   };
 
   successScreen = () => {
-    let invalidLikesWarning = (
-      <View style={{ alignItems: "center" }}>
-        <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
-          <Icon
-            type="font-awesome"
-            name="exclamation-circle"
-            color="#fff"
-            iconStyle={{ top: 3 }}
-          />
-          <Text style={styles.warningText}>
-            {"   "}Please select 3 interests
-          </Text>
-        </View>
-      </View>
-    );
-
-    let internalErrorWarning = (
-      <Text style={styles.warningText}>
-        * Some error occurred. Please try again!
-      </Text>
-    );
-
     let displaylikes = likes.map((e, index = 0) => {
       return (
         <View
@@ -379,9 +362,6 @@ class Interests extends Component {
         <View
           style={{
             padding: "5%"
-            //borderRadius: 4,
-            //borderWidth: 0.5,
-            //borderColor: "#d6d7da"
           }}
         />
         {/*I'm interested in Text & Pick one of both Text*/}
@@ -390,14 +370,11 @@ class Interests extends Component {
             I'm interested in
           </Text>
           <Text />
-          <Text style={{ opacity: 0.7, color: "white" }}>Pick at least 3</Text>
+          <Text style={{ opacity: 0.7, color: "white" }}>Pick 3</Text>
           {/*Spaces*/}
           <View
             style={{
               padding: "5%"
-              //borderRadius: 4,
-              //borderWidth: 0.5,
-              //borderColor: "#d6d7da"
             }}
           />
         </View>
@@ -407,14 +384,11 @@ class Interests extends Component {
           <View style={styles.likesWrap}>{displaylikes}</View>
         </View>
         <Text />
-        {this.state.likesArray.length < 3 && invalidLikesWarning}
+        {this.state.likesArray.length !== 3 && invalidLikesWarning}
         {/*Spaces*/}
         <View
           style={{
             padding: "7%"
-            //borderRadius: 4,
-            //borderWidth: 0.5,
-            //borderColor: "#d6d7da"
           }}
         />
         {/*Next Button*/}
@@ -505,18 +479,6 @@ const styles = StyleSheet.create({
     fontWeight: "bold"
   }
 });
-
-const likes = [
-  "Food",
-  "Dancing",
-  "Pets",
-  "Gym",
-  "Shopping",
-  "Sports",
-  "Hiking",
-  "Music",
-  "Travel"
-];
 
 const mapStateToProps = state => {
   return { ...state };

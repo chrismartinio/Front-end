@@ -30,6 +30,27 @@ import { Chevron } from "react-native-shapes";
 //Collapsible Components
 import FailScreen from "../Components/FailScreen";
 
+//checker functions
+import {
+  checkZipCode,
+  checkName,
+  maxDate,
+  minDate,
+  checkage,
+} from "../Util/OnBoardingRegistrationScreenCheckers.js";
+
+//warnings
+import {
+  invalidFirstNameWarning,
+  invalidLastNameWarning,
+  invalidBirthDateWarning,
+  invalidGenderWarning,
+  invalidCountryWarning,
+  invalidZipCodeWarning,
+  emptyWarning,
+  internalErrorWarning
+} from "../Util/OnBoardingRegistrationScreenWarnings.js";
+
 class AboutYou extends Component {
   constructor(props) {
     super(props);
@@ -164,68 +185,6 @@ class AboutYou extends Component {
     }
   }
 
-  //format checker below
-
-  //return true/false for valid zipcode
-  checkZipCode = zipcode => {
-    return /^\d{5}(-\d{4})?$/.test(zipcode);
-  };
-
-  //return true/false for valid first name and last name
-  checkName = string => {
-    //check if string has only space
-    if (!string.replace(/\s/g, "").length) {
-      return false;
-    }
-
-    //check letters and spaces
-    let regExp = /^[a-zA-Z\s]*$/;
-    if (regExp.test(string)) {
-      return true;
-    }
-    return false;
-  };
-
-  //date picker method : return maximun date (current date) that user can pick
-  maxDate = () => {
-    let d = new Date();
-    let year = d.getFullYear();
-    let month = d.getMonth() + 1;
-    let day = d.getDate();
-    return year.toString() + "-" + month.toString() + "-" + day.toString();
-  };
-
-  //date picker method : return minimum date (current date - 150) that user can pick
-  minDate = () => {
-    let d = new Date();
-    //assume 120 year olds
-    let year = d.getFullYear() - 150;
-    let month = d.getMonth() + 1;
-    let day = d.getDate();
-    return year.toString() + "-" + month.toString() + "-" + day.toString();
-  };
-
-  //return true/false for valid birthdate (over 18)
-  checkage = birthdate => {
-    let byear = parseInt(birthdate.slice(0, 4));
-    let bmonth = parseInt(birthdate.slice(5, 7));
-    let bday = parseInt(birthdate.slice(8, 10));
-
-    let d = new Date();
-    let age = d.getFullYear() - byear;
-    let month = d.getMonth() + 1 - bmonth;
-    if (month < 0 || (month === 0 && d.getDate() < bday)) {
-      age--;
-    }
-
-    if (age < 18) {
-      return false;
-    }
-
-    return true;
-  };
-  //Format Checker above
-
   //checkers
   firstNameChecker = () => {
     if (this.state.firstName === "") {
@@ -233,7 +192,7 @@ class AboutYou extends Component {
       this.setState({
         firstNameWarning: "empty"
       });
-    } else if (!this.checkName(this.state.firstName)) {
+    } else if (!checkName(this.state.firstName)) {
       firstName = false;
       this.setState({
         firstNameWarning: "invalid"
@@ -253,7 +212,7 @@ class AboutYou extends Component {
       this.setState({
         lastNameWarning: "empty"
       });
-    } else if (!this.checkName(this.state.lastName)) {
+    } else if (!checkName(this.state.lastName)) {
       lastName = false;
       this.setState({
         lastNameWarning: "invalid"
@@ -273,7 +232,7 @@ class AboutYou extends Component {
       this.setState({
         zipCodeWarning: "empty"
       });
-    } else if (!this.checkZipCode(this.state.zipCode)) {
+    } else if (!checkZipCode(this.state.zipCode)) {
       zipCode = false;
       this.setState({
         zipCodeWarning: "invalid"
@@ -293,7 +252,7 @@ class AboutYou extends Component {
       this.setState({
         birthDateWarning: "empty"
       });
-    } else if (!this.checkage(this.state.birthDate)) {
+    } else if (!checkage(this.state.birthDate)) {
       birthDate = false;
       this.setState({
         birthDateWarning: "invalid"
@@ -461,43 +420,6 @@ class AboutYou extends Component {
   };
 
   successScreen = () => {
-    let passed = <View style={styles.warningText} />;
-
-    let invalidFirstNameWarning = (
-      <Text style={styles.warningText}>
-        * Please enter a valid first name (letters and spaces)
-      </Text>
-    );
-    let invalidLastNameWarning = (
-      <Text style={styles.warningText}>
-        * Please enter a valid last name (letters and spaces)
-      </Text>
-    );
-    let invalidBirthDateWarning = (
-      <Text style={styles.warningText}>
-        * Please enter a valid birth date (at least 18)
-      </Text>
-    );
-    let invalidGenderWarning = (
-      <Text style={styles.warningText}>* Please enter a valid gender</Text>
-    );
-
-    let invalidCountryWarning = (
-      <Text style={styles.warningText}>* Please enter a valid gender</Text>
-    );
-
-    let invalidZipCodeWarning = (
-      <Text style={styles.warningText}>* Please enter a valid zip code</Text>
-    );
-    //work for first, last, zip, birth
-    let empty = <Text style={styles.warningText}>* Required</Text>;
-
-    let internalErrorWarning = (
-      <Text style={styles.warningText}>
-        * Some error occurred. Please try again!
-      </Text>
-    );
-
     return (
       <View style={{ flex: 1 }}>
         {this.state.internalErrorWarning && internalErrorWarning}
@@ -535,7 +457,7 @@ class AboutYou extends Component {
               })
             }
           />
-          {this.state.firstNameWarning === "empty" && empty}
+          {this.state.firstNameWarning === "empty" && emptyWarning}
           {this.state.firstNameWarning === "invalid" && invalidFirstNameWarning}
         </View>
         {/*Spaces*/}
@@ -573,7 +495,7 @@ class AboutYou extends Component {
               })
             }
           />
-          {this.state.lastNameWarning === "empty" && empty}
+          {this.state.lastNameWarning === "empty" && emptyWarning}
           {this.state.lastNameWarning === "invalid" && invalidLastNameWarning}
         </View>
         <View
@@ -595,8 +517,8 @@ class AboutYou extends Component {
               mode="date"
               placeholder="birthdate"
               format="YYYY-MM-DD"
-              minDate={this.minDate()}
-              maxDate={this.maxDate()}
+              minDate={minDate()}
+              maxDate={maxDate()}
               confirmBtnText="Confirm"
               cancelBtnText="Cancel"
               iconComponent={
@@ -623,7 +545,7 @@ class AboutYou extends Component {
                 });
               }}
             />
-            {this.state.birthDateWarning === "empty" && empty}
+            {this.state.birthDateWarning === "empty" && emptyWarning}
             {this.state.birthDateWarning === "invalid" &&
               invalidBirthDateWarning}
           </View>
@@ -666,7 +588,7 @@ class AboutYou extends Component {
                 );
               }}
             />
-            {this.state.genderWarning === "empty" && empty}
+            {this.state.genderWarning === "empty" && emptyWarning}
             {this.state.genderWarning === "invalid" && invalidGenderWarning}
           </View>
         </View>
@@ -711,7 +633,7 @@ class AboutYou extends Component {
                 );
               }}
             />
-            {this.state.countryWarning === "empty" && empty}
+            {this.state.countryWarning === "empty" && emptyWarning}
             {this.state.countryWarning === "invalid" &&
               invalidGenderCountryWarning}
           </View>
@@ -746,7 +668,7 @@ class AboutYou extends Component {
                 })
               }
             />
-            {this.state.zipCodeWarning === "empty" && empty}
+            {this.state.zipCodeWarning === "empty" && emptyWarning}
             {this.state.zipCodeWarning === "invalid" && invalidZipCodeWarning}
           </View>
         </View>

@@ -23,6 +23,28 @@ import { Chevron } from "react-native-shapes";
 //Collapsible Components
 import FailScreen from "../Components/FailScreen";
 
+//checker functions
+import {
+  emailCheck,
+  nullCheck,
+  passwordLength,
+  passwordCase,
+  passwordNonLetter,
+  passwordCheck
+} from "../Util/OnBoardingRegistrationScreenCheckers.js";
+
+//warnings
+import {
+  emptyEmailWarning,
+  emptyPasswordWarning,
+  invalidEmailWarning,
+  invalidConfirmEmailWarning,
+  invalidPasswordWarning,
+  invalidConfirmPasswordWarning,
+  duplicateEmailWarning,
+  internalErrorWarning
+} from "../Util/OnBoardingRegistrationScreenWarnings.js";
+
 class CreateAccount extends Component {
   constructor(props) {
     super(props);
@@ -135,73 +157,6 @@ class CreateAccount extends Component {
     }
   }
 
-  //format checkers below
-  emailCheck = email => {
-    // email validty check?
-    const checkAT = email.indexOf("@");
-    const checkCOM = email.indexOf(".com");
-    if (checkAT > 0 && checkCOM > 0 && email.length > 4) {
-      return true;
-    }
-    return false;
-  };
-
-  nullCheck = value => {
-    if (value !== "") {
-      return true;
-    }
-    return false;
-  };
-
-  passwordLength = password => {
-    if (!(password.length >= 8)) {
-      return false;
-    }
-    return true;
-  };
-
-  passworcdCase = password => {
-    // use positive look ahead to see if at least one lower case letter exists
-    //let regExp = /^(?=.*[a-z])/;
-    // use positive look ahead to see if at least one upper case letter exists
-    //regExp = /^(?=.*[A-Z])/;
-    if (!(/^(?=.*[a-z])/.test(password) && /^(?=.*[A-Z])/.test(password))) {
-      return false;
-    }
-    return true;
-  };
-
-  passwordNonLetter = password => {
-    // use positive look ahead to see if at least one digit exists
-    //let regExp = /^(?=.*[0-9])/;
-    // use positive look ahead to see if at least one non-word character exists
-    //regExp = /^(?=.*\W)/;
-    if (!(/^(?=.*[0-9])/.test(password) || /^(?=.*\W)/.test(password))) {
-      return false;
-    }
-    return true;
-  };
-
-  passwordCheck = password => {
-    let pLength = this.passwordLength(password);
-    let pCase = this.passworcdCase(password);
-    let pNonLetter = this.passwordNonLetter(password);
-
-    if (pLength === false) {
-      return false;
-    }
-    if (pCase === false) {
-      return false;
-    }
-    if (pNonLetter === false) {
-      return false;
-    }
-
-    return true;
-  };
-
-  //format checkers above
-
   //check email
   emailChecker = () => {
     //Clear confirmEmail Input if any changes made to email input
@@ -210,11 +165,11 @@ class CreateAccount extends Component {
       confirmEmailWarning: "empty"
     });
 
-    if (!this.nullCheck(this.state.email)) {
+    if (!nullCheck(this.state.email)) {
       this.setState({
         emailWarning: "empty"
       });
-    } else if (!this.emailCheck(this.state.email)) {
+    } else if (!emailCheck(this.state.email)) {
       this.setState({
         emailWarning: "invalid"
       });
@@ -226,7 +181,7 @@ class CreateAccount extends Component {
   };
 
   confirmEmailChecker = () => {
-    if (!this.nullCheck(this.state.confirmEmail)) {
+    if (!nullCheck(this.state.confirmEmail)) {
       this.setState({
         confirmEmailWarning: "empty"
       });
@@ -247,17 +202,17 @@ class CreateAccount extends Component {
     this.setState({
       confirmPasswordWarning: "empty"
     });
-    if (!this.nullCheck(this.state.password)) {
+    if (!nullCheck(this.state.password)) {
       this.setState({
         passwordWarning: "empty",
         password_UpperLowerCaseWarning: true,
         password_NumberSymbolWarning: true,
         password_LengthWarning: true
       });
-    } else if (!this.passwordCheck(this.state.password)) {
-      let pLength = !this.passwordLength(this.state.password);
-      let pLetterCase = !this.passworcdCase(this.state.password);
-      let pNonLetter = !this.passwordNonLetter(this.state.password);
+    } else if (!passwordCheck(this.state.password)) {
+      let pLength = !passwordLength(this.state.password);
+      let pLetterCase = !passwordCase(this.state.password);
+      let pNonLetter = !passwordNonLetter(this.state.password);
       this.setState({
         passwordWarning: "invalid",
         password_UpperLowerCaseWarning: pLetterCase,
@@ -275,7 +230,7 @@ class CreateAccount extends Component {
   };
 
   confirmPasswordChecker = () => {
-    if (!this.nullCheck(this.state.confirmPassword)) {
+    if (!nullCheck(this.state.confirmPassword)) {
       password = false;
       this.setState({
         confirmPasswordWarning: "empty"
@@ -404,40 +359,6 @@ class CreateAccount extends Component {
   };
 
   successScreen = () => {
-    let emptyEmail = (
-      <Text style={styles.warningText}>* Please enter a email</Text>
-    );
-    let emptyPassword = (
-      <Text style={styles.warningText}>* Please enter a password</Text>
-    );
-
-    let invalidEmailWarning = (
-      <Text style={styles.warningText}>
-        * Please enter a valid email address
-      </Text>
-    );
-
-    let duplicateEmailWarning = (
-      <Text style={styles.warningText}>* Email has been used.</Text>
-    );
-
-    let invalidConfirmEmailWarning = (
-      <Text style={styles.warningText}>* Email address does not match</Text>
-    );
-
-    let invalidPasswordWarning = (
-      <Text style={styles.warningText}>* Please enter a valid password</Text>
-    );
-
-    let invalidConfirmPasswordWarning = (
-      <Text style={styles.warningText}>* Password does not match</Text>
-    );
-
-    let internalErrorWarning = (
-      <Text style={styles.warningText}>
-        * Some error occurred. Please try again!
-      </Text>
-    );
     return (
       <View style={{ flex: 1 }}>
         {this.state.internalErrorWarning && internalErrorWarning}
@@ -473,7 +394,7 @@ class CreateAccount extends Component {
               })
             }
           />
-          {this.state.emailWarning === "empty" && emptyEmail}
+          {this.state.emailWarning === "empty" && emptyEmailWarning}
           {this.state.emailWarning === "invalid" && invalidEmailWarning}
           {this.state.emailWarning === "duplicate" && duplicateEmailWarning}
         </View>
@@ -512,7 +433,7 @@ class CreateAccount extends Component {
               })
             }
           />
-          {this.state.confirmEmailWarning === "empty" && emptyEmail}
+          {this.state.confirmEmailWarning === "empty" && emptyEmailWarning}
           {this.state.confirmEmailWarning === "notmatch" &&
             invalidConfirmEmailWarning}
         </View>
@@ -549,7 +470,7 @@ class CreateAccount extends Component {
               })
             }
           />
-          {this.state.passwordWarning === "empty" && emptyPassword}
+          {this.state.passwordWarning === "empty" && emptyPasswordWarning}
           {this.state.passwordWarning === "invalid" && invalidPasswordWarning}
         </View>
         {/*Spaces*/}
@@ -588,7 +509,8 @@ class CreateAccount extends Component {
               })
             }
           />
-          {this.state.confirmPasswordWarning === "empty" && emptyPassword}
+          {this.state.confirmPasswordWarning === "empty" &&
+            emptyPasswordWarning}
           {this.state.confirmPasswordWarning === "notmatch" &&
             invalidConfirmPasswordWarning}
         </View>
@@ -732,13 +654,7 @@ const styles = StyleSheet.create({
   },
   inputStyle: {
     color: "#fff",
-    fontSize: 15,
-  },
-  warningText: {
-    color: "#fff",
-    fontSize: 10,
-    paddingTop: "3%",
-    fontWeight: "bold"
+    fontSize: 15
   },
   space: {
     padding: "3%"

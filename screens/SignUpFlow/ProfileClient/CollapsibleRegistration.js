@@ -62,7 +62,7 @@ class CollapisbleRegistration extends Component {
       interestsToggle: false,
       wouldYouRatherToggle: false,
       localDestinationToggle: false,
-      createAccountPassed: false, //true or false
+      createAccountPassed: true, //true or false
       aboutYouPassed: false,
       preferencesPassed: false,
       interestsPassed: false,
@@ -97,7 +97,7 @@ class CollapisbleRegistration extends Component {
     //For demo use only
 
     //If some cases that the jwt is empty, then return as a new User
-    //new user
+    //New user
     if (jwt === "") {
       return {
         gui: "",
@@ -107,17 +107,21 @@ class CollapisbleRegistration extends Component {
     }
 
     //assume we decrypted the jwt and retrieve the gui and checklist
+    let gui = "";
+    let checklist = [true, false, false, false, false, false];
+    let isThirdPartiesServiceUser = false;
+
     //New User
-    //let gui = "";
-    //let checklist = [true, false, false, false, false, false];
-    //let isThirdPartiesServiceUser = false;
+    //gui = "";
+    //checklist = [true, false, false, false, false, false];
+    //isThirdPartiesServiceUser = false;
 
     //Continue User or Third Parties Services User
     //For Third Parties Services User - since onAuth would store those user to db
     //when onAuth pass the user (gui) to profile, they are similar with Continue User
-    let gui = "5d93ed502048f47fae224593";
-    let checklist = [true, true, true, true, false, true];
-    let isThirdPartiesServiceUser = false; //set true if third parties user
+    gui = "5d93ed502048f47fae224593";
+    checklist = [true, true, true, true, false, true];
+    isThirdPartiesServiceUser = false; //set true if third parties user
 
     //third party services user (goal: query from db )
     //checklist (true) and isThirdPartiesServiceUser (true), it would query from db
@@ -251,7 +255,6 @@ class CollapisbleRegistration extends Component {
     //2 means screen is not passed; something has changed; some fields is not filled yet
     //3 means there error on api fetchting or server internal error
 
-    //Handle Duplicate Email; let the createAccount screen stay remain
     if (passed === 1) {
       this.setState(
         {
@@ -270,6 +273,7 @@ class CollapisbleRegistration extends Component {
         [statusName]: "empty"
       });
     } else {
+      //Handle Duplicate Email; let the createAccount screen stay remain
       this.setState({
         [toggleName]: true, //keep the toggle remain
         [passName]: false, //that screen is not passed.

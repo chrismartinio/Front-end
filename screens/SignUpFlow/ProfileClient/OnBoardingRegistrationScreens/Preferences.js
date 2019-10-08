@@ -32,6 +32,15 @@ const screenHeight = Math.round(Dimensions.get("window").height);
 //Collapsible Components
 import FailScreen from "../Components/FailScreen";
 
+//checker functions
+import { genderChecker } from "../Util/OnBoardingRegistrationScreenCheckers.js";
+
+//warnings
+import {
+  emptyGenderWarning,
+  internalErrorWarning
+} from "../Util/OnBoardingRegistrationScreenWarnings.js";
+
 class Preferences extends Component {
   //having null header means no back  button is present!
   constructor(props) {
@@ -180,26 +189,12 @@ class Preferences extends Component {
     });
   };
 
-  genderChecker = () => {
-    if (this.state.pickedMen === true || this.state.pickedWomen === true) {
-      return true;
-    }
-    return false;
-  };
-
-  distanceChecker = () => {
-    if (this.state.distanceRange > 0) {
-      return true;
-    }
-    return false;
-  };
-
   allChecker = () => {
     //let distance = false;
     let distance = true;
     let gender = false;
 
-    if (!this.genderChecker()) {
+    if (!genderChecker(this.state.pickedMen, this.state.pickedWomen)) {
       gender = false;
       this.setState(
         {
@@ -389,42 +384,6 @@ class Preferences extends Component {
   };
 
   successScreen = () => {
-    let emptyGenderWarning = (
-      <View style={{ alignItems: "center" }}>
-        <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
-          <Icon
-            type="font-awesome"
-            name="exclamation-circle"
-            color="#fff"
-            iconStyle={{ top: 3 }}
-          />
-          <Text style={styles.warningText}>
-            {"   "}Please choose at least one gender
-          </Text>
-        </View>
-      </View>
-    );
-
-    let distanceWarning = (
-      <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
-        <Icon
-          type="font-awesome"
-          name="exclamation-circle"
-          color="#fff"
-          iconStyle={{ top: 3 }}
-        />
-        <Text style={styles.warningText}>
-          {"   "}Please choose our preferred distance
-        </Text>
-      </View>
-    );
-
-    let internalErrorWarning = (
-      <Text style={styles.warningText}>
-        * Some error occurred. Please try again!
-      </Text>
-    );
-
     return (
       <View style={{ flex: 1 }}>
         {this.state.internalErrorWarning && internalErrorWarning}
@@ -526,9 +485,6 @@ class Preferences extends Component {
         <View
           style={{
             padding: "10%"
-            //borderRadius: 4,
-            //borderWidth: 0.5,
-            //borderColor: "#d6d7da"
           }}
         />
 
@@ -557,9 +513,6 @@ class Preferences extends Component {
         <View
           style={{
             padding: "10%"
-            //borderRadius: 4,
-            //borderWidth: 0.5,
-            //borderColor: "#d6d7da"
           }}
         />
 
@@ -579,9 +532,6 @@ class Preferences extends Component {
         <View
           style={{
             padding: "10%"
-            //borderRadius: 4,
-            //borderWidth: 0.5,
-            //borderColor: "#d6d7da"
           }}
         />
 
