@@ -119,14 +119,12 @@ class CreateAccount extends Component {
   };
 
   async componentDidMount() {
-    console.log("AAA", this.props.CreateProfileDataReducer.isContinueUser)
     //For createAccount only, not allow continue user to edit the createAccount
     if (this.props.CreateProfileDataReducer.isContinueUser) {
       this.setState({
         editable: false
       });
     }
-
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
