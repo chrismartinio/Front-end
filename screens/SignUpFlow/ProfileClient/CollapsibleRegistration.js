@@ -119,7 +119,7 @@ class CollapisbleRegistration extends Component {
     //Continue User or Third Parties Services User
     //For Third Parties Services User - since onAuth would store those user to db
     //when onAuth pass the user (gui) to profile, they are similar with Continue User
-    gui = "5d93ed502048f47fae224593";
+    gui = "5d9d5293bf10e04be351381d";
     checklist = [true, true, true, true, false, true];
     isThirdPartiesServiceUser = false; //set true if third parties user
 
@@ -190,15 +190,9 @@ class CollapisbleRegistration extends Component {
     let jwtObject = this.decryptJWT(this.getJWT());
 
     //check if the user is a continue user.
-    //if there have at least one true inside the checklist array,
-    //then the user is a continue user
-    //Note, checklist[0], createAccount screen is set to true by default
-    //because users must submit createAcctoun screen in order to create a profile on db
-    //that begin said, createAccount screen must always true if they are continue user
-    let isContinueUser = jwtObject.checklist.slice(1).find(screens => {
-      return screens;
-    });
-    isContinueUser = isContinueUser === undefined ? false : true;
+    //if there has a gui then the user is a continue user
+    //if no gui then it is not a continue user
+    let isContinueUser = jwtObject.gui ? true : false;
 
     //if the user is a continue user, set isContinueUser is true in Redux
     if (isContinueUser) {
