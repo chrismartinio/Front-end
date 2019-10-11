@@ -52,7 +52,7 @@ class WouldYouRather extends Component {
 
   getData = async () => {
     //if checklist says this screen is not complete, return (don't do query)
-    if (!this.props.CreateProfileDataReducer.checklist[4]) {
+    if (!this.props.CreateProfileDataReducer.checklist.wouldYouRather) {
       return;
     }
 
@@ -118,12 +118,7 @@ class WouldYouRather extends Component {
     if (this.props.CreateProfileDataReducer.gui !== null) {
       //Set the screen's checklist index to true
       let checklist = this.props.CreateProfileDataReducer.checklist;
-      let index = 4;
-      checklist = [
-        ...checklist.slice(0, index),
-        true,
-        ...checklist.slice(index + 1)
-      ];
+      checklist.wouldYouRather = true
       this.props.SetChecklistAction({
         checklist: checklist
       });

@@ -36,7 +36,7 @@ import {
   checkName,
   maxDate,
   minDate,
-  checkage,
+  checkage
 } from "../Util/OnBoardingRegistrationScreenCheckers.js";
 
 //warnings
@@ -80,7 +80,7 @@ class AboutYou extends Component {
     if (!this.props.CreateProfileDataReducer.isThirdPartiesServiceUser) {
       //continue user
       //if the checklist says this screen is not complete, return (do not query anything)
-      if (!this.props.CreateProfileDataReducer.checklist[1]) {
+      if (!this.props.CreateProfileDataReducer.checklist.aboutYou) {
         return;
       }
     }
@@ -320,12 +320,7 @@ class AboutYou extends Component {
     if (this.state.passed && this.props.CreateProfileDataReducer.gui !== null) {
       //Set the screen's checklist index to true
       let checklist = this.props.CreateProfileDataReducer.checklist;
-      let index = 1;
-      checklist = [
-        ...checklist.slice(0, index),
-        true,
-        ...checklist.slice(index + 1)
-      ];
+      checklist.aboutYou = true;
       this.props.SetChecklistAction({
         checklist: checklist
       });

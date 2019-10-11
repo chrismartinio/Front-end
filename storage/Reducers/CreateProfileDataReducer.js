@@ -2,7 +2,14 @@ const CreateProfileDataReducer = (
   state = {
     isContinueUser: false,
     isThirdPartiesServiceUser: false,
-    checklist: [true, false, false, false, false, false],
+    checklist: {
+      createAccount: true,
+      aboutYou: false,
+      preferences: false,
+      interests: false,
+      wouldYouRather: false,
+      localDestination: false
+    },
     gui: null,
     createAccountData: null,
     aboutYouData: null,
@@ -23,7 +30,7 @@ const CreateProfileDataReducer = (
     case "SET_IS_THIRD_PARTY_SERVICES_USER":
       return {
         ...state,
-        isThirdPartiesServiceUser: action.PAYLOAD.isThirdPartiesServiceUser,
+        isThirdPartiesServiceUser: action.PAYLOAD.isThirdPartiesServiceUser
       };
     case "SET_GUI":
       return { ...state, gui: action.PAYLOAD.gui };

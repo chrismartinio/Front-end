@@ -86,14 +86,14 @@ class CollapisbleRegistration extends Component {
     }
     return jwt;
   };
-
+  //eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
   decryptJWT = jwt => {
     //console.log('jwt', jwt)
 
     //For demo use only
     //make the jwt has something to prevent jwt === ""
-    //jwt = true;
-    jwt = "";
+    jwt = true;
+    //jwt = "";
     //For demo use only
 
     //If some cases that the jwt is empty, then return as a new User
@@ -101,26 +101,58 @@ class CollapisbleRegistration extends Component {
     if (jwt === "") {
       return {
         gui: "",
-        checklist: [true, false, false, false, false, false],
+        checklist: {
+          createAccount: true,
+          aboutYou: false,
+          preferences: false,
+          interests: false,
+          wouldYouRather: false,
+          localDestination: false
+        },
         isThirdPartiesServiceUser: false
       };
     }
+    //checklist object
+    //local stroage (asyncStorage) all "login" user except non-approve user
 
     //assume we decrypted the jwt and retrieve the gui and checklist
     let gui = "";
-    let checklist = [true, false, false, false, false, false];
+    let checklist = {
+      createAccount: true,
+      aboutYou: false,
+      preferences: false,
+      interests: false,
+      wouldYouRather: false,
+      localDestination: false
+    };
     let isThirdPartiesServiceUser = false;
 
     //New User
     //gui = "";
-    //checklist = [true, false, false, false, false, false];
+    /*
+    checklist = {
+      createAccount: true,
+      aboutYou: false,
+      preferences: false,
+      interests: false,
+      wouldYouRather: false,
+      localDestination: false
+    };
+    */
     //isThirdPartiesServiceUser = false;
 
     //Continue User or Third Parties Services User
     //For Third Parties Services User - since onAuth would store those user to db
     //when onAuth pass the user (gui) to profile, they are similar with Continue User
-    gui = "5d9d5293bf10e04be351381d";
-    checklist = [true, true, true, true, false, true];
+    gui = "5d9fd25c3307374296ed767c";
+    checklist = {
+      createAccount: true,
+      aboutYou: true,
+      preferences: false,
+      interests: true,
+      wouldYouRather: true,
+      localDestination: true
+    };
     isThirdPartiesServiceUser = false; //set true if third parties user
 
     //third party services user (goal: query from db )
@@ -163,18 +195,22 @@ class CollapisbleRegistration extends Component {
 
     //Set the status for screen
     this.setState({
-      createAccountPassed: jwtObject.checklist[0],
-      aboutYouPassed: jwtObject.checklist[1],
-      preferencesPassed: jwtObject.checklist[2],
-      interestsPassed: jwtObject.checklist[3],
-      wouldYouRatherPassed: jwtObject.checklist[4],
-      localDestinationPassed: jwtObject.checklist[5],
+      createAccountPassed: jwtObject.checklist.createAccount,
+      aboutYouPassed: jwtObject.checklist.aboutYou,
+      preferencesPassed: jwtObject.checklist.preferences,
+      interestsPassed: jwtObject.checklist.interests,
+      wouldYouRatherPassed: jwtObject.checklist.wouldYouRather,
+      localDestinationPassed: jwtObject.checklist.localDestination,
       createAccountStatus: "passed", //isContinueUser always true for createAccountStatus
-      aboutYouStatus: jwtObject.checklist[1] ? "passed" : "empty",
-      preferencesStatus: jwtObject.checklist[2] ? "passed" : "empty",
-      interestsStatus: jwtObject.checklist[3] ? "passed" : "empty",
-      wouldYouRatherStatus: jwtObject.checklist[4] ? "passed" : "empty",
-      localDestinationStatus: jwtObject.checklist[5] ? "passed" : "empty"
+      aboutYouStatus: jwtObject.checklist.aboutYou ? "passed" : "empty",
+      preferencesStatus: jwtObject.checklist.preferences ? "passed" : "empty",
+      interestsStatus: jwtObject.checklist.interests ? "passed" : "empty",
+      wouldYouRatherStatus: jwtObject.checklist.wouldYouRather
+        ? "passed"
+        : "empty",
+      localDestinationStatus: jwtObject.checklist.localDestination
+        ? "passed"
+        : "empty"
     });
   };
 
@@ -193,6 +229,22 @@ class CollapisbleRegistration extends Component {
     //if there has a gui then the user is a continue user
     //if no gui then it is not a continue user
     let isContinueUser = jwtObject.gui ? true : false;
+    //Note
+    //if new user sumbitted createAccount, they become a continue user?
+    //yes,
+    //won't the rest of the screen say because it is a continue user, then query the data?
+    //no, the rest of the screen won't query data because
+    //we only assign the user is continue User after the user get in to registration screen
+    //instead of after the user submitted createAccount screen
+    //For example, continue user
+    //CollaspibleRegistration.js get gui = "something", checklist = [true, false, false, false, false, false]
+    //it will mark isContinueUser = true, the rest of the screen will query data
+
+    //For example, new user
+    //CollaspibleRegistration.js get gui = "", checklist = [true, false, false, false, false, false]
+    //it will mark isContinueUser = false, the rest of the screen will not query data
+    //createAccount.js get the isContinueUser === false, so it won't query data
+    //aboutYou.js get the isContinueUser === false, so it won't query data
 
     //if the user is a continue user, set isContinueUser is true in Redux
     if (isContinueUser) {

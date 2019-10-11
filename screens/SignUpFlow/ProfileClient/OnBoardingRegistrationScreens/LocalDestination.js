@@ -56,7 +56,7 @@ class LocationDestinations extends Component {
 
   getData = async () => {
     //if checklist says this screen is not complete, return (don't do query)
-    if (!this.props.CreateProfileDataReducer.checklist[5]) {
+    if (!this.props.CreateProfileDataReducer.checklist.localDestination) {
       return;
     }
 
@@ -223,12 +223,7 @@ class LocationDestinations extends Component {
     if (this.state.passed && this.props.CreateProfileDataReducer.gui !== null) {
       //Set the screen's checklist index to true
       let checklist = this.props.CreateProfileDataReducer.checklist;
-      let index = 5;
-      checklist = [
-        ...checklist.slice(0, index),
-        true,
-        ...checklist.slice(index + 1)
-      ];
+      checklist.localDestination = true;
       this.props.SetChecklistAction({
         checklist: checklist
       });

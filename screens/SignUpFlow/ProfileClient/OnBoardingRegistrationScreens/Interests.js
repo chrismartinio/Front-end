@@ -63,7 +63,7 @@ class Interests extends Component {
 
   getData = async () => {
     //if checklist says this screen is not complete, return (don't do query)
-    if (!this.props.CreateProfileDataReducer.checklist[3]) {
+    if (!this.props.CreateProfileDataReducer.checklist.interests) {
       return;
     }
 
@@ -142,12 +142,7 @@ class Interests extends Component {
     if (this.state.passed && this.props.CreateProfileDataReducer.gui !== null) {
       //Set the screen's checklist index to true
       let checklist = this.props.CreateProfileDataReducer.checklist;
-      let index = 3;
-      checklist = [
-        ...checklist.slice(0, index),
-        true,
-        ...checklist.slice(index + 1)
-      ];
+      checklist.interests = true
       this.props.SetChecklistAction({
         checklist: checklist
       });
