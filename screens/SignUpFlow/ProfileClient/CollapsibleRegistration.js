@@ -214,12 +214,6 @@ class CollapisbleRegistration extends Component {
     });
   };
 
-  getSomeData = async () => {
-    await fetch(
-      "https://maps.googleapis.com/maps/api/js?key=AIzaSyDXhgpIisZKYkZtbeCBCn0NhqxAzYQQs_8"
-    ).then(res => res.json());
-  };
-
   async componentDidMount() {
     //a warning that if checklist is [true, true, true, true, true, true]
     //Since Auth will handle if the checklist is a continue user or new user
