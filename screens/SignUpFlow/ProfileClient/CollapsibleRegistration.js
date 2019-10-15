@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { AsyncStorage } from "react-native";
 import {
   Button,
   Keyboard,
@@ -31,10 +32,10 @@ import { connect } from "react-redux";
 import ResetReduxDataAction from "../../../storage/actions/RegistrationActions/ResetReduxDataAction";
 import SetIsContinueUserAction from "../../../storage/actions/RegistrationActions/SetIsContinueUserAction";
 import SetUserAllDataAction from "../../../storage/actions/RegistrationActions/SetUserAllDataAction";
-import SetGUIAction from "../../../storage/actions/RegistrationActions/SetGUIAction";
+import SetGUIDAction from "../../../storage/actions/RegistrationActions/SetGUIDAction";
 import SetIsThirdPartyServicesUserAction from "../../../storage/actions/RegistrationActions/SetIsThirdPartyServicesUserAction";
 
-//direction: decrypt jwt -> retrieve gui and checklist -> store gui into redux ->
+//direction: decrypt jwt -> retrieve guid and checklist -> store guid into redux ->
 
 class CollapisbleRegistration extends Component {
   //LinksScreen Test Tool
@@ -86,21 +87,21 @@ class CollapisbleRegistration extends Component {
     }
     return jwt;
   };
-  //eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
+
   decryptJWT = jwt => {
     //console.log('jwt', jwt)
 
     //For demo use only
     //make the jwt has something to prevent jwt === ""
-    jwt = true;
-    //jwt = "";
+    //jwt = true;
+    jwt = "";
     //For demo use only
 
     //If some cases that the jwt is empty, then return as a new User
     //New user
     if (jwt === "") {
       return {
-        gui: "",
+        guid: "",
         checklist: {
           createAccount: true,
           aboutYou: false,
@@ -112,11 +113,10 @@ class CollapisbleRegistration extends Component {
         isThirdPartiesServiceUser: false
       };
     }
-    //checklist object
     //local stroage (asyncStorage) all "login" user except non-approve user
 
-    //assume we decrypted the jwt and retrieve the gui and checklist
-    let gui = "";
+    //assume we decrypted the jwt and retrieve the guid and checklist
+    let guid = "";
     let checklist = {
       createAccount: true,
       aboutYou: false,
@@ -128,7 +128,7 @@ class CollapisbleRegistration extends Component {
     let isThirdPartiesServiceUser = false;
 
     //New User
-    //gui = "";
+    //guid = "";
     /*
     checklist = {
       createAccount: true,
@@ -143,15 +143,15 @@ class CollapisbleRegistration extends Component {
 
     //Continue User or Third Parties Services User
     //For Third Parties Services User - since onAuth would store those user to db
-    //when onAuth pass the user (gui) to profile, they are similar with Continue User
-    gui = "5d9fd25c3307374296ed767c";
+    //when onAuth pass the user (guid) to profile, they are similar with Continue User
+    guid = "5da2734e97849e3355767dd9";
     checklist = {
       createAccount: true,
-      aboutYou: true,
+      aboutYou: false,
       preferences: false,
-      interests: true,
-      wouldYouRather: true,
-      localDestination: true
+      interests: false,
+      wouldYouRather: false,
+      localDestination: false
     };
     isThirdPartiesServiceUser = false; //set true if third parties user
 
@@ -169,7 +169,7 @@ class CollapisbleRegistration extends Component {
     //error get throw and call the failscreen forever; make sure checklist and db data is match
 
     return {
-      gui: gui,
+      guid: guid,
       checklist: checklist,
       isThirdPartiesServiceUser: isThirdPartiesServiceUser
     };
@@ -183,9 +183,9 @@ class CollapisbleRegistration extends Component {
       checklist: jwtObject.checklist
     });
 
-    //Pass gui into redux
-    this.props.SetGUIAction({
-      gui: jwtObject.gui
+    //Pass guid into redux
+    this.props.SetGUIDAction({
+      guid: jwtObject.guid
     });
 
     //Set third party services user
@@ -214,6 +214,12 @@ class CollapisbleRegistration extends Component {
     });
   };
 
+  getSomeData = async () => {
+    await fetch(
+      "https://maps.googleapis.com/maps/api/js?key=AIzaSyDXhgpIisZKYkZtbeCBCn0NhqxAzYQQs_8"
+    ).then(res => res.json());
+  };
+
   async componentDidMount() {
     //a warning that if checklist is [true, true, true, true, true, true]
     //Since Auth will handle if the checklist is a continue user or new user
@@ -222,13 +228,13 @@ class CollapisbleRegistration extends Component {
     //third parties user / continue user : [true, true, false, false, false, false]
     //If [true, true, true, true, true, true], Auth will pass user to profile instead of registration
 
-    //get the gui and checklist from decrypted jwt
+    //get the guid and checklist from decrypted jwt
     let jwtObject = this.decryptJWT(this.getJWT());
 
     //check if the user is a continue user.
-    //if there has a gui then the user is a continue user
-    //if no gui then it is not a continue user
-    let isContinueUser = jwtObject.gui ? true : false;
+    //if there has a guid then the user is a continue user
+    //if no guid then it is not a continue user
+    let isContinueUser = jwtObject.guid ? true : false;
     //Note
     //if new user sumbitted createAccount, they become a continue user?
     //yes,
@@ -237,11 +243,11 @@ class CollapisbleRegistration extends Component {
     //we only assign the user is continue User after the user get in to registration screen
     //instead of after the user submitted createAccount screen
     //For example, continue user
-    //CollaspibleRegistration.js get gui = "something", checklist = [true, false, false, false, false, false]
+    //CollaspibleRegistration.js get guid = "something", checklist = [true, false, false, false, false, false]
     //it will mark isContinueUser = true, the rest of the screen will query data
 
     //For example, new user
-    //CollaspibleRegistration.js get gui = "", checklist = [true, false, false, false, false, false]
+    //CollaspibleRegistration.js get guid = "", checklist = [true, false, false, false, false, false]
     //it will mark isContinueUser = false, the rest of the screen will not query data
     //createAccount.js get the isContinueUser === false, so it won't query data
     //aboutYou.js get the isContinueUser === false, so it won't query data
@@ -251,7 +257,7 @@ class CollapisbleRegistration extends Component {
       await this.setUserStatus(jwtObject);
     }
 
-    //Trigger render() again after gui and checklist are store into redux
+    //Trigger render() again after guid and checklist are store into redux
     this.setState({
       isLoading: true
     });
@@ -617,7 +623,7 @@ const mapDispatchToProps = dispatch => {
     SetIsContinueUserAction: payload =>
       dispatch(SetIsContinueUserAction(payload)),
     SetUserAllDataAction: payload => dispatch(SetUserAllDataAction(payload)),
-    SetGUIAction: payload => dispatch(SetGUIAction(payload)),
+    SetGUIDAction: payload => dispatch(SetGUIDAction(payload)),
     SetIsThirdPartyServicesUserAction: payload =>
       dispatch(SetIsThirdPartyServicesUserAction(payload))
   };

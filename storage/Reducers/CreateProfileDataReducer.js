@@ -10,7 +10,7 @@ const CreateProfileDataReducer = (
       wouldYouRather: false,
       localDestination: false
     },
-    gui: null,
+    guid: null,
     createAccountData: null,
     aboutYouData: null,
     preferencesData: null,
@@ -32,8 +32,8 @@ const CreateProfileDataReducer = (
         ...state,
         isThirdPartiesServiceUser: action.PAYLOAD.isThirdPartiesServiceUser
       };
-    case "SET_GUI":
-      return { ...state, gui: action.PAYLOAD.gui };
+    case "SET_GUID":
+      return { ...state, guid: action.PAYLOAD.guid };
     case "ADD_CREATEACCOUNT_DATA":
       return { ...state, createAccountData: action.PAYLOAD };
     case "ADD_ABOUTYOU_DATA":
@@ -49,7 +49,7 @@ const CreateProfileDataReducer = (
     case "RESET_REDUX_DATA":
       return {
         ...state,
-        gui: null,
+        guid: null,
         checklist: [true, false, false, false, false, false],
         isContinueUser: false,
         createAccountData: null,

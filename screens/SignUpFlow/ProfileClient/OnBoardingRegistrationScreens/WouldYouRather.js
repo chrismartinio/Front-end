@@ -62,7 +62,7 @@ class WouldYouRather extends Component {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        gui: this.props.CreateProfileDataReducer.gui,
+        guid: this.props.CreateProfileDataReducer.guid,
         collection: "wouldYouRather"
       })
     })
@@ -114,8 +114,8 @@ class WouldYouRather extends Component {
   }
 
   handleSubmit = () => {
-    //if the screen passed and gui is not null (that means user had finished createAccount)
-    if (this.props.CreateProfileDataReducer.gui !== null) {
+    //if the screen passed and guid is not null (that means user had finished createAccount)
+    if (this.props.CreateProfileDataReducer.guid !== null) {
       //Set the screen's checklist index to true
       let checklist = this.props.CreateProfileDataReducer.checklist;
       checklist.wouldYouRather = true
@@ -135,7 +135,7 @@ class WouldYouRather extends Component {
               "Content-Type": "application/json"
             },
             body: JSON.stringify({
-              gui: this.props.CreateProfileDataReducer.gui,
+              guid: this.props.CreateProfileDataReducer.guid,
               collection: "wouldYouRather",
               data: {
                 s1r1: this.s1r1,
@@ -193,12 +193,12 @@ class WouldYouRather extends Component {
         }
       );
     } else {
-      //if gui is null
+      //if guid is null
 
-      //User must has a gui retrieve from the createAccount screen before get to this screen
-      //if there are no gui, give an error warning
-      //the reason of no gui may come from internal error when inserting email/password into createAccount Collection
-      //and error had thrown and gui didn't return back to client
+      //User must has a guid retrieve from the createAccount screen before get to this screen
+      //if there are no guid, give an error warning
+      //the reason of no guid may come from internal error when inserting email/password into createAccount Collection
+      //and error had thrown and guid didn't return back to client
       //user may need to re-sign in as continue user?
 
       this.setState(

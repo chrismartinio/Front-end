@@ -78,7 +78,7 @@ class Preferences extends Component {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        gui: this.props.CreateProfileDataReducer.gui,
+        guid: this.props.CreateProfileDataReducer.guid,
         collection: "preferences"
       })
     })
@@ -273,8 +273,8 @@ class Preferences extends Component {
   };
 
   handleSubmit = () => {
-    //if the screen passed and gui is not null (that means user had finished createAccount)
-    if (this.state.passed && this.props.CreateProfileDataReducer.gui !== null) {
+    //if the screen passed and guid is not null (that means user had finished createAccount)
+    if (this.state.passed && this.props.CreateProfileDataReducer.guid !== null) {
       //check the user's interestGender and pass to redux and db
       let interestedGender = "";
       if (this.state.pickedMen && this.state.pickedWomen) {
@@ -303,7 +303,7 @@ class Preferences extends Component {
               "Content-Type": "application/json"
             },
             body: JSON.stringify({
-              gui: this.props.CreateProfileDataReducer.gui,
+              guid: this.props.CreateProfileDataReducer.guid,
               collection: "preferences",
               data: {
                 ageRange: this.state.ageRange,
@@ -355,12 +355,12 @@ class Preferences extends Component {
         }
       );
     } else {
-      //if gui is null
+      //if guid is null
 
-      //User must has a gui retrieve from the createAccount screen before get to this screen
-      //if there are no gui, give an error warning
-      //the reason of no gui may come from internal error when inserting email/password into createAccount Collection
-      //and error had thrown and gui didn't return back to client
+      //User must has a guid retrieve from the createAccount screen before get to this screen
+      //if there are no guid, give an error warning
+      //the reason of no guid may come from internal error when inserting email/password into createAccount Collection
+      //and error had thrown and guid didn't return back to client
       //user may need to re-sign in as continue user?
 
       this.setState(

@@ -14,7 +14,7 @@ import {
 //redux
 import { connect } from "react-redux";
 import SetCreateAccountDataAction from "../../../../storage/actions/RegistrationActions/SetCreateAccountDataAction";
-import SetGUIAction from "../../../../storage/actions/RegistrationActions/SetGUIAction";
+import SetGUIDAction from "../../../../storage/actions/RegistrationActions/SetGUIDAction";
 
 //icons
 import { Icon, Input } from "react-native-elements";
@@ -76,7 +76,7 @@ class CreateAccount extends Component {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        gui: this.props.CreateProfileDataReducer.gui,
+        guid: this.props.CreateProfileDataReducer.guid,
         collection: "createAccount"
       })
     })
@@ -277,7 +277,7 @@ class CreateAccount extends Component {
     if (this.state.passed) {
       //When user submit email/password
       //set editable to true so the user cannot resubmit other email
-      //We do not want the user to submit other one (generate a new gui) on the same registration
+      //We do not want the user to submit other one (generate a new guid) on the same registration
       //the editable will lock the input to prevent changing email or password
       this.setState(
         {
@@ -306,8 +306,8 @@ class CreateAccount extends Component {
                   email: this.state.email,
                   password: this.state.password
                 });
-                this.props.SetGUIAction({
-                  gui: object.gui
+                this.props.SetGUIDAction({
+                  guid: object.guid
                 });
                 //if successed to passed,
                 this.setState(
@@ -669,7 +669,7 @@ const mapDispatchToProps = dispatch => {
   return {
     SetCreateAccountDataAction: payload =>
       dispatch(SetCreateAccountDataAction(payload)),
-    SetGUIAction: payload => dispatch(SetGUIAction(payload))
+    SetGUIDAction: payload => dispatch(SetGUIDAction(payload))
   };
 };
 
