@@ -21,6 +21,10 @@ import Slider from "../Components/Sliders/WouldYouRatherSlider";
 //Collapsible Components
 import FailScreen from "../Components/FailScreen";
 
+//SQLite
+import * as SQLite from "expo-sqlite";
+const db = SQLite.openDatabase("that.db");
+
 //warnings
 import { internalErrorWarning } from "../Util/OnBoardingRegistrationScreenWarnings.js";
 
@@ -118,10 +122,7 @@ class WouldYouRather extends Component {
     if (this.props.CreateProfileDataReducer.guid !== null) {
       //Set the screen's checklist index to true
       let checklist = this.props.CreateProfileDataReducer.checklist;
-      checklist.wouldYouRather = true
-      this.props.SetChecklistAction({
-        checklist: checklist
-      });
+      checklist.wouldYouRather = true;
 
       this.setState(
         {
@@ -151,9 +152,10 @@ class WouldYouRather extends Component {
             .then(res => res.json())
             .then(res => {
               let object = JSON.parse(JSON.stringify(res));
-              console.log(object);
+              //console.log(object);
+              //SUCCESS ON SUBMITTING DATA
               if (object.success) {
-                //Send Data to Redux
+                //Redux
                 this.props.SetWouldYouRatherDataAction({
                   s1r1: this.s1r1,
                   s1r2: this.s1r2,
@@ -162,7 +164,69 @@ class WouldYouRather extends Component {
                   s3r1: this.s3r1,
                   s3r2: this.s3r2
                 });
-                //if successed to passed,
+                this.props.SetChecklistAction({
+                  checklist: checklist
+                });
+
+                //LocalStorage
+                let json_checklist = JSON.stringify(checklist);
+                //Only insert or replace id = 1
+                let insertSqlStatement =
+                  "INSERT OR REPLACE into device_user_wouldYouRather(id, createAccount_id, s1r1, s1r2, s2r1, s2r2, s3r1, s3r2) " +
+                  "values(1, 1, ?, ?, ?, ?, ?, ?);";
+
+                db.transaction(
+                  tx => {
+                    //INSERT DATA
+                    tx.executeSql(
+                      insertSqlStatement,
+                      [
+                        this.s1r1,
+                        this.s1r2,
+                        this.s2r1,
+                        this.s2r2,
+                        this.s3r1,
+                        this.s3r2
+                      ],
+                      (tx, result) => {
+                        console.log("inner success");
+                      },
+                      (tx, err) => {
+                        console.log("inner error: ", err);
+                      }
+                    );
+                    //UPDATE CHECKLIST
+                    tx.executeSql(
+                      "UPDATE device_user_createAccount SET checklist = ? WHERE id = 1;",
+                      [json_checklist],
+                      (tx, result) => {
+                        console.log("inner success");
+                      },
+                      (tx, err) => {
+                        console.log("inner error: ", err);
+                      }
+                    );
+                    //DISPLAY DATA
+                    tx.executeSql(
+                      "select * from device_user_wouldYouRather",
+                      null,
+                      (tx, result) => {
+                        console.log(result);
+                      },
+                      (tx, err) => {
+                        console.log("inner error: ", err);
+                      }
+                    );
+                  },
+                  (tx, err) => {
+                    console.log(err);
+                  },
+                  () => {
+                    console.log("outer success");
+                  }
+                );
+
+                //setState
                 this.setState(
                   {
                     internalErrorWarning: false,
@@ -174,11 +238,13 @@ class WouldYouRather extends Component {
                   }
                 );
               } else {
+                //setState
                 throw new Error("Internal Error ");
               }
             })
             .catch(error => {
-              //if error,
+              //HANDLE ANY CATCHED ERRORS
+              //setState
               this.setState(
                 {
                   internalErrorWarning: true,

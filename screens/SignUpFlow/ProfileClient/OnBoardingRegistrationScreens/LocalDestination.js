@@ -34,6 +34,10 @@ import FailScreen from "../Components/FailScreen";
 //checker functions
 import { locationsChecker } from "../Util/OnBoardingRegistrationScreenCheckers.js";
 
+//SQLite
+import * as SQLite from "expo-sqlite";
+const db = SQLite.openDatabase("that.db");
+
 //warnings
 import {
   internalErrorWarning,
@@ -220,13 +224,13 @@ class LocationDestinations extends Component {
 
   handleSubmit = () => {
     //if the screen passed and guid is not null (that means user had finished createAccount)
-    if (this.state.passed && this.props.CreateProfileDataReducer.guid !== null) {
+    if (
+      this.state.passed &&
+      this.props.CreateProfileDataReducer.guid !== null
+    ) {
       //Set the screen's checklist index to true
       let checklist = this.props.CreateProfileDataReducer.checklist;
       checklist.localDestination = true;
-      this.props.SetChecklistAction({
-        checklist: checklist
-      });
 
       this.setState(
         {
@@ -251,13 +255,69 @@ class LocationDestinations extends Component {
             .then(res => res.json())
             .then(res => {
               let object = JSON.parse(JSON.stringify(res));
-              console.log(object);
+              //console.log(object);
+              //SUCCESS ON SUBMITTING DATA
               if (object.success) {
-                //Send Data to Redux
+                //Redux
                 this.props.SetLocalDestinationDataAction({
                   localDestination: this.state.localDestination
                 });
-                //if successed to passed,
+                this.props.SetChecklistAction({
+                  checklist: checklist
+                });
+
+                //LocalStorage
+                let json_checklist = JSON.stringify(checklist);
+                //Only insert or replace id = 1
+                let insertSqlStatement =
+                  "INSERT OR REPLACE into device_user_localDestination(id, createAccount_id, localDestination) " +
+                  "values(1, 1, ?);";
+
+                db.transaction(
+                  tx => {
+                    //INSERT DATA
+                    tx.executeSql(
+                      insertSqlStatement,
+                      [this.state.localDestination],
+                      (tx, result) => {
+                        console.log("inner success");
+                      },
+                      (tx, err) => {
+                        console.log("inner error: ", err);
+                      }
+                    );
+                    //UPDATE CHECKLIST
+                    tx.executeSql(
+                      "UPDATE device_user_createAccount SET checklist = ? WHERE id = 1;",
+                      [json_checklist],
+                      (tx, result) => {
+                        console.log("inner success");
+                      },
+                      (tx, err) => {
+                        console.log("inner error: ", err);
+                      }
+                    );
+                    //DISPLAY DATA
+                    tx.executeSql(
+                      "select * from device_user_localDestination",
+                      null,
+                      (tx, result) => {
+                        console.log(result);
+                      },
+                      (tx, err) => {
+                        console.log("inner error: ", err);
+                      }
+                    );
+                  },
+                  (tx, err) => {
+                    console.log(err);
+                  },
+                  () => {
+                    console.log("outer success");
+                  }
+                );
+
+                //setState
                 this.setState(
                   {
                     internalErrorWarning: false,
@@ -269,11 +329,13 @@ class LocationDestinations extends Component {
                   }
                 );
               } else {
+                //INTERNAL ERROR
                 throw new Error("Internal Error ");
               }
             })
             .catch(error => {
-              //if error,
+              //HANDLE ANY CATCHED ERRORS
+              //setState
               this.setState(
                 {
                   internalErrorWarning: true,

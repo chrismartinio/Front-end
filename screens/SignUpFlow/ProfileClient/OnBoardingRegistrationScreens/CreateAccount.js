@@ -23,6 +23,10 @@ import { Chevron } from "react-native-shapes";
 //Collapsible Components
 import FailScreen from "../Components/FailScreen";
 
+//SQLite
+import * as SQLite from "expo-sqlite";
+const db = SQLite.openDatabase("that.db");
+
 //checker functions
 import {
   emailCheck,
@@ -125,6 +129,82 @@ class CreateAccount extends Component {
         editable: false
       });
     }
+
+    db.transaction(
+      tx => {
+        //DROP TABLE
+        //NOTICE: If table and its structure already created,
+        //later insert something doesn't match structure would get error
+        /*
+        tx.executeSql(
+          "DROP TABLE items;",
+          null,
+          (tx, result) => {
+            console.log("inner success");
+          },
+          (tx, err) => {
+            console.log("inner error: ", err);
+          }
+        );
+        */
+        //CREATE TABLE
+        /*
+        tx.executeSql(
+          "CREATE TABLE IF NOT EXISTS items ( id INTEGER PRIMARY KEY, firstname TEXT NOT NULL);",
+          null,
+          (tx, result) => {
+            console.log("inner success");
+          },
+          (tx, err) => {
+            console.log("inner error: ", err);
+          }
+        );
+        */
+        //INSERT DATA
+        /*
+        tx.executeSql(
+          "INSERT INTO items (firstname) VALUES ('Buddy Rich'), ('Candido'), ('Charlie Byrd');",
+          null,
+          (tx, result) => {
+            console.log("inner success");
+          },
+          (tx, err) => {
+            console.log("inner error: ", err);
+          }
+        );
+        */
+        /*
+        tx.executeSql(
+          "select * from items",
+          null,
+          (tx, result) => {
+            console.log(result);
+          },
+          (tx, err) => {
+            console.log("inner error: ", err);
+          }
+        );
+
+        /*
+        tx.executeSql(
+          "SELECT name FROM sqlite_master WHERE type ='table' AND name NOT LIKE 'sqlite_%';",
+          null,
+          (tx, result) => {
+            console.log(result);
+          },
+          (tx, err) => {
+            console.log("inner error: ", err);
+          }
+        );
+        */
+      },
+      (tx, err) => {
+        console.log(err);
+      },
+      () => {
+        console.log("outer success");
+      }
+    );
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
@@ -300,8 +380,9 @@ class CreateAccount extends Component {
             .then(res => {
               let object = JSON.parse(JSON.stringify(res));
               //console.log(object);
+              //SUCCESS ON SUBMITTING DATA
               if (object.success) {
-                //pass data into Redux
+                //Redux
                 this.props.SetCreateAccountDataAction({
                   email: this.state.email,
                   password: this.state.password
@@ -309,7 +390,57 @@ class CreateAccount extends Component {
                 this.props.SetGUIDAction({
                   guid: object.guid
                 });
-                //if successed to passed,
+
+                //LocalStorage
+                let json_checklist = JSON.stringify(
+                  this.props.CreateProfileDataReducer.checklist
+                );
+                //Only insert or replace id = 1
+                let insertSqlStatement =
+                  "INSERT OR REPLACE into device_user_createAccount(id, guid, email, password, isAdmin, checklist, phoneNumber) " +
+                  "values(1, ?, ?, ?, ?, ?, ?);";
+
+                db.transaction(
+                  tx => {
+                    //INSERT DATA
+                    tx.executeSql(
+                      insertSqlStatement,
+                      [
+                        object.guid,
+                        this.state.email,
+                        this.state.password,
+                        false,
+                        json_checklist,
+                        "temp"
+                      ],
+                      (tx, result) => {
+                        console.log("inner success");
+                      },
+                      (tx, err) => {
+                        console.log("inner error: ", err);
+                      }
+                    );
+                    //DISPLAY DATA
+                    tx.executeSql(
+                      "select * from device_user_createAccount",
+                      null,
+                      (tx, result) => {
+                        console.log(result);
+                      },
+                      (tx, err) => {
+                        console.log("inner error: ", err);
+                      }
+                    );
+                  },
+                  (tx, err) => {
+                    console.log(err);
+                  },
+                  () => {
+                    console.log("outer success");
+                  }
+                );
+
+                //setState
                 this.setState(
                   {
                     internalErrorWarning: false,
@@ -321,7 +452,8 @@ class CreateAccount extends Component {
                   }
                 );
               } else if (object.success === false && object.status === 409) {
-                //duplicate email,
+                //DUPLICATE EMAIL
+                //setState
                 this.setState(
                   {
                     emailWarning: "duplicate",
@@ -335,12 +467,13 @@ class CreateAccount extends Component {
                   }
                 );
               } else {
-                //internal error
+                //INTERNAL ERROR
                 throw new Error("Internal Error ");
               }
             })
             .catch(error => {
-              //handle error
+              //HANDLE ANY CATCHED ERRORS
+              //setState
               this.setState(
                 {
                   editable: true,

@@ -35,6 +35,10 @@ import FailScreen from "../Components/FailScreen";
 //checker functions
 import { genderChecker } from "../Util/OnBoardingRegistrationScreenCheckers.js";
 
+//SQLite
+import * as SQLite from "expo-sqlite";
+const db = SQLite.openDatabase("that.db");
+
 //warnings
 import {
   emptyGenderWarning,
@@ -274,7 +278,10 @@ class Preferences extends Component {
 
   handleSubmit = () => {
     //if the screen passed and guid is not null (that means user had finished createAccount)
-    if (this.state.passed && this.props.CreateProfileDataReducer.guid !== null) {
+    if (
+      this.state.passed &&
+      this.props.CreateProfileDataReducer.guid !== null
+    ) {
       //check the user's interestGender and pass to redux and db
       let interestedGender = "";
       if (this.state.pickedMen && this.state.pickedWomen) {
@@ -289,7 +296,7 @@ class Preferences extends Component {
 
       //Set the screen's checklist index to true
       let checklist = this.props.CreateProfileDataReducer.checklist;
-      checklist.preferences = true
+      checklist.preferences = true;
 
       this.setState(
         {
@@ -316,15 +323,78 @@ class Preferences extends Component {
             .then(res => res.json())
             .then(res => {
               let object = JSON.parse(JSON.stringify(res));
-              console.log(object);
+              //console.log(object);
+              //SUCCESS ON SUBMITTING DATA
               if (object.success) {
-                //Send Data to Redux
+                //Redux
                 this.props.SetPreferencesDataAction({
                   ageRange: this.state.ageRange,
                   distanceRange: this.state.distanceRange,
                   interestedGender: interestedGender
                 });
-                //if successed to passed,
+                this.props.SetChecklistAction({
+                  checklist: checklist
+                });
+
+                //LocalStorage
+                let json_checklist = JSON.stringify(checklist);
+                let json_ageRange = JSON.stringify({
+                  ageRange: this.state.ageRange
+                });
+                //Only insert or replace id = 1
+                let insertSqlStatement =
+                  "INSERT OR REPLACE into device_user_preferences(id, createAccount_id, interestedGender, ageRange, distanceRange) " +
+                  "values(1, 1, ?, ?, ?);";
+
+                db.transaction(
+                  tx => {
+                    //INSERT DATA
+                    tx.executeSql(
+                      insertSqlStatement,
+                      [
+                        interestedGender,
+                        json_ageRange,
+                        this.state.distanceRange
+                      ],
+                      (tx, result) => {
+                        console.log("inner success");
+                      },
+                      (tx, err) => {
+                        console.log("inner error: ", err);
+                      }
+                    );
+                    //UPDATE CHECKLIST
+                    tx.executeSql(
+                      "UPDATE device_user_createAccount SET checklist = ? WHERE id = 1;",
+                      [json_checklist],
+                      (tx, result) => {
+                        console.log("inner success");
+                      },
+                      (tx, err) => {
+                        console.log("inner error: ", err);
+                      }
+                    );
+                    //DISPLAY DATA
+                    tx.executeSql(
+                      "select * from device_user_preferences",
+                      null,
+                      (tx, result) => {
+                        console.log(result);
+                      },
+                      (tx, err) => {
+                        console.log("inner error: ", err);
+                      }
+                    );
+                  },
+                  (tx, err) => {
+                    console.log(err);
+                  },
+                  () => {
+                    console.log("outer success");
+                  }
+                );
+
+                //setState
                 this.setState(
                   {
                     internalErrorWarning: false,
@@ -336,11 +406,13 @@ class Preferences extends Component {
                   }
                 );
               } else {
+                //INTERNAL ERROR
                 throw new Error("Internal Error ");
               }
             })
             .catch(error => {
-              //if error,
+              //HANDLE ANY CATCHED ERRORS
+              //setState
               this.setState(
                 {
                   internalErrorWarning: true,

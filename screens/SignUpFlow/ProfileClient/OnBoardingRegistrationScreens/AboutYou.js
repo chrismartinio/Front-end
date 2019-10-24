@@ -30,6 +30,10 @@ import { Chevron } from "react-native-shapes";
 //Collapsible Components
 import FailScreen from "../Components/FailScreen";
 
+//SQLite
+import * as SQLite from "expo-sqlite";
+const db = SQLite.openDatabase("that.db");
+
 //checker functions
 import {
   checkZipCode,
@@ -317,13 +321,13 @@ class AboutYou extends Component {
   //next button : valid all input fields
   handleSubmit = evt => {
     //if the screen passed and guid is not null (that means user had finished createAccount)
-    if (this.state.passed && this.props.CreateProfileDataReducer.guid !== null) {
+    if (
+      this.state.passed &&
+      this.props.CreateProfileDataReducer.guid !== null
+    ) {
       //Set the screen's checklist index to true
       let checklist = this.props.CreateProfileDataReducer.checklist;
       checklist.aboutYou = true;
-      this.props.SetChecklistAction({
-        checklist: checklist
-      });
 
       this.setState(
         {
@@ -352,9 +356,10 @@ class AboutYou extends Component {
             .then(res => res.json())
             .then(res => {
               let object = JSON.parse(JSON.stringify(res));
-              console.log(object);
+              //console.log(object);
+              //SUCCESS ON SUBMITTING DATA
               if (object.success) {
-                //Send Data to Redux
+                //Redux
                 this.props.SetAboutYouDataAction({
                   firstName: this.state.firstName,
                   lastName: this.state.lastName,
@@ -363,7 +368,69 @@ class AboutYou extends Component {
                   country: this.state.country,
                   zipCode: this.state.zipCode
                 });
-                //if successed to passed,
+                this.props.SetChecklistAction({
+                  checklist: checklist
+                });
+
+                //LocalStorage
+                let json_checklist = JSON.stringify(checklist);
+                //Only insert or replace id = 1
+                let insertSqlStatement =
+                  "INSERT OR REPLACE into device_user_aboutYou(id, createAccount_id, firstName, lastName, birthDate, gender, country, zipCode) " +
+                  "values(1, 1, ?, ?, ?, ?, ?, ?);";
+
+                db.transaction(
+                  tx => {
+                    //INSERT DATA
+                    tx.executeSql(
+                      insertSqlStatement,
+                      [
+                        this.state.firstName,
+                        this.state.lastName,
+                        this.state.birthDate,
+                        this.state.gender,
+                        this.state.country,
+                        this.state.zipCode
+                      ],
+                      (tx, result) => {
+                        console.log("inner success");
+                      },
+                      (tx, err) => {
+                        console.log("inner error: ", err);
+                      }
+                    );
+                    //UPDATE CHECKLIST
+                    tx.executeSql(
+                      "UPDATE device_user_createAccount SET checklist = ? WHERE id = 1;",
+                      [json_checklist],
+                      (tx, result) => {
+                        console.log("inner success");
+                      },
+                      (tx, err) => {
+                        console.log("inner error: ", err);
+                      }
+                    );
+                    //DISPLAY DATA
+                    tx.executeSql(
+                      "select * from device_user_aboutYou",
+                      null,
+                      (tx, result) => {
+                        console.log(result);
+                      },
+                      (tx, err) => {
+                        console.log("inner error: ", err);
+                      }
+                    );
+                  },
+                  (tx, err) => {
+                    console.log(err);
+                  },
+                  () => {
+                    console.log("outer success");
+                  }
+                );
+
+                //setState
                 this.setState(
                   {
                     internalErrorWarning: false,
@@ -375,11 +442,13 @@ class AboutYou extends Component {
                   }
                 );
               } else {
+                //INTERNAL ERROR
                 throw new Error("Internal Error ");
               }
             })
             .catch(error => {
-              //if error,
+              //HANDLE ANY CATCHED ERRORS
+              //setState
               this.setState(
                 {
                   internalErrorWarning: true,
