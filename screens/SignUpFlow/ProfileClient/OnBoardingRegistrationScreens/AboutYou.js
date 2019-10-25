@@ -103,6 +103,7 @@ class AboutYou extends Component {
       .then(res => {
         let object = JSON.parse(JSON.stringify(res));
         //console.log(object);
+        //SUCCESS ON QUERYING DATA
         if (object.success) {
           let {
             firstName,
@@ -113,6 +114,7 @@ class AboutYou extends Component {
             zipCode
           } = object.result;
 
+          //setState
           this.setState({
             firstName: firstName,
             lastName: lastName,
@@ -129,6 +131,46 @@ class AboutYou extends Component {
             isSuccess: true
           });
 
+          //LocalStorage
+          //Only insert or replace id = 1
+          let insertSqlStatement =
+            "INSERT OR REPLACE into device_user_aboutYou(id, createAccount_id, firstName, lastName, birthDate, gender, country, zipCode) " +
+            "values(1, 1, ?, ?, ?, ?, ?, ?);";
+
+          db.transaction(
+            tx => {
+              //INSERT DATA
+              tx.executeSql(
+                insertSqlStatement,
+                [firstName, lastName, birthDate, gender, country, zipCode],
+                (tx, result) => {
+                  console.log("inner success");
+                },
+                (tx, err) => {
+                  console.log("inner error: ", err);
+                }
+              );
+              //DISPLAY DATA
+              tx.executeSql(
+                "select * from device_user_aboutYou",
+                null,
+                (tx, result) => {
+                  console.log(result);
+                },
+                (tx, err) => {
+                  console.log("inner error: ", err);
+                }
+              );
+            },
+            (tx, err) => {
+              console.log(err);
+            },
+            () => {
+              console.log("outer success");
+            }
+          );
+
+          //Redux
           this.props.SetAboutYouDataAction({
             firstName: firstName,
             lastName: lastName,
@@ -138,11 +180,14 @@ class AboutYou extends Component {
             zipCode: zipCode
           });
         } else {
+          //INTERNAL ERROR
           throw new Error("internal Error");
         }
       })
       .catch(err => {
+        //HANDLE ANY CATCHED ERRORS
         //If error while fetching, direct user to failScreen
+        //setState
         this.setState({
           isSuccess: false
         });

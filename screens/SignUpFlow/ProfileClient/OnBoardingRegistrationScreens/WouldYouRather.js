@@ -74,7 +74,9 @@ class WouldYouRather extends Component {
       .then(res => {
         let object = JSON.parse(JSON.stringify(res));
         //console.log(object);
+        //SUCCESS ON QUERYING DATA
         if (object.success) {
+          //setState
           this.setState({
             displaySlider1Value: object.result.s1r2 - 50,
             displaySlider2Value: object.result.s2r2 - 50,
@@ -82,7 +84,53 @@ class WouldYouRather extends Component {
             isSuccess: true
           });
 
-          //Send Data to Redux
+          //LocalStorage
+          //Only insert or replace id = 1
+          let insertSqlStatement =
+            "INSERT OR REPLACE into device_user_wouldYouRather(id, createAccount_id, s1r1, s1r2, s2r1, s2r2, s3r1, s3r2) " +
+            "values(1, 1, ?, ?, ?, ?, ?, ?);";
+
+          db.transaction(
+            tx => {
+              //INSERT DATA
+              tx.executeSql(
+                insertSqlStatement,
+                [
+                  object.result.s1r1,
+                  object.result.s1r2,
+                  object.result.s2r1,
+                  object.result.s2r2,
+                  object.result.s3r1,
+                  object.result.s3r2
+                ],
+                (tx, result) => {
+                  console.log("inner success");
+                },
+                (tx, err) => {
+                  console.log("inner error: ", err);
+                }
+              );
+              //DISPLAY DATA
+              tx.executeSql(
+                "select * from device_user_wouldYouRather",
+                null,
+                (tx, result) => {
+                  console.log(result);
+                },
+                (tx, err) => {
+                  console.log("inner error: ", err);
+                }
+              );
+            },
+            (tx, err) => {
+              console.log(err);
+            },
+            () => {
+              console.log("outer success");
+            }
+          );
+
+          //Redux
           this.props.SetWouldYouRatherDataAction({
             s1r1: object.result.s1r1,
             s1r2: object.result.s1r2,
@@ -92,11 +140,14 @@ class WouldYouRather extends Component {
             s3r2: object.result.s3r2
           });
         } else {
+          //INTERNAL ERROR
           throw new Error("internal Error");
         }
       })
       .catch(err => {
-        //if error while fetching, direct user to failscreen
+        //HANDLE ANY CATCHED ERRORS
+        //If error while fetching, direct user to failScreen
+        //setState
         this.setState({
           isSuccess: false
         });

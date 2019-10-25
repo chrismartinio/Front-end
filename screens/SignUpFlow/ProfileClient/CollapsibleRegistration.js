@@ -35,7 +35,28 @@ import SetUserAllDataAction from "../../../storage/actions/RegistrationActions/S
 import SetGUIDAction from "../../../storage/actions/RegistrationActions/SetGUIDAction";
 import SetIsThirdPartyServicesUserAction from "../../../storage/actions/RegistrationActions/SetIsThirdPartyServicesUserAction";
 
-//direction: decrypt jwt -> retrieve guid and checklist -> store guid into redux ->
+//SQLite
+import * as SQLite from "expo-sqlite";
+const db = SQLite.openDatabase("that.db");
+
+//Flow of New User:
+//OAuth assign JWT ->
+//OAuth send JWT which contains gui="" and checklist="default checklist" -> Profile decrypt jwt ->
+//Profile retrieve guid and checklist -> user register
+
+//Flow of New Third Party Service Providers User:
+//OAuth assign JWT ->
+//User uses Third -> OAuth creates profile on createAccount and aboutYou
+//OAuth send JWT which contains gui="some gui", checklist = "some checklist", and isThirdPartiesServiceUser = true
+//Profile decrypt jwt ->
+//Profile retrieve guid and checklist -> user register
+
+//Flow of Continue User
+//OAuth assign JWT ->
+//OAuth uses email/password or 3rd party to verify users and query data from db ->
+//OAuth send JWT which contains gui="some gui" and checklist = "some checklist", and isThirdPartiesServiceUser = false
+//Profile decrypt jwt ->
+//Profile retrieve guid and checklist -> user continue register
 
 class CollapisbleRegistration extends Component {
   //LinksScreen Test Tool
@@ -93,8 +114,8 @@ class CollapisbleRegistration extends Component {
 
     //For demo use only
     //make the jwt has something to prevent jwt === ""
-    //jwt = true;
-    jwt = "";
+    jwt = true;
+    //jwt = "";
     //For demo use only
 
     //If some cases that the jwt is empty, then return as a new User
@@ -113,7 +134,6 @@ class CollapisbleRegistration extends Component {
         isThirdPartiesServiceUser: false
       };
     }
-    //local stroage (asyncStorage) all "login" user except non-approve user
 
     //assume we decrypted the jwt and retrieve the guid and checklist
     let guid = "";
@@ -144,14 +164,14 @@ class CollapisbleRegistration extends Component {
     //Continue User or Third Parties Services User
     //For Third Parties Services User - since onAuth would store those user to db
     //when onAuth pass the user (guid) to profile, they are similar with Continue User
-    guid = "5da2734e97849e3355767dd9";
+    guid = "5db0f35ef810e4aa8d6bcd27";
     checklist = {
       createAccount: true,
-      aboutYou: false,
-      preferences: false,
-      interests: false,
+      aboutYou: true,
+      preferences: true,
+      interests: true,
       wouldYouRather: false,
-      localDestination: false
+      localDestination: true
     };
     isThirdPartiesServiceUser = false; //set true if third parties user
 
@@ -175,20 +195,20 @@ class CollapisbleRegistration extends Component {
     };
   };
 
+  //Set the User is Continue User
   setUserStatus = jwtObject => {
-    //Set the user as continue user in redux
-    //Store the checklist in redux
+    //Set Redux checklist
     this.props.SetIsContinueUserAction({
       isContinueUser: true,
       checklist: jwtObject.checklist
     });
 
-    //Pass guid into redux
+    //Set Redux guid
     this.props.SetGUIDAction({
       guid: jwtObject.guid
     });
 
-    //Set third party services user
+    //Set is Third Party Services Provider User
     this.props.SetIsThirdPartyServicesUserAction({
       isThirdPartiesServiceUser: jwtObject.isThirdPartiesServiceUser
     });

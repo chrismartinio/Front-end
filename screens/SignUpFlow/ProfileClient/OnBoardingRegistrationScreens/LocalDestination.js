@@ -78,21 +78,66 @@ class LocationDestinations extends Component {
       .then(res => {
         let object = JSON.parse(JSON.stringify(res));
         //console.log(object);
+        //SUCCESS ON QUERYING DATA
         if (object.success) {
+          //setState
           this.setState({
             localDestination: object.result.localDestination,
             isSuccess: true
           });
-          //Send Data to Redux
+
+          //LocalStorage
+          //Only insert or replace id = 1
+          let insertSqlStatement =
+            "INSERT OR REPLACE into device_user_localDestination(id, createAccount_id, localDestination) " +
+            "values(1, 1, ?);";
+
+          db.transaction(
+            tx => {
+              //INSERT DATA
+              tx.executeSql(
+                insertSqlStatement,
+                [object.result.localDestination],
+                (tx, result) => {
+                  console.log("inner success");
+                },
+                (tx, err) => {
+                  console.log("inner error: ", err);
+                }
+              );
+              //DISPLAY DATA
+              tx.executeSql(
+                "select * from device_user_localDestination",
+                null,
+                (tx, result) => {
+                  console.log(result);
+                },
+                (tx, err) => {
+                  console.log("inner error: ", err);
+                }
+              );
+            },
+            (tx, err) => {
+              console.log(err);
+            },
+            () => {
+              console.log("outer success");
+            }
+          );
+
+          //Redux
           this.props.SetLocalDestinationDataAction({
             localDestination: object.result.localDestination
           });
         } else {
+          //INTERNAL ERROR
           throw new Error("internal Error");
         }
       })
       .catch(err => {
-        //if error while fetching, direct user to fail screen
+        //HANDLE ANY CATCHED ERRORS
+        //If error while fetching, direct user to failScreen
+        //setState
         this.setState({
           isSuccess: false
         });

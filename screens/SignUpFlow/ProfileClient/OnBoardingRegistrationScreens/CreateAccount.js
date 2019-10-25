@@ -87,7 +87,10 @@ class CreateAccount extends Component {
       .then(res => res.json())
       .then(res => {
         let object = JSON.parse(JSON.stringify(res));
+        //console.log(object);
+        //SUCCESS ON QUERYING DATA
         if (object.success) {
+          //setState
           this.setState({
             email: object.result.email,
             confirmEmail: object.result.email,
@@ -105,17 +108,81 @@ class CreateAccount extends Component {
             passed: true
           });
 
-          //send to redux
+          //LocalStorage
+          //Note: only createAccount.js (getData()) has checklist
+          //Because createAccount.js would always be the first screen display to user
+          //On CollapsibleRegistration.js, it will stores the checklist (OAuth query this) into redux
+          //and createAccount.js will store this checklist into LocalStorage
+          //That begin said, when user reached CollapsibleRegistration.js, a checklist should be exist
+          //Other Screens may or maybe not open, so they doesn't need to update the checklist
+          let json_checklist = JSON.stringify(
+            this.props.CreateProfileDataReducer.checklist
+          );
+          //Only insert or replace id = 1
+          let insertSqlStatement =
+            "INSERT OR REPLACE into device_user_createAccount(id, guid, email, password, isAdmin, checklist, phoneNumber) " +
+            "values(1, ?, ?, ?, ?, ?, ?);";
+
+          db.transaction(
+            tx => {
+              //INSERT DATA
+              tx.executeSql(
+                insertSqlStatement,
+                [
+                  object.guid,
+                  object.result.email,
+                  "Password",
+                  false,
+                  json_checklist,
+                  "temp"
+                ],
+                (tx, result) => {
+                  console.log("inner success");
+                },
+                (tx, err) => {
+                  console.log("inner error: ", err);
+                }
+              );
+              //DISPLAY DATA
+              tx.executeSql(
+                "select * from device_user_createAccount",
+                null,
+                (tx, result) => {
+                  console.log(result);
+                },
+                (tx, err) => {
+                  console.log("inner error: ", err);
+                }
+              );
+            },
+            (tx, err) => {
+              console.log(err);
+            },
+            () => {
+              console.log("outer success");
+            }
+          );
+
+          //Redux
           this.props.SetCreateAccountDataAction({
             email: object.result.email,
             password: "Password"
           });
         } else {
+          //INTERNAL ERROR
+          //if error on query 
+          //try lcoalStorage
+          //if localStorage works
+          //setState
+          //if localStorage not works
+          //throw err
           throw new Error("internal Error");
         }
       })
       .catch(err => {
+        //HANDLE ANY CATCHED ERRORS
         //If error while fetching, direct user to failScreen
+        //setState
         this.setState({
           isSuccess: false
         });

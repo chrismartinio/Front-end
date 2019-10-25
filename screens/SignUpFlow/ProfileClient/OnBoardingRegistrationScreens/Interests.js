@@ -85,22 +85,69 @@ class Interests extends Component {
       .then(res => {
         let object = JSON.parse(JSON.stringify(res));
         //console.log(object);
+        //SUCCESS ON QUERYING DATA
         if (object.success) {
+          //setState
           this.setState({
             likesArray: object.result.likesArray,
             isSuccess: true
           });
-          //Send Data to Redux
+
+          //LocalStorage
+          let json_likesArray = JSON.stringify({
+            likesArray: object.result.likesArray
+          });
+          //Only insert or replace id = 1
+          let insertSqlStatement =
+            "INSERT OR REPLACE into device_user_interests(id, createAccount_id, likesArray) " +
+            "values(1, 1, ?);";
+
+          db.transaction(
+            tx => {
+              //INSERT DATA
+              tx.executeSql(
+                insertSqlStatement,
+                [json_likesArray],
+                (tx, result) => {
+                  console.log("inner success");
+                },
+                (tx, err) => {
+                  console.log("inner error: ", err);
+                }
+              );
+              //DISPLAY DATA
+              tx.executeSql(
+                "select * from device_user_interests",
+                null,
+                (tx, result) => {
+                  console.log(result);
+                },
+                (tx, err) => {
+                  console.log("inner error: ", err);
+                }
+              );
+            },
+            (tx, err) => {
+              console.log(err);
+            },
+            () => {
+              console.log("outer success");
+            }
+          );
+
+          //Redux
           this.props.SetInterestsDataAction({
             likesArray: object.result.likesArray
           });
         } else {
+          //INTERNAL ERROR
           throw new Error("internal Error");
         }
       })
       .catch(err => {
-        console.log(err);
-        //if fail while fetching, direct user to failScreen
+        //HANDLE ANY CATCHED ERRORS
+        //If error while fetching, direct user to failScreen
+        //setState
         this.setState({
           isSuccess: false
         });

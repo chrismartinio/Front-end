@@ -90,6 +90,7 @@ class Preferences extends Component {
       .then(res => {
         let object = JSON.parse(JSON.stringify(res));
         //console.log(object);
+        //SUCCESS ON QUERYING DATA
         if (object.success) {
           let pickedMen, pickedWomen;
           if (object.result.interestedGender === "both") {
@@ -103,6 +104,7 @@ class Preferences extends Component {
             pickedMen = false;
             pickedWomen = false;
           }
+          //setState
           this.setState({
             pickedMen: pickedMen,
             pickedWomen: pickedWomen,
@@ -113,18 +115,67 @@ class Preferences extends Component {
             isSuccess: true
           });
 
-          //Send Data to Redux
+          //LocalStorage
+          let json_ageRange = JSON.stringify({
+            ageRange: object.result.ageRange
+          });
+          //Only insert or replace id = 1
+          let insertSqlStatement =
+            "INSERT OR REPLACE into device_user_preferences(id, createAccount_id, interestedGender, ageRange, distanceRange) " +
+            "values(1, 1, ?, ?, ?);";
+
+          db.transaction(
+            tx => {
+              //INSERT DATA
+              tx.executeSql(
+                insertSqlStatement,
+                [
+                  object.result.interestedGender,
+                  json_ageRange,
+                  object.result.distanceRange
+                ],
+                (tx, result) => {
+                  console.log("inner success");
+                },
+                (tx, err) => {
+                  console.log("inner error: ", err);
+                }
+              );
+              //DISPLAY DATA
+              tx.executeSql(
+                "select * from device_user_preferences",
+                null,
+                (tx, result) => {
+                  console.log(result);
+                },
+                (tx, err) => {
+                  console.log("inner error: ", err);
+                }
+              );
+            },
+            (tx, err) => {
+              console.log(err);
+            },
+            () => {
+              console.log("outer success");
+            }
+          );
+
+          //Redux
           this.props.SetPreferencesDataAction({
             ageRange: object.result.ageRange,
             distanceRange: object.result.distanceRange,
             interestedGender: object.result.interestedGender
           });
         } else {
+            //INTERNAL ERROR
           throw new Error("internal Error");
         }
       })
       .catch(err => {
-        //If error while fetching, direct user to fail screen
+        //HANDLE ANY CATCHED ERRORS
+        //If error while fetching, direct user to failScreen
+        //setState
         this.setState({
           isSuccess: false
         });
