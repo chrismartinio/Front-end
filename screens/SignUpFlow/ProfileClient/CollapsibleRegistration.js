@@ -170,8 +170,8 @@ class CollapisbleRegistration extends Component {
       aboutYou: true,
       preferences: true,
       interests: true,
-      wouldYouRather: false,
-      localDestination: true
+      wouldYouRather: true,
+      localDestination: false
     };
     isThirdPartiesServiceUser = false; //set true if third parties user
 

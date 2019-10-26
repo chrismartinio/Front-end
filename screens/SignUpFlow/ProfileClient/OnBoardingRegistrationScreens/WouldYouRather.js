@@ -54,7 +54,7 @@ class WouldYouRather extends Component {
     this.isContinueUserFetched = false;
   }
 
-  getData = async () => {
+  getDataFromDB = async () => {
     //if checklist says this screen is not complete, return (don't do query)
     if (!this.props.CreateProfileDataReducer.checklist.wouldYouRather) {
       return;
@@ -76,6 +76,13 @@ class WouldYouRather extends Component {
         //console.log(object);
         //SUCCESS ON QUERYING DATA
         if (object.success) {
+          //set this
+          this.s1r1 = object.result.s1r1;
+          this.s1r2 = object.result.s1r2;
+          this.s2r1 = object.result.s2r1;
+          this.s2r2 = object.result.s2r2;
+          this.s3r1 = object.result.s3r1;
+          this.s3r2 = object.result.s3r2;
           //setState
           this.setState({
             displaySlider1Value: object.result.s1r2 - 50,
@@ -146,12 +153,59 @@ class WouldYouRather extends Component {
       })
       .catch(err => {
         //HANDLE ANY CATCHED ERRORS
-        //If error while fetching, direct user to failScreen
-        //setState
-        this.setState({
-          isSuccess: false
-        });
+        this.getDataFromLocalStorage()
+          .then(result => {
+            let { s1r1, s1r2, s2r1, s2r2, s3r1, s3r2 } = result.rows._array[0];
+            //set this
+            this.s1r1 = s1r1;
+            this.s1r2 = s1r2;
+            this.s2r1 = s2r1;
+            this.s2r2 = s2r2;
+            this.s3r1 = s3r1;
+            this.s3r2 = s3r2;
+            //setState
+            this.setState({
+              displaySlider1Value: s1r2 - 50,
+              displaySlider2Value: s2r2 - 50,
+              displaySlider3Value: s3r2 - 50,
+              isSuccess: true
+            });
+          })
+          .catch(err => {
+            //If error while fetching, direct user to failScreen
+            //setState
+            this.setState({
+              isSuccess: false
+            });
+          });
       });
+  };
+
+  getDataFromLocalStorage = () => {
+    return new Promise((resolve, reject) => {
+      db.transaction(
+        tx => {
+          //DISPLAY DATA
+          tx.executeSql(
+            "select * from device_user_wouldYouRather",
+            null,
+            (tx, result) => {
+              if (result.rows.length <= 0) reject(new Error("Internal Error"));
+              resolve(result);
+            },
+            (tx, err) => {
+              reject(err);
+            }
+          );
+        },
+        (tx, err) => {
+          reject(err);
+        },
+        () => {
+          console.log("outer success");
+        }
+      );
+    });
   };
 
   componentDidUpdate(prevProps, prevState, snapshot) {
@@ -161,7 +215,7 @@ class WouldYouRather extends Component {
         this.props.CreateProfileDataReducer.isContinueUser
       ) {
         if (!this.isContinueUserFetched) {
-          this.getData();
+          this.getDataFromDB();
           this.isContinueUserFetched = true;
         }
       }
@@ -444,7 +498,9 @@ class WouldYouRather extends Component {
   failScreen = () => {
     //For isContinueUser Only
     //If fail on fetching, then display a screen to tell them try again
-    return <FailScreen getDataFunction={this.getData} reset={this.reset} />;
+    return (
+      <FailScreen getDataFunction={this.getDataFromDB} reset={this.reset} />
+    );
   };
 
   render() {

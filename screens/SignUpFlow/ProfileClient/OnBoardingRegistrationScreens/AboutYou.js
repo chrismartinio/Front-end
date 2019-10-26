@@ -79,7 +79,7 @@ class AboutYou extends Component {
     this.isContinueUserFetched = false;
   }
 
-  getData = async () => {
+  getDataFromDB = async () => {
     //if it is not ThirdPartiesServiceUser, it will check if it is continue user using checklist
     if (!this.props.CreateProfileDataReducer.isThirdPartiesServiceUser) {
       //continue user
@@ -186,12 +186,68 @@ class AboutYou extends Component {
       })
       .catch(err => {
         //HANDLE ANY CATCHED ERRORS
-        //If error while fetching, direct user to failScreen
-        //setState
-        this.setState({
-          isSuccess: false
-        });
+        this.getDataFromLocalStorage()
+          .then(result => {
+            let {
+              firstName,
+              lastName,
+              birthDate,
+              gender,
+              country,
+              zipCode
+            } = result.rows._array[0];
+            //setState
+            this.setState({
+              firstName: firstName,
+              lastName: lastName,
+              birthDate: birthDate,
+              gender: gender,
+              country: country,
+              zipCode: zipCode,
+              firstNameWarning: firstName === "" ? "empty" : "",
+              lastNameWarning: lastName === "" ? "empty" : "",
+              birthDateWarning: birthDate === "" ? "empty" : "",
+              genderWarning: gender === "" ? "empty" : "",
+              countryWarning: country === "" ? "empty" : "",
+              zipCodeWarning: zipCode === "" ? "empty" : "",
+              isSuccess: true
+            });
+          })
+          .catch(err => {
+            //If error while fetching, direct user to failScreen
+            //setState
+            this.setState({
+              isSuccess: false
+            });
+          });
       });
+  };
+
+  getDataFromLocalStorage = () => {
+    return new Promise((resolve, reject) => {
+      db.transaction(
+        tx => {
+          //DISPLAY DATA
+          tx.executeSql(
+            "select * from device_user_aboutYou",
+            null,
+            (tx, result) => {
+              if (result.rows.length <= 0) reject(new Error("Internal Error"));
+              resolve(result);
+            },
+            (tx, err) => {
+              reject(err);
+            }
+          );
+        },
+        (tx, err) => {
+          reject(err);
+        },
+        () => {
+          console.log("outer success");
+        }
+      );
+    });
   };
 
   reset = () => {
@@ -227,7 +283,7 @@ class AboutYou extends Component {
         this.props.CreateProfileDataReducer.isContinueUser
       ) {
         if (!this.isContinueUserFetched) {
-          this.getData();
+          this.getDataFromDB();
           this.isContinueUserFetched = true;
         }
       }
@@ -823,7 +879,9 @@ class AboutYou extends Component {
   failScreen = () => {
     //For isContinueUser Only
     //If fail on fetching, then display a screen to tell them try again
-    return <FailScreen getDataFunction={this.getData} reset={this.reset} />;
+    return (
+      <FailScreen getDataFunction={this.getDataFromDB} reset={this.reset} />
+    );
   };
 
   render() {

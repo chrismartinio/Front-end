@@ -70,7 +70,7 @@ class Preferences extends Component {
     this.isContinueUserFetched = false;
   }
 
-  getData = async () => {
+  getDataFromDB = async () => {
     //if checklist says this screen is not complete, return (don't do query)
     if (!this.props.CreateProfileDataReducer.checklist.preferences) {
       return;
@@ -168,18 +168,80 @@ class Preferences extends Component {
             interestedGender: object.result.interestedGender
           });
         } else {
-            //INTERNAL ERROR
+          //INTERNAL ERROR DURING QUERYING
           throw new Error("internal Error");
         }
       })
       .catch(err => {
         //HANDLE ANY CATCHED ERRORS
-        //If error while fetching, direct user to failScreen
-        //setState
-        this.setState({
-          isSuccess: false
-        });
+        this.getDataFromLocalStorage()
+          .then(result => {
+            let {
+              interestedGender,
+              ageRange,
+              distanceRange
+            } = result.rows._array[0];
+
+            ageRange = JSON.parse(ageRange).ageRange
+
+            let pickedMen, pickedWomen;
+            if (interestedGender === "both") {
+              pickedMen = true;
+              pickedWomen = true;
+            } else if (interestedGender === "male") {
+              pickedMen = true;
+            } else if (interestedGender === "female") {
+              pickedWomen = true;
+            } else {
+              pickedMen = false;
+              pickedWomen = false;
+            }
+            //setState
+            this.setState({
+              pickedMen: pickedMen,
+              pickedWomen: pickedWomen,
+              interestedGenderWarning:
+                pickedMen === "" && pickedWomen === "" ? "empty" : "",
+              ageRange: ageRange,
+              distanceRange: distanceRange,
+              isSuccess: true
+            });
+          })
+          .catch(err => {
+            //If error while fetching, direct user to failScreen
+            //setState
+            this.setState({
+              isSuccess: false
+            });
+          });
       });
+  };
+
+  getDataFromLocalStorage = () => {
+    return new Promise((resolve, reject) => {
+      db.transaction(
+        tx => {
+          //DISPLAY DATA
+          tx.executeSql(
+            "select * from device_user_preferences",
+            null,
+            (tx, result) => {
+              if (result.rows.length <= 0) reject(new Error("Internal Error"));
+              resolve(result);
+            },
+            (tx, err) => {
+              reject(err);
+            }
+          );
+        },
+        (tx, err) => {
+          reject(err);
+        },
+        () => {
+          console.log("outer success");
+        }
+      );
+    });
   };
 
   reset = () => {
@@ -212,7 +274,7 @@ class Preferences extends Component {
         this.props.CreateProfileDataReducer.isContinueUser
       ) {
         if (!this.isContinueUserFetched) {
-          this.getData();
+          this.getDataFromDB();
           this.isContinueUserFetched = true;
         }
       }
@@ -682,7 +744,9 @@ class Preferences extends Component {
   failScreen = () => {
     //For isContinueUser Only
     //If fail on fetching, then display a screen to tell them try again
-    return <FailScreen getDataFunction={this.getData} reset={this.reset} />;
+    return (
+      <FailScreen getDataFunction={this.getDataFromDB} reset={this.reset} />
+    );
   };
 
   render() {

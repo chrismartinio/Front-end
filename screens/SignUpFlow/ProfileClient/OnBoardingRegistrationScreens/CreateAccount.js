@@ -73,7 +73,7 @@ class CreateAccount extends Component {
     this.isContinueUserFetched = false;
   }
 
-  getData = async () => {
+  getDataFromDB = async () => {
     await fetch("http://74.80.250.210:4000/api/profile/query", {
       method: "POST",
       headers: {
@@ -87,7 +87,6 @@ class CreateAccount extends Component {
       .then(res => res.json())
       .then(res => {
         let object = JSON.parse(JSON.stringify(res));
-        //console.log(object);
         //SUCCESS ON QUERYING DATA
         if (object.success) {
           //setState
@@ -109,12 +108,17 @@ class CreateAccount extends Component {
           });
 
           //LocalStorage
-          //Note: only createAccount.js (getData()) has checklist
+          //Note: only createAccount.js (getDataFromDB()) has checklist
           //Because createAccount.js would always be the first screen display to user
           //On CollapsibleRegistration.js, it will stores the checklist (OAuth query this) into redux
           //and createAccount.js will store this checklist into LocalStorage
           //That begin said, when user reached CollapsibleRegistration.js, a checklist should be exist
           //Other Screens may or maybe not open, so they doesn't need to update the checklist
+          //Actually, not even sure does the checklist even need here
+          //Because if user resume back to here, that means OAuth must already query all info includes gui, checklist...
+          //CollaspibleRegistration.js would use the checklist for setup tabs status
+          //Therefore, createAccount.js (getDataFromDB()) don't even need to touch the checklist
+          //createAccount.js only update the checklist when submiting
           let json_checklist = JSON.stringify(
             this.props.CreateProfileDataReducer.checklist
           );
@@ -170,7 +174,7 @@ class CreateAccount extends Component {
           });
         } else {
           //INTERNAL ERROR
-          //if error on query 
+          //if error on query
           //try lcoalStorage
           //if localStorage works
           //setState
@@ -181,12 +185,62 @@ class CreateAccount extends Component {
       })
       .catch(err => {
         //HANDLE ANY CATCHED ERRORS
-        //If error while fetching, direct user to failScreen
-        //setState
-        this.setState({
-          isSuccess: false
-        });
+        this.getDataFromLocalStorage()
+          .then(result => {
+            let { email } = result.rows._array[0];
+            //setState
+            this.setState({
+              email: email,
+              confirmEmail: email,
+              password: "Password",
+              confirmPassword: "Password",
+              emailWarning: "",
+              confirmEmailWarning: "",
+              passwordWarning: "",
+              confirmPasswordWarning: "",
+              password_UpperLowerCaseWarning: false,
+              password_NumberSymbolWarning: false,
+              password_LengthWarning: false,
+              isSuccess: true,
+              editable: false,
+              passed: true  //if user can resume, that means the user had passed createAccount screen
+            });
+          })
+          .catch(err => {
+            //If error while fetching, direct user to failScreen
+            //setState
+            this.setState({
+              isSuccess: false
+            });
+          });
       });
+  };
+
+  getDataFromLocalStorage = () => {
+    return new Promise((resolve, reject) => {
+      db.transaction(
+        tx => {
+          //DISPLAY DATA
+          tx.executeSql(
+            "select * from device_user_createAccount",
+            null,
+            (tx, result) => {
+              if (result.rows.length <= 0) reject(new Error("Internal Error"));
+              resolve(result);
+            },
+            (tx, err) => {
+              reject(err);
+            }
+          );
+        },
+        (tx, err) => {
+          reject(err);
+        },
+        () => {
+          console.log("outer success");
+        }
+      );
+    });
   };
 
   async componentDidMount() {
@@ -196,82 +250,6 @@ class CreateAccount extends Component {
         editable: false
       });
     }
-
-    db.transaction(
-      tx => {
-        //DROP TABLE
-        //NOTICE: If table and its structure already created,
-        //later insert something doesn't match structure would get error
-        /*
-        tx.executeSql(
-          "DROP TABLE items;",
-          null,
-          (tx, result) => {
-            console.log("inner success");
-          },
-          (tx, err) => {
-            console.log("inner error: ", err);
-          }
-        );
-        */
-        //CREATE TABLE
-        /*
-        tx.executeSql(
-          "CREATE TABLE IF NOT EXISTS items ( id INTEGER PRIMARY KEY, firstname TEXT NOT NULL);",
-          null,
-          (tx, result) => {
-            console.log("inner success");
-          },
-          (tx, err) => {
-            console.log("inner error: ", err);
-          }
-        );
-        */
-        //INSERT DATA
-        /*
-        tx.executeSql(
-          "INSERT INTO items (firstname) VALUES ('Buddy Rich'), ('Candido'), ('Charlie Byrd');",
-          null,
-          (tx, result) => {
-            console.log("inner success");
-          },
-          (tx, err) => {
-            console.log("inner error: ", err);
-          }
-        );
-        */
-        /*
-        tx.executeSql(
-          "select * from items",
-          null,
-          (tx, result) => {
-            console.log(result);
-          },
-          (tx, err) => {
-            console.log("inner error: ", err);
-          }
-        );
-
-        /*
-        tx.executeSql(
-          "SELECT name FROM sqlite_master WHERE type ='table' AND name NOT LIKE 'sqlite_%';",
-          null,
-          (tx, result) => {
-            console.log(result);
-          },
-          (tx, err) => {
-            console.log("inner error: ", err);
-          }
-        );
-        */
-      },
-      (tx, err) => {
-        console.log(err);
-      },
-      () => {
-        console.log("outer success");
-      }
-    );
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
@@ -298,7 +276,7 @@ class CreateAccount extends Component {
       this.props.CreateProfileDataReducer.isContinueUser
     ) {
       if (!this.isContinueUserFetched) {
-        this.getData();
+        this.getDataFromDB();
         this.isContinueUserFetched = true;
       }
     }
@@ -814,7 +792,7 @@ class CreateAccount extends Component {
   failScreen = () => {
     //For isContinueUser Only
     //If fail on fetching, then display a screen to tell them try again
-    return <FailScreen getDataFunction={this.getData} />;
+    return <FailScreen getDataFunction={this.getDataFromDB} />;
   };
 
   render() {
