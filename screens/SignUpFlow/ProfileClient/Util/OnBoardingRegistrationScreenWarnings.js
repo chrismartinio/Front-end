@@ -1,10 +1,11 @@
 import React, { Component } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View, Dimensions } from "react-native";
 import { Icon } from "react-native-elements";
+const { height, width } = Dimensions.get("window");
 const styles = StyleSheet.create({
   warningText: {
     color: "#fff",
-    fontSize: 10,
+    fontSize: Math.round(width / 37.5),
     paddingTop: "3%",
     fontWeight: "bold"
   }
@@ -103,9 +104,7 @@ export const invalidLikesWarning = (
         color="#fff"
         iconStyle={{ top: 3 }}
       />
-      <Text style={styles.warningText}>
-        {"   "}Please select 3 interests
-      </Text>
+      <Text style={styles.warningText}>{"   "}Please select 3 interests</Text>
     </View>
   </View>
 );

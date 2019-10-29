@@ -22,10 +22,6 @@ import { connect } from "react-redux";
 import SetInterestsDataAction from "../../../../storage/actions/RegistrationActions/SetInterestsDataAction";
 import SetChecklistAction from "../../../../storage/actions/RegistrationActions/SetChecklistAction";
 
-//Components
-import DatePicker from "react-native-datepicker";
-import RNPickerSelect from "react-native-picker-select";
-
 //data
 import { likes } from "../Data/Likes.js";
 
@@ -37,6 +33,11 @@ const screenHeight = Math.round(Dimensions.get("window").height);
 
 //Collapsible Components
 import FailScreen from "../Components/FailScreen";
+import NextButton from "../Components/NextButton";
+
+//Picker
+import DatePicker from "react-native-datepicker";
+import RNPickerSelect from "react-native-picker-select";
 
 //checker functions
 import { likesChecker } from "../Util/OnBoardingRegistrationScreenCheckers.js";
@@ -505,12 +506,14 @@ class Interests extends Component {
     return (
       <View style={{ flex: 1 }}>
         {this.state.internalErrorWarning && internalErrorWarning}
+
         {/*Spaces*/}
         <View
           style={{
             padding: "5%"
           }}
         />
+
         {/*I'm interested in Text & Pick one of both Text*/}
         <View style={{ alignItems: "center" }}>
           <Text style={{ color: "white", fontSize: 24 }}>
@@ -532,31 +535,21 @@ class Interests extends Component {
         </View>
         <Text />
         {this.state.likesArray.length !== 3 && invalidLikesWarning}
+
         {/*Spaces*/}
         <View
           style={{
             padding: "7%"
           }}
         />
+
         {/*Next Button*/}
-        <View
-          alignItems="center"
-          style={{ opacity: this.state.passed ? 1.0 : 0.5 }}
-        >
-          <TouchableOpacity
-            style={styles.nextButton}
-            onPress={this.handleSubmit}
-            disabled={
-              (this.state.passed && this.state.isDelaying) || !this.state.passed
-            }
-          >
-            {this.state.passed && this.state.isDelaying ? (
-              <ActivityIndicator size="small" color="white" />
-            ) : (
-              <Text style={styles.button}>Next</Text>
-            )}
-          </TouchableOpacity>
-        </View>
+        <NextButton
+          passed={this.state.passed}
+          handleSubmit={this.handleSubmit}
+          isDelaying={this.state.isDelaying}
+        />
+
         {/*Spaces*/}
         <View
           style={{
@@ -600,18 +593,6 @@ const styles = StyleSheet.create({
     marginTop: 10,
     marginBottom: 10
   },
-  button: {
-    color: "#fff",
-    fontSize: 20
-  },
-  nextButton: {
-    alignItems: "center",
-    padding: 10,
-    borderRadius: 40,
-    borderWidth: 2,
-    borderColor: "#fff",
-    width: "55%"
-  },
   likesWrap: {
     flexDirection: "row",
     flexWrap: "wrap",
@@ -621,12 +602,6 @@ const styles = StyleSheet.create({
     alignItems: "center"
     //marginTop: "15%"
   },
-  warningText: {
-    color: "#fff",
-    fontSize: 10,
-    paddingTop: "3%",
-    fontWeight: "bold"
-  }
 });
 
 const mapStateToProps = state => {

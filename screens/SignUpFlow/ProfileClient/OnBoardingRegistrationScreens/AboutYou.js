@@ -8,7 +8,8 @@ import {
   Image,
   ScrollView,
   TouchableOpacity,
-  ActivityIndicator
+  ActivityIndicator,
+  Dimensions
 } from "react-native";
 
 //Redux
@@ -29,6 +30,7 @@ import { Chevron } from "react-native-shapes";
 
 //Collapsible Components
 import FailScreen from "../Components/FailScreen";
+import NextButton from "../Components/NextButton";
 
 //SQLite
 import * as SQLite from "expo-sqlite";
@@ -803,7 +805,7 @@ class AboutYou extends Component {
               invalidGenderCountryWarning}
           </View>
 
-          {/**zip */}
+          {/**zipcode*/}
           <View style={styles.zipCodeInputWrap}>
             <Input
               placeholder="zip code"
@@ -848,24 +850,12 @@ class AboutYou extends Component {
         />
 
         {/*Next Button*/}
-        <View
-          alignItems="center"
-          style={{ opacity: this.state.passed ? 1.0 : 0.5 }}
-        >
-          <TouchableOpacity
-            style={styles.nextButton}
-            onPress={this.handleSubmit}
-            disabled={
-              (this.state.passed && this.state.isDelaying) || !this.state.passed
-            }
-          >
-            {this.state.passed && this.state.isDelaying ? (
-              <ActivityIndicator size="small" color="white" />
-            ) : (
-              <Text style={styles.button}>Next</Text>
-            )}
-          </TouchableOpacity>
-        </View>
+        <NextButton
+          passed={this.state.passed}
+          handleSubmit={this.handleSubmit}
+          isDelaying={this.state.isDelaying}
+        />
+
         {/*Spaces*/}
         <View
           style={{
@@ -889,39 +879,11 @@ class AboutYou extends Component {
   }
 }
 
+const { height, width } = Dimensions.get("window");
+
 const styles = StyleSheet.create({
   container: {
     flex: 1
-  },
-  titleText: {
-    margin: 10,
-    color: "#fff",
-    fontSize: 48,
-    textAlign: "center",
-    fontWeight: "100"
-  },
-  wholeWrap: {
-    flex: 1,
-    justifyContent: "flex-end",
-
-    marginBottom: "5%",
-    marginLeft: "10%",
-    marginRight: "10%"
-    //borderRadius: 4,
-    //borderWidth: 0.5,
-    //borderColor: "#d6d7da"
-  },
-  button: {
-    color: "#fff",
-    fontSize: 20
-  },
-  nextButton: {
-    alignItems: "center",
-    padding: 10,
-    borderRadius: 40,
-    borderWidth: 2,
-    borderColor: "#fff",
-    width: "55%"
   },
   inputContainerStyle: {
     borderTopWidth: 0,
@@ -932,18 +894,7 @@ const styles = StyleSheet.create({
   },
   inputStyle: {
     color: "#fff",
-    fontSize: 15
-  },
-  nameInputBox: {
-    color: "white",
-    fontSize: 15,
-    textAlign: "left",
-    borderBottomWidth: 1,
-    borderColor: "#fff",
-    paddingVertical: 9
-    //borderRadius: 4,
-    //borderWidth: 0.5,
-    //borderColor: "#d6d7da"
+    fontSize: Math.round(width / 25)
   },
   birthdatePicker: {
     width: "45%",
@@ -967,14 +918,6 @@ const styles = StyleSheet.create({
     left: "0%",
     paddingTop: "4%"
   },
-  zipCodeInput: {
-    color: "#fff",
-    fontSize: 15,
-    textAlign: "left",
-    borderBottomWidth: 1,
-    borderColor: "#fff",
-    paddingVertical: 9
-  },
   zipCodeInputWrap: {
     width: "45%",
     position: "absolute",
@@ -984,12 +927,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     flexWrap: "wrap",
     marginBottom: "15%"
-  },
-  warningText: {
-    color: "#fff",
-    fontSize: 10,
-    paddingTop: "3%",
-    fontWeight: "bold"
   }
 });
 

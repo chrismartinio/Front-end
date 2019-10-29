@@ -8,7 +8,8 @@ import {
   Image,
   ScrollView,
   TouchableOpacity,
-  ActivityIndicator
+  ActivityIndicator,
+  Dimensions
 } from "react-native";
 
 //redux
@@ -22,6 +23,7 @@ import { Chevron } from "react-native-shapes";
 
 //Collapsible Components
 import FailScreen from "../Components/FailScreen";
+import NextButton from "../Components/NextButton";
 
 //SQLite
 import * as SQLite from "expo-sqlite";
@@ -203,7 +205,7 @@ class CreateAccount extends Component {
               password_LengthWarning: false,
               isSuccess: true,
               editable: false,
-              passed: true  //if user can resume, that means the user had passed createAccount screen
+              passed: true //if user can resume, that means the user had passed createAccount screen
             });
           })
           .catch(err => {
@@ -695,63 +697,42 @@ class CreateAccount extends Component {
         {/*Spaces*/}
         <View style={styles.space} />
 
-        <View
-          style={{
-            borderRadius: 4,
-            borderWidth: 0.5,
-            borderColor: "#fff",
-            padding: "3%"
-          }}
-        >
-          <View
-            style={{
-              flexWrap: "wrap",
-              alignItems: "flex-start",
-              flexDirection: "row"
-            }}
-          >
+        {/*Password Hints Box*/}
+        <View style={styles.passwordHintWrap}>
+          {/*Password Hints Text*/}
+          <View style={styles.passwordHintTextWrap}>
             {this.state.password_UpperLowerCaseWarning ? (
               <Icon name="times" type="font-awesome" color="red" />
             ) : (
               <Icon name="check" type="font-awesome" color="lightgreen" />
             )}
-            <Text style={{ color: "#fff", paddingVertical: 5 }}>
+            <Text style={styles.passwordHintText}>
               {"   "}
               include upper and lower case
             </Text>
           </View>
 
-          <View
-            style={{
-              flexWrap: "wrap",
-              alignItems: "flex-start",
-              flexDirection: "row"
-            }}
-          >
+          {/*Password Hints Text*/}
+          <View style={styles.passwordHintTextWrap}>
             {this.state.password_NumberSymbolWarning ? (
               <Icon name="times" type="font-awesome" color="red" />
             ) : (
               <Icon name="check" type="font-awesome" color="lightgreen" />
             )}
-            <Text style={{ color: "#fff", paddingVertical: 5 }}>
+            <Text style={styles.passwordHintText}>
               {"   "}
               include at least a number or symbol
             </Text>
           </View>
 
-          <View
-            style={{
-              flexWrap: "wrap",
-              alignItems: "flex-start",
-              flexDirection: "row"
-            }}
-          >
+          {/*Password Hints Text*/}
+          <View style={styles.passwordHintTextWrap}>
             {this.state.password_LengthWarning ? (
               <Icon name="times" type="font-awesome" color="red" />
             ) : (
               <Icon name="check" type="font-awesome" color="lightgreen" />
             )}
-            <Text style={{ color: "#fff", paddingVertical: 5 }}>
+            <Text style={styles.passwordHintText}>
               {"   "}
               be at least 8 characters long
             </Text>
@@ -761,27 +742,11 @@ class CreateAccount extends Component {
         <View style={styles.space} />
 
         {/*Next Button*/}
-        <View
-          alignItems="center"
-          style={{ opacity: this.state.passed ? 1.0 : 0.5 }}
-        >
-          {/*  createAccount will check if all data filled correctly
-            if not filled corectly, passed = false, and !passed = true, that mean disable={true}
-            if filled correctly , passed = true, and !passed = false, that mean disable={false} */}
-          <TouchableOpacity
-            style={styles.nextButton}
-            onPress={this.handleSubmit}
-            disabled={
-              (this.state.passed && this.state.isDelaying) || !this.state.passed
-            }
-          >
-            {this.state.passed && this.state.isDelaying ? (
-              <ActivityIndicator size="small" color="white" />
-            ) : (
-              <Text style={styles.button}>Next</Text>
-            )}
-          </TouchableOpacity>
-        </View>
+        <NextButton
+          passed={this.state.passed}
+          handleSubmit={this.handleSubmit}
+          isDelaying={this.state.isDelaying}
+        />
 
         {/*Spaces*/}
         <View style={styles.space} />
@@ -800,6 +765,8 @@ class CreateAccount extends Component {
   }
 }
 
+const { height, width } = Dimensions.get("window");
+
 const styles = StyleSheet.create({
   header: {
     fontSize: 36,
@@ -811,18 +778,6 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     marginBottom: 36
   },
-  button: {
-    color: "#fff",
-    fontSize: 20
-  },
-  nextButton: {
-    alignItems: "center",
-    padding: 10,
-    borderRadius: 40,
-    borderWidth: 2,
-    borderColor: "#fff",
-    width: "55%"
-  },
   inputContainerStyle: {
     borderTopWidth: 0,
     borderLeftWidth: 0,
@@ -832,7 +787,23 @@ const styles = StyleSheet.create({
   },
   inputStyle: {
     color: "#fff",
-    fontSize: 15
+    fontSize: Math.round(width / 25)
+  },
+  passwordHintTextWrap: {
+    flexWrap: "wrap",
+    alignItems: "flex-start",
+    flexDirection: "row"
+  },
+  passwordHintText: {
+    color: "#fff",
+    paddingVertical: 5,
+    fontSize: Math.round(width / 26.78)
+  },
+  passwordHintWrap: {
+    borderRadius: 4,
+    borderWidth: 0.5,
+    borderColor: "#fff",
+    padding: "3%"
   },
   space: {
     padding: "3%"

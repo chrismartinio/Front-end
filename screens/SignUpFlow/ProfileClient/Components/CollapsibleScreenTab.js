@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Text, View, TouchableOpacity } from "react-native";
+import { Text, View, TouchableOpacity, Dimensions } from "react-native";
 
 //icons
 import { Chevron } from "react-native-shapes";
@@ -12,6 +12,9 @@ import Preferences from "../OnBoardingRegistrationScreens/Preferences";
 import Interests from "../OnBoardingRegistrationScreens/Interests";
 import WouldYouRather from "../OnBoardingRegistrationScreens/WouldYouRather";
 import LocalDestination from "../OnBoardingRegistrationScreens/LocalDestination";
+
+//Dimensions
+const { height, width } = Dimensions.get("window");
 
 export default function CollapsibleScreenTab(props) {
   const componentSwitch = componentName => {
@@ -157,7 +160,7 @@ export default function CollapsibleScreenTab(props) {
             props.handleToggle(props.componentName, evt);
           }}
         >
-          <Text style={{ color: "white", fontSize: 24 }}>
+          <Text style={{ color: "white", fontSize: Math.round(width / 15.625) }}>
             {componentNameSwitch(props.componentName)}
           </Text>
           <View style={{ alignItems: "flex-end" }}>

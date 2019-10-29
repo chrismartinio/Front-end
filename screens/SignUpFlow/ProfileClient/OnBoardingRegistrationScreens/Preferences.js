@@ -19,10 +19,6 @@ import { connect } from "react-redux";
 import SetPreferencesDataAction from "../../../../storage/actions/RegistrationActions/SetPreferencesDataAction";
 import SetChecklistAction from "../../../../storage/actions/RegistrationActions/SetChecklistAction";
 
-//Components
-import Slider from "../Components/Sliders/PreferencesSlider";
-import MultiSlider from "@ptomasroos/react-native-multi-slider";
-
 //Icons
 import { Icon } from "react-native-elements";
 
@@ -31,6 +27,11 @@ const screenHeight = Math.round(Dimensions.get("window").height);
 
 //Collapsible Components
 import FailScreen from "../Components/FailScreen";
+import NextButton from "../Components/NextButton";
+
+//Sliders
+import Slider from "../Components/Sliders/PreferencesSlider";
+import MultiSlider from "@ptomasroos/react-native-multi-slider";
 
 //checker functions
 import { genderChecker } from "../Util/OnBoardingRegistrationScreenCheckers.js";
@@ -182,7 +183,7 @@ class Preferences extends Component {
               distanceRange
             } = result.rows._array[0];
 
-            ageRange = JSON.parse(ageRange).ageRange
+            ageRange = JSON.parse(ageRange).ageRange;
 
             let pickedMen, pickedWomen;
             if (interestedGender === "both") {
@@ -713,24 +714,12 @@ class Preferences extends Component {
         />
 
         {/*Next Button*/}
-        <View
-          alignItems="center"
-          style={{ opacity: this.state.passed ? 1.0 : 0.5 }}
-        >
-          <TouchableOpacity
-            style={styles.nextButton}
-            onPress={this.handleSubmit}
-            disabled={
-              (this.state.passed && this.state.isDelaying) || !this.state.passed
-            }
-          >
-            {this.state.passed && this.state.isDelaying ? (
-              <ActivityIndicator size="small" color="white" />
-            ) : (
-              <Text style={styles.button}>Next</Text>
-            )}
-          </TouchableOpacity>
-        </View>
+        <NextButton
+          passed={this.state.passed}
+          handleSubmit={this.handleSubmit}
+          isDelaying={this.state.isDelaying}
+        />
+
         {/*Spaces*/}
         <View
           style={{
@@ -815,14 +804,6 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 20
   },
-  button2: {
-    alignItems: "center",
-    padding: 10,
-    borderRadius: 40,
-    borderWidth: 2,
-    borderColor: "#fff",
-    width: "55%"
-  },
   flexContainer: {
     //top: height *.45,
     flexDirection: "row",
@@ -839,23 +820,9 @@ const styles = StyleSheet.create({
   slider3: {
     top: 15
   },
-  warningText: {
-    color: "#fff",
-    fontSize: 10,
-    paddingTop: "3%",
-    fontWeight: "bold"
-  },
   button: {
     color: "#fff",
     fontSize: 20
-  },
-  nextButton: {
-    alignItems: "center",
-    padding: 10,
-    borderRadius: 40,
-    borderWidth: 2,
-    borderColor: "#fff",
-    width: "55%"
   },
   genderButtonWrap: {
     alignItems: "center",

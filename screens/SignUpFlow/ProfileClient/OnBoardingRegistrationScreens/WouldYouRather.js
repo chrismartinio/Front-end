@@ -15,11 +15,12 @@ import { connect } from "react-redux";
 import SetWouldYouRatherDataAction from "../../../../storage/actions/RegistrationActions/SetWouldYouRatherDataAction";
 import SetChecklistAction from "../../../../storage/actions/RegistrationActions/SetChecklistAction";
 
-//component
-import Slider from "../Components/Sliders/WouldYouRatherSlider";
-
 //Collapsible Components
 import FailScreen from "../Components/FailScreen";
+import NextButton from "../Components/NextButton";
+
+//Slider
+import Slider from "../Components/Sliders/WouldYouRatherSlider";
 
 //SQLite
 import * as SQLite from "expo-sqlite";
@@ -467,24 +468,12 @@ class WouldYouRather extends Component {
         />
 
         {/*Next Button*/}
-        <View
-          alignItems="center"
-          style={{ opacity: this.state.passed ? 1.0 : 0.5 }}
-        >
-          <TouchableOpacity
-            style={styles.nextButton}
-            onPress={this.handleSubmit}
-            disabled={
-              (this.state.passed && this.state.isDelaying) || !this.state.passed
-            }
-          >
-            {this.state.passed && this.state.isDelaying ? (
-              <ActivityIndicator size="small" color="white" />
-            ) : (
-              <Text style={styles.button}>Next</Text>
-            )}
-          </TouchableOpacity>
-        </View>
+        <NextButton
+          passed={this.state.passed}
+          handleSubmit={this.handleSubmit}
+          isDelaying={this.state.isDelaying}
+        />
+
         {/*Spaces*/}
         <View
           style={{
@@ -533,21 +522,6 @@ const styles = StyleSheet.create({
   parent: {
     flex: 1
   },
-  button2: {
-    alignItems: "center",
-    //backgroundColor: '#fff',
-    padding: 10,
-    borderRadius: 40,
-    borderWidth: 2,
-    borderColor: "#fff",
-    width: "55%",
-    zIndex: 1
-  },
-  buttonStyle: {
-    padding: 10,
-    alignItems: "center",
-    top: height * 0.45
-  },
   textView: {
     margin: 10,
     color: "#fff",
@@ -564,24 +538,6 @@ const styles = StyleSheet.create({
   viewStyle: {
     top: height * 0.2
   },
-  button: {
-    color: "#fff",
-    fontSize: 20
-  },
-  nextButton: {
-    alignItems: "center",
-    padding: 10,
-    borderRadius: 40,
-    borderWidth: 2,
-    borderColor: "#fff",
-    width: "55%"
-  },
-  warningText: {
-    color: "#fff",
-    fontSize: 10,
-    paddingTop: "3%",
-    fontWeight: "bold"
-  }
 });
 
 const mapStateToProps = state => ({

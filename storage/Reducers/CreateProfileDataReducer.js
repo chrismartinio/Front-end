@@ -3,7 +3,7 @@ const CreateProfileDataReducer = (
     isContinueUser: false,
     isThirdPartiesServiceUser: false,
     checklist: {
-      createAccount: true,
+      createAccount: false,
       aboutYou: false,
       preferences: false,
       interests: false,

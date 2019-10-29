@@ -13,6 +13,7 @@ import {
   View,
   Image,
   ScrollView,
+  Dimensions,
   TouchableOpacity
 } from "react-native";
 
@@ -84,7 +85,7 @@ class CollapisbleRegistration extends Component {
       interestsToggle: false,
       wouldYouRatherToggle: false,
       localDestinationToggle: false,
-      createAccountPassed: true, //true or false
+      createAccountPassed: true, //true or false MODIFIED
       aboutYouPassed: false,
       preferencesPassed: false,
       interestsPassed: false,
@@ -114,8 +115,8 @@ class CollapisbleRegistration extends Component {
 
     //For demo use only
     //make the jwt has something to prevent jwt === ""
-    jwt = true;
-    //jwt = "";
+    //jwt = true;
+    jwt = "";
     //For demo use only
 
     //If some cases that the jwt is empty, then return as a new User
@@ -124,7 +125,7 @@ class CollapisbleRegistration extends Component {
       return {
         guid: "",
         checklist: {
-          createAccount: true,
+          createAccount: false,
           aboutYou: false,
           preferences: false,
           interests: false,
@@ -136,9 +137,10 @@ class CollapisbleRegistration extends Component {
     }
 
     //assume we decrypted the jwt and retrieve the guid and checklist
+    //New User
     let guid = "";
     let checklist = {
-      createAccount: true,
+      createAccount: false,
       aboutYou: false,
       preferences: false,
       interests: false,
@@ -147,31 +149,17 @@ class CollapisbleRegistration extends Component {
     };
     let isThirdPartiesServiceUser = false;
 
-    //New User
-    //guid = "";
-    /*
-    checklist = {
-      createAccount: true,
-      aboutYou: false,
-      preferences: false,
-      interests: false,
-      wouldYouRather: false,
-      localDestination: false
-    };
-    */
-    //isThirdPartiesServiceUser = false;
-
     //Continue User or Third Parties Services User
     //For Third Parties Services User - since onAuth would store those user to db
     //when onAuth pass the user (guid) to profile, they are similar with Continue User
-    guid = "5db0f35ef810e4aa8d6bcd27";
+    guid = "5db7b9a2712ee1c97fee41c1";
     checklist = {
       createAccount: true,
       aboutYou: true,
       preferences: true,
-      interests: true,
+      interests: false,
       wouldYouRather: true,
-      localDestination: false
+      localDestination: true
     };
     isThirdPartiesServiceUser = false; //set true if third parties user
 
@@ -180,13 +168,6 @@ class CollapisbleRegistration extends Component {
     //checklist (false) and isThirdPartiesServiceUser (true), it would query from db as a ThirdPartiesServiceUser
     //checklist (true) and isThirdPartiesServiceUser (false), it would query from db as a continue user (screen filled before)
     //checklist (false) and isThirdPartiesServiceUser (false), it would not query from db as a continue user (screen not filled before)
-
-    //rare error: if db data and checklist are not match
-    //let say aboutYou data is null but checklist[1] = true,
-    //Because of checklist[1] is true, the screen would try to retrieve data
-    //However, since aboutYou data is null, then the screen will fetch a null object
-    //The screen call object.result.firstname; object is null, this will create a error
-    //error get throw and call the failscreen forever; make sure checklist and db data is match
 
     return {
       guid: guid,
@@ -555,6 +536,8 @@ class CollapisbleRegistration extends Component {
   }
 }
 
+const { height, width } = Dimensions.get("window");
+
 const styles = StyleSheet.create({
   container: {
     flex: 1
@@ -620,7 +603,7 @@ const styles = StyleSheet.create({
   },
   joinBlindlyText: {
     color: "#fff",
-    fontSize: 36,
+    fontSize: Math.round(width / 10.4),
     fontWeight: "100"
   },
   joinBlindlyTextWrap: {
