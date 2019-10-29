@@ -15,6 +15,7 @@ import GotGhosted from "./ChatFlow/GotGhosted";
 import GotLucky from "./ChatFlow/GotLuckyGoToChat";
 import ChatPage from "./ChatFlow/chatMain";
 import firebase from "../utils/mainFire";
+import LocationServices from "./LocationServices/LocationServices";
 
 import t from "tcomb-form-native";
 const Form = t.form.Form;
@@ -56,6 +57,7 @@ export default class LinksScreen extends React.Component {
       CurrentScreen: ProfilePage
     };
     this.buttonAry = [
+      "TestLocationServices",
       "TestCollapsible",
       "TestRegistrationComplete",
       "TestProfile",

@@ -27,6 +27,7 @@ import GotGhosted from "../screens/ChatFlow/GotGhosted";
 import CreateQuestionaire from "../screens/FindMatchFlow/matchCreateQuestionaire";
 import ReplyQuestionaire from "../screens/FindMatchFlow/matchCreateReply";
 import ViewQuestionaire from "../screens/FindMatchFlow/matchViewReply";
+import LocationServices from "../screens/LocationServices/LocationServices";
 
 //On-Boarding Individual Screens
 import SignupPage from "../screens/SignUpFlow/IndividualScreensTestingSync/SignupPage";
@@ -42,6 +43,7 @@ import Collapsible from "../screens/SignUpFlow/ProfileClient/CollapsibleRegistra
 import LinksScreen from "../screens/LinksScreen";
 
 const TestStack = createStackNavigator({
+  TestLocationServices: LocationServices,
   TestLinksScreen: LinksScreen,
   TestQuestionaries: CreateQuestionaire,
   TestSignUp: SignupPage,
