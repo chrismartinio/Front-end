@@ -497,18 +497,21 @@ class LocationDestinations extends Component {
     });
     return (
       <View style={{ flex: 1 }}>
+        {/*Internal Error Warning*/}
         {this.state.internalErrorWarning && internalErrorWarning}
+
         {/*Spaces*/}
         <View
           style={{
             padding: "5%"
           }}
         />
+
         {/*I'm interested in Text & Pick one of both Text*/}
         <View style={{ alignItems: "center" }}>
-          <Text style={{ color: "white", fontSize: 24 }}>Spend a weekend</Text>
+          <Text style={styles.spendAWeekendText}>Spend a weekend</Text>
           <Text />
-          <Text style={{ opacity: 0.7, color: "white" }}>Pick 1</Text>
+          <Text style={styles.pick1Text}>Pick 1</Text>
           {/*Spaces*/}
           <View
             style={{
@@ -588,6 +591,8 @@ const styles = StyleSheet.create({
     alignItems: "center"
     //marginTop: "15%"
   },
+  spendAWeekendText: { color: "white", fontSize: 24 },
+  pick1Text: { opacity: 0.7, color: "white" }
 });
 
 const mapStateToProps = state => ({

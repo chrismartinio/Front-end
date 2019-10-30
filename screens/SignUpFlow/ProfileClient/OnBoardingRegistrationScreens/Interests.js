@@ -505,6 +505,7 @@ class Interests extends Component {
     });
     return (
       <View style={{ flex: 1 }}>
+        {/*Internal Error Warning*/}
         {this.state.internalErrorWarning && internalErrorWarning}
 
         {/*Spaces*/}
@@ -516,11 +517,9 @@ class Interests extends Component {
 
         {/*I'm interested in Text & Pick one of both Text*/}
         <View style={{ alignItems: "center" }}>
-          <Text style={{ color: "white", fontSize: 24 }}>
-            I'm interested in
-          </Text>
+          <Text style={styles.imInterestedInText}>I'm interested in</Text>
           <Text />
-          <Text style={{ opacity: 0.7, color: "white" }}>Pick 3</Text>
+          <Text style={styles.pick3Text}>Pick 3</Text>
           {/*Spaces*/}
           <View
             style={{
@@ -582,17 +581,22 @@ const styles = StyleSheet.create({
   },
   likeButtonWrap: {
     alignItems: "center",
-    padding: width / 37.5,
+    padding: Math.round(width / 37.5),
     borderRadius: 40,
     borderWidth: 2,
     borderColor: "#fff",
     width: "auto",
     minWidth: "25%",
-    marginLeft: 3,
-    marginRight: 3,
-    marginTop: 10,
-    marginBottom: 10
+    marginLeft: Math.round(width / 125),
+    marginRight: Math.round(width / 125),
+    marginTop: Math.round(width / 37.5),
+    marginBottom: Math.round(width / 37.5)
   },
+  imInterestedInText: {
+    color: "white",
+    fontSize: 24
+  },
+  pick3Text: { opacity: 0.7, color: "white" },
   likesWrap: {
     flexDirection: "row",
     flexWrap: "wrap",
@@ -601,7 +605,7 @@ const styles = StyleSheet.create({
   likeWrapCenter: {
     alignItems: "center"
     //marginTop: "15%"
-  },
+  }
 });
 
 const mapStateToProps = state => {

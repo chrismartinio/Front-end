@@ -564,30 +564,25 @@ class Preferences extends Component {
   successScreen = () => {
     return (
       <View style={{ flex: 1 }}>
+        {/*Internal Error Warning*/}
         {this.state.internalErrorWarning && internalErrorWarning}
+
         {/*Spaces*/}
         <View
           style={{
             padding: "5%"
-            //borderRadius: 4,
-            //borderWidth: 0.5,
-            //borderColor: "#d6d7da"
           }}
         />
+
         {/*I'm interested in Text & Pick one of both Text*/}
         <View style={{ alignItems: "center" }}>
-          <Text style={{ color: "white", fontSize: 24 }}>
-            I'm interested in
-          </Text>
+          <Text style={styles.imInterestedInText}>I'm interested in</Text>
           <Text />
-          <Text style={{ opacity: 0.7, color: "white" }}>Pick one or both</Text>
+          <Text style={styles.pickOneorBothText}>Pick one or both</Text>
           {/*Spaces*/}
           <View
             style={{
               padding: "5%"
-              //borderRadius: 4,
-              //borderWidth: 0.5,
-              //borderColor: "#d6d7da"
             }}
           />
         </View>
@@ -617,7 +612,7 @@ class Preferences extends Component {
           >
             <Text
               style={[
-                styles.button,
+                styles.genderButtonText,
                 {
                   color: this.state.pickedMen
                     ? this.changeColor(`bMaley`)
@@ -645,7 +640,7 @@ class Preferences extends Component {
           >
             <Text
               style={[
-                styles.button,
+                styles.genderButtonText,
                 {
                   color: this.state.pickedWomen
                     ? this.changeColor(`bFemaley`)
@@ -668,11 +663,20 @@ class Preferences extends Component {
 
         {/*Preferred age range*/}
         <View>
-          <Text style={styles.textTop}>Preferred age range</Text>
+          <Text style={styles.sliderTitleText}>Preferred age range</Text>
+          {/*ageRangeNumbersText*/}
           <View style={styles.flexContainer}>
-            <Text style={styles.text2}> {this.state.ageRange[0]} </Text>
-            <Text style={styles.text2}> {this.state.ageRange[1]} </Text>
+            <Text style={styles.ageRangeNumbersText}>
+              {" "}
+              {this.state.ageRange[0]}{" "}
+            </Text>
+            <Text style={styles.ageRangeNumbersText}>
+              {" "}
+              {this.state.ageRange[1]}{" "}
+            </Text>
           </View>
+
+          {/*ageRangeSlider*/}
           <MultiSlider
             values={[this.state.ageRange[0], this.state.ageRange[1]]}
             onValuesChange={this.ageRangeChange}
@@ -681,12 +685,14 @@ class Preferences extends Component {
             step={1}
             allowOverlap
             snapped
+            sliderLength={Math.round(width / 1.33)}
             trackStyle={{
               shadowColor: "red",
               backgroundColor: "white"
             }}
           />
         </View>
+
         {/*Spaces*/}
         <View
           style={{
@@ -696,7 +702,7 @@ class Preferences extends Component {
 
         {/*Preferred match radius*/}
         <View>
-          <Text style={styles.textTop}>Preferred match radius</Text>
+          <Text style={styles.sliderTitleText}>Preferred match radius</Text>
           <Slider
             functionListener={this.setDistanceRange}
             minimumValue={0}
@@ -706,6 +712,7 @@ class Preferences extends Component {
             value={this.state.distanceRange}
           />
         </View>
+
         {/*Spaces*/}
         <View
           style={{
@@ -748,81 +755,18 @@ const { height, width } = Dimensions.get("window");
 const styles = StyleSheet.create({
   container: {
     flex: 1
-    ///backgroundColor: '#fff',
   },
-  titleText: {
+  ageRangeNumbersText: {
     margin: 10,
     color: "#fff",
-    fontSize: 48,
-    textAlign: "center",
-    fontWeight: "100"
-  },
-  text2: {
-    color: "white"
-  },
-  titleText2: {
-    margin: 10,
-    color: "#fff",
-    fontSize: 24,
-    top: 25,
     textAlign: "center"
   },
-  _textInput: {
-    color: "#fff",
-    fontSize: 20,
-    textAlign: "left",
-    paddingTop: "20%",
-    borderBottomWidth: 1,
-    borderColor: "#fff"
-  },
-  smallText: {
-    margin: 10,
-    color: "#fff",
-    fontSize: 10
-  },
-  text: {
-    margin: 10,
-    color: "#fff",
-    fontSize: 20,
-    textAlign: "center"
-  },
-  textTop: {
+  sliderTitleText: {
     //top: 40,
     //margin: 10,
     color: "#fff",
     fontSize: 20,
     textAlign: "center"
-  },
-  textTop2: {
-    top: 60,
-    margin: 10,
-    color: "#fff",
-    fontSize: 20,
-    textAlign: "center"
-  },
-  button: {
-    color: "#fff",
-    fontSize: 20
-  },
-  flexContainer: {
-    //top: height *.45,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    //position:'absolute',
-    alignItems: "stretch"
-  },
-  slider1: {
-    top: 60
-  },
-  slider2: {
-    top: 80
-  },
-  slider3: {
-    top: 15
-  },
-  button: {
-    color: "#fff",
-    fontSize: 20
   },
   genderButtonWrap: {
     alignItems: "center",
@@ -831,6 +775,24 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: "#fff",
     width: "65%"
+  },
+  genderButtonText: {
+    color: "#fff",
+    fontSize: 20
+  },
+  flexContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "stretch"
+  },
+  imInterestedInText: {
+    color: "white",
+    fontSize: Math.round(width / 15.625)
+  },
+  pickOneorBothText: {
+    opacity: 0.7,
+    color: "white",
+    fontSize: Math.round(width / 25)
   }
 });
 

@@ -541,7 +541,9 @@ class CreateAccount extends Component {
   successScreen = () => {
     return (
       <View style={{ flex: 1 }}>
+        {/*Internal Error Warning*/}
         {this.state.internalErrorWarning && internalErrorWarning}
+
         {/*Spaces*/}
         <View style={styles.space} />
 
@@ -787,7 +789,7 @@ const styles = StyleSheet.create({
   },
   inputStyle: {
     color: "#fff",
-    fontSize: Math.round(width / 25)
+    fontSize: Math.round(width / 28.84)
   },
   passwordHintTextWrap: {
     flexWrap: "wrap",

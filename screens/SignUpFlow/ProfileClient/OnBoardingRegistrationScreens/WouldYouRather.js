@@ -409,18 +409,19 @@ class WouldYouRather extends Component {
   successScreen = () => {
     return (
       <View>
+        {/*Internal Error Warning*/}
         {this.state.internalErrorWarning && internalErrorWarning}
+
         {/*Spaces*/}
         <View
           style={{
             padding: "5%"
           }}
         />
-        {/*which do you prefer*/}
+
+        {/*which do you prefer Text*/}
         <View style={{ alignItems: "center" }}>
-          <Text style={{ opacity: 0.7, color: "white" }}>
-            Which do you prefer?
-          </Text>
+          <Text style={styles.whatDoYouPreferText}>Which do you prefer?</Text>
           {/*Spaces*/}
           <View
             style={{
@@ -429,7 +430,10 @@ class WouldYouRather extends Component {
           />
         </View>
 
+        {/*Sliders*/}
         <View style={{ alignItems: "center" }}>
+
+          {/*Slider1*/}
           <View style={{ width: "90%" }}>
             <Slider
               functionListener={this.handleListener1}
@@ -440,6 +444,7 @@ class WouldYouRather extends Component {
             <Text />
           </View>
 
+          {/*Slider2*/}
           <View style={{ width: "90%" }}>
             <Slider
               functionListener={this.handleListener2}
@@ -450,6 +455,7 @@ class WouldYouRather extends Component {
             <Text />
           </View>
 
+          {/*Slider3*/}
           <View style={{ width: "90%" }}>
             <Slider
               functionListener={this.handleListener3}
@@ -460,6 +466,7 @@ class WouldYouRather extends Component {
             <Text />
           </View>
         </View>
+        
         {/*Spaces*/}
         <View
           style={{
@@ -500,44 +507,11 @@ class WouldYouRather extends Component {
 const { height, width } = Dimensions.get("window");
 
 const styles = StyleSheet.create({
-  flexSliderContainer: {
-    flex: 1
-  },
-  flexContainer: {
-    flex: 1,
-    borderColor: "green",
-    justifyContent: "center",
-    height: height * (1 / 3),
-    width: width * (4 / 5),
-    borderWidth: 1
-  },
-  text: {
-    color: "white",
-    alignItems: "center"
-  },
   header: {
     top: height * (1 / 3),
     left: width * (1 / 2)
   },
-  parent: {
-    flex: 1
-  },
-  textView: {
-    margin: 10,
-    color: "#fff",
-    fontSize: 48,
-    textAlign: "center",
-    fontWeight: "100"
-  },
-  titleText2: {
-    color: "#fff",
-    fontSize: 24,
-    textAlign: "center",
-    fontWeight: "100"
-  },
-  viewStyle: {
-    top: height * 0.2
-  },
+  whatDoYouPreferText: { opacity: 0.7, color: "white" }
 });
 
 const mapStateToProps = state => ({

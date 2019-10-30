@@ -213,7 +213,7 @@ class HomeScreen extends React.Component {
         console.log(err);
       },
       () => {
-        console.log("outer success");
+        console.log("homescreen outer success");
       }
     );
 

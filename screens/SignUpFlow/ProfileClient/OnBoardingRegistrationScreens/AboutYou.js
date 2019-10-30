@@ -589,7 +589,9 @@ class AboutYou extends Component {
   successScreen = () => {
     return (
       <View style={{ flex: 1 }}>
+        {/*Internal Error Warning*/}
         {this.state.internalErrorWarning && internalErrorWarning}
+
         {/*Spaces*/}
         <View
           style={{
@@ -760,6 +762,13 @@ class AboutYou extends Component {
           </View>
         </View>
 
+        {/*Spaces*/}
+        <View
+          style={{
+            padding: "5%"
+          }}
+        />
+
         {/**Country and ZipCode Wrap */}
         <View style={styles.countryAndZipCodeWrap}>
           {/**country */}
@@ -894,7 +903,7 @@ const styles = StyleSheet.create({
   },
   inputStyle: {
     color: "#fff",
-    fontSize: Math.round(width / 25)
+    fontSize: Math.round(width / 28.84)
   },
   birthdatePicker: {
     width: "45%",
@@ -935,7 +944,7 @@ const genderPicker = {
     color: "#fff",
     borderBottomWidth: 1,
     borderColor: "#fff",
-    fontSize: 15,
+    fontSize: Math.round(width / 28.84),
     paddingVertical: 10.5,
     paddingHorizontal: 9
   },
@@ -957,14 +966,14 @@ const birthdatePickerCustom = {
   },
   dateText: {
     color: "#fff",
-    fontSize: 13,
+    fontSize: Math.round(width / 37.5),
     position: "absolute",
     left: "0%",
     paddingHorizontal: 9
   },
   placeholderText: {
     color: "#fff",
-    fontSize: 15,
+    fontSize: Math.round(width / 28.84),
     position: "absolute",
     left: "0%",
     paddingHorizontal: 9
@@ -977,7 +986,7 @@ const countryPicker = {
     color: "#fff",
     borderBottomWidth: 1,
     borderColor: "#fff",
-    fontSize: 15,
+    fontSize: Math.round(width / 28.84),
     paddingVertical: 9,
     paddingHorizontal: 9
   },
