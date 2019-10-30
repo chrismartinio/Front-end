@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import { Text, StyleSheet, View, Dimensions } from 'react-native'
-import {SampleCoords} from './APIKeys'
 import MapView, {Marker} from 'react-native-maps'; 
 
 export default class LocationServices extends Component {
@@ -17,12 +16,21 @@ export default class LocationServices extends Component {
 
     }
     componentDidMount(){
- 
+        const SampleCoords = [{
+            "latitude": 37.7853512,
+            "longitude": -122.4329787,
+            "title": "DOSA on Fillmore",
+          },{
+            "latitude": 37.78834750000001,
+            "longitude": -122.4335169,
+            "title": "Harry's Bar",
+          },]
         this.showMarkersOnMap(SampleCoords);
         this.setUserCoords()
       }
     async setUserCoords()
       {
+          ///to see the markers properly, set your simulator location to 37.78825, -122.4324,
         navigator.geolocation.getCurrentPosition(
             (position) => {
               console.log("----------");
