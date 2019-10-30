@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Text, StyleSheet, View, Dimensions } from 'react-native'
-import {SampleCoords,UserCoords} from './APIKeys'
+import {SampleCoords} from './APIKeys'
 import MapView, {Marker} from 'react-native-maps'; 
 
 export default class LocationServices extends Component {
