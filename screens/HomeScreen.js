@@ -166,7 +166,7 @@ class HomeScreen extends React.Component {
         });
 
         //DISPLAY DATA
-        /*
+
         displayTable_SqlStatementsArray.map(sqlStatement => {
           tx.executeSql(
             sqlStatement,
@@ -180,7 +180,6 @@ class HomeScreen extends React.Component {
             }
           );
         });
-        */
 
         /*
         //DELETE ROW

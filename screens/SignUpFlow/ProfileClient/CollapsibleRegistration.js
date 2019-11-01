@@ -152,13 +152,13 @@ class CollapisbleRegistration extends Component {
     //Continue User or Third Parties Services User
     //For Third Parties Services User - since onAuth would store those user to db
     //when onAuth pass the user (guid) to profile, they are similar with Continue User
-    guid = "5db8dffc82d7a412ce7504da";
+    guid = "5dbba55a013c4cbd0d6fc984";
     checklist = {
       createAccount: true,
       aboutYou: true,
       preferences: true,
       interests: true,
-      wouldYouRather: false,
+      wouldYouRather: true,
       localDestination: false
     };
     isThirdPartiesServiceUser = false; //set true if third parties user

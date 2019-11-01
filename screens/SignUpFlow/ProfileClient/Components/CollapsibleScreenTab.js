@@ -172,7 +172,7 @@ export default function CollapsibleScreenTab(props) {
       {/*Collapse Body*/}
       <View
         style={{
-          display: props.componentToggle ? "block" : "none"
+          display: props.componentToggle ? "flex" : "none"
         }}
       >
         {componentSwitch(props.componentName)}
