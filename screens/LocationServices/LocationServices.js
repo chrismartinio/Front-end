@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { Text, StyleSheet, View, Dimensions } from 'react-native'
 import MapView, {Marker} from 'react-native-maps'; 
+// import Slider  from 'react-native-slider';
 
 export default class LocationServices extends Component {
     constructor (props) {
@@ -12,9 +13,11 @@ export default class LocationServices extends Component {
           destinationCoords: [],
           results:[],
           latLng:[],
+          distance:1,
         };
 
     }
+    
     componentDidMount(){
         const SampleCoords = [{
             "latitude": 37.7853512,
@@ -34,11 +37,24 @@ export default class LocationServices extends Component {
         navigator.geolocation.getCurrentPosition(
             (position) => {
               console.log("----------");
-              console.log(position);
+              //console.log(position);
               this.setState({
                 userLatitude: position.coords.latitude,
                 userLongitude: position.coords.longitude,
                 error: null,
+              },()=>{
+                fetch("http://192.168.1.67:4060/", {
+                    method: "POST",
+                    headers: {
+                      "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        "deviceLatLong": "41.59486,-73.11162","deviceRadiusPref": "3000","deviceLat": "41.59486","deviceLong": "-73.11162"                    })
+                  })
+                    .then(res => res.json())
+                    .then(res => {
+                      console.log(res.businessLat);
+                    });
               });
             },
             (error) => this.setState({ error: error.message }),
@@ -67,25 +83,26 @@ export default class LocationServices extends Component {
         }
         return (
             <View style={styles.container}>
-     <MapView
-       //provider={PROVIDER_GOOGLE} // remove if not using Google Maps
-       showsUserLocation
-       followsUserLocation
-       style={styles.map}
-       region={{
-         latitude: this.state.userLatitude,
-         longitude: this.state.userLongitude,
-         latitudeDelta: 0.015,
-         longitudeDelta: 0.0121,
-       }}
-     >
-     {marker}
-     {/* <Marker 
-       coordinate={{latitude:this.state.userLatitude, longitude:this.state.userLongitude}}
-       title={"YOU ARE HERE"}
-        />   */}
-     </MapView>
-   </View>
+                
+                <MapView
+                //provider={PROVIDER_GOOGLE} // remove if not using Google Maps
+                showsUserLocation
+                followsUserLocation
+                style={styles.map}
+                region={{
+                    latitude: this.state.userLatitude,
+                    longitude: this.state.userLongitude,
+                    latitudeDelta: 0.015,
+                    longitudeDelta: 0.0121,
+                }}
+                >
+                {marker}
+                {/* <Marker 
+                coordinate={{latitude:this.state.userLatitude, longitude:this.state.userLongitude}}
+                title={"YOU ARE HERE"}
+                    />   */}
+                </MapView>
+            </View>
         )
     }
 }
