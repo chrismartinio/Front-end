@@ -9,7 +9,8 @@ import {
   ScrollView,
   TouchableOpacity,
   ActivityIndicator,
-  Dimensions
+  Dimensions,
+  Platform
 } from "react-native";
 
 //Redux
@@ -723,6 +724,7 @@ class AboutYou extends Component {
           <View style={styles.genderpPickerWrap}>
             <RNPickerSelect
               style={genderPicker}
+              useNativeAndroidPickerStyle={false}
               placeholder={{
                 label: "gender",
                 value: null
@@ -775,6 +777,7 @@ class AboutYou extends Component {
           <View style={styles.countryPickerWrap}>
             <RNPickerSelect
               style={countryPicker}
+              useNativeAndroidPickerStyle={false}
               placeholder={{
                 label: "Country",
                 value: null
@@ -948,8 +951,18 @@ const genderPicker = {
     paddingVertical: 10.5,
     paddingHorizontal: 9
   },
+  inputAndroid: {
+    color: "#fff",
+    paddingVertical: 4,
+    paddingHorizontal: 5,
+    borderBottomWidth: 1.5,
+    borderColor: "#fff",
+    fontSize: Math.round(width / 28.84),
+    borderRadius: 8
+  },
   placeholder: {
-    color: "#fff"
+    color: "#fff",
+    paddingVertical: Platform.OS === "ios" ? 0 : 5
   }
 };
 
@@ -990,9 +1003,19 @@ const countryPicker = {
     paddingVertical: 9,
     paddingHorizontal: 9
   },
+  inputAndroid: {
+    width: "95%",
+    color: "#fff",
+    paddingVertical: 3,
+    paddingHorizontal: 5,
+    borderBottomWidth: 1.5,
+    fontSize: Math.round(width / 28.84),
+    borderColor: "#fff",
+    borderRadius: 8
+  },
   placeholder: {
     color: "#fff",
-    paddingVertical: 9
+    paddingVertical: Platform.OS === "ios" ? 9 : 3
   }
 };
 

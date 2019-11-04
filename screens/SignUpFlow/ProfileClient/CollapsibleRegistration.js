@@ -155,10 +155,10 @@ class CollapisbleRegistration extends Component {
     guid = "5dbba55a013c4cbd0d6fc984";
     checklist = {
       createAccount: true,
-      aboutYou: true,
+      aboutYou: false,
       preferences: true,
       interests: true,
-      wouldYouRather: true,
+      wouldYouRather: false,
       localDestination: false
     };
     isThirdPartiesServiceUser = false; //set true if third parties user
