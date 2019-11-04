@@ -48,6 +48,8 @@ class HomeScreen extends React.Component {
 
   //Profile Services uses
   async componentDidMount() {
+    //console.log(Platform.OS === "android");
+    //console.log(Platform.OS === "ios");
     //create tables for device's user
 
     let createAccountSqlStatement =
@@ -166,7 +168,7 @@ class HomeScreen extends React.Component {
         });
 
         //DISPLAY DATA
-
+        /*
         displayTable_SqlStatementsArray.map(sqlStatement => {
           tx.executeSql(
             sqlStatement,
@@ -180,7 +182,7 @@ class HomeScreen extends React.Component {
             }
           );
         });
-
+        */
         /*
         //DELETE ROW
         tx.executeSql(

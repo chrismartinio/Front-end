@@ -1,5 +1,11 @@
 import React, { Component } from "react";
-import { Text, View, TouchableOpacity, Dimensions } from "react-native";
+import {
+  Text,
+  View,
+  TouchableOpacity,
+  Dimensions,
+  Platform
+} from "react-native";
 
 //icons
 import { Chevron } from "react-native-shapes";
@@ -147,8 +153,9 @@ export default function CollapsibleScreenTab(props) {
         );
     }
   };
-  return (
+  return Platform.OS === "ios" ? (
     <View>
+      {/*IOS*/}
       {/*Collapse Header*/}
       <View
         style={{
@@ -160,7 +167,49 @@ export default function CollapsibleScreenTab(props) {
             props.handleToggle(props.componentName, evt);
           }}
         >
-          <Text style={{ color: "white", fontSize: Math.round(width / 15.625) }}>
+          <Text
+            style={{ color: "white", fontSize: Math.round(width / 15.625) }}
+          >
+            {componentNameSwitch(props.componentName)}
+          </Text>
+          <View style={{ alignItems: "flex-end" }}>
+            {componentStatus(props.componentStatus)}
+          </View>
+        </TouchableOpacity>
+      </View>
+
+      {/*Collapse Body*/}
+      <View
+        style={{
+          display: props.componentToggle ? "flex" : "none"
+        }}
+      >
+        {componentSwitch(props.componentName)}
+      </View>
+      {/*Spaces*/}
+      <View
+        style={{
+          padding: "10%"
+        }}
+      />
+    </View>
+  ) : (
+    <View>
+      {/*ANDROID*/}
+      {/*Collapse Header*/}
+      <View
+        style={{
+          opacity: props.componentToggle ? 1 : 0.5
+        }}
+      >
+        <TouchableOpacity
+          onPress={evt => {
+            props.handleToggle(props.componentName, evt);
+          }}
+        >
+          <Text
+            style={{ color: "white", fontSize: Math.round(width / 15.625) }}
+          >
             {componentNameSwitch(props.componentName)}
           </Text>
           <View style={{ alignItems: "flex-end" }}>

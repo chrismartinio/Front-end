@@ -466,7 +466,7 @@ class WouldYouRather extends Component {
             <Text />
           </View>
         </View>
-        
+
         {/*Spaces*/}
         <View
           style={{
