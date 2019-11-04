@@ -153,49 +153,9 @@ export default function CollapsibleScreenTab(props) {
         );
     }
   };
-  return Platform.OS === "ios" ? (
+  return (
     <View>
       {/*IOS*/}
-      {/*Collapse Header*/}
-      <View
-        style={{
-          opacity: props.componentToggle ? 1 : 0.5
-        }}
-      >
-        <TouchableOpacity
-          onPress={evt => {
-            props.handleToggle(props.componentName, evt);
-          }}
-        >
-          <Text
-            style={{ color: "white", fontSize: Math.round(width / 15.625) }}
-          >
-            {componentNameSwitch(props.componentName)}
-          </Text>
-          <View style={{ alignItems: "flex-end" }}>
-            {componentStatus(props.componentStatus)}
-          </View>
-        </TouchableOpacity>
-      </View>
-
-      {/*Collapse Body*/}
-      <View
-        style={{
-          display: props.componentToggle ? "flex" : "none"
-        }}
-      >
-        {componentSwitch(props.componentName)}
-      </View>
-      {/*Spaces*/}
-      <View
-        style={{
-          padding: "10%"
-        }}
-      />
-    </View>
-  ) : (
-    <View>
-      {/*ANDROID*/}
       {/*Collapse Header*/}
       <View
         style={{

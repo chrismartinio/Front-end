@@ -703,14 +703,16 @@ class Preferences extends Component {
         {/*Preferred match radius*/}
         <View>
           <Text style={styles.sliderTitleText}>Preferred match radius</Text>
-          <Slider
-            functionListener={this.setDistanceRange}
-            minimumValue={0}
-            maximumValue={110}
-            leftBound={"0"}
-            rightBound={"110"}
-            value={this.state.distanceRange}
-          />
+          {this.props.preferencesToggle ? (
+            <Slider
+              functionListener={this.setDistanceRange}
+              minimumValue={0}
+              maximumValue={110}
+              leftBound={"0"}
+              rightBound={"110"}
+              value={this.state.distanceRange}
+            />
+          ) : null}
         </View>
 
         {/*Spaces*/}

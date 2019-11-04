@@ -394,16 +394,25 @@ class WouldYouRather extends Component {
   handleListener1 = arg => {
     this.s1r1 = 50 - arg;
     this.s1r2 = 50 + arg;
+    this.setState({
+      displaySlider1Value: this.s1r2 - 50,
+    });
   };
 
   handleListener2 = arg => {
     this.s2r1 = 50 - arg;
     this.s2r2 = 50 + arg;
+    this.setState({
+      displaySlider2Value: this.s2r2 - 50,
+    });
   };
 
   handleListener3 = arg => {
     this.s3r1 = 50 - arg;
     this.s3r2 = 50 + arg;
+    this.setState({
+      displaySlider3Value: this.s3r2 - 50,
+    });
   };
 
   successScreen = () => {
@@ -432,37 +441,48 @@ class WouldYouRather extends Component {
 
         {/*Sliders*/}
         <View style={{ alignItems: "center" }}>
-
           {/*Slider1*/}
           <View style={{ width: "90%" }}>
-            <Slider
-              functionListener={this.handleListener1}
-              leftBound={"Books"}
-              rightBound={"Movie"}
-              value={this.state.displaySlider1Value}
-            />
+            {this.props.wouldYouRatherToggle ? (
+              <Slider
+                functionListener={this.handleListener1}
+                minimumValue={0}
+                maximumValue={100}
+                leftBound={"Books"}
+                rightBound={"Movie"}
+                value={this.state.displaySlider1Value}
+              />
+            ) : null}
             <Text />
           </View>
 
           {/*Slider2*/}
           <View style={{ width: "90%" }}>
-            <Slider
-              functionListener={this.handleListener2}
-              leftBound={"Wine"}
-              rightBound={"Beer"}
-              value={this.state.displaySlider2Value}
-            />
+            {this.props.wouldYouRatherToggle ? (
+              <Slider
+                functionListener={this.handleListener2}
+                minimumValue={0}
+                maximumValue={100}
+                leftBound={"Wine"}
+                rightBound={"Beer"}
+                value={this.state.displaySlider2Value}
+              />
+            ) : null}
             <Text />
           </View>
 
           {/*Slider3*/}
           <View style={{ width: "90%" }}>
-            <Slider
-              functionListener={this.handleListener3}
-              leftBound={"Beach"}
-              rightBound={"Mountains"}
-              value={this.state.displaySlider3Value}
-            />
+            {this.props.wouldYouRatherToggle ? (
+              <Slider
+                functionListener={this.handleListener3}
+                minimumValue={0}
+                maximumValue={100}
+                leftBound={"Beach"}
+                rightBound={"Mountains"}
+                value={this.state.displaySlider3Value}
+              />
+            ) : null}
             <Text />
           </View>
         </View>
