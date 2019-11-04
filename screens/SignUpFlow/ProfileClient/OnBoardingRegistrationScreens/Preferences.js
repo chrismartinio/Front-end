@@ -10,17 +10,14 @@ import {
   Button,
   Picker,
   TextInput,
-  Dimensions
+  Dimensions,
+  ActivityIndicator
 } from "react-native";
 
 //Redux
 import { connect } from "react-redux";
 import SetPreferencesDataAction from "../../../../storage/actions/RegistrationActions/SetPreferencesDataAction";
 import SetChecklistAction from "../../../../storage/actions/RegistrationActions/SetChecklistAction";
-
-//Components
-import Slider from "../Components/Sliders/PreferencesSlider";
-import MultiSlider from "@ptomasroos/react-native-multi-slider";
 
 //Icons
 import { Icon } from "react-native-elements";
@@ -29,7 +26,25 @@ import { Icon } from "react-native-elements";
 const screenHeight = Math.round(Dimensions.get("window").height);
 
 //Collapsible Components
-import LoadingScreen from "../Components/LoadingScreen";
+import FailScreen from "../Components/FailScreen";
+import NextButton from "../Components/NextButton";
+
+//Sliders
+import Slider from "../Components/Sliders/PreferencesSlider";
+import MultiSlider from "@ptomasroos/react-native-multi-slider";
+
+//checker functions
+import { genderChecker } from "../Util/OnBoardingRegistrationScreenCheckers.js";
+
+//SQLite
+import * as SQLite from "expo-sqlite";
+const db = SQLite.openDatabase("that.db");
+
+//warnings
+import {
+  emptyGenderWarning,
+  internalErrorWarning
+} from "../Util/OnBoardingRegistrationScreenWarnings.js";
 
 class Preferences extends Component {
   //having null header means no back  button is present!
@@ -45,7 +60,7 @@ class Preferences extends Component {
       passed: false,
       distanceRange: 0,
       internalErrorWarning: false,
-      isLoading: true,
+      isSuccess: true,
       isDelaying: false
     };
 
@@ -56,22 +71,27 @@ class Preferences extends Component {
     this.isContinueUserFetched = false;
   }
 
-  getData = async () => {
-    //do something with redux
-    await fetch("http://74.80.250.210:5000/api/profile/query", {
+  getDataFromDB = async () => {
+    //if checklist says this screen is not complete, return (don't do query)
+    if (!this.props.CreateProfileDataReducer.checklist.preferences) {
+      return;
+    }
+
+    await fetch("http://74.80.250.210:4000/api/profile/query", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        gui: this.props.CreateProfileDataReducer.gui,
+        guid: this.props.CreateProfileDataReducer.guid,
         collection: "preferences"
       })
     })
       .then(res => res.json())
       .then(res => {
         let object = JSON.parse(JSON.stringify(res));
-        console.log(object);
+        //console.log(object);
+        //SUCCESS ON QUERYING DATA
         if (object.success) {
           let pickedMen, pickedWomen;
           if (object.result.interestedGender === "both") {
@@ -85,6 +105,7 @@ class Preferences extends Component {
             pickedMen = false;
             pickedWomen = false;
           }
+          //setState
           this.setState({
             pickedMen: pickedMen,
             pickedWomen: pickedWomen,
@@ -92,20 +113,142 @@ class Preferences extends Component {
               pickedMen === "" && pickedWomen === "" ? "empty" : "",
             ageRange: object.result.ageRange,
             distanceRange: object.result.distanceRange,
-            isLoading: true,
-            passed: true
+            isSuccess: true
+          });
+
+          //LocalStorage
+          let json_ageRange = JSON.stringify({
+            ageRange: object.result.ageRange
+          });
+          //Only insert or replace id = 1
+          let insertSqlStatement =
+            "INSERT OR REPLACE into device_user_preferences(id, createAccount_id, interestedGender, ageRange, distanceRange) " +
+            "values(1, 1, ?, ?, ?);";
+
+          db.transaction(
+            tx => {
+              //INSERT DATA
+              tx.executeSql(
+                insertSqlStatement,
+                [
+                  object.result.interestedGender,
+                  json_ageRange,
+                  object.result.distanceRange
+                ],
+                (tx, result) => {
+                  console.log("inner success");
+                },
+                (tx, err) => {
+                  console.log("inner error: ", err);
+                }
+              );
+              //DISPLAY DATA
+              tx.executeSql(
+                "select * from device_user_preferences",
+                null,
+                (tx, result) => {
+                  console.log(result);
+                },
+                (tx, err) => {
+                  console.log("inner error: ", err);
+                }
+              );
+            },
+            (tx, err) => {
+              console.log(err);
+            },
+            () => {
+              console.log("outer success");
+            }
+          );
+
+          //Redux
+          this.props.SetPreferencesDataAction({
+            ageRange: object.result.ageRange,
+            distanceRange: object.result.distanceRange,
+            interestedGender: object.result.interestedGender
           });
         } else {
+          //INTERNAL ERROR DURING QUERYING
           throw new Error("internal Error");
         }
       })
       .catch(err => {
-        //throw to is loading screen or ask user to click a button for refetch
-        //to fetch the data
-        this.setState({
-          isLoading: false
-        });
+        //HANDLE ANY CATCHED ERRORS
+        this.getDataFromLocalStorage()
+          .then(result => {
+            let {
+              interestedGender,
+              ageRange,
+              distanceRange
+            } = result.rows._array[0];
+
+            ageRange = JSON.parse(ageRange).ageRange;
+
+            let pickedMen, pickedWomen;
+            if (interestedGender === "both") {
+              pickedMen = true;
+              pickedWomen = true;
+            } else if (interestedGender === "male") {
+              pickedMen = true;
+            } else if (interestedGender === "female") {
+              pickedWomen = true;
+            } else {
+              pickedMen = false;
+              pickedWomen = false;
+            }
+            //setState
+            this.setState({
+              pickedMen: pickedMen,
+              pickedWomen: pickedWomen,
+              interestedGenderWarning:
+                pickedMen === "" && pickedWomen === "" ? "empty" : "",
+              ageRange: ageRange,
+              distanceRange: distanceRange,
+              isSuccess: true
+            });
+          })
+          .catch(err => {
+            //If error while fetching, direct user to failScreen
+            //setState
+            this.setState({
+              isSuccess: false
+            });
+          });
       });
+  };
+
+  getDataFromLocalStorage = () => {
+    return new Promise((resolve, reject) => {
+      db.transaction(
+        tx => {
+          //DISPLAY DATA
+          tx.executeSql(
+            "select * from device_user_preferences",
+            null,
+            (tx, result) => {
+              if (result.rows.length <= 0) reject(new Error("Internal Error"));
+              resolve(result);
+            },
+            (tx, err) => {
+              reject(err);
+            }
+          );
+        },
+        (tx, err) => {
+          reject(err);
+        },
+        () => {
+          console.log("outer success");
+        }
+      );
+    });
+  };
+
+  reset = () => {
+    this.setState({
+      isSuccess: true
+    });
   };
 
   componentDidUpdate(prevProps, prevState, snapshot) {
@@ -132,7 +275,7 @@ class Preferences extends Component {
         this.props.CreateProfileDataReducer.isContinueUser
       ) {
         if (!this.isContinueUserFetched) {
-          this.getData();
+          this.getDataFromDB();
           this.isContinueUserFetched = true;
         }
       }
@@ -164,26 +307,12 @@ class Preferences extends Component {
     });
   };
 
-  genderChecker = () => {
-    if (this.state.pickedMen === true || this.state.pickedWomen === true) {
-      return true;
-    }
-    return false;
-  };
-
-  distanceChecker = () => {
-    if (this.state.distanceRange > 0) {
-      return true;
-    }
-    return false;
-  };
-
   allChecker = () => {
     //let distance = false;
     let distance = true;
     let gender = false;
 
-    if (!this.genderChecker()) {
+    if (!genderChecker(this.state.pickedMen, this.state.pickedWomen)) {
       gender = false;
       this.setState(
         {
@@ -200,25 +329,6 @@ class Preferences extends Component {
       });
     }
 
-    /*
-    if (!this.distanceChecker()) {
-      distance = false;
-      this.setState(
-        {
-          distanceWarning: "empty"
-        },
-        () => {
-          return;
-        }
-      );
-    } else {
-      distance = true;
-      this.setState({
-        distanceWarning: "empty"
-      });
-    }
-    */
-
     if (gender && distance) {
       this.setState({
         passed: true
@@ -231,26 +341,61 @@ class Preferences extends Component {
   };
 
   changeColor = bname => {
-    let topY = this.props.currentScreenTopY;
+    let topY = this.props.scrollY;
+    let otherScreenOffset1 = 0,
+      otherScreenOffset2 = 0,
+      otherScreenOffset3 = 0,
+      speedOfYChange = 1.2;
+
+    this.props.otherToggle.forEach(toggle => {
+      if (toggle) {
+        otherScreenOffset1 += 25;
+        otherScreenOffset2 += 100;
+        otherScreenOffset3 += 61;
+      }
+    });
 
     const topRed = 24;
     const topGreen = 205;
     const topBlue = 246;
+
     const bottomRed = 67;
     const bottomGreen = 33;
     const bottomBlue = 140;
 
     let pos = (this[bname] - topY) / screenHeight;
 
-    let colorRed = topRed + (bottomRed - topRed) * pos;
-    let colorGreen = topGreen + (bottomGreen - topGreen) * pos;
-    let colorBlue = topBlue + (bottomBlue - topBlue) * pos;
+    //not the best solution (kinda hard code)
+    //the toggle above will add up Offset for other screens
+    //and there also a constant number which is the current screen otherScreenOffset
+
+    let colorRed =
+      (topRed + (bottomRed - topRed) * pos) * speedOfYChange +
+      24 +
+      otherScreenOffset1;
+    let colorGreen =
+      (topGreen + (bottomGreen - topGreen) * pos) * speedOfYChange -
+      150 -
+      otherScreenOffset2;
+    let colorBlue =
+      (topBlue + (bottomBlue - topBlue) * pos) * speedOfYChange -
+      116 -
+      otherScreenOffset3;
+
+    //default
+    colorRed = 67;
+    colorGreen = 33;
+    colorBlue = 140;
 
     return `rgb(${colorRed},${colorGreen},${colorBlue})`;
   };
 
   handleSubmit = () => {
-    if (this.state.passed) {
+    //if the screen passed and guid is not null (that means user had finished createAccount)
+    if (
+      this.state.passed &&
+      this.props.CreateProfileDataReducer.guid !== null
+    ) {
       //check the user's interestGender and pass to redux and db
       let interestedGender = "";
       if (this.state.pickedMen && this.state.pickedWomen) {
@@ -265,15 +410,7 @@ class Preferences extends Component {
 
       //Set the screen's checklist index to true
       let checklist = this.props.CreateProfileDataReducer.checklist;
-      let index = 2;
-      checklist = [
-        ...checklist.slice(0, index),
-        true,
-        ...checklist.slice(index + 1)
-      ];
-      this.props.SetChecklistAction({
-        checklist: checklist
-      });
+      checklist.preferences = true;
 
       this.setState(
         {
@@ -281,13 +418,13 @@ class Preferences extends Component {
         },
         () => {
           //Send data to database
-          fetch("http://74.80.250.210:5000/api/profile/update", {
+          fetch("http://74.80.250.210:4000/api/profile/update", {
             method: "POST",
             headers: {
               "Content-Type": "application/json"
             },
             body: JSON.stringify({
-              gui: this.props.CreateProfileDataReducer.gui,
+              guid: this.props.CreateProfileDataReducer.guid,
               collection: "preferences",
               data: {
                 ageRange: this.state.ageRange,
@@ -300,105 +437,152 @@ class Preferences extends Component {
             .then(res => res.json())
             .then(res => {
               let object = JSON.parse(JSON.stringify(res));
-              console.log(object);
+              //console.log(object);
+              //SUCCESS ON SUBMITTING DATA
               if (object.success) {
-                //Send Data to Redux
+                //Redux
                 this.props.SetPreferencesDataAction({
                   ageRange: this.state.ageRange,
                   distanceRange: this.state.distanceRange,
                   interestedGender: interestedGender
                 });
-                //if successed to passed, it will put the check mark from CollapsibleComponent CheckMark
+                this.props.SetChecklistAction({
+                  checklist: checklist
+                });
+
+                //LocalStorage
+                let json_checklist = JSON.stringify(checklist);
+                let json_ageRange = JSON.stringify({
+                  ageRange: this.state.ageRange
+                });
+                //Only insert or replace id = 1
+                let insertSqlStatement =
+                  "INSERT OR REPLACE into device_user_preferences(id, createAccount_id, interestedGender, ageRange, distanceRange) " +
+                  "values(1, 1, ?, ?, ?);";
+
+                db.transaction(
+                  tx => {
+                    //INSERT DATA
+                    tx.executeSql(
+                      insertSqlStatement,
+                      [
+                        interestedGender,
+                        json_ageRange,
+                        this.state.distanceRange
+                      ],
+                      (tx, result) => {
+                        console.log("inner success");
+                      },
+                      (tx, err) => {
+                        console.log("inner error: ", err);
+                      }
+                    );
+                    //UPDATE CHECKLIST
+                    tx.executeSql(
+                      "UPDATE device_user_createAccount SET checklist = ? WHERE id = 1;",
+                      [json_checklist],
+                      (tx, result) => {
+                        console.log("inner success");
+                      },
+                      (tx, err) => {
+                        console.log("inner error: ", err);
+                      }
+                    );
+                    //DISPLAY DATA
+                    tx.executeSql(
+                      "select * from device_user_preferences",
+                      null,
+                      (tx, result) => {
+                        console.log(result);
+                      },
+                      (tx, err) => {
+                        console.log("inner error: ", err);
+                      }
+                    );
+                  },
+                  (tx, err) => {
+                    console.log(err);
+                  },
+                  () => {
+                    console.log("outer success");
+                  }
+                );
+
+                //setState
                 this.setState(
                   {
                     internalErrorWarning: false,
                     isDelaying: false
                   },
                   () => {
+                    //it will put a check mark for preferences
                     this.props.handlePassed("preferences", 1);
                   }
                 );
               } else {
+                //INTERNAL ERROR
                 throw new Error("Internal Error ");
               }
             })
             .catch(error => {
+              //HANDLE ANY CATCHED ERRORS
+              //setState
               this.setState(
                 {
                   internalErrorWarning: true,
                   isDelaying: false
                 },
                 () => {
+                  //put a error marker for preferences
                   this.props.handlePassed("preferences", 3);
                 }
               );
             });
         }
       );
+    } else {
+      //if guid is null
+
+      //User must has a guid retrieve from the createAccount screen before get to this screen
+      //if there are no guid, give an error warning
+      //the reason of no guid may come from internal error when inserting email/password into createAccount Collection
+      //and error had thrown and guid didn't return back to client
+      //user may need to re-sign in as continue user?
+
+      this.setState(
+        {
+          internalErrorWarning: true,
+          isDelaying: false
+        },
+        () => {
+          this.props.handlePassed("preferences", 3);
+        }
+      );
     }
   };
 
   successScreen = () => {
-    let emptyGenderWarning = (
-      <View style={{ alignItems: "center" }}>
-        <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
-          <Icon
-            type="font-awesome"
-            name="exclamation-circle"
-            color="#fff"
-            iconStyle={{ top: 3 }}
-          />
-          <Text style={styles.warningText}>
-            {"   "}Please choose at least one gender
-          </Text>
-        </View>
-      </View>
-    );
-
-    let distanceWarning = (
-      <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
-        <Icon
-          type="font-awesome"
-          name="exclamation-circle"
-          color="#fff"
-          iconStyle={{ top: 3 }}
-        />
-        <Text style={styles.warningText}>
-          {"   "}Please choose our preferred distance
-        </Text>
-      </View>
-    );
-
-    let internalErrorWarning = (
-      <Text style={styles.warningText}>* Internal Error. Please Try again</Text>
-    );
-
     return (
       <View style={{ flex: 1 }}>
+        {/*Internal Error Warning*/}
         {this.state.internalErrorWarning && internalErrorWarning}
+
         {/*Spaces*/}
         <View
           style={{
             padding: "5%"
-            //borderRadius: 4,
-            //borderWidth: 0.5,
-            //borderColor: "#d6d7da"
           }}
         />
+
         {/*I'm interested in Text & Pick one of both Text*/}
         <View style={{ alignItems: "center" }}>
-          <Text style={{ color: "white", fontSize: 24 }}>
-            I'm interested in
-          </Text>
+          <Text style={styles.imInterestedInText}>I'm interested in</Text>
           <Text />
-          <Text style={{ opacity: 0.7, color: "white" }}>Pick one or both</Text>
+          <Text style={styles.pickOneorBothText}>Pick one or both</Text>
           {/*Spaces*/}
           <View
             style={{
               padding: "5%"
-              //borderRadius: 4,
-              //borderWidth: 0.5,
-              //borderColor: "#d6d7da"
             }}
           />
         </View>
@@ -428,7 +612,7 @@ class Preferences extends Component {
           >
             <Text
               style={[
-                styles.button,
+                styles.genderButtonText,
                 {
                   color: this.state.pickedMen
                     ? this.changeColor(`bMaley`)
@@ -456,7 +640,7 @@ class Preferences extends Component {
           >
             <Text
               style={[
-                styles.button,
+                styles.genderButtonText,
                 {
                   color: this.state.pickedWomen
                     ? this.changeColor(`bFemaley`)
@@ -474,85 +658,77 @@ class Preferences extends Component {
         <View
           style={{
             padding: "10%"
-            //borderRadius: 4,
-            //borderWidth: 0.5,
-            //borderColor: "#d6d7da"
           }}
         />
 
         {/*Preferred age range*/}
         <View>
-          <Text style={styles.textTop}>Preferred age range</Text>
+          <Text style={styles.sliderTitleText}>Preferred age range</Text>
+          {/*ageRangeNumbersText*/}
           <View style={styles.flexContainer}>
-            <Text style={styles.text2}> {this.state.ageRange[0]} </Text>
-            <Text style={styles.text2}> {this.state.ageRange[1]} </Text>
+            <Text style={styles.ageRangeNumbersText}>
+              {" "}
+              {this.state.ageRange[0]}{" "}
+            </Text>
+            <Text style={styles.ageRangeNumbersText}>
+              {" "}
+              {this.state.ageRange[1]}{" "}
+            </Text>
           </View>
+
+          {/*ageRangeSlider*/}
           <MultiSlider
             values={[this.state.ageRange[0], this.state.ageRange[1]]}
-            sliderLength={320}
             onValuesChange={this.ageRangeChange}
             min={18}
             max={110}
             step={1}
             allowOverlap
             snapped
+            sliderLength={Math.round(width / 1.33)}
             trackStyle={{
               shadowColor: "red",
               backgroundColor: "white"
             }}
           />
         </View>
+
         {/*Spaces*/}
         <View
           style={{
             padding: "10%"
-            //borderRadius: 4,
-            //borderWidth: 0.5,
-            //borderColor: "#d6d7da"
           }}
         />
 
         {/*Preferred match radius*/}
         <View>
-          <Text style={styles.textTop}>Preferred match radius</Text>
-          <Slider
-            functionListener={this.setDistanceRange}
-            minimumValue={0}
-            maximumValue={110}
-            leftBound={"0"}
-            rightBound={"110"}
-            value={this.state.distanceRange}
-          />
+          <Text style={styles.sliderTitleText}>Preferred match radius</Text>
+          {this.props.preferencesToggle ? (
+            <Slider
+              functionListener={this.setDistanceRange}
+              minimumValue={0}
+              maximumValue={110}
+              leftBound={"0"}
+              rightBound={"110"}
+              value={this.state.distanceRange}
+            />
+          ) : null}
         </View>
+
         {/*Spaces*/}
         <View
           style={{
             padding: "10%"
-            //borderRadius: 4,
-            //borderWidth: 0.5,
-            //borderColor: "#d6d7da"
           }}
         />
 
         {/*Next Button*/}
-        <View
-          alignItems="center"
-          style={{ opacity: this.state.passed ? 1.0 : 0.5 }}
-        >
-          <TouchableOpacity
-            style={styles.nextButton}
-            onPress={this.handleSubmit}
-            disabled={
-              (this.state.passed && this.state.isDelaying) || !this.state.passed
-            }
-          >
-            <Text style={styles.button}>
-              {this.state.passed && this.state.isDelaying
-                ? "Submitting"
-                : "Next"}
-            </Text>
-          </TouchableOpacity>
-        </View>
+        <NextButton
+          passed={this.state.passed}
+          handleSubmit={this.handleSubmit}
+          isDelaying={this.state.isDelaying}
+        />
+
         {/*Spaces*/}
         <View
           style={{
@@ -563,13 +739,16 @@ class Preferences extends Component {
     );
   };
 
-  loadingScreen = () => {
-    //display fetching data
-    return <LoadingScreen />;
+  failScreen = () => {
+    //For isContinueUser Only
+    //If fail on fetching, then display a screen to tell them try again
+    return (
+      <FailScreen getDataFunction={this.getDataFromDB} reset={this.reset} />
+    );
   };
 
   render() {
-    return this.state.isLoading ? this.successScreen() : this.loadingScreen();
+    return this.state.isSuccess ? this.successScreen() : this.failScreen();
   }
 }
 
@@ -578,103 +757,18 @@ const { height, width } = Dimensions.get("window");
 const styles = StyleSheet.create({
   container: {
     flex: 1
-    ///backgroundColor: '#fff',
   },
-  titleText: {
+  ageRangeNumbersText: {
     margin: 10,
     color: "#fff",
-    fontSize: 48,
-    textAlign: "center",
-    fontWeight: "100"
-  },
-  text2: {
-    color: "white"
-  },
-  titleText2: {
-    margin: 10,
-    color: "#fff",
-    fontSize: 24,
-    top: 25,
     textAlign: "center"
   },
-  _textInput: {
-    color: "#fff",
-    fontSize: 20,
-    textAlign: "left",
-    paddingTop: "20%",
-    borderBottomWidth: 1,
-    borderColor: "#fff"
-  },
-  smallText: {
-    margin: 10,
-    color: "#fff",
-    fontSize: 10
-  },
-  text: {
-    margin: 10,
-    color: "#fff",
-    fontSize: 20,
-    textAlign: "center"
-  },
-  textTop: {
+  sliderTitleText: {
     //top: 40,
     //margin: 10,
     color: "#fff",
     fontSize: 20,
     textAlign: "center"
-  },
-  textTop2: {
-    top: 60,
-    margin: 10,
-    color: "#fff",
-    fontSize: 20,
-    textAlign: "center"
-  },
-  button: {
-    color: "#fff",
-    fontSize: 20
-  },
-  button2: {
-    alignItems: "center",
-    padding: 10,
-    borderRadius: 40,
-    borderWidth: 2,
-    borderColor: "#fff",
-    width: "55%"
-  },
-  flexContainer: {
-    //top: height *.45,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    //position:'absolute',
-    alignItems: "stretch"
-  },
-  slider1: {
-    top: 60
-  },
-  slider2: {
-    top: 80
-  },
-  slider3: {
-    top: 15
-  },
-  warningText: {
-    color: "#fff",
-    fontSize: 10,
-    paddingTop: "3%",
-    fontWeight: "bold"
-  },
-  button: {
-    color: "#fff",
-    fontSize: 20
-  },
-  nextButton: {
-    alignItems: "center",
-    padding: 10,
-    borderRadius: 40,
-    borderWidth: 2,
-    borderColor: "#fff",
-    width: "55%"
   },
   genderButtonWrap: {
     alignItems: "center",
@@ -683,6 +777,24 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: "#fff",
     width: "65%"
+  },
+  genderButtonText: {
+    color: "#fff",
+    fontSize: 20
+  },
+  flexContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "stretch"
+  },
+  imInterestedInText: {
+    color: "white",
+    fontSize: Math.round(width / 15.625)
+  },
+  pickOneorBothText: {
+    opacity: 0.7,
+    color: "white",
+    fontSize: Math.round(width / 25)
   }
 });
 

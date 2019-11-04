@@ -8,7 +8,6 @@ import {
   TouchableOpacity,
   View,
   Button
-
 } from "react-native";
 import Firebase from "../storage/Store";
 import { MonoText } from "../components/StyledText";
@@ -19,10 +18,10 @@ import { connect } from "react-redux";
 import SetFbDataAction from "../storage/actions/DataReducerActions/SetFbDataAction";
 import SetJwtAction from "../storage/actions/DataReducerActions/SetJwtAction";
 //import publicIP from "react-native-public-ip";
-import * as WebBrowser from 'expo-web-browser';
-import * as Location from 'expo-location';
-import Constants from 'expo-constants'
-import * as Permissions from 'expo-permissions';
+import * as WebBrowser from "expo-web-browser";
+import * as Location from "expo-location";
+import Constants from "expo-constants";
+import * as Permissions from "expo-permissions";
 
 const { manifest } = Constants;
 
@@ -32,6 +31,10 @@ const User = t.struct({
   username: t.String,
   password: t.String
 });
+
+//SQLite
+import * as SQLite from "expo-sqlite";
+const db = SQLite.openDatabase("that.db");
 
 class HomeScreen extends React.Component {
   static navigationOptions = {
@@ -43,50 +46,220 @@ class HomeScreen extends React.Component {
     errorMessage: null
   };
 
+  //Profile Services uses
+  async componentDidMount() {
+    //console.log(Platform.OS === "android");
+    //console.log(Platform.OS === "ios");
+    //create tables for device's user
+
+    let createAccountSqlStatement =
+      "CREATE TABLE IF NOT EXISTS device_user_createAccount ( " +
+      "id INTEGER PRIMARY KEY," +
+      "guid TEXT DEFAULT NULL," +
+      "email TEXT DEFAULT NULL," +
+      "password TEXT DEFAULT NULL," +
+      "isAdmin BOOLEAN DEFAULT NULL," +
+      "checklist TEXT DEFAULT NULL," +
+      "phoneNumber TEXT DEFAULT NULL" +
+      " );";
+
+    let aboutYouSqlStatement =
+      "CREATE TABLE IF NOT EXISTS device_user_aboutYou ( " +
+      "id INTEGER PRIMARY KEY," +
+      "birthDate TEXT DEFAULT NULL," +
+      "country TEXT DEFAULT NULL," +
+      "firstName TEXT DEFAULT NULL," +
+      "lastName TEXT DEFAULT NULL," +
+      "gender TEXT DEFAULT NULL," +
+      "zipCode TEXT DEFAULT NULL," +
+      "createAccount_id INTEGER," +
+      "FOREIGN KEY (createAccount_id) REFERENCES device_user_createAccount (id)" +
+      " );";
+
+    let preferencesSqlStatement =
+      "CREATE TABLE IF NOT EXISTS device_user_preferences ( " +
+      "id INTEGER PRIMARY KEY," +
+      "interestedGender TEXT DEFAULT NULL," +
+      "ageRange TEXT DEFAULT NULL," +
+      "distanceRange INTEGER DEFAULT NULL," +
+      "createAccount_id INTEGER," +
+      "FOREIGN KEY (createAccount_id) REFERENCES device_user_createAccount (id)" +
+      " );";
+
+    let interestsSqlStatement =
+      "CREATE TABLE IF NOT EXISTS device_user_interests ( " +
+      "id INTEGER PRIMARY KEY," +
+      "likesArray TEXT DEFAULT NULL," +
+      "createAccount_id INTEGER," +
+      "FOREIGN KEY (createAccount_id) REFERENCES device_user_createAccount (id)" +
+      " );";
+
+    let wouldYouRatherSqlStatement =
+      "CREATE TABLE IF NOT EXISTS device_user_wouldYouRather ( " +
+      "id INTEGER PRIMARY KEY," +
+      "s1r1 DECIMAL DEFAULT NULL," +
+      "s1r2 DECIMAL DEFAULT NULL," +
+      "s2r1 DECIMAL DEFAULT NULL," +
+      "s2r2 DECIMAL DEFAULT NULL," +
+      "s3r1 DECIMAL DEFAULT NULL," +
+      "s3r2 DECIMAL DEFAULT NULL," +
+      "createAccount_id INTEGER," +
+      "FOREIGN KEY (createAccount_id) REFERENCES device_user_createAccount (id)" +
+      " );";
+
+    let localDestinationSqlStatement =
+      "CREATE TABLE IF NOT EXISTS device_user_localDestination ( " +
+      "id INTEGER PRIMARY KEY," +
+      "localDestination TEXT DEFAULT NULL," +
+      "createAccount_id INTEGER," +
+      "FOREIGN KEY (createAccount_id) REFERENCES device_user_createAccount (id)" +
+      " );";
+
+    let createTable_SqlStatementsArray = [
+      createAccountSqlStatement,
+      aboutYouSqlStatement,
+      preferencesSqlStatement,
+      interestsSqlStatement,
+      wouldYouRatherSqlStatement,
+      localDestinationSqlStatement
+    ];
+    let dropTable_SqlStatementsArray = [
+      "DROP TABLE device_user_createAccount",
+      "DROP TABLE device_user_aboutYou",
+      "DROP TABLE device_user_preferences",
+      "DROP TABLE device_user_interests",
+      "DROP TABLE device_user_wouldYouRather",
+      "DROP TABLE device_user_localDestination"
+    ];
+    let displayTable_SqlStatementsArray = [
+      "SELECT * FROM device_user_createAccount",
+      "SELECT * FROM device_user_aboutYou",
+      "SELECT * FROM device_user_preferences",
+      "SELECT * FROM device_user_interests",
+      "SELECT * FROM device_user_wouldYouRather",
+      "SELECT * FROM device_user_localDestination"
+    ];
+
+    db.transaction(
+      tx => {
+        //DROP TABLES
+        //NOTICE: If table and its structure already created,
+        //later insert something doesn't match structure would get error
+        /*
+        dropTable_SqlStatementsArray.map(sqlStatement => {
+          tx.executeSql(
+            sqlStatement,
+            null,
+            (tx, result) => {
+              console.log("inner success");
+            },
+            (tx, err) => {
+              console.log("inner error: ", err);
+            }
+          );
+        });
+        */
+
+        //CREATE TABLES
+        createTable_SqlStatementsArray.map(sqlStatement => {
+          tx.executeSql(sqlStatement, null, null, (tx, err) => {
+            console.log("inner error: ", err);
+          });
+        });
+
+        //DISPLAY DATA
+        /*
+        displayTable_SqlStatementsArray.map(sqlStatement => {
+          tx.executeSql(
+            sqlStatement,
+            null,
+            (tx, result) => {
+              console.log("Statement: ", sqlStatement);
+              console.log(result);
+            },
+            (tx, err) => {
+              console.log("inner error: ", err);
+            }
+          );
+        });
+        */
+        /*
+        //DELETE ROW
+        tx.executeSql(
+          "DELETE FROM device_user_createAccount WHERE id = 1;",
+          null,
+          (tx, result) => {
+            console.log(result);
+          },
+          (tx, err) => {
+            console.log("inner error: ", err);
+          }
+        );
+        */
+        /*
+        //LOG ALL TABLES
+        tx.executeSql(
+          "SELECT name FROM sqlite_master WHERE type ='table' AND name NOT LIKE 'sqlite_%';",
+          null,
+          (tx, result) => {
+            console.log(result);
+          },
+          (tx, err) => {
+            console.log("inner error: ", err);
+          }
+        );
+        */
+      },
+      (tx, err) => {
+        console.log(err);
+      },
+      () => {
+        console.log("homescreen outer success");
+      }
+    );
+
+    //create tables for matched's user
+  }
 
   handleEmailAndPasswordSignin = async () => {
     // needs to have json web token?
     try {
-    const { username, password } = this._form.getValue();
-    let data = await fetch("http://10.0.0.246:3003/api/auth/login", {
-      method: "POST",
-      mode: "cors",
-      credentials: "same-origin",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        password: password,
-        username: username,
-        mode: 2,
-        authType:'email'
-      })
-    });
+      const { username, password } = this._form.getValue();
+      let data = await fetch("http://10.0.0.246:3003/api/auth/login", {
+        method: "POST",
+        mode: "cors",
+        credentials: "same-origin",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          password: password,
+          username: username,
+          mode: 2,
+          authType: "email"
+        })
+      });
 
-    let jsonData = await data.json();
+      let jsonData = await data.json();
       if (jsonData.token) {
-        this.props.SetJwtAction(jsonData.token)
+        this.props.SetJwtAction(jsonData.token);
         this.props.navigation.navigate("Chat");
       } else {
-        alert(jsonData.error)
+        alert(jsonData.error);
       }
-
-    } catch(e){
-      console.log(e)
+    } catch (e) {
+      console.log(e);
     }
   };
-
-
 
   handleSignUp = () => {
     this.props.navigation.navigate("SignUp");
   };
 
-
-  DBCheck = async(info) => {
+  DBCheck = async info => {
     try {
-      console.log(info.uid)
+      console.log(info.uid);
       let data = await fetch("http://10.0.0.246:3003/api/auth/login", {
         method: "POST",
         mode: "cors",
@@ -102,24 +275,22 @@ class HomeScreen extends React.Component {
       });
 
       let jsonData = await data.json();
-      return jsonData
+      return jsonData;
     } catch (e) {
       console.log(e.error);
     }
-  }
+  };
 
-
-  checkFaceBookValidity = async(signInData) => {
-
+  checkFaceBookValidity = async signInData => {
     try {
-    //const { username, password } = this._form.getValue();
-    var fbData = signInWithFacebook()
-    fbData
-    .then((data)=>{
-      return data
-    })
-    .then((fbData)=>{
-         fetch("http://10.0.0.246:3003/api/auth/login", {
+      //const { username, password } = this._form.getValue();
+      var fbData = signInWithFacebook();
+      fbData
+        .then(data => {
+          return data;
+        })
+        .then(fbData => {
+          fetch("http://10.0.0.246:3003/api/auth/login", {
             method: "POST",
             mode: "cors",
             credentials: "same-origin",
@@ -129,25 +300,26 @@ class HomeScreen extends React.Component {
             },
             body: JSON.stringify({
               mode: 2,
-              authType:'facebook',
+              authType: "facebook",
               data: fbData
             })
-          }).then((AuthData)=>{
-              return AuthData.json()
-          }).then((data)=>{
-            this.props.SetJwtAction(data.token)
-            this.props.navigation.navigate("Chat")
-          }).catch((e)=>{
-            console.log(e)
           })
-
-
-    }).catch((err)=>{
-      console.log(err)
-    })
-
-    } catch(e){
-      console.log(e)
+            .then(AuthData => {
+              return AuthData.json();
+            })
+            .then(data => {
+              this.props.SetJwtAction(data.token);
+              this.props.navigation.navigate("Chat");
+            })
+            .catch(e => {
+              console.log(e);
+            });
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    } catch (e) {
+      console.log(e);
     }
   };
 

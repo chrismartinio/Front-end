@@ -42,7 +42,6 @@ class CSlider extends React.Component {
          <Text style={styles.text}> {Math.floor(this.state.value)+50}  </Text>
        </View> */}
         <Slider
-          style={styles.slider}
           value={this.props.value}
           minimumValue={this.props.minimumValue}
           maximumValue={this.props.maximumValue}
@@ -79,9 +78,6 @@ const styles = StyleSheet.create({
   },
   text: {
     color: "white"
-  },
-  slider: {
-    //top:height * .4
   }
 });
 

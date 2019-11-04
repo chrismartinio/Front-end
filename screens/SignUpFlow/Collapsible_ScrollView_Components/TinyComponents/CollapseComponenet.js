@@ -23,7 +23,7 @@ export default function CollapseComponenet(props) {
         return (
           <Preferences
             handlePassed={props.handlePassed}
-            currentScreenTopY={props.currentScreenTopY}
+            scrollY={props.scrollY}
             preferencesPositionY={props.preferencesPositionY}
           />
         );
@@ -32,7 +32,7 @@ export default function CollapseComponenet(props) {
         return (
           <Interests
             handlePassed={props.handlePassed}
-            currentScreenTopY={props.currentScreenTopY}
+            scrollY={props.scrollY}
             interestsPositionY={props.interestsPositionY}
           />
         );
@@ -44,7 +44,7 @@ export default function CollapseComponenet(props) {
         return (
           <LocalDestinations
             handlePassed={props.handlePassed}
-            currentScreenTopY={props.currentScreenTopY}
+            scrollY={props.scrollY}
             localDestinationsPositionY={props.localDestinationsPositionY}
           />
         );

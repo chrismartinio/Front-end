@@ -10,7 +10,8 @@ import {
   Button,
   Picker,
   TextInput,
-  Dimensions
+  Dimensions,
+  ActivityIndicator
 } from "react-native";
 
 //Redux
@@ -24,8 +25,25 @@ import { Icon } from "react-native-elements";
 //ScrollView
 const screenHeight = Math.round(Dimensions.get("window").height);
 
+//data
+import { locations } from "../Data/Locations.js";
+
 //Collapsible Components
-import LoadingScreen from "../Components/LoadingScreen";
+import FailScreen from "../Components/FailScreen";
+import NextButton from "../Components/NextButton";
+
+//checker functions
+import { locationsChecker } from "../Util/OnBoardingRegistrationScreenCheckers.js";
+
+//SQLite
+import * as SQLite from "expo-sqlite";
+const db = SQLite.openDatabase("that.db");
+
+//warnings
+import {
+  internalErrorWarning,
+  emptyCityWarning
+} from "../Util/OnBoardingRegistrationScreenWarnings.js";
 
 class LocationDestinations extends Component {
   //having null header means no back  button is present!
@@ -35,56 +53,140 @@ class LocationDestinations extends Component {
       localDestination: "",
       passed: false,
       internalErrorWarning: false,
-      isLoading: true
+      isSuccess: true
     };
-
-    //Control Button Text Color based on Current Screen's Position
-    this.b1y = 0;
-    this.b2y = 0;
-    this.b3y = 0;
-    this.b4y = 0;
-    this.b5y = 0;
-    this.b6y = 0;
-    this.b7y = 0;
-    this.b8y = 0;
-    this.b9y = 0;
 
     this.isContinueUserFetched = false;
   }
 
-  getData = async () => {
-    //do something with redux
-    await fetch("http://74.80.250.210:5000/api/profile/query", {
+  getDataFromDB = async () => {
+    //if checklist says this screen is not complete, return (don't do query)
+    if (!this.props.CreateProfileDataReducer.checklist.localDestination) {
+      return;
+    }
+
+    await fetch("http://74.80.250.210:4000/api/profile/query", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        gui: this.props.CreateProfileDataReducer.gui,
+        guid: this.props.CreateProfileDataReducer.guid,
         collection: "localDestination"
       })
     })
       .then(res => res.json())
       .then(res => {
         let object = JSON.parse(JSON.stringify(res));
-        console.log(object);
+        //console.log(object);
+        //SUCCESS ON QUERYING DATA
         if (object.success) {
+          //setState
           this.setState({
             localDestination: object.result.localDestination,
-            isLoading: true,
-            passed: true
+            isSuccess: true
+          });
+
+          //LocalStorage
+          //Only insert or replace id = 1
+          let insertSqlStatement =
+            "INSERT OR REPLACE into device_user_localDestination(id, createAccount_id, localDestination) " +
+            "values(1, 1, ?);";
+
+          db.transaction(
+            tx => {
+              //INSERT DATA
+              tx.executeSql(
+                insertSqlStatement,
+                [object.result.localDestination],
+                (tx, result) => {
+                  console.log("inner success");
+                },
+                (tx, err) => {
+                  console.log("inner error: ", err);
+                }
+              );
+              //DISPLAY DATA
+              tx.executeSql(
+                "select * from device_user_localDestination",
+                null,
+                (tx, result) => {
+                  console.log(result);
+                },
+                (tx, err) => {
+                  console.log("inner error: ", err);
+                }
+              );
+            },
+            (tx, err) => {
+              console.log(err);
+            },
+            () => {
+              console.log("outer success");
+            }
+          );
+
+          //Redux
+          this.props.SetLocalDestinationDataAction({
+            localDestination: object.result.localDestination
           });
         } else {
+          //INTERNAL ERROR
           throw new Error("internal Error");
         }
       })
       .catch(err => {
-        //throw to is loading screen or ask user to click a button for refetch
-        //to fetch the data
-        this.setState({
-          isLoading: false
-        });
+        //HANDLE ANY CATCHED ERRORS
+        this.getDataFromLocalStorage()
+          .then(result => {
+            let { localDestination } = result.rows._array[0];
+            //setState
+            this.setState({
+              localDestination: localDestination,
+              isSuccess: true
+            });
+          })
+          .catch(err => {
+            //If error while fetching, direct user to failScreen
+            //setState
+            this.setState({
+              isSuccess: false
+            });
+          });
       });
+  };
+
+  getDataFromLocalStorage = () => {
+    return new Promise((resolve, reject) => {
+      db.transaction(
+        tx => {
+          //DISPLAY DATA
+          tx.executeSql(
+            "select * from device_user_localDestination",
+            null,
+            (tx, result) => {
+              if (result.rows.length <= 0) reject(new Error("Internal Error"));
+              resolve(result);
+            },
+            (tx, err) => {
+              reject(err);
+            }
+          );
+        },
+        (tx, err) => {
+          reject(err);
+        },
+        () => {
+          console.log("outer success");
+        }
+      );
+    });
+  };
+
+  reset = () => {
+    this.setState({
+      isSuccess: true
+    });
   };
 
   //header : navigate to sign in screen
@@ -116,7 +218,7 @@ class LocationDestinations extends Component {
         this.props.CreateProfileDataReducer.isContinueUser
       ) {
         if (!this.isContinueUserFetched) {
-          this.getData();
+          this.getDataFromDB();
           this.isContinueUserFetched = true;
         }
       }
@@ -135,15 +237,8 @@ class LocationDestinations extends Component {
     }
   };
 
-  locationsChecker = () => {
-    if (this.state.localDestination !== "") {
-      return true;
-    }
-    return false;
-  };
-
   allChecker = () => {
-    if (this.locationsChecker()) {
+    if (locationsChecker(this.state.localDestination)) {
       this.setState({
         passed: true
       });
@@ -155,51 +250,85 @@ class LocationDestinations extends Component {
   };
 
   changeColor = bname => {
-    let topY = this.props.currentScreenTopY;
+    let topY = this.props.scrollY;
+    let otherScreenOffset1 = 0,
+      otherScreenOffset2 = 0,
+      otherScreenOffset3 = 0,
+      speedOfYChange = 1.2;
+
+    this.props.otherToggle.forEach((toggle, i = 0) => {
+      if (toggle) {
+        if (i === 2) {
+          otherScreenOffset1 += 41;
+          otherScreenOffset2 += 161;
+          otherScreenOffset3 += 100;
+        } else if (i === 3) {
+          otherScreenOffset1 += 28;
+          otherScreenOffset2 += 113;
+          otherScreenOffset3 += 68;
+        } else {
+          otherScreenOffset1 += 30.5;
+          otherScreenOffset2 += 106;
+          otherScreenOffset3 += 64;
+        }
+      }
+      i++;
+    });
 
     const topRed = 24;
     const topGreen = 205;
     const topBlue = 246;
+
     const bottomRed = 67;
     const bottomGreen = 33;
     const bottomBlue = 140;
 
     let pos = (this[bname] - topY) / screenHeight;
 
-    let colorRed = topRed + (bottomRed - topRed) * pos;
-    let colorGreen = topGreen + (bottomGreen - topGreen) * pos;
-    let colorBlue = topBlue + (bottomBlue - topBlue) * pos;
+    let colorRed =
+      (topRed + (bottomRed - topRed) * pos) * speedOfYChange +
+      51 +
+      otherScreenOffset1;
+    let colorGreen =
+      (topGreen + (bottomGreen - topGreen) * pos) * speedOfYChange -
+      263 -
+      otherScreenOffset2;
+    let colorBlue =
+      (topBlue + (bottomBlue - topBlue) * pos) * speedOfYChange -
+      186 -
+      otherScreenOffset3;
+
+    //default
+    colorRed = 67;
+    colorGreen = 33;
+    colorBlue = 140;
 
     return `rgb(${colorRed},${colorGreen},${colorBlue})`;
   };
 
   handleSubmit = () => {
-    //Set the screen's checklist index to true
-    let checklist = this.props.CreateProfileDataReducer.checklist;
-    let index = 5;
-    checklist = [
-      ...checklist.slice(0, index),
-      true,
-      ...checklist.slice(index + 1)
-    ];
-    this.props.SetChecklistAction({
-      checklist: checklist
-    });
+    //if the screen passed and guid is not null (that means user had finished createAccount)
+    if (
+      this.state.passed &&
+      this.props.CreateProfileDataReducer.guid !== null
+    ) {
+      //Set the screen's checklist index to true
+      let checklist = this.props.CreateProfileDataReducer.checklist;
+      checklist.localDestination = true;
 
-    if (this.state.passed) {
       this.setState(
         {
           isDelaying: true
         },
         () => {
           //Send data to database
-          fetch("http://74.80.250.210:5000/api/profile/update", {
+          fetch("http://74.80.250.210:4000/api/profile/update", {
             method: "POST",
             headers: {
               "Content-Type": "application/json"
             },
             body: JSON.stringify({
-              gui: this.props.CreateProfileDataReducer.gui,
+              guid: this.props.CreateProfileDataReducer.guid,
               collection: "localDestination",
               data: {
                 localDestination: this.state.localDestination,
@@ -210,61 +339,122 @@ class LocationDestinations extends Component {
             .then(res => res.json())
             .then(res => {
               let object = JSON.parse(JSON.stringify(res));
-              console.log(object);
+              //console.log(object);
+              //SUCCESS ON SUBMITTING DATA
               if (object.success) {
-                //Send Data to Redux
+                //Redux
                 this.props.SetLocalDestinationDataAction({
                   localDestination: this.state.localDestination
                 });
-                //if successed to passed, it will put the check mark from CollapsibleComponent CheckMark
+                this.props.SetChecklistAction({
+                  checklist: checklist
+                });
+
+                //LocalStorage
+                let json_checklist = JSON.stringify(checklist);
+                //Only insert or replace id = 1
+                let insertSqlStatement =
+                  "INSERT OR REPLACE into device_user_localDestination(id, createAccount_id, localDestination) " +
+                  "values(1, 1, ?);";
+
+                db.transaction(
+                  tx => {
+                    //INSERT DATA
+                    tx.executeSql(
+                      insertSqlStatement,
+                      [this.state.localDestination],
+                      (tx, result) => {
+                        console.log("inner success");
+                      },
+                      (tx, err) => {
+                        console.log("inner error: ", err);
+                      }
+                    );
+                    //UPDATE CHECKLIST
+                    tx.executeSql(
+                      "UPDATE device_user_createAccount SET checklist = ? WHERE id = 1;",
+                      [json_checklist],
+                      (tx, result) => {
+                        console.log("inner success");
+                      },
+                      (tx, err) => {
+                        console.log("inner error: ", err);
+                      }
+                    );
+                    //DISPLAY DATA
+                    tx.executeSql(
+                      "select * from device_user_localDestination",
+                      null,
+                      (tx, result) => {
+                        console.log(result);
+                      },
+                      (tx, err) => {
+                        console.log("inner error: ", err);
+                      }
+                    );
+                  },
+                  (tx, err) => {
+                    console.log(err);
+                  },
+                  () => {
+                    console.log("outer success");
+                  }
+                );
+
+                //setState
                 this.setState(
                   {
                     internalErrorWarning: false,
                     isDelaying: false
                   },
                   () => {
+                    //it will put a check mark for LocationDestination
                     this.props.handlePassed("localDestination", 1);
                   }
                 );
               } else {
+                //INTERNAL ERROR
                 throw new Error("Internal Error ");
               }
             })
             .catch(error => {
+              //HANDLE ANY CATCHED ERRORS
+              //setState
               this.setState(
                 {
                   internalErrorWarning: true,
                   isDelaying: false
                 },
                 () => {
+                  //put a error marker for localDestination
                   this.props.handlePassed("localDestination", 3);
                 }
               );
             });
         }
       );
+    } else {
+      //if guid is null
+
+      //User must has a guid retrieve from the createAccount screen before get to this screen
+      //if there are no guid, give an error warning
+      //the reason of no guid may come from internal error when inserting email/password into createAccount Collection
+      //and error had thrown and guid didn't return back to client
+      //user may need to re-sign in as continue user?
+
+      this.setState(
+        {
+          internalErrorWarning: true,
+          isDelaying: false
+        },
+        () => {
+          this.props.handlePassed("localDestination", 3);
+        }
+      );
     }
   };
 
   successScreen = () => {
-    let emptyCityWarning = (
-      <View style={{ alignItems: "center" }}>
-        <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
-          <Icon
-            type="font-awesome"
-            name="exclamation-circle"
-            color="#fff"
-            iconStyle={{ top: 3 }}
-          />
-          <Text style={styles.warningText}>{"   "}Please select a city</Text>
-        </View>
-      </View>
-    );
-
-    let internalErrorWarning = (
-      <Text style={styles.warningText}>* Internal Error. Please Try again</Text>
-    );
-
     let displayLocation = locations.map((e, index = 0) => {
       return (
         <View
@@ -307,18 +497,21 @@ class LocationDestinations extends Component {
     });
     return (
       <View style={{ flex: 1 }}>
+        {/*Internal Error Warning*/}
         {this.state.internalErrorWarning && internalErrorWarning}
+
         {/*Spaces*/}
         <View
           style={{
             padding: "5%"
           }}
         />
+
         {/*I'm interested in Text & Pick one of both Text*/}
         <View style={{ alignItems: "center" }}>
-          <Text style={{ color: "white", fontSize: 24 }}>Spend a weekend</Text>
+          <Text style={styles.spendAWeekendText}>Spend a weekend</Text>
           <Text />
-          <Text style={{ opacity: 0.7, color: "white" }}>Pick 1</Text>
+          <Text style={styles.pick1Text}>Pick 1</Text>
           {/*Spaces*/}
           <View
             style={{
@@ -340,24 +533,12 @@ class LocationDestinations extends Component {
           }}
         />
         {/*Next Button*/}
-        <View
-          alignItems="center"
-          style={{ opacity: this.state.passed ? 1.0 : 0.5 }}
-        >
-          <TouchableOpacity
-            style={styles.nextButton}
-            onPress={this.handleSubmit}
-            disabled={
-              (this.state.passed && this.state.isDelaying) || !this.state.passed
-            }
-          >
-            <Text style={styles.button}>
-              {this.state.passed && this.state.isDelaying
-                ? "Submitting"
-                : "Next"}
-            </Text>
-          </TouchableOpacity>
-        </View>
+        <NextButton
+          passed={this.state.passed}
+          handleSubmit={this.handleSubmit}
+          isDelaying={this.state.isDelaying}
+        />
+
         {/*Spaces*/}
         <View
           style={{
@@ -368,13 +549,16 @@ class LocationDestinations extends Component {
     );
   };
 
-  loadingScreen = () => {
-    //display fetching data
-    return <LoadingScreen />;
+  failScreen = () => {
+    //For isContinueUser Only
+    //If fail on fetching, then display a screen to tell them try again
+    return (
+      <FailScreen getDataFunction={this.getDataFromDB} reset={this.reset} />
+    );
   };
 
   render() {
-    return this.state.isLoading ? this.successScreen() : this.loadingScreen();
+    return this.state.isSuccess ? this.successScreen() : this.failScreen();
   }
 }
 
@@ -387,25 +571,16 @@ const styles = StyleSheet.create({
   },
   locationsButtonWrap: {
     alignItems: "center",
-    padding: 15,
+    padding: width / 37.5,
     borderRadius: 40,
     borderWidth: 2,
     borderColor: "#fff",
     width: "auto",
     minWidth: "45%",
-    margin: 5
-  },
-  button: {
-    color: "#fff",
-    fontSize: 20
-  },
-  nextButton: {
-    alignItems: "center",
-    padding: 10,
-    borderRadius: 40,
-    borderWidth: 2,
-    borderColor: "#fff",
-    width: "55%"
+    marginLeft: 5,
+    marginRight: 5,
+    marginTop: 10,
+    marginBottom: 10
   },
   locationsWrap: {
     flexDirection: "row",
@@ -416,24 +591,9 @@ const styles = StyleSheet.create({
     alignItems: "center"
     //marginTop: "15%"
   },
-  warningText: {
-    color: "#fff",
-    fontSize: 10,
-    paddingTop: "3%",
-    fontWeight: "bold"
-  }
+  spendAWeekendText: { color: "white", fontSize: 24 },
+  pick1Text: { opacity: 0.7, color: "white" }
 });
-
-const locations = [
-  "San Francisco",
-  "Tahoe",
-  "Monterey",
-  "Big Sur",
-  "Napa",
-  "Santa Cruz",
-  "Yosemite",
-  "Morro Bay"
-];
 
 const mapStateToProps = state => ({
   ...state

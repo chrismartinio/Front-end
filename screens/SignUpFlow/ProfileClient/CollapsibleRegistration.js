@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { AsyncStorage } from "react-native";
 import {
   Button,
   Keyboard,
@@ -12,6 +13,7 @@ import {
   View,
   Image,
   ScrollView,
+  Dimensions,
   TouchableOpacity
 } from "react-native";
 
@@ -31,19 +33,36 @@ import { connect } from "react-redux";
 import ResetReduxDataAction from "../../../storage/actions/RegistrationActions/ResetReduxDataAction";
 import SetIsContinueUserAction from "../../../storage/actions/RegistrationActions/SetIsContinueUserAction";
 import SetUserAllDataAction from "../../../storage/actions/RegistrationActions/SetUserAllDataAction";
-import SetGUIAction from "../../../storage/actions/RegistrationActions/SetGUIAction";
+import SetGUIDAction from "../../../storage/actions/RegistrationActions/SetGUIDAction";
+import SetIsThirdPartyServicesUserAction from "../../../storage/actions/RegistrationActions/SetIsThirdPartyServicesUserAction";
 
-//grant wants when inserting/updating data, he wants profile service to store in 6 different db
-//but he didn't mention for undone user, therefore, for undone user, do the same thing as before that
-//query all data at once and pass to redux
-//but for inserting, store in two ways : 1. big collection 2. 6 seperate collections
+//SQLite
+import * as SQLite from "expo-sqlite";
+const db = SQLite.openDatabase("that.db");
 
-//direction: decrypt jwt -> retrieve gui and checklist -> store gui into redux ->
+//Flow of New User:
+//OAuth assign JWT ->
+//OAuth send JWT which contains gui="" and checklist="default checklist" -> Profile decrypt jwt ->
+//Profile retrieve guid and checklist -> user register
+
+//Flow of New Third Party Service Providers User:
+//OAuth assign JWT ->
+//User uses Third -> OAuth creates profile on createAccount and aboutYou
+//OAuth send JWT which contains gui="some gui", checklist = "some checklist", and isThirdPartiesServiceUser = true
+//Profile decrypt jwt ->
+//Profile retrieve guid and checklist -> user register
+
+//Flow of Continue User
+//OAuth assign JWT ->
+//OAuth uses email/password or 3rd party to verify users and query data from db ->
+//OAuth send JWT which contains gui="some gui" and checklist = "some checklist", and isThirdPartiesServiceUser = false
+//Profile decrypt jwt ->
+//Profile retrieve guid and checklist -> user continue register
 
 class CollapisbleRegistration extends Component {
   //LinksScreen Test Tool
   static navigationOptions = {
-    title: "Welcome!",
+    title: "Welcomes!",
     headerStyle: {
       backgroundColor: "#18cdf6"
     },
@@ -66,7 +85,7 @@ class CollapisbleRegistration extends Component {
       interestsToggle: false,
       wouldYouRatherToggle: false,
       localDestinationToggle: false,
-      createAccountPassed: false, //true or false
+      createAccountPassed: false, //true or false MODIFIED
       aboutYouPassed: false,
       preferencesPassed: false,
       interestsPassed: false,
@@ -78,12 +97,9 @@ class CollapisbleRegistration extends Component {
       interestsStatus: "empty",
       wouldYouRatherStatus: "empty",
       localDestinationStatus: "empty",
-      currentScreenTopY: 0, //screenTopY : slide down increase ; slide up decrease
-      isLoading: false //use to make sure if there data inside redux before rendering
+      isLoading: false, //use to make sure if there data inside redux before rendering
+      scrollY: 0
     };
-    this.interestsPositionY = 0;
-    this.localDestinationPositionY = 0;
-    this.preferencesPositionY = 0;
   }
 
   getJWT = () => {
@@ -96,50 +112,106 @@ class CollapisbleRegistration extends Component {
 
   decryptJWT = jwt => {
     //console.log('jwt', jwt)
-    //do something to retrieve gui and check from the jwt
-    //gui is empty? = first time local user
-    //gui is not empty? = third parties user, third parties continue user, local continue user
-    return {
-      //For isContinueUser
-      //gui: "5d85d28868f084cede41e913",
-      //checklist: [true, false, true, false, false, false]
 
-      //For new User
-      gui: "",
-      checklist: [true, false, false, false, false, false]
+    //For demo use only
+    //make the jwt has something to prevent jwt === ""
+    jwt = true;
+    //jwt = "";
+    //For demo use only
+
+    //If some cases that the jwt is empty, then return as a new User
+    //New user
+    if (jwt === "") {
+      return {
+        guid: "",
+        checklist: {
+          createAccount: false,
+          aboutYou: false,
+          preferences: false,
+          interests: false,
+          wouldYouRather: false,
+          localDestination: false
+        },
+        isThirdPartiesServiceUser: false
+      };
+    }
+
+    //assume we decrypted the jwt and retrieve the guid and checklist
+    //New User
+    let guid = "";
+    let checklist = {
+      createAccount: false,
+      aboutYou: false,
+      preferences: false,
+      interests: false,
+      wouldYouRather: false,
+      localDestination: false
+    };
+    let isThirdPartiesServiceUser = false;
+
+    //Continue User or Third Parties Services User
+    //For Third Parties Services User - since onAuth would store those user to db
+    //when onAuth pass the user (guid) to profile, they are similar with Continue User
+    guid = "5dbba55a013c4cbd0d6fc984";
+    checklist = {
+      createAccount: true,
+      aboutYou: false,
+      preferences: true,
+      interests: true,
+      wouldYouRather: false,
+      localDestination: false
+    };
+    isThirdPartiesServiceUser = false; //set true if third parties user
+
+    //third party services user (goal: query from db )
+    //checklist (true) and isThirdPartiesServiceUser (true), it would query from db
+    //checklist (false) and isThirdPartiesServiceUser (true), it would query from db as a ThirdPartiesServiceUser
+    //checklist (true) and isThirdPartiesServiceUser (false), it would query from db as a continue user (screen filled before)
+    //checklist (false) and isThirdPartiesServiceUser (false), it would not query from db as a continue user (screen not filled before)
+
+    return {
+      guid: guid,
+      checklist: checklist,
+      isThirdPartiesServiceUser: isThirdPartiesServiceUser
     };
   };
 
+  //Set the User is Continue User
   setUserStatus = jwtObject => {
-    //mark the user as continue user
-    //and store the checklist in redux
+    //Set Redux checklist
     this.props.SetIsContinueUserAction({
       isContinueUser: true,
       checklist: jwtObject.checklist
     });
-    //pass gui
-    this.props.SetGUIAction({
-      gui: jwtObject.gui
+
+    //Set Redux guid
+    this.props.SetGUIDAction({
+      guid: jwtObject.guid
     });
 
-    //set fb,twitter,ig,... user name
-    //even they have firstname, lastname
-    //doesn't mean checklist[1] is true
+    //Set is Third Party Services Provider User
+    this.props.SetIsThirdPartyServicesUserAction({
+      isThirdPartiesServiceUser: jwtObject.isThirdPartiesServiceUser
+    });
 
-    //set the status for screen
+    //Set the status for screen
     this.setState({
-      createAccountPassed: jwtObject.checklist[0],
-      aboutYouPassed: jwtObject.checklist[1],
-      preferencesPassed: jwtObject.checklist[2],
-      interestsPassed: jwtObject.checklist[3],
-      wouldYouRatherPassed: jwtObject.checklist[4],
-      localDestinationPassed: jwtObject.checklist[5],
+      createAccountPassed: jwtObject.checklist.createAccount,
+      aboutYouPassed: jwtObject.checklist.aboutYou,
+      preferencesPassed: jwtObject.checklist.preferences,
+      interestsPassed: jwtObject.checklist.interests,
+      wouldYouRatherPassed: jwtObject.checklist.wouldYouRather,
+      localDestinationPassed: jwtObject.checklist.localDestination,
       createAccountStatus: "passed", //isContinueUser always true for createAccountStatus
-      aboutYouStatus: jwtObject.checklist[1] ? "passed" : "empty",
-      preferencesStatus: jwtObject.checklist[2] ? "passed" : "empty",
-      interestsStatus: jwtObject.checklist[3] ? "passed" : "empty",
-      wouldYouRatherStatus: jwtObject.checklist[4] ? "passed" : "empty",
-      localDestinationStatus: jwtObject.checklist[5] ? "passed" : "empty"
+      aboutYouStatus: jwtObject.checklist.aboutYou ? "passed" : "empty",
+      preferencesStatus: jwtObject.checklist.preferences ? "passed" : "empty",
+      interestsStatus: jwtObject.checklist.interests ? "passed" : "empty",
+      wouldYouRatherStatus: jwtObject.checklist.wouldYouRather
+        ? "passed"
+        : "empty",
+      localDestinationStatus: jwtObject.checklist.localDestination
+        ? "passed"
+        : "empty"
     });
   };
 
@@ -151,26 +223,36 @@ class CollapisbleRegistration extends Component {
     //third parties user / continue user : [true, true, false, false, false, false]
     //If [true, true, true, true, true, true], Auth will pass user to profile instead of registration
 
-    //get the gui and checklist from decrypted jwt
+    //get the guid and checklist from decrypted jwt
     let jwtObject = this.decryptJWT(this.getJWT());
 
     //check if the user is a continue user.
-    //if there have at least one true inside the checklist array,
-    //then the user is a continue user
-    //Note, checklist[0], createAccount screen is set to true by default
-    //because users must submit createAcctoun screen in order to create a profile on db
-    //that begin said, createAccount screen must always true if they are continue user
-    let isContinueUser = jwtObject.checklist.slice(1).find(screens => {
-      return screens;
-    });
-    isContinueUser = isContinueUser === undefined ? false : true;
+    //if there has a guid then the user is a continue user
+    //if no guid then it is not a continue user
+    let isContinueUser = jwtObject.guid ? true : false;
+    //Note
+    //if new user sumbitted createAccount, they become a continue user?
+    //yes,
+    //won't the rest of the screen say because it is a continue user, then query the data?
+    //no, the rest of the screen won't query data because
+    //we only assign the user is continue User after the user get in to registration screen
+    //instead of after the user submitted createAccount screen
+    //For example, continue user
+    //CollaspibleRegistration.js get guid = "something", checklist = [true, false, false, false, false, false]
+    //it will mark isContinueUser = true, the rest of the screen will query data
+
+    //For example, new user
+    //CollaspibleRegistration.js get guid = "", checklist = [true, false, false, false, false, false]
+    //it will mark isContinueUser = false, the rest of the screen will not query data
+    //createAccount.js get the isContinueUser === false, so it won't query data
+    //aboutYou.js get the isContinueUser === false, so it won't query data
 
     //if the user is a continue user, set isContinueUser is true in Redux
     if (isContinueUser) {
       await this.setUserStatus(jwtObject);
     }
 
-    //Trigger render() again after gui and checklist are store into redux
+    //Trigger render() again after guid and checklist are store into redux
     this.setState({
       isLoading: true
     });
@@ -220,13 +302,17 @@ class CollapisbleRegistration extends Component {
     //2 means screen is not passed; something has changed; some fields is not filled yet
     //3 means there error on api fetchting or server internal error
 
-    //Handle Duplicate Email; let the createAccount screen stay remain
     if (passed === 1) {
-      this.setState({
-        [passName]: true,
-        [statusName]: "passed",
-        [toggleName]: false
-      });
+      this.setState(
+        {
+          [passName]: true,
+          [statusName]: "passed",
+          [toggleName]: false
+        },
+        () => {
+          this.scrollView.scrollTo({ y: 0, animated: true });
+        }
+      );
     } else if (passed === 2) {
       this.setState({
         [passName]: false,
@@ -234,6 +320,7 @@ class CollapisbleRegistration extends Component {
         [statusName]: "empty"
       });
     } else {
+      //Handle Duplicate Email; let the createAccount screen stay remain
       this.setState({
         [toggleName]: true, //keep the toggle remain
         [passName]: false, //that screen is not passed.
@@ -250,39 +337,33 @@ class CollapisbleRegistration extends Component {
       this.state.createAccountPassed === false
     ) {
       return;
-    } else {
-      let pageY;
-      //If user pressed the screen "Next Button"
-      if (evt === null || evt === undefined) {
-        tabPageY = componentName !== "createAccount" ? 150 : 250;
-      } else {
-        //If user pressed the Toggle
-        tabPageY = evt.nativeEvent.pageY;
-      }
-
-      let toggle = componentName + "Toggle";
-      this.setState({
-        [toggle]: !this.state[toggle]
-      });
-      this.scrollToPosition(componentName, tabPageY);
     }
-  };
 
-  //Press screen tab will scroll to that screen tab position
-  scrollToPosition = (componentName, tabPageY) => {
-    //this.state.currentScreenTopY : current screen (not scroll) Y position; changed upon scrolling
-    //tabPageY : the screen tab's Y position in the whole scroll screen view
-    // offset : an offset to prevent screen scroll too high when closing
-    let offset = componentName === "createAccount" ? 250 : 150;
-    let newScrollY = this.state.currentScreenTopY + tabPageY - offset;
-    this.scrollView.scrollTo({ y: newScrollY, animated: true });
+    let pageY = evt !== null ? evt.nativeEvent.pageY : 0;
+    let offset = 125;
+    let toggle = componentName + "Toggle";
+    this.setState(
+      {
+        [toggle]: !this.state[toggle]
+      },
+      () => {
+        if (this.state[toggle]) {
+          this.scrollView.scrollTo({
+            y: this.state.scrollY + pageY - offset,
+            animated: true
+          });
+        } else {
+          this.scrollView.scrollTo({ y: 0, animated: true });
+        }
+      }
+    );
   };
 
   //handlescroll : update current screen top y
   handleScroll = ({ nativeEvent }) => {
     const { contentOffset } = nativeEvent;
     this.setState({
-      currentScreenTopY: contentOffset.y
+      scrollY: contentOffset.y
     });
   };
 
@@ -316,24 +397,38 @@ class CollapisbleRegistration extends Component {
                 />
 
                 {/*Create Account*/}
-                <CollapsibleScreenTab
-                  componentToggle={this.state.createAccountToggle}
-                  componentPassed={this.state.createAccountPassed}
-                  componentStatus={this.state.createAccountStatus}
-                  componentName={"createAccount"}
-                  handleToggle={this.handleToggle}
-                  handlePassed={this.handlePassed}
-                />
+                <View
+                  onLayout={event => {
+                    const layout = event.nativeEvent.layout;
+                    this.createAccountPositionY = layout.y;
+                  }}
+                >
+                  <CollapsibleScreenTab
+                    componentToggle={this.state.createAccountToggle}
+                    componentPassed={this.state.createAccountPassed}
+                    componentStatus={this.state.createAccountStatus}
+                    componentName={"createAccount"}
+                    handleToggle={this.handleToggle}
+                    handlePassed={this.handlePassed}
+                  />
+                </View>
 
                 {/*About You*/}
-                <CollapsibleScreenTab
-                  componentToggle={this.state.aboutYouToggle}
-                  componentPassed={this.state.aboutYouPassed}
-                  componentStatus={this.state.aboutYouStatus}
-                  componentName={"aboutYou"}
-                  handleToggle={this.handleToggle}
-                  handlePassed={this.handlePassed}
-                />
+                <View
+                  onLayout={event => {
+                    const layout = event.nativeEvent.layout;
+                    this.aboutYouPositionY = layout.y;
+                  }}
+                >
+                  <CollapsibleScreenTab
+                    componentToggle={this.state.aboutYouToggle}
+                    componentPassed={this.state.aboutYouPassed}
+                    componentStatus={this.state.aboutYouStatus}
+                    componentName={"aboutYou"}
+                    handleToggle={this.handleToggle}
+                    handlePassed={this.handlePassed}
+                  />
+                </View>
 
                 {/*Preferences*/}
                 <View
@@ -349,7 +444,11 @@ class CollapisbleRegistration extends Component {
                     componentName={"preferences"}
                     handleToggle={this.handleToggle}
                     handlePassed={this.handlePassed}
-                    currentScreenTopY={this.state.currentScreenTopY}
+                    otherToggle={[
+                      this.state.createAccountToggle,
+                      this.state.aboutYouToggle
+                    ]}
+                    scrollY={this.state.scrollY}
                   />
                 </View>
 
@@ -367,19 +466,31 @@ class CollapisbleRegistration extends Component {
                     componentName={"interests"}
                     handleToggle={this.handleToggle}
                     handlePassed={this.handlePassed}
-                    currentScreenTopY={this.state.currentScreenTopY}
+                    otherToggle={[
+                      this.state.createAccountToggle,
+                      this.state.aboutYouToggle,
+                      this.state.preferencesToggle
+                    ]}
+                    scrollY={this.state.scrollY}
                   />
                 </View>
 
                 {/*wouldYouRather*/}
-                <CollapsibleScreenTab
-                  componentToggle={this.state.wouldYouRatherToggle}
-                  componentPassed={this.state.wouldYouRatherPassed}
-                  componentStatus={this.state.wouldYouRatherStatus}
-                  componentName={"wouldYouRather"}
-                  handleToggle={this.handleToggle}
-                  handlePassed={this.handlePassed}
-                />
+                <View
+                  onLayout={event => {
+                    const layout = event.nativeEvent.layout;
+                    this.wouldYouRatherPositionY = layout.y;
+                  }}
+                >
+                  <CollapsibleScreenTab
+                    componentToggle={this.state.wouldYouRatherToggle}
+                    componentPassed={this.state.wouldYouRatherPassed}
+                    componentStatus={this.state.wouldYouRatherStatus}
+                    componentName={"wouldYouRather"}
+                    handleToggle={this.handleToggle}
+                    handlePassed={this.handlePassed}
+                  />
+                </View>
 
                 {/*localDestination*/}
                 <View
@@ -395,9 +506,18 @@ class CollapisbleRegistration extends Component {
                     componentName={"localDestination"}
                     handleToggle={this.handleToggle}
                     handlePassed={this.handlePassed}
-                    currentScreenTopY={this.state.currentScreenTopY}
+                    otherToggle={[
+                      this.state.createAccountToggle,
+                      this.state.aboutYouToggle,
+                      this.state.preferencesToggle,
+                      this.state.interestsToggle,
+                      this.state.wouldYouRatherToggle
+                    ]}
+                    scrollY={this.state.scrollY}
                   />
                 </View>
+                {/*Temporay solution for scrollView; without this would not scroll properly*/}
+                <View style={{ padding: "100%" }} />
               </View>
             </TouchableWithoutFeedback>
           </SafeAreaView>
@@ -415,6 +535,8 @@ class CollapisbleRegistration extends Component {
     return this.state.isLoading ? this.SuccessScreen() : this.loadingScreen();
   }
 }
+
+const { height, width } = Dimensions.get("window");
 
 const styles = StyleSheet.create({
   container: {
@@ -481,7 +603,7 @@ const styles = StyleSheet.create({
   },
   joinBlindlyText: {
     color: "#fff",
-    fontSize: 36,
+    fontSize: Math.round(width / 10.4),
     fontWeight: "100"
   },
   joinBlindlyTextWrap: {
@@ -498,7 +620,9 @@ const mapDispatchToProps = dispatch => {
     SetIsContinueUserAction: payload =>
       dispatch(SetIsContinueUserAction(payload)),
     SetUserAllDataAction: payload => dispatch(SetUserAllDataAction(payload)),
-    SetGUIAction: payload => dispatch(SetGUIAction(payload))
+    SetGUIDAction: payload => dispatch(SetGUIDAction(payload)),
+    SetIsThirdPartyServicesUserAction: payload =>
+      dispatch(SetIsThirdPartyServicesUserAction(payload))
   };
 };
 

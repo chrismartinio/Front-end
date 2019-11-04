@@ -125,7 +125,7 @@ class TellUsMore extends React.Component {
   };
 
   changeColor = bname => {
-    let topY = this.props.currentScreenTopY;
+    let topY = this.props.scrollY;
 
     const topRed = 24;
     const topGreen = 205;

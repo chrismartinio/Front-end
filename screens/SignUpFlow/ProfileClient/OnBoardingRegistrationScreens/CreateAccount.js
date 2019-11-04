@@ -7,20 +7,49 @@ import {
   View,
   Image,
   ScrollView,
-  TouchableOpacity
+  TouchableOpacity,
+  ActivityIndicator,
+  Dimensions
 } from "react-native";
 
 //redux
 import { connect } from "react-redux";
 import SetCreateAccountDataAction from "../../../../storage/actions/RegistrationActions/SetCreateAccountDataAction";
-import SetGUIAction from "../../../../storage/actions/RegistrationActions/SetGUIAction";
+import SetGUIDAction from "../../../../storage/actions/RegistrationActions/SetGUIDAction";
 
 //icons
 import { Icon, Input } from "react-native-elements";
 import { Chevron } from "react-native-shapes";
 
 //Collapsible Components
-import LoadingScreen from "../Components/LoadingScreen";
+import FailScreen from "../Components/FailScreen";
+import NextButton from "../Components/NextButton";
+
+//SQLite
+import * as SQLite from "expo-sqlite";
+const db = SQLite.openDatabase("that.db");
+
+//checker functions
+import {
+  emailCheck,
+  nullCheck,
+  passwordLength,
+  passwordCase,
+  passwordNonLetter,
+  passwordCheck
+} from "../Util/OnBoardingRegistrationScreenCheckers.js";
+
+//warnings
+import {
+  emptyEmailWarning,
+  emptyPasswordWarning,
+  invalidEmailWarning,
+  invalidConfirmEmailWarning,
+  invalidPasswordWarning,
+  invalidConfirmPasswordWarning,
+  duplicateEmailWarning,
+  internalErrorWarning
+} from "../Util/OnBoardingRegistrationScreenWarnings.js";
 
 class CreateAccount extends Component {
   constructor(props) {
@@ -40,26 +69,29 @@ class CreateAccount extends Component {
       passed: false,
       editable: true,
       internalErrorWarning: false,
-      isLoading: true
+      isSuccess: true,
+      isDelaying: false
     };
     this.isContinueUserFetched = false;
   }
 
-  getData = async () => {
-    await fetch("http://74.80.250.210:5000/api/profile/query", {
+  getDataFromDB = async () => {
+    await fetch("http://74.80.250.210:4000/api/profile/query", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        gui: this.props.CreateProfileDataReducer.gui,
+        guid: this.props.CreateProfileDataReducer.guid,
         collection: "createAccount"
       })
     })
       .then(res => res.json())
       .then(res => {
         let object = JSON.parse(JSON.stringify(res));
+        //SUCCESS ON QUERYING DATA
         if (object.success) {
+          //setState
           this.setState({
             email: object.result.email,
             confirmEmail: object.result.email,
@@ -72,21 +104,145 @@ class CreateAccount extends Component {
             password_UpperLowerCaseWarning: false,
             password_NumberSymbolWarning: false,
             password_LengthWarning: false,
-            isLoading: true,
+            isSuccess: true,
             editable: false,
             passed: true
           });
+
+          //LocalStorage
+          //Note: only createAccount.js (getDataFromDB()) has checklist
+          //Because createAccount.js would always be the first screen display to user
+          //On CollapsibleRegistration.js, it will stores the checklist (OAuth query this) into redux
+          //and createAccount.js will store this checklist into LocalStorage
+          //That begin said, when user reached CollapsibleRegistration.js, a checklist should be exist
+          //Other Screens may or maybe not open, so they doesn't need to update the checklist
+          //Actually, not even sure does the checklist even need here
+          //Because if user resume back to here, that means OAuth must already query all info includes gui, checklist...
+          //CollaspibleRegistration.js would use the checklist for setup tabs status
+          //Therefore, createAccount.js (getDataFromDB()) don't even need to touch the checklist
+          //createAccount.js only update the checklist when submiting
+          let json_checklist = JSON.stringify(
+            this.props.CreateProfileDataReducer.checklist
+          );
+          //Only insert or replace id = 1
+          let insertSqlStatement =
+            "INSERT OR REPLACE into device_user_createAccount(id, guid, email, password, isAdmin, checklist, phoneNumber) " +
+            "values(1, ?, ?, ?, ?, ?, ?);";
+
+          db.transaction(
+            tx => {
+              //INSERT DATA
+              tx.executeSql(
+                insertSqlStatement,
+                [
+                  object.guid,
+                  object.result.email,
+                  "Password",
+                  false,
+                  json_checklist,
+                  "temp"
+                ],
+                (tx, result) => {
+                  console.log("inner success");
+                },
+                (tx, err) => {
+                  console.log("inner error: ", err);
+                }
+              );
+              //DISPLAY DATA
+              tx.executeSql(
+                "select * from device_user_createAccount",
+                null,
+                (tx, result) => {
+                  console.log(result);
+                },
+                (tx, err) => {
+                  console.log("inner error: ", err);
+                }
+              );
+            },
+            (tx, err) => {
+              console.log(err);
+            },
+            () => {
+              console.log("outer success");
+            }
+          );
+
+          //Redux
+          this.props.SetCreateAccountDataAction({
+            email: object.result.email,
+            password: "Password"
+          });
         } else {
+          //INTERNAL ERROR
+          //if error on query
+          //try lcoalStorage
+          //if localStorage works
+          //setState
+          //if localStorage not works
+          //throw err
           throw new Error("internal Error");
         }
       })
       .catch(err => {
-        //throw to is loading screen or ask user to click a button for refetch
-        //to fetch the data
-        this.setState({
-          isLoading: false
-        });
+        //HANDLE ANY CATCHED ERRORS
+        this.getDataFromLocalStorage()
+          .then(result => {
+            let { email } = result.rows._array[0];
+            //setState
+            this.setState({
+              email: email,
+              confirmEmail: email,
+              password: "Password",
+              confirmPassword: "Password",
+              emailWarning: "",
+              confirmEmailWarning: "",
+              passwordWarning: "",
+              confirmPasswordWarning: "",
+              password_UpperLowerCaseWarning: false,
+              password_NumberSymbolWarning: false,
+              password_LengthWarning: false,
+              isSuccess: true,
+              editable: false,
+              passed: true //if user can resume, that means the user had passed createAccount screen
+            });
+          })
+          .catch(err => {
+            //If error while fetching, direct user to failScreen
+            //setState
+            this.setState({
+              isSuccess: false
+            });
+          });
       });
+  };
+
+  getDataFromLocalStorage = () => {
+    return new Promise((resolve, reject) => {
+      db.transaction(
+        tx => {
+          //DISPLAY DATA
+          tx.executeSql(
+            "select * from device_user_createAccount",
+            null,
+            (tx, result) => {
+              if (result.rows.length <= 0) reject(new Error("Internal Error"));
+              resolve(result);
+            },
+            (tx, err) => {
+              reject(err);
+            }
+          );
+        },
+        (tx, err) => {
+          reject(err);
+        },
+        () => {
+          console.log("outer success");
+        }
+      );
+    });
   };
 
   async componentDidMount() {
@@ -96,12 +252,6 @@ class CreateAccount extends Component {
         editable: false
       });
     }
-
-    //not sure sometimes would take a long time for fetching without the following,
-    //keep the following for in case
-    //this.setState({
-    //  isLoading: true
-    //});
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
@@ -128,78 +278,11 @@ class CreateAccount extends Component {
       this.props.CreateProfileDataReducer.isContinueUser
     ) {
       if (!this.isContinueUserFetched) {
-        this.getData();
+        this.getDataFromDB();
         this.isContinueUserFetched = true;
       }
     }
   }
-
-  //format checkers below
-  emailCheck = email => {
-    // email validty check?
-    const checkAT = email.indexOf("@");
-    const checkCOM = email.indexOf(".com");
-    if (checkAT > 0 && checkCOM > 0 && email.length > 4) {
-      return true;
-    }
-    return false;
-  };
-
-  nullCheck = value => {
-    if (value !== "") {
-      return true;
-    }
-    return false;
-  };
-
-  passwordLength = password => {
-    if (!(password.length >= 8)) {
-      return false;
-    }
-    return true;
-  };
-
-  passworcdCase = password => {
-    // use positive look ahead to see if at least one lower case letter exists
-    //let regExp = /^(?=.*[a-z])/;
-    // use positive look ahead to see if at least one upper case letter exists
-    //regExp = /^(?=.*[A-Z])/;
-    if (!(/^(?=.*[a-z])/.test(password) && /^(?=.*[A-Z])/.test(password))) {
-      return false;
-    }
-    return true;
-  };
-
-  passwordNonLetter = password => {
-    // use positive look ahead to see if at least one digit exists
-    //let regExp = /^(?=.*[0-9])/;
-    // use positive look ahead to see if at least one non-word character exists
-    //regExp = /^(?=.*\W)/;
-    if (!(/^(?=.*[0-9])/.test(password) || /^(?=.*\W)/.test(password))) {
-      return false;
-    }
-    return true;
-  };
-
-  passwordCheck = password => {
-    let pLength = this.passwordLength(password);
-    let pCase = this.passworcdCase(password);
-    let pNonLetter = this.passwordNonLetter(password);
-
-    if (pLength === false) {
-      return false;
-    }
-    if (pCase === false) {
-      return false;
-    }
-    if (pNonLetter === false) {
-      return false;
-    }
-
-    return true;
-  };
-
-  //format checkers above
 
   //check email
   emailChecker = () => {
@@ -209,11 +292,11 @@ class CreateAccount extends Component {
       confirmEmailWarning: "empty"
     });
 
-    if (!this.nullCheck(this.state.email)) {
+    if (!nullCheck(this.state.email)) {
       this.setState({
         emailWarning: "empty"
       });
-    } else if (!this.emailCheck(this.state.email)) {
+    } else if (!emailCheck(this.state.email)) {
       this.setState({
         emailWarning: "invalid"
       });
@@ -225,7 +308,7 @@ class CreateAccount extends Component {
   };
 
   confirmEmailChecker = () => {
-    if (!this.nullCheck(this.state.confirmEmail)) {
+    if (!nullCheck(this.state.confirmEmail)) {
       this.setState({
         confirmEmailWarning: "empty"
       });
@@ -246,17 +329,17 @@ class CreateAccount extends Component {
     this.setState({
       confirmPasswordWarning: "empty"
     });
-    if (!this.nullCheck(this.state.password)) {
+    if (!nullCheck(this.state.password)) {
       this.setState({
         passwordWarning: "empty",
         password_UpperLowerCaseWarning: true,
         password_NumberSymbolWarning: true,
         password_LengthWarning: true
       });
-    } else if (!this.passwordCheck(this.state.password)) {
-      let pLength = !this.passwordLength(this.state.password);
-      let pLetterCase = !this.passworcdCase(this.state.password);
-      let pNonLetter = !this.passwordNonLetter(this.state.password);
+    } else if (!passwordCheck(this.state.password)) {
+      let pLength = !passwordLength(this.state.password);
+      let pLetterCase = !passwordCase(this.state.password);
+      let pNonLetter = !passwordNonLetter(this.state.password);
       this.setState({
         passwordWarning: "invalid",
         password_UpperLowerCaseWarning: pLetterCase,
@@ -274,7 +357,7 @@ class CreateAccount extends Component {
   };
 
   confirmPasswordChecker = () => {
-    if (!this.nullCheck(this.state.confirmPassword)) {
+    if (!nullCheck(this.state.confirmPassword)) {
       password = false;
       this.setState({
         confirmPasswordWarning: "empty"
@@ -321,114 +404,146 @@ class CreateAccount extends Component {
     if (this.state.passed) {
       //When user submit email/password
       //set editable to true so the user cannot resubmit other email
-      //We do not want the user to submit other one (generate a new gui) on the same registration
+      //We do not want the user to submit other one (generate a new guid) on the same registration
       //the editable will lock the input to prevent changing email or password
-      this.setState({
-        editable: false
-      });
-
-      //insert a profile into database
-      fetch("http://74.80.250.210:5000/api/profile/insert", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
+      this.setState(
+        {
+          editable: false,
+          isDelaying: true
         },
-        body: JSON.stringify({
-          collection: "createAccount",
-          data: { email: this.state.email, password: this.state.password }
-        })
-      })
-        .then(res => res.json())
-        .then(res => {
-          let object = JSON.parse(JSON.stringify(res));
-          //console.log(object);
-          if (object.success) {
-            //pass data into Redux
-            this.props.SetCreateAccountDataAction({
-              email: this.state.email,
-              password: this.state.password
-            });
-            this.props.SetGUIAction({
-              gui: object.gui
-            });
-            this.setState(
-              {
-                internalErrorWarning: false
-              },
-              () => {
-                //if successed to passed, it will put the check mark from CollapsibleComponent CheckMark
-                this.props.handlePassed("createAccount", 1);
-              }
-            );
-          } else if (object.success === false && object.status === 409) {
-            //duplicate email
-            this.setState(
-              {
-                emailWarning: "duplicate",
-                editable: true,
-                internalErrorWarning: false
-              },
-              //make another fetch to call deleteOne api which one delete that error gui on db
-              () => {
-                this.props.handlePassed("createAccount", 3);
-              }
-            );
-          } else {
-            //internal error
-            throw new Error("Internal Error ");
-          }
-        })
-        .catch(error => {
-          //handle error
-          this.setState(
-            {
-              editable: true,
-              internalErrorWarning: true
+        () => {
+          //insert a profile into database
+          fetch("http://74.80.250.210:4000/api/profile/insert", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
             },
-            () => {
-              this.props.handlePassed("createAccount", 3);
-            }
-          );
-        });
+            body: JSON.stringify({
+              collection: "createAccount",
+              data: { email: this.state.email, password: this.state.password }
+            })
+          })
+            .then(res => res.json())
+            .then(res => {
+              let object = JSON.parse(JSON.stringify(res));
+              //console.log(object);
+              //SUCCESS ON SUBMITTING DATA
+              if (object.success) {
+                //Redux
+                this.props.SetCreateAccountDataAction({
+                  email: this.state.email,
+                  password: this.state.password
+                });
+                this.props.SetGUIDAction({
+                  guid: object.guid
+                });
+
+                //LocalStorage
+                let json_checklist = JSON.stringify(
+                  this.props.CreateProfileDataReducer.checklist
+                );
+                //Only insert or replace id = 1
+                let insertSqlStatement =
+                  "INSERT OR REPLACE into device_user_createAccount(id, guid, email, password, isAdmin, checklist, phoneNumber) " +
+                  "values(1, ?, ?, ?, ?, ?, ?);";
+
+                db.transaction(
+                  tx => {
+                    //INSERT DATA
+                    tx.executeSql(
+                      insertSqlStatement,
+                      [
+                        object.guid,
+                        this.state.email,
+                        this.state.password,
+                        false,
+                        json_checklist,
+                        "temp"
+                      ],
+                      (tx, result) => {
+                        console.log("inner success");
+                      },
+                      (tx, err) => {
+                        console.log("inner error: ", err);
+                      }
+                    );
+                    //DISPLAY DATA
+                    tx.executeSql(
+                      "select * from device_user_createAccount",
+                      null,
+                      (tx, result) => {
+                        console.log(result);
+                      },
+                      (tx, err) => {
+                        console.log("inner error: ", err);
+                      }
+                    );
+                  },
+                  (tx, err) => {
+                    console.log(err);
+                  },
+                  () => {
+                    console.log("outer success");
+                  }
+                );
+
+                //setState
+                this.setState(
+                  {
+                    internalErrorWarning: false,
+                    isDelaying: false
+                  },
+                  () => {
+                    //it will put a check mark for createAccount screen
+                    this.props.handlePassed("createAccount", 1);
+                  }
+                );
+              } else if (object.success === false && object.status === 409) {
+                //DUPLICATE EMAIL
+                //setState
+                this.setState(
+                  {
+                    emailWarning: "duplicate",
+                    editable: true,
+                    internalErrorWarning: false,
+                    isDelaying: false
+                  },
+                  () => {
+                    //put a error marker for createAccount
+                    this.props.handlePassed("createAccount", 3);
+                  }
+                );
+              } else {
+                //INTERNAL ERROR
+                throw new Error("Internal Error ");
+              }
+            })
+            .catch(error => {
+              //HANDLE ANY CATCHED ERRORS
+              //setState
+              this.setState(
+                {
+                  editable: true,
+                  internalErrorWarning: true,
+                  isDelaying: false
+                },
+                () => {
+                  //put a error marker for createAccount
+                  this.props.handlePassed("createAccount", 3);
+                }
+              );
+            });
+        }
+      );
     }
   };
 
   successScreen = () => {
-    let emptyEmail = (
-      <Text style={styles.warningText}>* Please enter a email</Text>
-    );
-    let emptyPassword = (
-      <Text style={styles.warningText}>* Please enter a password</Text>
-    );
-
-    let invalidEmailWarning = (
-      <Text style={styles.warningText}>
-        * Please enter a valid email address
-      </Text>
-    );
-
-    let duplicateEmailWarning = (
-      <Text style={styles.warningText}>* Email has been used.</Text>
-    );
-
-    let invalidConfirmEmailWarning = (
-      <Text style={styles.warningText}>* Email address does not match</Text>
-    );
-
-    let invalidPasswordWarning = (
-      <Text style={styles.warningText}>* Please enter a valid password</Text>
-    );
-
-    let invalidConfirmPasswordWarning = (
-      <Text style={styles.warningText}>* Password does not match</Text>
-    );
-
-    let internalErrorWarning = (
-      <Text style={styles.warningText}>* Internal Error. Please Try again</Text>
-    );
     return (
       <View style={{ flex: 1 }}>
+        {/*Internal Error Warning*/}
         {this.state.internalErrorWarning && internalErrorWarning}
+
         {/*Spaces*/}
         <View style={styles.space} />
 
@@ -461,7 +576,7 @@ class CreateAccount extends Component {
               })
             }
           />
-          {this.state.emailWarning === "empty" && emptyEmail}
+          {this.state.emailWarning === "empty" && emptyEmailWarning}
           {this.state.emailWarning === "invalid" && invalidEmailWarning}
           {this.state.emailWarning === "duplicate" && duplicateEmailWarning}
         </View>
@@ -500,7 +615,7 @@ class CreateAccount extends Component {
               })
             }
           />
-          {this.state.confirmEmailWarning === "empty" && emptyEmail}
+          {this.state.confirmEmailWarning === "empty" && emptyEmailWarning}
           {this.state.confirmEmailWarning === "notmatch" &&
             invalidConfirmEmailWarning}
         </View>
@@ -537,7 +652,7 @@ class CreateAccount extends Component {
               })
             }
           />
-          {this.state.passwordWarning === "empty" && emptyPassword}
+          {this.state.passwordWarning === "empty" && emptyPasswordWarning}
           {this.state.passwordWarning === "invalid" && invalidPasswordWarning}
         </View>
         {/*Spaces*/}
@@ -576,70 +691,50 @@ class CreateAccount extends Component {
               })
             }
           />
-          {this.state.confirmPasswordWarning === "empty" && emptyPassword}
+          {this.state.confirmPasswordWarning === "empty" &&
+            emptyPasswordWarning}
           {this.state.confirmPasswordWarning === "notmatch" &&
             invalidConfirmPasswordWarning}
         </View>
         {/*Spaces*/}
         <View style={styles.space} />
 
-        <View
-          style={{
-            borderRadius: 4,
-            borderWidth: 0.5,
-            borderColor: "#fff",
-            padding: "3%"
-          }}
-        >
-          <View
-            style={{
-              flexWrap: "wrap",
-              alignItems: "flex-start",
-              flexDirection: "row"
-            }}
-          >
+        {/*Password Hints Box*/}
+        <View style={styles.passwordHintWrap}>
+          {/*Password Hints Text*/}
+          <View style={styles.passwordHintTextWrap}>
             {this.state.password_UpperLowerCaseWarning ? (
               <Icon name="times" type="font-awesome" color="red" />
             ) : (
               <Icon name="check" type="font-awesome" color="lightgreen" />
             )}
-            <Text style={{ color: "#fff", paddingVertical: 5 }}>
+            <Text style={styles.passwordHintText}>
               {"   "}
               include upper and lower case
             </Text>
           </View>
 
-          <View
-            style={{
-              flexWrap: "wrap",
-              alignItems: "flex-start",
-              flexDirection: "row"
-            }}
-          >
+          {/*Password Hints Text*/}
+          <View style={styles.passwordHintTextWrap}>
             {this.state.password_NumberSymbolWarning ? (
               <Icon name="times" type="font-awesome" color="red" />
             ) : (
               <Icon name="check" type="font-awesome" color="lightgreen" />
             )}
-            <Text style={{ color: "#fff", paddingVertical: 5 }}>
+            <Text style={styles.passwordHintText}>
               {"   "}
               include at least a number or symbol
             </Text>
           </View>
 
-          <View
-            style={{
-              flexWrap: "wrap",
-              alignItems: "flex-start",
-              flexDirection: "row"
-            }}
-          >
+          {/*Password Hints Text*/}
+          <View style={styles.passwordHintTextWrap}>
             {this.state.password_LengthWarning ? (
               <Icon name="times" type="font-awesome" color="red" />
             ) : (
               <Icon name="check" type="font-awesome" color="lightgreen" />
             )}
-            <Text style={{ color: "#fff", paddingVertical: 5 }}>
+            <Text style={styles.passwordHintText}>
               {"   "}
               be at least 8 characters long
             </Text>
@@ -649,21 +744,11 @@ class CreateAccount extends Component {
         <View style={styles.space} />
 
         {/*Next Button*/}
-        <View
-          alignItems="center"
-          style={{ opacity: this.state.passed ? 1.0 : 0.5 }}
-        >
-          {/*  createAccount will check if all data filled correctly
-            if not filled corectly, passed = false, and !passed = true, that mean disable={true}
-            if filled correctly , passed = true, and !passed = false, that mean disable={false} */}
-          <TouchableOpacity
-            style={styles.nextButton}
-            onPress={this.handleSubmit}
-            disabled={!this.state.passed}
-          >
-            <Text style={styles.button}>Next</Text>
-          </TouchableOpacity>
-        </View>
+        <NextButton
+          passed={this.state.passed}
+          handleSubmit={this.handleSubmit}
+          isDelaying={this.state.isDelaying}
+        />
 
         {/*Spaces*/}
         <View style={styles.space} />
@@ -671,15 +756,18 @@ class CreateAccount extends Component {
     );
   };
 
-  loadingScreen = () => {
-    //display fetching data
-    return <LoadingScreen />;
+  failScreen = () => {
+    //For isContinueUser Only
+    //If fail on fetching, then display a screen to tell them try again
+    return <FailScreen getDataFunction={this.getDataFromDB} />;
   };
 
   render() {
-    return this.state.isLoading ? this.successScreen() : this.loadingScreen();
+    return this.state.isSuccess ? this.successScreen() : this.failScreen();
   }
 }
+
+const { height, width } = Dimensions.get("window");
 
 const styles = StyleSheet.create({
   header: {
@@ -692,18 +780,6 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     marginBottom: 36
   },
-  button: {
-    color: "#fff",
-    fontSize: 20
-  },
-  nextButton: {
-    alignItems: "center",
-    padding: 10,
-    borderRadius: 40,
-    borderWidth: 2,
-    borderColor: "#fff",
-    width: "55%"
-  },
   inputContainerStyle: {
     borderTopWidth: 0,
     borderLeftWidth: 0,
@@ -713,14 +789,23 @@ const styles = StyleSheet.create({
   },
   inputStyle: {
     color: "#fff",
-    fontSize: 15,
-    fontWeight: "100"
+    fontSize: Math.round(width / 28.84)
   },
-  warningText: {
+  passwordHintTextWrap: {
+    flexWrap: "wrap",
+    alignItems: "flex-start",
+    flexDirection: "row"
+  },
+  passwordHintText: {
     color: "#fff",
-    fontSize: 10,
-    paddingTop: "3%",
-    fontWeight: "bold"
+    paddingVertical: 5,
+    fontSize: Math.round(width / 26.78)
+  },
+  passwordHintWrap: {
+    borderRadius: 4,
+    borderWidth: 0.5,
+    borderColor: "#fff",
+    padding: "3%"
   },
   space: {
     padding: "3%"
@@ -735,7 +820,7 @@ const mapDispatchToProps = dispatch => {
   return {
     SetCreateAccountDataAction: payload =>
       dispatch(SetCreateAccountDataAction(payload)),
-    SetGUIAction: payload => dispatch(SetGUIAction(payload))
+    SetGUIDAction: payload => dispatch(SetGUIDAction(payload))
   };
 };
 

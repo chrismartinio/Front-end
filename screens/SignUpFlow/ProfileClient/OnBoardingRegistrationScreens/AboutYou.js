@@ -7,7 +7,10 @@ import {
   View,
   Image,
   ScrollView,
-  TouchableOpacity
+  TouchableOpacity,
+  ActivityIndicator,
+  Dimensions,
+  Platform
 } from "react-native";
 
 //Redux
@@ -27,7 +30,33 @@ import { Icon, Input } from "react-native-elements";
 import { Chevron } from "react-native-shapes";
 
 //Collapsible Components
-import LoadingScreen from "../Components/LoadingScreen";
+import FailScreen from "../Components/FailScreen";
+import NextButton from "../Components/NextButton";
+
+//SQLite
+import * as SQLite from "expo-sqlite";
+const db = SQLite.openDatabase("that.db");
+
+//checker functions
+import {
+  checkZipCode,
+  checkName,
+  maxDate,
+  minDate,
+  checkage
+} from "../Util/OnBoardingRegistrationScreenCheckers.js";
+
+//warnings
+import {
+  invalidFirstNameWarning,
+  invalidLastNameWarning,
+  invalidBirthDateWarning,
+  invalidGenderWarning,
+  invalidCountryWarning,
+  invalidZipCodeWarning,
+  emptyWarning,
+  internalErrorWarning
+} from "../Util/OnBoardingRegistrationScreenWarnings.js";
 
 class AboutYou extends Component {
   constructor(props) {
@@ -47,36 +76,37 @@ class AboutYou extends Component {
       zipCodeWarning: "empty",
       birthDateWarning: "empty",
       internalErrorWarning: false,
-      isLoading: true,
+      isSuccess: true,
       isDelaying: false
     };
     this.isContinueUserFetched = false;
   }
 
-  getData = async () => {
-    //do something with redux
+  getDataFromDB = async () => {
+    //if it is not ThirdPartiesServiceUser, it will check if it is continue user using checklist
+    if (!this.props.CreateProfileDataReducer.isThirdPartiesServiceUser) {
+      //continue user
+      //if the checklist says this screen is not complete, return (do not query anything)
+      if (!this.props.CreateProfileDataReducer.checklist.aboutYou) {
+        return;
+      }
+    }
 
-    //If third parties user, we can retrieve their firstName, lastName by default
-    //We send their firstName, lastName to redux in CollapisbleRegistration.js
-    //then we check if there have data of aboutYou in redux
-    //if yes, mark them as isThirdPartiesUser to true
-    let isThirdPartiesUser =
-      this.props.CreateProfileDataReducer.aboutYouData !== null ? true : false;
-
-    await fetch("http://74.80.250.210:5000/api/profile/query", {
+    await fetch("http://74.80.250.210:4000/api/profile/query", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        gui: this.props.CreateProfileDataReducer.gui,
+        guid: this.props.CreateProfileDataReducer.guid,
         collection: "aboutYou"
       })
     })
       .then(res => res.json())
       .then(res => {
         let object = JSON.parse(JSON.stringify(res));
-        console.log(object);
+        //console.log(object);
+        //SUCCESS ON QUERYING DATA
         if (object.success) {
           let {
             firstName,
@@ -85,10 +115,9 @@ class AboutYou extends Component {
             gender,
             country,
             zipCode
-          } = isThirdPartiesUser
-            ? this.props.CreateProfileDataReducer.aboutYouData
-            : object.result;
+          } = object.result;
 
+          //setState
           this.setState({
             firstName: firstName,
             lastName: lastName,
@@ -102,20 +131,132 @@ class AboutYou extends Component {
             genderWarning: gender === "" ? "empty" : "",
             countryWarning: country === "" ? "empty" : "",
             zipCodeWarning: zipCode === "" ? "empty" : "",
-            isLoading: true,
-            passed: isThirdPartiesUser ? false : true
+            isSuccess: true
+          });
+
+          //LocalStorage
+          //Only insert or replace id = 1
+          let insertSqlStatement =
+            "INSERT OR REPLACE into device_user_aboutYou(id, createAccount_id, firstName, lastName, birthDate, gender, country, zipCode) " +
+            "values(1, 1, ?, ?, ?, ?, ?, ?);";
+
+          db.transaction(
+            tx => {
+              //INSERT DATA
+              tx.executeSql(
+                insertSqlStatement,
+                [firstName, lastName, birthDate, gender, country, zipCode],
+                (tx, result) => {
+                  console.log("inner success");
+                },
+                (tx, err) => {
+                  console.log("inner error: ", err);
+                }
+              );
+              //DISPLAY DATA
+              tx.executeSql(
+                "select * from device_user_aboutYou",
+                null,
+                (tx, result) => {
+                  console.log(result);
+                },
+                (tx, err) => {
+                  console.log("inner error: ", err);
+                }
+              );
+            },
+            (tx, err) => {
+              console.log(err);
+            },
+            () => {
+              console.log("outer success");
+            }
+          );
+
+          //Redux
+          this.props.SetAboutYouDataAction({
+            firstName: firstName,
+            lastName: lastName,
+            birthDate: birthDate,
+            gender: gender,
+            country: country,
+            zipCode: zipCode
           });
         } else {
+          //INTERNAL ERROR
           throw new Error("internal Error");
         }
       })
       .catch(err => {
-        //throw to is loading screen or ask user to click a button for refetch
-        //to fetch the data
-        this.setState({
-          isLoading: false
-        });
+        //HANDLE ANY CATCHED ERRORS
+        this.getDataFromLocalStorage()
+          .then(result => {
+            let {
+              firstName,
+              lastName,
+              birthDate,
+              gender,
+              country,
+              zipCode
+            } = result.rows._array[0];
+            //setState
+            this.setState({
+              firstName: firstName,
+              lastName: lastName,
+              birthDate: birthDate,
+              gender: gender,
+              country: country,
+              zipCode: zipCode,
+              firstNameWarning: firstName === "" ? "empty" : "",
+              lastNameWarning: lastName === "" ? "empty" : "",
+              birthDateWarning: birthDate === "" ? "empty" : "",
+              genderWarning: gender === "" ? "empty" : "",
+              countryWarning: country === "" ? "empty" : "",
+              zipCodeWarning: zipCode === "" ? "empty" : "",
+              isSuccess: true
+            });
+          })
+          .catch(err => {
+            //If error while fetching, direct user to failScreen
+            //setState
+            this.setState({
+              isSuccess: false
+            });
+          });
       });
+  };
+
+  getDataFromLocalStorage = () => {
+    return new Promise((resolve, reject) => {
+      db.transaction(
+        tx => {
+          //DISPLAY DATA
+          tx.executeSql(
+            "select * from device_user_aboutYou",
+            null,
+            (tx, result) => {
+              if (result.rows.length <= 0) reject(new Error("Internal Error"));
+              resolve(result);
+            },
+            (tx, err) => {
+              reject(err);
+            }
+          );
+        },
+        (tx, err) => {
+          reject(err);
+        },
+        () => {
+          console.log("outer success");
+        }
+      );
+    });
+  };
+
+  reset = () => {
+    this.setState({
+      isSuccess: true
+    });
   };
 
   componentDidUpdate(prevProps, prevState, snapshot) {
@@ -145,74 +286,12 @@ class AboutYou extends Component {
         this.props.CreateProfileDataReducer.isContinueUser
       ) {
         if (!this.isContinueUserFetched) {
-          this.getData();
+          this.getDataFromDB();
           this.isContinueUserFetched = true;
         }
       }
     }
   }
-
-  //format checker below
-
-  //return true/false for valid zipcode
-  checkZipCode = zipcode => {
-    return /^\d{5}(-\d{4})?$/.test(zipcode);
-  };
-
-  //return true/false for valid first name and last name
-  checkName = string => {
-    //check if string has only space
-    if (!string.replace(/\s/g, "").length) {
-      return false;
-    }
-
-    //check letters and spaces
-    let regExp = /^[a-zA-Z\s]*$/;
-    if (regExp.test(string)) {
-      return true;
-    }
-    return false;
-  };
-
-  //date picker method : return maximun date (current date) that user can pick
-  maxDate = () => {
-    let d = new Date();
-    let year = d.getFullYear();
-    let month = d.getMonth() + 1;
-    let day = d.getDate();
-    return year.toString() + "-" + month.toString() + "-" + day.toString();
-  };
-
-  //date picker method : return minimum date (current date - 150) that user can pick
-  minDate = () => {
-    let d = new Date();
-    //assume 120 year olds
-    let year = d.getFullYear() - 150;
-    let month = d.getMonth() + 1;
-    let day = d.getDate();
-    return year.toString() + "-" + month.toString() + "-" + day.toString();
-  };
-
-  //return true/false for valid birthdate (over 18)
-  checkage = birthdate => {
-    let byear = parseInt(birthdate.slice(0, 4));
-    let bmonth = parseInt(birthdate.slice(5, 7));
-    let bday = parseInt(birthdate.slice(8, 10));
-
-    let d = new Date();
-    let age = d.getFullYear() - byear;
-    let month = d.getMonth() + 1 - bmonth;
-    if (month < 0 || (month === 0 && d.getDate() < bday)) {
-      age--;
-    }
-
-    if (age < 18) {
-      return false;
-    }
-
-    return true;
-  };
-  //Format Checker above
 
   //checkers
   firstNameChecker = () => {
@@ -221,7 +300,7 @@ class AboutYou extends Component {
       this.setState({
         firstNameWarning: "empty"
       });
-    } else if (!this.checkName(this.state.firstName)) {
+    } else if (!checkName(this.state.firstName)) {
       firstName = false;
       this.setState({
         firstNameWarning: "invalid"
@@ -241,7 +320,7 @@ class AboutYou extends Component {
       this.setState({
         lastNameWarning: "empty"
       });
-    } else if (!this.checkName(this.state.lastName)) {
+    } else if (!checkName(this.state.lastName)) {
       lastName = false;
       this.setState({
         lastNameWarning: "invalid"
@@ -261,7 +340,7 @@ class AboutYou extends Component {
       this.setState({
         zipCodeWarning: "empty"
       });
-    } else if (!this.checkZipCode(this.state.zipCode)) {
+    } else if (!checkZipCode(this.state.zipCode)) {
       zipCode = false;
       this.setState({
         zipCodeWarning: "invalid"
@@ -281,7 +360,7 @@ class AboutYou extends Component {
       this.setState({
         birthDateWarning: "empty"
       });
-    } else if (!this.checkage(this.state.birthDate)) {
+    } else if (!checkage(this.state.birthDate)) {
       birthDate = false;
       this.setState({
         birthDateWarning: "invalid"
@@ -345,31 +424,27 @@ class AboutYou extends Component {
 
   //next button : valid all input fields
   handleSubmit = evt => {
-    if (this.state.passed) {
+    //if the screen passed and guid is not null (that means user had finished createAccount)
+    if (
+      this.state.passed &&
+      this.props.CreateProfileDataReducer.guid !== null
+    ) {
       //Set the screen's checklist index to true
       let checklist = this.props.CreateProfileDataReducer.checklist;
-      let index = 1;
-      checklist = [
-        ...checklist.slice(0, index),
-        true,
-        ...checklist.slice(index + 1)
-      ];
-      this.props.SetChecklistAction({
-        checklist: checklist
-      });
+      checklist.aboutYou = true;
 
       this.setState(
         {
           isDelaying: true
         },
         () => {
-          fetch("http://74.80.250.210:5000/api/profile/update", {
+          fetch("http://74.80.250.210:4000/api/profile/update", {
             method: "POST",
             headers: {
               "Content-Type": "application/json"
             },
             body: JSON.stringify({
-              gui: this.props.CreateProfileDataReducer.gui,
+              guid: this.props.CreateProfileDataReducer.guid,
               collection: "aboutYou",
               data: {
                 firstName: this.state.firstName,
@@ -385,9 +460,10 @@ class AboutYou extends Component {
             .then(res => res.json())
             .then(res => {
               let object = JSON.parse(JSON.stringify(res));
-              console.log(object);
+              //console.log(object);
+              //SUCCESS ON SUBMITTING DATA
               if (object.success) {
-                //Send Data to Redux
+                //Redux
                 this.props.SetAboutYouDataAction({
                   firstName: this.state.firstName,
                   lastName: this.state.lastName,
@@ -396,76 +472,127 @@ class AboutYou extends Component {
                   country: this.state.country,
                   zipCode: this.state.zipCode
                 });
-                //if successed to passed, it will put the check mark from CollapsibleComponent CheckMark
+                this.props.SetChecklistAction({
+                  checklist: checklist
+                });
+
+                //LocalStorage
+                let json_checklist = JSON.stringify(checklist);
+                //Only insert or replace id = 1
+                let insertSqlStatement =
+                  "INSERT OR REPLACE into device_user_aboutYou(id, createAccount_id, firstName, lastName, birthDate, gender, country, zipCode) " +
+                  "values(1, 1, ?, ?, ?, ?, ?, ?);";
+
+                db.transaction(
+                  tx => {
+                    //INSERT DATA
+                    tx.executeSql(
+                      insertSqlStatement,
+                      [
+                        this.state.firstName,
+                        this.state.lastName,
+                        this.state.birthDate,
+                        this.state.gender,
+                        this.state.country,
+                        this.state.zipCode
+                      ],
+                      (tx, result) => {
+                        console.log("inner success");
+                      },
+                      (tx, err) => {
+                        console.log("inner error: ", err);
+                      }
+                    );
+                    //UPDATE CHECKLIST
+                    tx.executeSql(
+                      "UPDATE device_user_createAccount SET checklist = ? WHERE id = 1;",
+                      [json_checklist],
+                      (tx, result) => {
+                        console.log("inner success");
+                      },
+                      (tx, err) => {
+                        console.log("inner error: ", err);
+                      }
+                    );
+                    //DISPLAY DATA
+                    tx.executeSql(
+                      "select * from device_user_aboutYou",
+                      null,
+                      (tx, result) => {
+                        console.log(result);
+                      },
+                      (tx, err) => {
+                        console.log("inner error: ", err);
+                      }
+                    );
+                  },
+                  (tx, err) => {
+                    console.log(err);
+                  },
+                  () => {
+                    console.log("outer success");
+                  }
+                );
+
+                //setState
                 this.setState(
                   {
                     internalErrorWarning: false,
                     isDelaying: false
                   },
                   () => {
+                    // it will put a check mark for aboutYou
                     this.props.handlePassed("aboutYou", 1);
                   }
                 );
               } else {
+                //INTERNAL ERROR
                 throw new Error("Internal Error ");
               }
             })
             .catch(error => {
-              //if failed to passed, it will remove the check mark from CollapsibleComponent CheckMark
+              //HANDLE ANY CATCHED ERRORS
+              //setState
               this.setState(
                 {
                   internalErrorWarning: true,
                   isDelaying: false
                 },
                 () => {
+                  //put a error marker for aboutYou
                   this.props.handlePassed("aboutYou", 3);
                 }
               );
             });
         }
       );
+    } else {
+      //if guid is null
+
+      //User must has a guid retrieve from the createAccount screen before get to this screen
+      //if there are no guid, give an error warning
+      //the reason of no guid may come from internal error when inserting email/password into createAccount Collection
+      //and error had thrown and guid didn't return back to client
+      //user may need to re-sign in as continue user?
+
+      this.setState(
+        {
+          internalErrorWarning: true,
+          isDelaying: false
+        },
+        () => {
+          this.props.handlePassed("aboutYou", 3);
+        }
+      );
     }
   };
 
   successScreen = () => {
-    let passed = <View style={styles.warningText} />;
-
-    let invalidFirstNameWarning = (
-      <Text style={styles.warningText}>
-        * Please enter a valid first name (letters and spaces)
-      </Text>
-    );
-    let invalidLastNameWarning = (
-      <Text style={styles.warningText}>
-        * Please enter a valid last name (letters and spaces)
-      </Text>
-    );
-    let invalidBirthDateWarning = (
-      <Text style={styles.warningText}>
-        * Please enter a valid birth date (at least 18)
-      </Text>
-    );
-    let invalidGenderWarning = (
-      <Text style={styles.warningText}>* Please enter a valid gender</Text>
-    );
-
-    let invalidCountryWarning = (
-      <Text style={styles.warningText}>* Please enter a valid gender</Text>
-    );
-
-    let invalidZipCodeWarning = (
-      <Text style={styles.warningText}>* Please enter a valid zip code</Text>
-    );
-    //work for first, last, zip, birth
-    let empty = <Text style={styles.warningText}>* Required</Text>;
-
-    let internalErrorWarning = (
-      <Text style={styles.warningText}>* Internal Error. Please Try again</Text>
-    );
-
     return (
       <View style={{ flex: 1 }}>
+        {/*Internal Error Warning*/}
         {this.state.internalErrorWarning && internalErrorWarning}
+
         {/*Spaces*/}
         <View
           style={{
@@ -500,7 +627,7 @@ class AboutYou extends Component {
               })
             }
           />
-          {this.state.firstNameWarning === "empty" && empty}
+          {this.state.firstNameWarning === "empty" && emptyWarning}
           {this.state.firstNameWarning === "invalid" && invalidFirstNameWarning}
         </View>
         {/*Spaces*/}
@@ -538,7 +665,7 @@ class AboutYou extends Component {
               })
             }
           />
-          {this.state.lastNameWarning === "empty" && empty}
+          {this.state.lastNameWarning === "empty" && emptyWarning}
           {this.state.lastNameWarning === "invalid" && invalidLastNameWarning}
         </View>
         <View
@@ -560,8 +687,8 @@ class AboutYou extends Component {
               mode="date"
               placeholder="birthdate"
               format="YYYY-MM-DD"
-              minDate={this.minDate()}
-              maxDate={this.maxDate()}
+              minDate={minDate()}
+              maxDate={maxDate()}
               confirmBtnText="Confirm"
               cancelBtnText="Cancel"
               iconComponent={
@@ -588,7 +715,7 @@ class AboutYou extends Component {
                 });
               }}
             />
-            {this.state.birthDateWarning === "empty" && empty}
+            {this.state.birthDateWarning === "empty" && emptyWarning}
             {this.state.birthDateWarning === "invalid" &&
               invalidBirthDateWarning}
           </View>
@@ -597,6 +724,7 @@ class AboutYou extends Component {
           <View style={styles.genderpPickerWrap}>
             <RNPickerSelect
               style={genderPicker}
+              useNativeAndroidPickerStyle={false}
               placeholder={{
                 label: "gender",
                 value: null
@@ -631,10 +759,17 @@ class AboutYou extends Component {
                 );
               }}
             />
-            {this.state.genderWarning === "empty" && empty}
+            {this.state.genderWarning === "empty" && emptyWarning}
             {this.state.genderWarning === "invalid" && invalidGenderWarning}
           </View>
         </View>
+
+        {/*Spaces*/}
+        <View
+          style={{
+            padding: "5%"
+          }}
+        />
 
         {/**Country and ZipCode Wrap */}
         <View style={styles.countryAndZipCodeWrap}>
@@ -642,6 +777,7 @@ class AboutYou extends Component {
           <View style={styles.countryPickerWrap}>
             <RNPickerSelect
               style={countryPicker}
+              useNativeAndroidPickerStyle={false}
               placeholder={{
                 label: "Country",
                 value: null
@@ -676,12 +812,12 @@ class AboutYou extends Component {
                 );
               }}
             />
-            {this.state.countryWarning === "empty" && empty}
+            {this.state.countryWarning === "empty" && emptyWarning}
             {this.state.countryWarning === "invalid" &&
               invalidGenderCountryWarning}
           </View>
 
-          {/**zip */}
+          {/**zipcode*/}
           <View style={styles.zipCodeInputWrap}>
             <Input
               placeholder="zip code"
@@ -711,7 +847,7 @@ class AboutYou extends Component {
                 })
               }
             />
-            {this.state.zipCodeWarning === "empty" && empty}
+            {this.state.zipCodeWarning === "empty" && emptyWarning}
             {this.state.zipCodeWarning === "invalid" && invalidZipCodeWarning}
           </View>
         </View>
@@ -726,24 +862,12 @@ class AboutYou extends Component {
         />
 
         {/*Next Button*/}
-        <View
-          alignItems="center"
-          style={{ opacity: this.state.passed ? 1.0 : 0.5 }}
-        >
-          <TouchableOpacity
-            style={styles.nextButton}
-            onPress={this.handleSubmit}
-            disabled={
-              (this.state.passed && this.state.isDelaying) || !this.state.passed
-            }
-          >
-            <Text style={styles.button}>
-              {this.state.passed && this.state.isDelaying
-                ? "Submitting"
-                : "Next"}
-            </Text>
-          </TouchableOpacity>
-        </View>
+        <NextButton
+          passed={this.state.passed}
+          handleSubmit={this.handleSubmit}
+          isDelaying={this.state.isDelaying}
+        />
+
         {/*Spaces*/}
         <View
           style={{
@@ -754,57 +878,24 @@ class AboutYou extends Component {
     );
   };
 
-  loadingScreen = () => {
-    //display fetching data
-    return <LoadingScreen />;
+  failScreen = () => {
+    //For isContinueUser Only
+    //If fail on fetching, then display a screen to tell them try again
+    return (
+      <FailScreen getDataFunction={this.getDataFromDB} reset={this.reset} />
+    );
   };
 
   render() {
-    return this.state.isLoading ? this.successScreen() : this.loadingScreen();
+    return this.state.isSuccess ? this.successScreen() : this.failScreen();
   }
 }
+
+const { height, width } = Dimensions.get("window");
 
 const styles = StyleSheet.create({
   container: {
     flex: 1
-  },
-  titleText: {
-    margin: 10,
-    color: "#fff",
-    fontSize: 48,
-    textAlign: "center",
-    fontWeight: "100"
-  },
-  wholeWrap: {
-    flex: 1,
-    justifyContent: "flex-end",
-
-    marginBottom: "5%",
-    marginLeft: "10%",
-    marginRight: "10%"
-    //borderRadius: 4,
-    //borderWidth: 0.5,
-    //borderColor: "#d6d7da"
-  },
-  button: {
-    color: "#fff",
-    fontSize: 20
-  },
-  nextButton: {
-    alignItems: "center",
-    padding: 10,
-    borderRadius: 40,
-    borderWidth: 2,
-    borderColor: "#fff",
-    width: "55%"
-  },
-  aboutMeText: {
-    color: "#fff",
-    fontSize: 45,
-    fontWeight: "100"
-  },
-  aboutMeTextWrap: {
-    alignItems: "center"
   },
   inputContainerStyle: {
     borderTopWidth: 0,
@@ -815,20 +906,7 @@ const styles = StyleSheet.create({
   },
   inputStyle: {
     color: "#fff",
-    fontSize: 15,
-    fontWeight: "100"
-  },
-  nameInputBox: {
-    color: "white",
-    fontSize: 15,
-    textAlign: "left",
-    borderBottomWidth: 1,
-    borderColor: "#fff",
-    fontWeight: "100",
-    paddingVertical: 9
-    //borderRadius: 4,
-    //borderWidth: 0.5,
-    //borderColor: "#d6d7da"
+    fontSize: Math.round(width / 28.84)
   },
   birthdatePicker: {
     width: "45%",
@@ -852,15 +930,6 @@ const styles = StyleSheet.create({
     left: "0%",
     paddingTop: "4%"
   },
-  zipCodeInput: {
-    color: "#fff",
-    fontSize: 15,
-    textAlign: "left",
-    borderBottomWidth: 1,
-    borderColor: "#fff",
-    fontWeight: "100",
-    paddingVertical: 9
-  },
   zipCodeInputWrap: {
     width: "45%",
     position: "absolute",
@@ -870,12 +939,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     flexWrap: "wrap",
     marginBottom: "15%"
-  },
-  warningText: {
-    color: "#fff",
-    fontSize: 10,
-    paddingTop: "3%",
-    fontWeight: "bold"
   }
 });
 
@@ -884,14 +947,22 @@ const genderPicker = {
     color: "#fff",
     borderBottomWidth: 1,
     borderColor: "#fff",
-    fontSize: 15,
-    fontWeight: "100",
-    paddingVertical: 10.5,
+    fontSize: Math.round(width / 28.84),
+    paddingVertical: 11.5,
     paddingHorizontal: 9
+  },
+  inputAndroid: {
+    color: "#fff",
+    paddingVertical: 4,
+    paddingHorizontal: 5,
+    borderBottomWidth: 1.5,
+    borderColor: "#fff",
+    fontSize: Math.round(width / 28.84),
+    borderRadius: 8
   },
   placeholder: {
     color: "#fff",
-    fontWeight: "100"
+    paddingVertical: Platform.OS === "ios" ? 11.5 : 5
   }
 };
 
@@ -908,18 +979,16 @@ const birthdatePickerCustom = {
   },
   dateText: {
     color: "#fff",
-    fontSize: 13,
+    fontSize: Math.round(width / 37.5),
     position: "absolute",
     left: "0%",
-    fontWeight: "100",
     paddingHorizontal: 9
   },
   placeholderText: {
     color: "#fff",
-    fontSize: 15,
+    fontSize: Math.round(width / 28.84),
     position: "absolute",
     left: "0%",
-    fontWeight: "100",
     paddingHorizontal: 9
   }
 };
@@ -930,15 +999,23 @@ const countryPicker = {
     color: "#fff",
     borderBottomWidth: 1,
     borderColor: "#fff",
-    fontSize: 15,
-    fontWeight: "100",
+    fontSize: Math.round(width / 28.84),
     paddingVertical: 9,
     paddingHorizontal: 9
   },
+  inputAndroid: {
+    width: "95%",
+    color: "#fff",
+    paddingVertical: 3,
+    paddingHorizontal: 5,
+    borderBottomWidth: 1.5,
+    fontSize: Math.round(width / 28.84),
+    borderColor: "#fff",
+    borderRadius: 8
+  },
   placeholder: {
     color: "#fff",
-    fontWeight: "100",
-    paddingVertical: 9
+    paddingVertical: Platform.OS === "ios" ? 9 : 3
   }
 };
 

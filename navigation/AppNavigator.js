@@ -18,6 +18,7 @@ import SelfiePage from "../screens/SignUpFlow/SelfiePage";
 import PhotoReview from "../screens/SignUpFlow/PhotoReview";
 import ProfilePage from "../screens/SignUpFlow/ProfilePage";
 import ChatPage from "../screens/ChatFlow/chatMain";
+import Chat from "../screens/ChatFlow/Chat";
 import TestScreen from "../screens/ChatFlow/InitialMatchChoice";
 import GhostingOthersScreen from "../screens/ChatFlow/GhostingOthers";
 import GotLucky from "../screens/ChatFlow/GotLuckyGoToChat";
@@ -51,6 +52,7 @@ const TestStack = createStackNavigator({
   TestSelfie: SelfiePage,
   TestProfile: ProfilePage,
   TestChatPage: ChatPage,
+  TestChat: Chat,
   TestPhotoReview: PhotoReview,
   TestScreen: TestScreen,
   TestMatches: MatchesPage,
@@ -60,7 +62,7 @@ const TestStack = createStackNavigator({
   TestSpendWeekend: SpendWeekend,
   TestImInterestedIn: ImInterestedIn,
   TestCollapsible: Collapsible,
-  TestRegistrationComplete: RegistrationComplete
+  TestRegistrationComplete: RegistrationComplete,
 });
 
 const AuthStack = createStackNavigator({
