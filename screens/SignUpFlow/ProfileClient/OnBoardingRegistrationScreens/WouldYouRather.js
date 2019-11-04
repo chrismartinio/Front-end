@@ -443,6 +443,7 @@ class WouldYouRather extends Component {
         <View style={{ alignItems: "center" }}>
           {/*Slider1*/}
           <View style={{ width: "90%" }}>
+            {/*Line 447 is to fix the UI leak for android*/}
             {this.props.wouldYouRatherToggle ? (
               <Slider
                 functionListener={this.handleListener1}

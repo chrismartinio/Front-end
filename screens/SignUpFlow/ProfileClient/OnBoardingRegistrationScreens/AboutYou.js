@@ -948,7 +948,7 @@ const genderPicker = {
     borderBottomWidth: 1,
     borderColor: "#fff",
     fontSize: Math.round(width / 28.84),
-    paddingVertical: 10.5,
+    paddingVertical: 11.5,
     paddingHorizontal: 9
   },
   inputAndroid: {
@@ -962,7 +962,7 @@ const genderPicker = {
   },
   placeholder: {
     color: "#fff",
-    paddingVertical: Platform.OS === "ios" ? 0 : 5
+    paddingVertical: Platform.OS === "ios" ? 11.5 : 5
   }
 };
 
