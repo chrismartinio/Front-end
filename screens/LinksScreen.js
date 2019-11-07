@@ -57,6 +57,7 @@ export default class LinksScreen extends React.Component {
       CurrentScreen: ProfilePage
     };
     this.buttonAry = [
+      "TestChatPage",
       "TestLocationServices",
       "TestCollapsible",
       "TestRegistrationComplete",

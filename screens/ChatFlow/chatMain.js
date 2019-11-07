@@ -134,7 +134,7 @@ export default class App extends React.Component {
   };
 
   // next: add enterChat function
-  enterChat = () => {
+  enterChat = () => {/*
     fetch(chatServer, {
       method: "POST",
       headers: {
@@ -212,7 +212,7 @@ export default class App extends React.Component {
     this.setState({
       currentScreen: "users"
     });
-  };
+  */};
   // next: add handleInUser function
   handleInUser = user => {
     let currentUsers = [...this.state.users];
