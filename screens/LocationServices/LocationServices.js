@@ -1,10 +1,10 @@
 import React, { Component } from 'react'
 import { Text, StyleSheet, View,   TextInput, Dimensions } from 'react-native'
-import MapView, {Marker, Callout} from 'react-native-maps'; 
+import MapView, {Marker, Callout} from 'react-native-maps';
 import MultiSlider from "@ptomasroos/react-native-multi-slider";
 import _ from 'lodash';
-import flagBlueImg from '/Users/julie/Documents/Blindly/Front-end/assets/images/blindlySmall.png';
-import flagPinkImg from '/Users/julie/Documents/Blindly/Front-end/assets/images/blindlySmall.png';
+import flagBlueImg from '../../assets/images/blindlySmall.png';
+import flagPinkImg from '../../assets/images/blindlySmall.png';
 
 // import Slider  from 'react-native-slider';
 
@@ -27,12 +27,12 @@ export default class LocationServices extends Component {
           targetNickName:'Brenda'
         };
         this.getPlacesDebounced = _.debounce(this.setUserCoords,1000);
-        
+
     }
     //target coords will be offset with "centerOffset" marker
     //callout with more information
     //auto zoom to encompass all pins
-  
+
     componentDidMount(){
         // const SampleCoords = [{
         //     "latitude": 41.59486,
@@ -72,14 +72,14 @@ export default class LocationServices extends Component {
                     .then(res => {
                       // console.log(res.businessLat);//magic happens here
                       // const latLng = {
-                      //     latitude: parseFloat(res[0].businessLat), 
+                      //     latitude: parseFloat(res[0].businessLat),
                       //     longitude: parseFloat(res[0].businessLong),
                       //     title: res[0].businessName
                       // }
                       //console.log(latLng)
                       //this.showMarkersOnMap(latLng);
                       const latLng = res.map(result => ({
-                        latitude: parseFloat(result.businessLat), 
+                        latitude: parseFloat(result.businessLat),
                         longitude: parseFloat(result.businessLong),
                         id: result._id,
                         title: result.businessName,
@@ -90,7 +90,7 @@ export default class LocationServices extends Component {
                       }));
                       console.log(latLng)
                       this.showMarkersOnMap(latLng)
-                      
+
                     });
               });
             },
@@ -106,14 +106,14 @@ export default class LocationServices extends Component {
     {
         this.setState({latLng:results})
     }
-    
+
     render() {
         let marker = null;
-        
+
         if(this.state.latLng.length>0)
         {
           marker=this.state.latLng.map(marker => (
-            <Marker 
+            <Marker
               key={marker.id}
               coordinate={marker}
               title={marker.title+'\n'+marker.businessAddress+'\n'+marker.businessCity+', ' + marker.businessState+' ' + marker.businessZip}
@@ -142,7 +142,7 @@ export default class LocationServices extends Component {
                     longitudeDelta: 0.025,
                 }}
                 >
-                  
+
               <View>
                 <TextInput
                     value={this.state.destinationInput}
@@ -159,7 +159,7 @@ export default class LocationServices extends Component {
                     style={styles.placeInputStyle}
                     placeholder='How many miles?'
             />
-            
+
             </View>
                 {marker}
                 <Marker
@@ -173,9 +173,9 @@ export default class LocationServices extends Component {
                   // anchor={{ x: 0.84, y: 1 }}
                   image={this.state.marker2 ? flagBlueImg : flagPinkImg}
                   >
-                 
+
                 </Marker>
-               
+
                 </MapView>
 
             </View>
@@ -200,7 +200,7 @@ const styles = StyleSheet.create({
   marginTop: 10,
   padding: 5,
   backgroundColor: 'white'
-  
+
 },
 customView: {
   width: 160,
