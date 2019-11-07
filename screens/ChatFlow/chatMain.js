@@ -7,13 +7,13 @@ import Users from "./Users";
 //import Chat from "./Chat";
 
 //this should be data sent from the back end
-const instanceLocatorId = "0c189a30-bee2-488b-a6db-6797b29c25f2";
-    const presenceRoomId = '19385076'; // room ID of the general room created through the chatKit inspector
+// const instanceLocatorId = "0c189a30-bee2-488b-a6db-6797b29c25f2";
+//     const presenceRoomId = '19385076'; // room ID of the general room created through the chatKit inspector
 
-    const tokenProvider = new TokenProvider({
-      url: `https://us1.pusherplatform.io/services/chatkit_token_provider/v1/${instanceLocatorId}/token`
-    });
-    const chatServer = "http://74.80.250.210:3000/users";
+//     const tokenProvider = new TokenProvider({
+//       url: `https://us1.pusherplatform.io/services/chatkit_token_provider/v1/${instanceLocatorId}/token`
+//     });
+//     const chatServer = "http://74.80.250.210:3000/users";
 
 //.....................................................................
 
