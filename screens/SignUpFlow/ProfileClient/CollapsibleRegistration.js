@@ -115,8 +115,8 @@ class CollapisbleRegistration extends Component {
 
     //For demo use only
     //make the jwt has something to prevent jwt === ""
-    jwt = true;
-    //jwt = "";
+    //jwt = true;
+    jwt = "";
     //For demo use only
 
     //If some cases that the jwt is empty, then return as a new User
@@ -290,6 +290,8 @@ class CollapisbleRegistration extends Component {
         reset: true
       });
       this.props.navigation.navigate("TestRegistrationComplete");
+      //Close the db?
+      //db._db.close();
     }
   };
 

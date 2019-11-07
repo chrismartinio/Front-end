@@ -3,13 +3,7 @@
 //================================
 
 export function emailCheck(email) {
-  // email validty check?
-  const checkAT = email.indexOf("@");
-  const checkCOM = email.indexOf(".com");
-  if (checkAT > 0 && checkCOM > 0 && email.length > 4) {
-    return true;
-  }
-  return false;
+  return /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email);
 }
 
 export function nullCheck(value) {
