@@ -1,28 +1,31 @@
 import React from "react";
-import { StyleSheet, Text, View,  ImageBackground} from "react-native";
-import { ChatManager, TokenProvider } from "@pusher/chatkit-client";
+import { StyleSheet, Text, View, ImageBackground } from "react-native";
 
-import Login from "./Login";
+
 import Users from "./Users";
-//import Chat from "./Chat";
-
-//this should be data sent from the back end
-const instanceLocatorId = "0c189a30-bee2-488b-a6db-6797b29c25f2";
-    const presenceRoomId = '19385076'; // room ID of the general room created through the chatKit inspector
-
-    const tokenProvider = new TokenProvider({
-      url: `https://us1.pusherplatform.io/services/chatkit_token_provider/v1/${instanceLocatorId}/token`
-    });
-    const chatServer = "http://74.80.250.210:3000/users";
+import Chat from "./Chat";
 
 //.....................................................................
 
 export default class App extends React.Component {
   state = {
     userHasLoggedIn: false, // whether the user is logged in or not
-    currentScreen: "login", // the current screen being shown, this defaults to the login screen
+    currentScreen: "users", // the current screen being shown, this defaults to the login screen
     username: null, // the username of the current user
-    users: [], // the array of users returned by Chatkit
+    users: [
+      {
+        name: "John Doe",
+        id: "john",
+        avatar_url: "https://gravatar.com/img/2124",
+        custom_data: { email: "john@example.com" }
+      },
+      {
+        name: "AWW XCZXC",
+        id: "aww",
+        avatar_url: "https://gravatar.com/img/2124",
+        custom_data: { email: "john@example.com" }
+      }
+    ], // the array of users returned by Chatkit
     presenceRoomId: null, // the ID of the general room (we're simply copying it over to the state)
     currentRoomId: null, // the ID of the current room
     chatWithUser: null, // the username of the user you're currently chatting with
@@ -42,84 +45,52 @@ export default class App extends React.Component {
 
   static navigationOptions = {
     //header: null,
-    title: 'Chat',
+    title: "Chat",
     headerStyle: {
-      backgroundColor: '#18cdf6',
+      backgroundColor: "#18cdf6"
     },
-    headerTintColor: '#fff',
+    headerTintColor: "#fff",
     headerTitleStyle: {
-      fontWeight: 'bold',
-      fontSize:24
-    },
+      fontWeight: "bold",
+      fontSize: 24
+    }
   };
 
-  componentDidMount(){
-    this.handleAsyncLoad()
-  }
-
-  handleAsyncLoad = async() => {
-    // need auth to get into homescreen
-
-
-    try{
-          let data = await fetch('http://10.0.0.246:3000/api/chat', {
-            method: 'GET',
-            mode:'cors',
-            credentials: "same-origin",
-            headers: {
-              Accept: 'application/json',
-              'Content-Type': 'application/json'
-            },
-          })
-
-        let jsonData = await data.json()
-        console.log(jsonData)
-        //this.props.navigation.navigate('Chat');
-    } catch(e){
-      console.log('we recieved an error:',e)
-    }
-  }
+  componentDidMount() {}
 
   render() {
     return (
       <View style={styles.container}>
-          <ImageBackground source={require('../../assets/Assets_V1/Butterfly_Background/butterflyBackground.png')} style={styles.backgroundImage}>
+        <ImageBackground
+          source={require("../../assets/Assets_V1/Butterfly_Background/butterflyBackground.png")}
+          style={styles.backgroundImage}
+        >
+          {/*  {this.state.currentScreen == "users" && (
+            <Users
+              //userHasLoggedIn={this.state.userHasLoggedIn}
+              userHasLoggedIn={true}
+              users={this.sortUsers(this.state.users)}
+              //beginChat={this.beginChat}
+              //leavePresenceRoom={this.leavePresenceRoom}
+            />
+          )}*/}
 
-        {this.state.currentScreen == "login" && (
-          <View style={styles.login}>
-          <Login
-            username={this.state.username}
-            updateUsername={this.updateUsername}
-            enterChat={this.enterChat}
-          />
-          </View>
-        )}
-
-        {this.state.currentScreen == "users" && (
-          <Users
-            userHasLoggedIn={this.state.userHasLoggedIn}
-            users={this.sortUsers(this.state.users)}
-            beginChat={this.beginChat}
-            leavePresenceRoom={this.leavePresenceRoom}
-          />
-        )}
-
-        {this.state.currentScreen == "chat" && (
-          <Chat
-            message={this.state.message}
-            backToUsers={this.backToUsers}
-            updateMessage={this.updateMessage}
-            sendMessage={this.sendMessage}
-            chatWithUser={this.state.chatWithUser}
-            chatWithUserIsTyping={this.state.chatWithUserIsTyping}
-            messages={this.state.messages}
-            refreshing={this.state.refreshing}
-            loadPreviousMessages={this.loadPreviousMessages}
-            setScrollViewRef={this.setScrollViewRef}
-            inChatRoom={this.state.inChatRoom}
-          />
-        )}
-              </ImageBackground>
+          {/*{this.state.currentScreen == "chat" && (
+            <Chat
+              message={this.state.message}
+              backToUsers={this.backToUsers}
+              updateMessage={this.updateMessage}
+              sendMessage={this.sendMessage}
+              chatWithUser={this.state.chatWithUser}
+              chatWithUserIsTyping={this.state.chatWithUserIsTyping}
+              messages={this.state.messages}
+              refreshing={this.state.refreshing}
+              loadPreviousMessages={this.loadPreviousMessages}
+              setScrollViewRef={this.setScrollViewRef}
+              inChatRoom={this.state.inChatRoom}
+            />
+          )}*/}
+        </ImageBackground>
       </View>
     );
   }
@@ -133,86 +104,6 @@ export default class App extends React.Component {
     });
   };
 
-  // next: add enterChat function
-  enterChat = () => {/*
-    fetch(chatServer, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        username: this.state.username
-      })
-    })
-      .then(response => { // request succeeded
-        // initialize a ChatManager instance
-        this.chatManager = new ChatManager({
-          instanceLocator: `v1:us1:${instanceLocatorId}`,
-          userId: this.state.username,
-          tokenProvider
-        });
-
-        // connect the user to Chatkit
-        this.chatManager
-          .connect()
-          .then(currentUser => {
-            this.currentUser = currentUser;
-
-            this.setState({
-              presenceRoomId: presenceRoomId // save ID of the general room in the state
-            });
-
-            // subscribe the user to the general room
-            currentUser
-              .subscribeToRoom({
-                roomId: presenceRoomId,
-                // action hooks. These functions will be executed when any of the four events below happens
-                hooks: {
-                  onUserCameOnline: this.handleInUser,
-                  onNewMessage: this.onReceiveMessage,
-                  onMessage: message => {
-                    console.log("Received message:", message)},
-                  onUserJoinedRoom: this.handleInUser,
-                  onUserLeftRoom: this.handleOutUser,
-                  onUserWentOffline: this.handleOutUser
-                }
-              })
-              .then(room => {
-                let new_users = [];
-                room.users.forEach(user => {
-                  if (user.id != this.currentUser.id) {
-                    let is_online =
-                      user.presence.state == "online" ? true : false;
-
-                    new_users.push({
-                      id: user.id,
-                      name: user.name,
-                      is_online
-                    });
-                  }
-                });
-
-                this.setState({
-                  userHasLoggedIn: true,
-                  users: new_users
-                });
-              })
-              .catch(err => {
-                console.log(`Error joining room ${err}`);
-              });
-          })
-          .catch(error => {
-            console.log("error with chat manager", error);
-          });
-      })
-      .catch(error => {
-        console.log("error in request: ", error);
-      });
-
-    this.setState({
-      currentScreen: "users"
-    });
-  */};
   // next: add handleInUser function
   handleInUser = user => {
     let currentUsers = [...this.state.users];
@@ -231,15 +122,17 @@ export default class App extends React.Component {
     }
 
     this.setState({
-      users: currentUsers///////
+      users: currentUsers ///////
     });
   };
+
   // next: add sortUsers function
   sortUsers = users => {
     return users.slice().sort((x, y) => {
       return y.is_online - x.is_online;
     });
   };
+
   // next: add handleOutUser function
   handleOutUser = user => {
     let users = [...this.state.users];
@@ -254,6 +147,7 @@ export default class App extends React.Component {
       users: new_users
     });
   };
+
   // next: add beginChat function
   beginChat = user => {
     // construct the room ID
@@ -287,6 +181,7 @@ export default class App extends React.Component {
         console.log(`error getting joinable rooms: ${err}`);
       });
   };
+
   // next: add subscribeToRoom function
   subscribeToRoom = (roomId, chatWith) => {
     this.roomId = roomId;
@@ -318,9 +213,9 @@ export default class App extends React.Component {
       chatWithUser: chatWith
     });
   };
+
   // next: add onReceiveMessage function
   onReceiveMessage = message => {
-
     let isCurrentUser = this.currentUser.id == message.sender.id ? true : false;
     let messages = [...this.state.messages];
     messages.push({
@@ -390,7 +285,7 @@ export default class App extends React.Component {
   // next: add sendMessage function
   sendMessage = () => {
     if (this.state.message) {
-      console.log(this.state.message)
+      console.log(this.state.message);
 
       this.currentUser
         .sendMessage({
@@ -405,9 +300,7 @@ export default class App extends React.Component {
         .catch(err => {
           console.log(`error adding message to room: ${err}`);
         });
-
     }
-
   };
 
   // next: add loadPreviousMessages function
@@ -432,7 +325,8 @@ export default class App extends React.Component {
         let old_messages = [];
 
         messages.forEach(msg => {
-          let isCurrentUser = this.currentUser.id == msg.sender.id ? true : false;
+          let isCurrentUser =
+            this.currentUser.id == msg.sender.id ? true : false;
 
           old_messages.push({
             key: msg.id.toString(),
@@ -492,11 +386,11 @@ const styles = StyleSheet.create({
   login: {
     alignItems: "center",
     justifyContent: "center",
-    flex: 1,
+    flex: 1
   },
   backgroundImage: {
-    height: '100%',
-    width: '100%',
-    flex: 1,
-  },
+    height: "100%",
+    width: "100%",
+    flex: 1
+  }
 });

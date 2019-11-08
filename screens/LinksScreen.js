@@ -57,25 +57,26 @@ export default class LinksScreen extends React.Component {
       CurrentScreen: ProfilePage
     };
     this.buttonAry = [
-      "TestChatPage",
+      "TestChatPage", //show user list
+      "TestChat", //chat screen
       "TestLocationServices",
       "TestCollapsible",
       "TestRegistrationComplete",
       "TestProfile",
-      "TestMatches",
-      "TestRegistration",
-      "TestSelfie",
-      "TestPhotoReview",
-      "TestScreen",
-      "Selection",
-      "GhostingOthers",
-      "GotGhosted",
-      "GotLucky",
-      "CreateQuestionaire",
-      "ReplyQuestionaire",
-      "ViewQuestionaire",
-      "Chat",
-      "TestChat"
+      //"TestMatches",
+      //"TestRegistration",
+      //"TestSelfie",
+      //"TestPhotoReview",
+      //"TestScreen",
+      //"Selection",
+      //"GhostingOthers",
+      //"GotGhosted",
+      //"GotLucky",
+      //"CreateQuestionaire",
+      //"ReplyQuestionaire",
+      //"ViewQuestionaire",
+      "ChatUsersList",
+      "MatchedUserChat"
       //"TestSignUp",
       //"TestAboutYou",
       //"TestTellUsMore",

@@ -39,6 +39,11 @@ import WouldRather from "../screens/SignUpFlow/IndividualScreensTestingSync/Woul
 import TellUsMore from "../screens/SignUpFlow/IndividualScreensTestingSync/TellUsMore";
 import RegistrationComplete from "../screens/SignUpFlow/Collapsible_ScrollView_Components/RegistrationComplete.js";
 
+//Chat
+import ChatUsersList from "../screens/ChatFlow/ChatUsersList";
+import MatchedUserChat from "../screens/ChatFlow/MatchedUserChat";
+
+
 //On-Boarding Collapsible Screen (Includes all on-boarding screens)
 import Collapsible from "../screens/SignUpFlow/ProfileClient/CollapsibleRegistration";
 import LinksScreen from "../screens/LinksScreen";
@@ -62,7 +67,7 @@ const TestStack = createStackNavigator({
   TestSpendWeekend: SpendWeekend,
   TestImInterestedIn: ImInterestedIn,
   TestCollapsible: Collapsible,
-  TestRegistrationComplete: RegistrationComplete,
+  TestRegistrationComplete: RegistrationComplete
 });
 
 const AuthStack = createStackNavigator({
@@ -73,7 +78,9 @@ const AuthStack = createStackNavigator({
 });
 
 const ChatStack = createStackNavigator({
-  Chat: ChatPage,
+  ChatPage: ChatPage,
+  ChatUsersList: ChatUsersList,
+  MatchedUserChat: MatchedUserChat,
   InitialMatchChoice: InitialMatchChoice,
   GhostingOthers: GhostingOthersScreen,
   GotLucky: GotLucky,

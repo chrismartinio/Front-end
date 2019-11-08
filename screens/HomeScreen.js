@@ -225,7 +225,8 @@ class HomeScreen extends React.Component {
     // needs to have json web token?
     try {
       const { username, password } = this._form.getValue();
-      let data = await fetch("http://10.0.0.246:3003/api/auth/login", {
+
+      let data = await fetch("http://74.80.250.210:3002/api/auth/login", {
         method: "POST",
         mode: "cors",
         credentials: "same-origin",
@@ -244,7 +245,8 @@ class HomeScreen extends React.Component {
       let jsonData = await data.json();
       if (jsonData.token) {
         this.props.SetJwtAction(jsonData.token);
-        this.props.navigation.navigate("Chat");
+        //this.props.navigation.navigate("ChatUsersList");
+        this.props.navigation.navigate("MatchedUserChat");
       } else {
         alert(jsonData.error);
       }

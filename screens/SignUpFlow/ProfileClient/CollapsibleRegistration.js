@@ -98,7 +98,7 @@ class CollapisbleRegistration extends Component {
       wouldYouRatherStatus: "empty",
       localDestinationStatus: "empty",
       isLoading: false, //use to make sure if there data inside redux before rendering
-      scrollY: 0
+      scrollY: 0,
     };
   }
 
@@ -216,6 +216,7 @@ class CollapisbleRegistration extends Component {
   };
 
   async componentDidMount() {
+
     //a warning that if checklist is [true, true, true, true, true, true]
     //Since Auth will handle if the checklist is a continue user or new user
     //continue user : [true, false, false, true, true, true]
