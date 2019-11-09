@@ -12,19 +12,41 @@ import {
   TextInput
 } from "react-native";
 
+import { connect } from "react-redux";
+
 import io from "socket.io-client";
+
+import LoadingScreen from "./components/LoadingScreen";
 
 class MatchedUserChat extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       allMessages: [],
-      currentMessage: ""
+      currentMessage: "",
+      isLoading: false
     };
+    this.guid = "";
+    this.firstName = "";
+
     this.socket = io("http://74.80.250.210:3060");
-    // Whenever the server emits 'new message', update the chat body
+
+    //handle new message
     this.socket.on("new message", data => {
-      this.addChatMessage(data.message);
+      let str = `${data.username} : ${data.message}`;
+      this.addChatMessage(str);
+    });
+
+    //handle user joined
+    this.socket.on("user joined", data => {
+      let str = `${data.username} has joined`;
+      this.addChatMessage(str);
+    });
+
+    //handle user left
+    this.socket.on("user left", data => {
+      let str = `${data.username} has left`;
+      this.addChatMessage(str);
     });
   }
 
@@ -37,19 +59,33 @@ class MatchedUserChat extends React.Component {
     });
   };
 
-  handleMessage = () => {
+  //remove the typing message from the allMessageArray
+  removeChatMessage = message => {
+    let lastIndex = allMessages.lastIndexOf(message);
+    let allMessages = this.state.allMessages.splice(lastIndex, 1);
+  };
+
+  //user send a message
+  submitMessage = () => {
+    let str = `${this.firstName} : ${this.state.currentMessage}`;
+    this.addChatMessage(str);
+    this.socket.emit("new message", this.state.currentMessage);
     this.setState({
       currentMessage: ""
     });
-    this.addChatMessage(this.state.currentMessage);
-    this.socket.emit("new message", this.state.currentMessage);
   };
 
-  componentDidMount() {
-    this.socket.emit("add user", this.state.device_userName);
+  async componentDidMount() {
+    this.guid = await this.props.CreateProfileDataReducer.guid;
+    this.firstName = await this.props.CreateProfileDataReducer.aboutYouData
+      .firstName;
+    this.socket.emit("add user", this.firstName);
+    this.setState({
+      isLoading: true
+    });
   }
 
-  render() {
+  successScreen = () => {
     let displayAllChatMessage = this.state.allMessages.map(
       (message, index = 0) => {
         return (
@@ -71,9 +107,17 @@ class MatchedUserChat extends React.Component {
           onChangeText={currentMessage => this.setState({ currentMessage })}
           value={this.state.currentMessage}
         />
-        <Button title="Right button" onPress={this.handleMessage} />
+        <Button title="Right button" onPress={this.submitMessage} />
       </ScrollView>
     );
+  };
+
+  loadingScreen = () => {
+    return <LoadingScreen />;
+  };
+
+  render() {
+    return this.state.isLoading ? this.successScreen() : this.loadingScreen();
   }
 }
 
@@ -84,4 +128,15 @@ const styles = StyleSheet.create({
   }
 });
 
-export default MatchedUserChat;
+const mapStateToProps = state => {
+  return { ...state };
+};
+
+const mapDispatchToProps = dispatch => {
+  return {};
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(MatchedUserChat);
