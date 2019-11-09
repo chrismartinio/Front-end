@@ -45,14 +45,14 @@ class MatchedUserChat extends React.Component {
     this.socket.on("user joined", data => {
       let str = `${data.username} has joined`;
       this.addChatMessage(false, str);
-      this.scrollView.scrollToEnd({animated: true})
+      this.scrollView.scrollToEnd({ animated: true });
     });
 
     //handle user left
     this.socket.on("user left", data => {
       let str = `${data.username} has left`;
       this.addChatMessage(false, str);
-      this.scrollView.scrollToEnd({animated: true})
+      this.scrollView.scrollToEnd({ animated: true });
     });
 
     //handle user typing
@@ -60,7 +60,7 @@ class MatchedUserChat extends React.Component {
       this.setState({
         isTyping: true
       });
-      this.scrollView.scrollToEnd({animated: true})
+      this.scrollView.scrollToEnd({ animated: true });
     });
 
     //handle user not typing
@@ -72,10 +72,14 @@ class MatchedUserChat extends React.Component {
   }
 
   async componentDidMount() {
+    /*
     this.guid = await this.props.CreateProfileDataReducer.guid;
 
     this.user_firstName = await this.props.CreateProfileDataReducer.aboutYouData
       .firstName;
+      */
+    this.guid = "";
+    this.user_firstName = "You";
 
     //emit an event to tell the socket the user has enter the room
     this.socket.emit("add user", this.user_firstName);
