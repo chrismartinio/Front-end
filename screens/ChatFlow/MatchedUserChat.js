@@ -24,49 +24,58 @@ class MatchedUserChat extends React.Component {
     this.state = {
       allMessages: [],
       currentMessage: "",
-      isLoading: false
+      isLoading: false,
+      isTyping: false
     };
     this.guid = "";
-    this.firstName = "";
+    this.user_firstName = "";
+    this.matched_user_firstName = "";
 
     this.socket = io("http://74.80.250.210:3060");
 
     //handle new message
     this.socket.on("new message", data => {
       let str = `${data.username} : ${data.message}`;
-      this.addChatMessage(str);
+      this.addChatMessage(false, str);
     });
 
     //handle user joined
     this.socket.on("user joined", data => {
       let str = `${data.username} has joined`;
-      this.addChatMessage(str);
+      this.addChatMessage(false, str);
     });
 
     //handle user left
     this.socket.on("user left", data => {
       let str = `${data.username} has left`;
-      this.addChatMessage(str);
+      this.addChatMessage(false, str);
     });
 
     //handle user typing
     this.socket.on("typing", data => {
-      let str = `${data.username} is typing`;
-      //this.addChatMessage(str);
+      this.setState({
+        isTyping: true
+      });
     });
 
     //handle user not typing
     this.socket.on("stop typing", data => {
-      let str = `${data.username} is typing`;
-      //this.removeChatMessage(str);
+      this.setState({
+        isTyping: false
+      });
     });
   }
 
   async componentDidMount() {
     this.guid = await this.props.CreateProfileDataReducer.guid;
-    this.firstName = await this.props.CreateProfileDataReducer.aboutYouData
+    this.user_firstName = await this.props.CreateProfileDataReducer.aboutYouData
       .firstName;
-    this.socket.emit("add user", this.firstName);
+    //emit an event to tell the socket the user has enter the room
+    this.socket.emit("add user", this.user_firstName);
+
+    //this will be assign from the ChatUsersList.js
+    this.matched_user_firstName = "he/she";
+
     this.setState({
       isLoading: true
     });
@@ -85,29 +94,18 @@ class MatchedUserChat extends React.Component {
   }
 
   //add a new message into the allMessageArray
-  addChatMessage = message => {
+  addChatMessage = (isDeviceUser, message) => {
     let allMessages = this.state.allMessages;
-    allMessages.push(message);
+    allMessages.push({ isDeviceUser: isDeviceUser, message: message });
     this.setState({
       allMessages: allMessages
     });
   };
-
-  //remove the typing message from the allMessageArray
-  /* NOT WOKRING
-  removeChatMessage = message => {
-    let lastIndex = this.state.allMessages.lastIndexOf(message);
-    let allMessages = this.state.allMessages.splice(lastIndex, 1);
-    this.setState({
-      allMessages: allMessages
-    });
-  };
-  */
 
   //user send a message
   submitMessage = () => {
-    let str = `${this.firstName} : ${this.state.currentMessage}`;
-    this.addChatMessage(str);
+    let str = `${this.state.currentMessage} : ${this.user_firstName}`;
+    this.addChatMessage(true, str);
     this.socket.emit("new message", this.state.currentMessage);
     this.setState({
       currentMessage: ""
@@ -116,28 +114,38 @@ class MatchedUserChat extends React.Component {
 
   successScreen = () => {
     let displayAllChatMessage = this.state.allMessages.map(
-      (message, index = 0) => {
-        return (
+      (messageItem, index = 0) => {
+        return messageItem.isDeviceUser ? (
+          <View key={index} style={styles.deviceUserMessageText}>
+            <Text>{messageItem.message}</Text>
+          </View>
+        ) : (
           <View key={index}>
-            <Text>{message}</Text>
+            <Text>{messageItem.message}</Text>
           </View>
         );
       }
     );
+
     return (
-      <ScrollView>
-        <View style={styles.container}>
-          <Text>usersList</Text>
+      <View style={styles.container}>
+        <ScrollView>
           {displayAllChatMessage}
+          <Text>
+            {this.state.isTyping && `${this.matched_user_firstName} is typing`}
+          </Text>
+        </ScrollView>
+
+        <View style={styles.messageInputBox}>
+          <TextInput
+            placeholder="Type in a Message!"
+            onChangeText={currentMessage => this.setState({ currentMessage })}
+            value={this.state.currentMessage}
+          />
+          <Button title="Right button" onPress={this.submitMessage} />
+          <View style={{ padding: "3%" }} />
         </View>
-        <TextInput
-          style={{ height: 40 }}
-          placeholder="Type in a Message!"
-          onChangeText={currentMessage => this.setState({ currentMessage })}
-          value={this.state.currentMessage}
-        />
-        <Button title="Right button" onPress={this.submitMessage} />
-      </ScrollView>
+      </View>
     );
   };
 
@@ -154,6 +162,13 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff"
+  },
+  deviceUserMessageText: {
+    alignItems: "flex-end"
+  },
+  messageInputBox: {
+    flexDirection: "column",
+    justifyContent: "flex-end"
   }
 });
 
