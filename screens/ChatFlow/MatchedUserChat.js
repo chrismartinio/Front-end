@@ -48,6 +48,18 @@ class MatchedUserChat extends React.Component {
       let str = `${data.username} has left`;
       this.addChatMessage(str);
     });
+
+    //handle user typing
+    this.socket.on("typing", data => {
+      let str = `${data.username} is typing`;
+      this.addChatMessage(str);
+    });
+
+    //handle user not typing
+    this.socket.on("stop typing", data => {
+      let str = `${data.username} is typing`;
+      this.removeChatMessage(str);
+    });
   }
 
   //add a new message into the allMessageArray
