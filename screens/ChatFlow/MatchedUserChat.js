@@ -24,18 +24,64 @@ class MatchedUserChat extends React.Component {
     this.state = {
       allMessages: [],
       currentMessage: "",
-      isLoading: false,
-      name: "",
-      guid: ""
+      isLoading: false
     };
     this.guid = "";
     this.firstName = "";
 
     this.socket = io("http://74.80.250.210:3060");
-    // Whenever the server emits 'new message', update the chat body
+
+    //handle new message
     this.socket.on("new message", data => {
-      this.addChatMessage(data.message);
+      let str = `${data.username} : ${data.message}`;
+      this.addChatMessage(str);
     });
+
+    //handle user joined
+    this.socket.on("user joined", data => {
+      let str = `${data.username} has joined`;
+      this.addChatMessage(str);
+    });
+
+    //handle user left
+    this.socket.on("user left", data => {
+      let str = `${data.username} has left`;
+      this.addChatMessage(str);
+    });
+
+    //handle user typing
+    this.socket.on("typing", data => {
+      let str = `${data.username} is typing`;
+      //this.addChatMessage(str);
+    });
+
+    //handle user not typing
+    this.socket.on("stop typing", data => {
+      let str = `${data.username} is typing`;
+      //this.removeChatMessage(str);
+    });
+  }
+
+  async componentDidMount() {
+    this.guid = await this.props.CreateProfileDataReducer.guid;
+    this.firstName = await this.props.CreateProfileDataReducer.aboutYouData
+      .firstName;
+    this.socket.emit("add user", this.firstName);
+    this.setState({
+      isLoading: true
+    });
+  }
+
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    if (this.state.currentMessage !== prevState.currentMessage) {
+      if (this.state.currentMessage) {
+        //if there has message on the chat box
+        this.socket.emit("typing");
+      } else {
+        //if there has no message on the chat box
+        this.socket.emit("stop typing");
+      }
+    }
   }
 
   //add a new message into the allMessageArray
@@ -47,27 +93,26 @@ class MatchedUserChat extends React.Component {
     });
   };
 
-  handleMessage = () => {
+  //remove the typing message from the allMessageArray
+  /* NOT WOKRING
+  removeChatMessage = message => {
+    let lastIndex = this.state.allMessages.lastIndexOf(message);
+    let allMessages = this.state.allMessages.splice(lastIndex, 1);
+    this.setState({
+      allMessages: allMessages
+    });
+  };
+  */
+
+  //user send a message
+  submitMessage = () => {
+    let str = `${this.firstName} : ${this.state.currentMessage}`;
+    this.addChatMessage(str);
+    this.socket.emit("new message", this.state.currentMessage);
     this.setState({
       currentMessage: ""
     });
-    this.addChatMessage(this.state.currentMessage);
-    this.socket.emit("new message", this.state.currentMessage);
   };
-
-  async componentDidMount() {
-    this.guid = await this.props.CreateProfileDataReducer.guid;
-    this.firstName = await this.props.CreateProfileDataReducer.aboutYouData
-      .firstName;
-
-    console.log(this.guid);
-    console.log(this.firstName);
-
-    this.setState({
-      isLoading: true
-    });
-    this.socket.emit("add user", this.state.device_userName);
-  }
 
   successScreen = () => {
     let displayAllChatMessage = this.state.allMessages.map(
@@ -91,7 +136,7 @@ class MatchedUserChat extends React.Component {
           onChangeText={currentMessage => this.setState({ currentMessage })}
           value={this.state.currentMessage}
         />
-        <Button title="Right button" onPress={this.handleMessage} />
+        <Button title="Right button" onPress={this.submitMessage} />
       </ScrollView>
     );
   };
