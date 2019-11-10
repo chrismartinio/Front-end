@@ -44,6 +44,7 @@ class MatchedUserChat extends React.Component {
 
     //handle user joined
     this.socket.on("user joined", data => {
+      this.matched_user_firstName = data.username;
       let str = `${data.username} has joined`;
       this.addChatMessage(false, str);
       this.scrollView.scrollToEnd({ animated: true });
@@ -58,6 +59,9 @@ class MatchedUserChat extends React.Component {
 
     //handle user typing
     this.socket.on("typing", data => {
+      if (this.matched_user_firstName === "") {
+        this.matched_user_firstName = data.username;
+      }
       this.setState({
         isTyping: true
       });
@@ -88,22 +92,18 @@ class MatchedUserChat extends React.Component {
   }
 
   async componentDidMount() {
-    /*
     this.guid = await this.props.CreateProfileDataReducer.guid;
 
     this.user_firstName = await this.props.CreateProfileDataReducer.aboutYouData
       .firstName;
-      */
-    this.guid = "";
-    this.user_firstName = "You";
 
-    this.interval = setInterval(this.countDown, 1000);
+    //this.guid = "";
+    //this.user_firstName = "You";
+
+    //this.interval = setInterval(this.countDown, 1000);
 
     //emit an event to tell the socket the user has enter the room
     this.socket.emit("add user", this.user_firstName);
-
-    //this will be assign from the ChatUsersList.js
-    this.matched_user_firstName = "he/she";
 
     this.setState({
       isLoading: true
