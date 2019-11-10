@@ -26,7 +26,8 @@ class MatchedUserChat extends React.Component {
       allMessages: [],
       currentMessage: "",
       isLoading: false,
-      isTyping: false
+      isTyping: false,
+      timerSecond: 90
     };
     this.guid = "";
     this.user_firstName = "";
@@ -69,6 +70,21 @@ class MatchedUserChat extends React.Component {
         isTyping: false
       });
     });
+
+    //handle disconnect
+    this.socket.on("disconnect", () => {
+      let str = "you have lost connection to the server";
+      this.addChatMessage(false, str);
+      this.scrollView.scrollToEnd({ animated: true });
+    });
+
+    //handle reconnect
+    this.socket.on("reconnect", () => {
+      this.socket.emit("add user", this.user_firstName);
+      let str = "you have been reconnected to the server";
+      this.addChatMessage(false, str);
+      this.scrollView.scrollToEnd({ animated: true });
+    });
   }
 
   async componentDidMount() {
@@ -80,6 +96,8 @@ class MatchedUserChat extends React.Component {
       */
     this.guid = "";
     this.user_firstName = "You";
+
+    this.interval = setInterval(this.countDown, 1000);
 
     //emit an event to tell the socket the user has enter the room
     this.socket.emit("add user", this.user_firstName);
@@ -104,6 +122,10 @@ class MatchedUserChat extends React.Component {
     }
   }
 
+  componentWillUnmount() {
+    clearInterval(this.interval);
+  }
+
   //add a new message into the allMessageArray
   addChatMessage = (isDeviceUser, message) => {
     let allMessages = this.state.allMessages;
@@ -124,6 +146,21 @@ class MatchedUserChat extends React.Component {
     this.scrollView.scrollToEnd({ animated: true });
   };
 
+  countDown = () => {
+    this.setState({
+      timerSecond: --this.state.timerSecond
+    });
+    if (this.state.timerSecond === 0) {
+      this.backToChatUsersList;
+      clearInterval(this.interval);
+    }
+  };
+
+  backToChatUsersList = () => {
+    this.socket.emit("user left");
+    this.props.navigation.navigate("ChatUsersList");
+  };
+
   successScreen = () => {
     let displayAllChatMessage = this.state.allMessages.map(
       (messageItem, index = 0) => {
@@ -141,6 +178,23 @@ class MatchedUserChat extends React.Component {
 
     return (
       <View style={styles.container}>
+        <Button title="Back" onPress={this.backToChatUsersList} />
+        <Text>{this.state.timerSecond} seconds left</Text>
+        <Image
+          style={{
+            width: 90 * 2,
+            height: 10
+          }}
+          source={require("../../assets/Assets_V1/greybar.jpg")}
+        />
+        <Image
+          style={{
+            top: -10,
+            width: this.state.timerSecond * 2,
+            height: 10
+          }}
+          source={require("../../assets/Assets_V1/bluebar.jpg")}
+        />
         <ScrollView
           ref={scrollView => {
             this.scrollView = scrollView;
@@ -158,7 +212,7 @@ class MatchedUserChat extends React.Component {
             onChangeText={currentMessage => this.setState({ currentMessage })}
             value={this.state.currentMessage}
           />
-          <Button title="Right button" onPress={this.submitMessage} />
+          <Button title="Submit Message" onPress={this.submitMessage} />
           <View style={{ padding: "3%" }} />
         </View>
       </View>
