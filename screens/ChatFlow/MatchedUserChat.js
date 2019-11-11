@@ -32,7 +32,6 @@ class MatchedUserChat extends React.Component {
     this.guid = "";
     this.user_firstName = "";
     this.matched_user_firstName = "";
-
     this.socket = io("http://74.80.250.210:3060");
 
     //handle new message
@@ -130,7 +129,11 @@ class MatchedUserChat extends React.Component {
   //add a new message into the allMessageArray
   addChatMessage = (isDeviceUser, message) => {
     let allMessages = this.state.allMessages;
-    allMessages.push({ isDeviceUser: isDeviceUser, message: message });
+    allMessages.push({
+      isDeviceUser: isDeviceUser,
+      message: message,
+      userName: this.user_firstName
+    });
     this.setState({
       allMessages: allMessages
     });
@@ -138,7 +141,7 @@ class MatchedUserChat extends React.Component {
 
   //user send a message
   submitMessage = () => {
-    let str = `${this.state.currentMessage} : ${this.user_firstName}`;
+    let str = `${this.state.currentMessage}`;
     this.addChatMessage(true, str);
     this.socket.emit("new message", this.state.currentMessage);
     this.setState({
@@ -166,12 +169,27 @@ class MatchedUserChat extends React.Component {
     let displayAllChatMessage = this.state.allMessages.map(
       (messageItem, index = 0) => {
         return messageItem.isDeviceUser ? (
-          <View key={index} style={styles.deviceUserMessageText}>
-            <Text>{messageItem.message}</Text>
+          <View key={index} style={styles.deviceUserMessageView}>
+            <View style={styles.textContainer}>
+              <Text style={styles.deviceUserMessageText}>
+                {`${messageItem.message}\n`}
+                <Text style={styles.dateTime}>DateTime</Text>
+              </Text>
+              <Text style={styles.circle}> {messageItem.userName[0]}</Text>
+            </View>
           </View>
         ) : (
           <View key={index}>
-            <Text>{messageItem.message}</Text>
+            <View style={styles.textContainer}>
+              <Text style={styles.circlePurple}>
+                {" "}
+                {messageItem.userName[0]}
+              </Text>
+              <Text style={styles.targetMessageText}>
+                {`${messageItem.message}\n`}
+                <Text style={styles.dateTimeLeft}>DateTime</Text>
+              </Text>
+            </View>
           </View>
         );
       }
@@ -206,16 +224,24 @@ class MatchedUserChat extends React.Component {
             {this.state.isTyping && `${this.matched_user_firstName} is typing`}
           </Text>
         </ScrollView>
-
-        <View style={styles.messageInputBox}>
-          <TextInput
-            placeholder="Type in a Message!"
-            onChangeText={currentMessage => this.setState({ currentMessage })}
-            value={this.state.currentMessage}
-          />
-          <Button title="Submit Message" onPress={this.submitMessage} />
-          <View style={{ padding: "3%" }} />
-        </View>
+        <KeyboardAvoidingView
+          style={styles.container}
+          behavior="padding"
+          enabled
+        >
+          <View style={styles.messageInputBox}>
+            <TextInput
+              style={styles.messageInputStyle}
+              placeholder="Type in a Message!"
+              onChangeText={currentMessage => this.setState({ currentMessage })}
+              value={this.state.currentMessage}
+            />
+            <View style={styles.buttonStyle}>
+              <Button title="Submit Message" onPress={this.submitMessage} />
+            </View>
+            <View style={{ padding: "3%" }} />
+          </View>
+        </KeyboardAvoidingView>
       </View>
     );
   };
@@ -234,8 +260,84 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#fff"
   },
+  textContainer: {
+    margin: 10,
+    overflow: "hidden",
+    //  borderRadius: 10,
+    //  borderWidth: 12,
+    //  borderColor: "#3399ff",
+    flexDirection: "row"
+  },
+  dateTime: {
+    fontSize: 8,
+    textAlign: "right"
+  },
+  dateTimeLeft: {
+    fontSize: 8,
+    textAlign: "left"
+  },
   deviceUserMessageText: {
+    overflow: "hidden",
+    borderRadius: 10,
+    width: 300,
+    borderColor: "#3399ff",
+    backgroundColor: "#3399ff",
+    color: "#fff",
+    padding: 5
+  },
+  targetMessageText: {
+    overflow: "hidden",
+    borderRadius: 10,
+    width: 300,
+    borderColor: "#cccccc",
+    backgroundColor: "#cccccc",
+    color: "#000",
+    padding: 5
+  },
+  deviceUserName: {
+    overflow: "hidden",
+    padding: 15,
+    borderRadius: 40,
+    backgroundColor: "#00ff00",
+    color: "#000"
+  },
+  messageInputStyle: {
+    backgroundColor: "#cccccc",
+    padding: 10,
+    borderRadius: 10,
+    overflow: "hidden",
+    margin: 5
+  },
+  circle: {
+    marginLeft: 5,
+    overflow: "hidden",
+    width: 30,
+    height: 30,
+    borderRadius: 30 / 2,
+    backgroundColor: "red",
+    textAlign: "center",
+    paddingTop: 7
+  },
+  circlePurple: {
+    marginRight: 5,
+    overflow: "hidden",
+    width: 30,
+    height: 30,
+    borderRadius: 30 / 2,
+    backgroundColor: "purple",
+    textAlign: "center",
+    paddingTop: 7,
+    color: "white"
+  },
+  deviceUserMessageView: {
     alignItems: "flex-end"
+  },
+  buttonStyle: {
+    borderRadius: 10,
+    color: "#fff",
+    backgroundColor: "blue",
+    width: 200,
+    alignSelf: "center"
   },
   messageInputBox: {
     flexDirection: "column",
