@@ -9,7 +9,8 @@ import {
   TouchableOpacity,
   View,
   Button,
-  ImageBackground
+  ImageBackground,
+  TouchableHighlight
 } from "react-native";
 
 import { connect } from "react-redux";
@@ -31,6 +32,7 @@ class ChatUsersList extends React.Component {
     this.guid = "";
     this.user_firstName = "";
     this.socket = io("http://74.80.250.210:3060");
+    this.scrollY;
   }
 
   async componentDidMount() {
@@ -55,19 +57,25 @@ class ChatUsersList extends React.Component {
     //this.props.navigate("Chat", {data: chatRoomData})
   };
 
+  handleScroll = ({ nativeEvent }) => {
+    const { contentOffset } = nativeEvent;
+    this.scrollY = contentOffset.y;
+  };
+
   successScreen = () => {
     let displayAllChatList = this.state.matchedChatList.map(
       (chatRoomData, index = 0) => {
         return (
           <View key={index}>
-            <TouchableOpacity
-              style={styles.button}
+            <TouchableHighlight
+              underlayColor="#f3f3f3"
+              style={styles.chatRoomBox}
               onPress={() => {
                 this.enterChatRoom(chatRoomData);
               }}
             >
               <Text>{chatRoomData.matched_user_name}</Text>
-            </TouchableOpacity>
+            </TouchableHighlight>
           </View>
         );
       }
@@ -75,11 +83,22 @@ class ChatUsersList extends React.Component {
 
     return (
       <View style={styles.container}>
+        <View style={styles.titleBox}>
+          <Text>Chat Rooms</Text>
+        </View>
         <ImageBackground
           source={require("../../assets/Assets_V1/Butterfly_Background/butterflyBackground.png")}
           style={styles.backgroundImage}
         >
-          <ScrollView>{displayAllChatList}</ScrollView>
+          <ScrollView
+            ref={scrollView => {
+              this.scrollView = scrollView;
+            }}
+            onScroll={this.handleScroll}
+            scrollEventThrottle={16}
+          >
+            {displayAllChatList}
+          </ScrollView>
         </ImageBackground>
       </View>
     );
@@ -98,18 +117,24 @@ const styles = StyleSheet.create({
   container: {
     flex: 1
   },
-  button: {
-    alignItems: "center",
-    backgroundColor: "#DDDDDD",
-    padding: 10,
-    borderBottomWidth: 1.0,
-    borderColor: "black"
-    //borderRadius: 8
+  chatRoomBox: {
+    padding: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: "#ccc",
+    backgroundColor: "white",
+    alignItems: "center"
   },
   backgroundImage: {
     height: "100%",
     width: "100%",
     flex: 1
+  },
+  titleBox: {
+    padding: 15,
+    borderBottomWidth: 2,
+    borderBottomColor: "#ccc",
+    alignItems: "center",
+    backgroundColor: "lightblue"
   }
 });
 
