@@ -152,14 +152,14 @@ class CollapisbleRegistration extends Component {
     //Continue User or Third Parties Services User
     //For Third Parties Services User - since onAuth would store those user to db
     //when onAuth pass the user (guid) to profile, they are similar with Continue User
-    guid = "5dbba55a013c4cbd0d6fc984";
+    guid = "5db0f04ff810e4aa8d6bcd25";
     checklist = {
       createAccount: true,
-      aboutYou: false,
-      preferences: true,
+      aboutYou: true,
+      preferences: false,
       interests: true,
-      wouldYouRather: false,
-      localDestination: false
+      wouldYouRather: true,
+      localDestination: true
     };
     isThirdPartiesServiceUser = false; //set true if third parties user
 
@@ -370,7 +370,7 @@ class CollapisbleRegistration extends Component {
     });
   };
 
-  SuccessScreen = () => {
+  successScreen = () => {
     return (
       <LinearGradient
         textStyle={{ color: "#fff" }}
@@ -535,7 +535,7 @@ class CollapisbleRegistration extends Component {
   };
 
   render() {
-    return this.state.isLoading ? this.SuccessScreen() : this.loadingScreen();
+    return this.state.isLoading ? this.successScreen() : this.loadingScreen();
   }
 }
 
