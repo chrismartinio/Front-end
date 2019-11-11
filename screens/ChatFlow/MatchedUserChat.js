@@ -92,13 +92,14 @@ class MatchedUserChat extends React.Component {
   }
 
   async componentDidMount() {
+    /*
     this.guid = await this.props.CreateProfileDataReducer.guid;
 
     this.user_firstName = await this.props.CreateProfileDataReducer.aboutYouData
       .firstName;
-
-    //this.guid = "";
-    //this.user_firstName = "You";
+      */
+    this.guid = "";
+    this.user_firstName = "You";
 
     //this.interval = setInterval(this.countDown, 1000);
 
