@@ -38,7 +38,9 @@ class MatchedUserChat extends React.Component {
     this.socket.on("new message", data => {
       let str = `${data.username} : ${data.message}`;
       this.addChatMessage(false, str);
-      this.scrollView.scrollToEnd({ animated: true });
+      if (this.scrollView != null) {
+        this.scrollView.scrollToEnd({ animated: true });
+      }
     });
 
     //handle user joined
@@ -46,14 +48,18 @@ class MatchedUserChat extends React.Component {
       this.matched_user_firstName = data.username;
       let str = `${data.username} has joined`;
       this.addChatMessage(false, str);
-      this.scrollView.scrollToEnd({ animated: true });
+      if (this.scrollView != null) {
+        this.scrollView.scrollToEnd({ animated: true });
+      }
     });
 
     //handle user left
     this.socket.on("user left", data => {
       let str = `${data.username} has left`;
       this.addChatMessage(false, str);
-      this.scrollView.scrollToEnd({ animated: true });
+      if (this.scrollView != null) {
+        this.scrollView.scrollToEnd({ animated: true });
+      }
     });
 
     //handle user typing
@@ -64,7 +70,9 @@ class MatchedUserChat extends React.Component {
       this.setState({
         isTyping: true
       });
-      this.scrollView.scrollToEnd({ animated: true });
+      if (this.scrollView != null) {
+        this.scrollView.scrollToEnd({ animated: true });
+      }
     });
 
     //handle user not typing
@@ -78,7 +86,9 @@ class MatchedUserChat extends React.Component {
     this.socket.on("disconnect", () => {
       let str = "you have lost connection to the server";
       this.addChatMessage(false, str);
-      this.scrollView.scrollToEnd({ animated: true });
+      if (this.scrollView != null) {
+        this.scrollView.scrollToEnd({ animated: true });
+      }
     });
 
     //handle reconnect
@@ -86,7 +96,9 @@ class MatchedUserChat extends React.Component {
       this.socket.emit("add user", this.user_firstName);
       let str = "you have been reconnected to the server";
       this.addChatMessage(false, str);
-      this.scrollView.scrollToEnd({ animated: true });
+      if (this.scrollView != null) {
+        this.scrollView.scrollToEnd({ animated: true });
+      }
     });
   }
 
@@ -124,6 +136,7 @@ class MatchedUserChat extends React.Component {
 
   componentWillUnmount() {
     clearInterval(this.interval);
+    this.socket.off()
   }
 
   //add a new message into the allMessageArray

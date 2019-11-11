@@ -18,6 +18,7 @@ import { connect } from "react-redux";
 import io from "socket.io-client";
 
 import LoadingScreen from "./components/LoadingScreen";
+import MatchedUserChat from "./MatchedUserChat";
 
 class ChatUsersList extends React.Component {
   constructor(props) {
@@ -54,7 +55,7 @@ class ChatUsersList extends React.Component {
 
   enterChatRoom = chatRoomData => {
     console.log(chatRoomData);
-    //this.props.navigate("Chat", {data: chatRoomData})
+    this.props.navigation.navigate("MatchedUserChat");
   };
 
   handleScroll = ({ nativeEvent }) => {
