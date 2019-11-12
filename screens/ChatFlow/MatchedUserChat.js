@@ -38,7 +38,7 @@ class MatchedUserChat extends React.Component {
     //handle new message
     this.socket.on("new message", data => {
       let str = `${data.username} : ${data.message}`;
-      this.addChatMessage(false, str);
+      this.addChatMessage(2, str);
       if (this.scrollView != null) {
         this.scrollView.scrollToEnd({ animated: true });
       }
@@ -48,7 +48,7 @@ class MatchedUserChat extends React.Component {
     this.socket.on("user joined", data => {
       this.matched_user_firstName = data.username;
       let str = `${data.username} has joined`;
-      this.addChatMessage(false, str);
+      this.addChatMessage(3, str);
       if (this.scrollView != null) {
         this.scrollView.scrollToEnd({ animated: true });
       }
@@ -57,7 +57,7 @@ class MatchedUserChat extends React.Component {
     //handle user left
     this.socket.on("user left", data => {
       let str = `${data.username} has left`;
-      this.addChatMessage(false, str);
+      this.addChatMessage(3, str);
       if (this.scrollView != null) {
         this.scrollView.scrollToEnd({ animated: true });
       }
@@ -91,7 +91,7 @@ class MatchedUserChat extends React.Component {
     //handle disconnect
     this.socket.on("disconnect", () => {
       let str = "you have lost connection to the server";
-      this.addChatMessage(false, str);
+      this.addChatMessage(3, str);
       if (this.scrollView != null) {
         this.scrollView.scrollToEnd({ animated: true });
       }
@@ -101,7 +101,7 @@ class MatchedUserChat extends React.Component {
     this.socket.on("reconnect", () => {
       this.socket.emit("add user", this.user_firstName);
       let str = "you have been reconnected to the server";
-      this.addChatMessage(false, str);
+      this.addChatMessage(3, str);
       if (this.scrollView != null) {
         this.scrollView.scrollToEnd({ animated: true });
       }
@@ -109,14 +109,14 @@ class MatchedUserChat extends React.Component {
   }
 
   async componentDidMount() {
-    /*
+
     this.guid = await this.props.CreateProfileDataReducer.guid;
 
     this.user_firstName = await this.props.CreateProfileDataReducer.aboutYouData
       .firstName;
-      */
-    this.guid = "";
-    this.user_firstName = "You";
+
+    //this.guid = "";
+    //this.user_firstName = "You";
 
     //emit an event to tell the socket the user has enter the room
     this.socket.emit("add user", this.user_firstName);
@@ -144,10 +144,10 @@ class MatchedUserChat extends React.Component {
   }
 
   //add a new message into the allMessageArray
-  addChatMessage = (isDeviceUser, message) => {
+  addChatMessage = (type, message) => {
     let allMessages = this.state.allMessages;
     allMessages.push({
-      isDeviceUser: isDeviceUser,
+      type: type,
       message: message,
       userName: this.user_firstName,
       timeStamp: new Date()
@@ -160,7 +160,7 @@ class MatchedUserChat extends React.Component {
   //user send a message
   submitMessage = () => {
     let str = `${this.state.currentMessage}`;
-    this.addChatMessage(true, str);
+    this.addChatMessage(1, str);
     this.socket.emit("new message", this.state.currentMessage);
     this.setState({
       currentMessage: ""
@@ -181,13 +181,15 @@ class MatchedUserChat extends React.Component {
   backToChatUsersList = () => {
     this.socket.emit("disconnect");
     this.props.navigation.navigate("ChatUsersList");
-
   };
 
-  successScreen = () => {
-    let displayAllChatMessage = this.state.allMessages.map(
-      (messageItem, index = 0) => {
-        return messageItem.isDeviceUser ? (
+  messageType = (messageItem, index) => {
+    //1 - device user
+    //2 - matched user
+    //3 - regular message
+    switch (messageItem.type) {
+      case 1:
+        return (
           <View key={index} style={styles.deviceUserMessageView}>
             <View style={styles.textContainer}>
               <Text style={styles.deviceUserMessageText}>
@@ -199,7 +201,10 @@ class MatchedUserChat extends React.Component {
               <Text style={styles.circle}> {messageItem.userName[0]}</Text>
             </View>
           </View>
-        ) : (
+        );
+
+      case 2:
+        return (
           <View key={index}>
             <View style={styles.textContainer}>
               <Text style={styles.circlePurple}>
@@ -215,6 +220,23 @@ class MatchedUserChat extends React.Component {
             </View>
           </View>
         );
+
+      case 3:
+        return (
+          <View key={index} style={{ alignItems: "center" }}>
+            <Text>{`${messageItem.message}\n`}</Text>
+          </View>
+        );
+
+      default:
+        return null;
+    }
+  };
+
+  successScreen = () => {
+    let displayAllChatMessage = this.state.allMessages.map(
+      (messageItem, index = 0) => {
+        return this.messageType(messageItem, index);
       }
     );
 
@@ -252,10 +274,16 @@ class MatchedUserChat extends React.Component {
             //paddingVertical= {-20}
           >
             {displayAllChatMessage}
-            <Text style={styles.typingIndicator}>
-              {this.state.isTyping &&
-                `${this.matched_user_firstName} is typing`}
-            </Text>
+
+            {this.state.isTyping && (
+              <View style={styles.textContainer}>
+                <Text style={styles.circlePurple}>
+                  {" "}
+                  {this.matched_user_firstName[0]}
+                </Text>
+                <Text style={styles.targetMessageText}>is typing...</Text>
+              </View>
+            )}
           </ScrollView>
           {/* <KeyboardAvoidingView style={styles.container} behavior="padding" enabled> */}
           <View style={styles.messageInputBox}>
