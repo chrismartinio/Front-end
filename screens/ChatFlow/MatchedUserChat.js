@@ -4,15 +4,16 @@ import {
   Image,
   Platform,
   ScrollView,
+  FlatList,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
   Button,
   TextInput,
+  SafeAreaView,
   KeyboardAvoidingView
 } from "react-native";
-
 import { connect } from "react-redux";
 
 import io from "socket.io-client";
@@ -60,6 +61,11 @@ class MatchedUserChat extends React.Component {
       if (this.scrollView != null) {
         this.scrollView.scrollToEnd({ animated: true });
       }
+    });
+
+    //handle timer
+    this.socket.on("timer", data => {
+      this.interval = setInterval(this.countDown, 1000);
     });
 
     //handle user typing
@@ -112,8 +118,6 @@ class MatchedUserChat extends React.Component {
     this.guid = "";
     this.user_firstName = "You";
 
-    //this.interval = setInterval(this.countDown, 1000);
-
     //emit an event to tell the socket the user has enter the room
     this.socket.emit("add user", this.user_firstName);
 
@@ -136,7 +140,7 @@ class MatchedUserChat extends React.Component {
 
   componentWillUnmount() {
     clearInterval(this.interval);
-    this.socket.off();
+    this.socket.close();
   }
 
   //add a new message into the allMessageArray
@@ -145,7 +149,8 @@ class MatchedUserChat extends React.Component {
     allMessages.push({
       isDeviceUser: isDeviceUser,
       message: message,
-      userName: this.user_firstName
+      userName: this.user_firstName,
+      timeStamp: new Date()
     });
     this.setState({
       allMessages: allMessages
@@ -167,15 +172,16 @@ class MatchedUserChat extends React.Component {
     this.setState({
       timerSecond: --this.state.timerSecond
     });
-    if (this.state.timerSecond === 0) {
-      this.backToChatUsersList;
-      //clearInterval(this.interval);
+    if (this.state.timerSecond <= 0) {
+      clearInterval(this.interval);
+      this.backToChatUsersList();
     }
   };
 
   backToChatUsersList = () => {
-    this.socket.emit("user left");
+    this.socket.emit("disconnect");
     this.props.navigation.navigate("ChatUsersList");
+
   };
 
   successScreen = () => {
@@ -186,7 +192,9 @@ class MatchedUserChat extends React.Component {
             <View style={styles.textContainer}>
               <Text style={styles.deviceUserMessageText}>
                 {`${messageItem.message}\n`}
-                <Text style={styles.dateTime}>DateTime</Text>
+                <Text style={styles.dateTime}>{`${
+                  messageItem.timeStamp
+                }`}</Text>
               </Text>
               <Text style={styles.circle}> {messageItem.userName[0]}</Text>
             </View>
@@ -200,7 +208,9 @@ class MatchedUserChat extends React.Component {
               </Text>
               <Text style={styles.targetMessageText}>
                 {`${messageItem.message}\n`}
-                <Text style={styles.dateTimeLeft}>DateTime</Text>
+                <Text style={styles.dateTimeLeft}>{`${
+                  messageItem.timeStamp
+                }`}</Text>
               </Text>
             </View>
           </View>
@@ -209,39 +219,45 @@ class MatchedUserChat extends React.Component {
     );
 
     return (
-      <View style={styles.container}>
-        <Button title="Back" onPress={this.backToChatUsersList} />
-        <Text>{this.state.timerSecond} seconds left</Text>
-        <Image
-          style={{
-            width: 90 * 2,
-            height: 10
-          }}
-          source={require("../../assets/Assets_V1/greybar.jpg")}
-        />
-        <Image
-          style={{
-            top: -10,
-            width: this.state.timerSecond * 2,
-            height: 10
-          }}
-          source={require("../../assets/Assets_V1/bluebar.jpg")}
-        />
-        <ScrollView
-          ref={scrollView => {
-            this.scrollView = scrollView;
-          }}
-        >
-          {displayAllChatMessage}
-          <Text>
-            {this.state.isTyping && `${this.matched_user_firstName} is typing`}
-          </Text>
-        </ScrollView>
+      <SafeAreaView style={styles.container}>
         <KeyboardAvoidingView
           style={styles.container}
           behavior="padding"
           enabled
         >
+          <Button title="Back" onPress={this.backToChatUsersList} />
+          <Text>{this.state.timerSecond} seconds left</Text>
+          <Image
+            style={{
+              width: 90 * 2,
+              height: 10
+            }}
+            source={require("../../assets/Assets_V1/greybar.jpg")}
+          />
+          <Image
+            style={{
+              top: -10,
+              width: this.state.timerSecond * 2,
+              height: 10
+            }}
+            source={require("../../assets/Assets_V1/bluebar.jpg")}
+          />
+          <ScrollView
+            ref={scrollView => {
+              this.scrollView = scrollView;
+            }}
+            contentInset={{ top: 0, left: 0, bottom: 50, right: 0 }}
+            keyboardDismissMode={"on-drag"}
+            //contentContainerStyle={styles.contentContainer}
+            //paddingVertical= {-20}
+          >
+            {displayAllChatMessage}
+            <Text style={styles.typingIndicator}>
+              {this.state.isTyping &&
+                `${this.matched_user_firstName} is typing`}
+            </Text>
+          </ScrollView>
+          {/* <KeyboardAvoidingView style={styles.container} behavior="padding" enabled> */}
           <View style={styles.messageInputBox}>
             <TextInput
               style={styles.messageInputStyle}
@@ -254,8 +270,10 @@ class MatchedUserChat extends React.Component {
             </View>
             <View style={{ padding: "3%" }} />
           </View>
+
+          {/* </KeyboardAvoidingView> */}
         </KeyboardAvoidingView>
-      </View>
+      </SafeAreaView>
     );
   };
 
@@ -272,6 +290,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff"
+    //alignItems: "flex-end",
   },
   textContainer: {
     margin: 10,
@@ -280,6 +299,13 @@ const styles = StyleSheet.create({
     //  borderWidth: 12,
     //  borderColor: "#3399ff",
     flexDirection: "row"
+  },
+  scrollViewStyle: {
+    marginBottom: 25
+  },
+  contentContainerStyle: {
+    marginBottom: 25,
+    paddingVertical: 200
   },
   dateTime: {
     fontSize: 8,
@@ -347,14 +373,19 @@ const styles = StyleSheet.create({
   },
   buttonStyle: {
     borderRadius: 10,
-    color: "#fff",
+    color: "white",
     backgroundColor: "blue",
     width: 200,
-    alignSelf: "center"
+    alignSelf: "center",
+    marginBottom: 20,
+    fontStyle: "italic"
   },
   messageInputBox: {
     flexDirection: "column",
     justifyContent: "flex-end"
+  },
+  typingIndicator: {
+    fontStyle: "italic"
   }
 });
 
