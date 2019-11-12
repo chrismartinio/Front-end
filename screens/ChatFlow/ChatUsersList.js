@@ -32,7 +32,7 @@ class ChatUsersList extends React.Component {
     };
     this.guid = "";
     this.user_firstName = "";
-    this.socket = io("http://74.80.250.210:3060");
+    //this.socket = io("http://74.80.250.210:3060");
     this.scrollY;
   }
 
@@ -45,12 +45,33 @@ class ChatUsersList extends React.Component {
       */
     this.guid = "";
     this.user_firstName = "You";
-
+    /*
+    fetch("http://10.0.0.246:3003/api/chat/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        data: { guid: this.guid, user_firstName: this.user_firstName }
+      })
+    })
+      .then(res => {
+        return res.json();
+      })
+      .then(res => {
+        //here's what I will get the chatobject
+        console.log(res.roomID[0].key); //1231231231.1231231232131
+      });
+*/
     console.log(this.guid);
     console.log(this.user_firstName);
     this.setState({
       isLoading: true
     });
+  }
+
+  componentWillUnmount() {
+    //this.socket.off();
   }
 
   enterChatRoom = chatRoomData => {
@@ -84,13 +105,13 @@ class ChatUsersList extends React.Component {
 
     return (
       <View style={styles.container}>
-        <View style={styles.titleBox}>
-          <Text>Chat Rooms</Text>
-        </View>
         <ImageBackground
           source={require("../../assets/Assets_V1/Butterfly_Background/butterflyBackground.png")}
           style={styles.backgroundImage}
         >
+          <View style={styles.titleBox}>
+            <Text style={styles.titleText}>Chat Rooms</Text>
+          </View>
           <ScrollView
             ref={scrollView => {
               this.scrollView = scrollView;
@@ -98,7 +119,7 @@ class ChatUsersList extends React.Component {
             onScroll={this.handleScroll}
             scrollEventThrottle={16}
           >
-            {displayAllChatList}
+            <View style={styles.chatRoomBoxWrap}>{displayAllChatList}</View>
           </ScrollView>
         </ImageBackground>
       </View>
@@ -120,9 +141,22 @@ const styles = StyleSheet.create({
   },
   chatRoomBox: {
     padding: 20,
-    borderBottomWidth: 1,
-    borderBottomColor: "#ccc",
+    borderWidth: 1,
+    borderColor: "#ccc",
     backgroundColor: "white",
+    alignItems: "center",
+    width: 350,
+    margin: 5,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5
+  },
+  chatRoomBoxWrap: {
     alignItems: "center"
   },
   backgroundImage: {
@@ -135,7 +169,10 @@ const styles = StyleSheet.create({
     borderBottomWidth: 2,
     borderBottomColor: "#ccc",
     alignItems: "center",
-    backgroundColor: "lightblue"
+    backgroundColor: "#BF446E"
+  },
+  titleText: {
+    color: "#fff"
   }
 });
 

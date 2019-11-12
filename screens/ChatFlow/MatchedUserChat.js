@@ -136,7 +136,7 @@ class MatchedUserChat extends React.Component {
 
   componentWillUnmount() {
     clearInterval(this.interval);
-    this.socket.off()
+    this.socket.off();
   }
 
   //add a new message into the allMessageArray
@@ -169,7 +169,7 @@ class MatchedUserChat extends React.Component {
     });
     if (this.state.timerSecond === 0) {
       this.backToChatUsersList;
-      clearInterval(this.interval);
+      //clearInterval(this.interval);
     }
   };
 

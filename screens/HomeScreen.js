@@ -261,8 +261,8 @@ class HomeScreen extends React.Component {
           country: "",
           zipCode: ""
         });
-        this.props.navigation.navigate("ChatUsersList");
-        //this.props.navigation.navigate("MatchedUserChat");
+        //this.props.navigation.navigate("ChatUsersList");
+        this.props.navigation.navigate("MatchedUserChat");
       } else {
         alert(jsonData.error);
       }
