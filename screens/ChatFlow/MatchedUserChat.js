@@ -12,7 +12,8 @@ import {
   Button,
   TextInput,
   SafeAreaView,
-  KeyboardAvoidingView
+  KeyboardAvoidingView,
+  ImageBackground
 } from "react-native";
 import { connect } from "react-redux";
 
@@ -109,7 +110,6 @@ class MatchedUserChat extends React.Component {
   }
 
   async componentDidMount() {
-
     this.guid = await this.props.CreateProfileDataReducer.guid;
 
     this.user_firstName = await this.props.CreateProfileDataReducer.aboutYouData
@@ -247,59 +247,66 @@ class MatchedUserChat extends React.Component {
           behavior="padding"
           enabled
         >
-          <Button title="Back" onPress={this.backToChatUsersList} />
-          <Text>{this.state.timerSecond} seconds left</Text>
-          <Image
-            style={{
-              width: 90 * 2,
-              height: 10
-            }}
-            source={require("../../assets/Assets_V1/greybar.jpg")}
-          />
-          <Image
-            style={{
-              top: -10,
-              width: this.state.timerSecond * 2,
-              height: 10
-            }}
-            source={require("../../assets/Assets_V1/bluebar.jpg")}
-          />
-          <ScrollView
-            ref={scrollView => {
-              this.scrollView = scrollView;
-            }}
-            contentInset={{ top: 0, left: 0, bottom: 50, right: 0 }}
-            keyboardDismissMode={"on-drag"}
-            //contentContainerStyle={styles.contentContainer}
-            //paddingVertical= {-20}
+          <ImageBackground
+            source={require("../../assets/Assets_V1/Butterfly_Background/butterflyBackground.png")}
+            style={styles.backgroundImage}
           >
-            {displayAllChatMessage}
-
-            {this.state.isTyping && (
-              <View style={styles.textContainer}>
-                <Text style={styles.circlePurple}>
-                  {" "}
-                  {this.matched_user_firstName[0]}
-                </Text>
-                <Text style={styles.targetMessageText}>is typing...</Text>
-              </View>
-            )}
-          </ScrollView>
-          {/* <KeyboardAvoidingView style={styles.container} behavior="padding" enabled> */}
-          <View style={styles.messageInputBox}>
-            <TextInput
-              style={styles.messageInputStyle}
-              placeholder="Type in a Message!"
-              onChangeText={currentMessage => this.setState({ currentMessage })}
-              value={this.state.currentMessage}
+            <Button title="Back" onPress={this.backToChatUsersList} />
+            <Text>{this.state.timerSecond} seconds left</Text>
+            <Image
+              style={{
+                width: 90 * 2,
+                height: 10
+              }}
+              source={require("../../assets/Assets_V1/greybar.jpg")}
             />
-            <View style={styles.buttonStyle}>
-              <Button title="Submit Message" onPress={this.submitMessage} />
-            </View>
-            <View style={{ padding: "3%" }} />
-          </View>
+            <Image
+              style={{
+                top: -10,
+                width: this.state.timerSecond * 2,
+                height: 10
+              }}
+              source={require("../../assets/Assets_V1/bluebar.jpg")}
+            />
+            <ScrollView
+              ref={scrollView => {
+                this.scrollView = scrollView;
+              }}
+              contentInset={{ top: 0, left: 0, bottom: 50, right: 0 }}
+              keyboardDismissMode={"on-drag"}
+              //contentContainerStyle={styles.contentContainer}
+              //paddingVertical= {-20}
+            >
+              {displayAllChatMessage}
 
-          {/* </KeyboardAvoidingView> */}
+              {this.state.isTyping && (
+                <View style={styles.textContainer}>
+                  <Text style={styles.circlePurple}>
+                    {" "}
+                    {this.matched_user_firstName[0]}
+                  </Text>
+                  <Text style={styles.targetMessageText}>is typing...</Text>
+                </View>
+              )}
+            </ScrollView>
+            {/* <KeyboardAvoidingView style={styles.container} behavior="padding" enabled> */}
+            <View style={styles.messageInputBox}>
+              <TextInput
+                style={styles.messageInputStyle}
+                placeholder="Type in a Message!"
+                onChangeText={currentMessage =>
+                  this.setState({ currentMessage })
+                }
+                value={this.state.currentMessage}
+              />
+              <View style={styles.buttonStyle}>
+                <Button title="Submit Message" onPress={this.submitMessage} />
+              </View>
+              <View style={{ padding: "3%" }} />
+            </View>
+
+            {/* </KeyboardAvoidingView> */}
+          </ImageBackground>
         </KeyboardAvoidingView>
       </SafeAreaView>
     );
@@ -414,6 +421,11 @@ const styles = StyleSheet.create({
   },
   typingIndicator: {
     fontStyle: "italic"
+  },
+  backgroundImage: {
+    height: "100%",
+    width: "100%",
+    flex: 1
   }
 });
 
