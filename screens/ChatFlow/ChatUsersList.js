@@ -75,7 +75,6 @@ class ChatUsersList extends React.Component {
   }
 
   enterChatRoom = chatRoomData => {
-    console.log(chatRoomData);
     this.props.navigation.navigate("MatchedUserChat");
   };
 
