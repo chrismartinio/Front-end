@@ -75,12 +75,19 @@ class ChatUsersList extends React.Component {
   }
 
   enterChatRoom = chatRoomData => {
-    this.props.navigation.navigate("MatchedUserChat");
+    this.props.navigation.navigate("MatchedUserChat", {
+      forceRender: this.forceRender()
+    });
   };
 
   handleScroll = ({ nativeEvent }) => {
     const { contentOffset } = nativeEvent;
     this.scrollY = contentOffset.y;
+  };
+
+  forceRender = () => {
+    // Force a render with a simulated state change
+    this.setState({ state: this.state });
   };
 
   successScreen = () => {

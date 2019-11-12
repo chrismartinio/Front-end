@@ -29,7 +29,7 @@ class MatchedUserChat extends React.Component {
       currentMessage: "",
       isLoading: false,
       isTyping: false,
-      timerSecond: 5
+      timerSecond: 90
     };
     this.guid = "";
     this.user_firstName = "";
@@ -175,6 +175,9 @@ class MatchedUserChat extends React.Component {
     });
     if (this.state.timerSecond <= 0) {
       clearInterval(this.interval);
+      //THIS WORK ONLY FROM CHATLIST TO CHATROOM
+      this.props.navigation.getParam.forceRender;
+
       this.backToChatUsersList();
     }
   };
