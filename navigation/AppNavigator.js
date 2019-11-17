@@ -43,14 +43,13 @@ import RegistrationComplete from "../screens/SignUpFlow/Collapsible_ScrollView_C
 import ChatUsersList from "../screens/ChatFlow/ChatUsersList";
 import MatchedUserChat from "../screens/ChatFlow/MatchedUserChat";
 
-
 //On-Boarding Collapsible Screen (Includes all on-boarding screens)
 import Collapsible from "../screens/SignUpFlow/ProfileClient/CollapsibleRegistration";
 import LinksScreen from "../screens/LinksScreen";
 
 const TestStack = createStackNavigator({
-  TestLocationServices: LocationServices,
   TestLinksScreen: LinksScreen,
+  TestLocationServices: LocationServices,
   TestQuestionaries: CreateQuestionaire,
   TestSignUp: SignupPage,
   TestRegistration: RegistrationPage,
@@ -71,6 +70,7 @@ const TestStack = createStackNavigator({
 });
 
 const AuthStack = createStackNavigator({
+  TestLinksScreen: LinksScreen,
   SignUp: Collapsible,
   Registration: RegistrationPage,
   Selfie: SelfiePage,
@@ -78,6 +78,7 @@ const AuthStack = createStackNavigator({
 });
 
 const ChatStack = createStackNavigator({
+  TestLinksScreen: LinksScreen, //this TestLinksScreen is to for this stack screen to return to linkscreen
   ChatPage: ChatPage,
   ChatUsersList: ChatUsersList,
   MatchedUserChat: MatchedUserChat,
@@ -89,6 +90,7 @@ const ChatStack = createStackNavigator({
 });
 
 const MatchStack = createStackNavigator({
+  TestLinksScreen: LinksScreen,
   CreateQuestionaire: CreateQuestionaire,
   ViewQuestionaire: ViewQuestionaire,
   ReplyQuestionaire: ReplyQuestionaire

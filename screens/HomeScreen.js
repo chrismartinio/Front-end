@@ -17,6 +17,8 @@ import { signInWithFacebook } from "../utils/auth.js";
 import { connect } from "react-redux";
 import SetFbDataAction from "../storage/actions/DataReducerActions/SetFbDataAction";
 import SetJwtAction from "../storage/actions/DataReducerActions/SetJwtAction";
+import SetGUIDAction from "..//storage/actions/RegistrationActions/SetGUIDAction";
+import SetAboutYouDataAction from "../storage/actions/RegistrationActions/SetAboutYouDataAction";
 //import publicIP from "react-native-public-ip";
 import * as WebBrowser from "expo-web-browser";
 import * as Location from "expo-location";
@@ -244,7 +246,21 @@ class HomeScreen extends React.Component {
 
       let jsonData = await data.json();
       if (jsonData.token) {
+        let { guid, firstName } = jsonData.data;
         this.props.SetJwtAction(jsonData.token);
+
+        this.props.SetGUIDAction({
+          guid: guid
+        });
+
+        this.props.SetAboutYouDataAction({
+          firstName: firstName,
+          lastName: "",
+          birthDate: "",
+          gender: "",
+          country: "",
+          zipCode: ""
+        });
         //this.props.navigation.navigate("ChatUsersList");
         this.props.navigation.navigate("MatchedUserChat");
       } else {
@@ -519,6 +535,8 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
+  SetAboutYouDataAction: payload => dispatch(SetAboutYouDataAction(payload)),
+  SetGUIDAction: payload => dispatch(SetGUIDAction(payload)),
   SetFbDataAction: payload => dispatch(SetFbDataAction(payload)),
   SetJwtAction: payload => dispatch(SetJwtAction(payload))
 });
