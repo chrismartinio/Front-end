@@ -32,7 +32,7 @@ class MatchedUserChat extends React.Component {
       isTyping: false,
       timerSecond: 90,
       appState: AppState.currentState,
-      startTime: "",
+      counting: false,
       endTime: ""
     };
     this.guid = "";
@@ -70,13 +70,25 @@ class MatchedUserChat extends React.Component {
 
     //handle timer
     this.socket.on("timer", data => {
-      let currentTime = new Date();
-      //console.log("A")
+      //when the socket detect 2 ppl in the room
+      //start the timer
+      //counting is to prevent one of the user disconnect
+      //the room number - 1
+      //and reconnect, room number + 1 which equal 2 and re-emitting the timer event again
+      //if re-emitting, time will get reset and also call the interval
+      //which will cause multiple interval and speed up the timer
+      if (!this.state.counting) {
+        this.interval = setInterval(this.countDown, 1000);
+        let currentTime = new Date();
+        this.setState({
+          endTime: currentTime.getTime() + 90 * 1000,
+        });
+      }
+
       this.setState({
-        startTime: currentTime.getTime(),
-        endTime: currentTime.getTime() + 90 * 1000
+        counting: true
       });
-      this.interval = setInterval(this.countDown, 1000);
+
       //A bug that when user dicconect/reconnect to the server
       //the timer will speed up and not match
     });
