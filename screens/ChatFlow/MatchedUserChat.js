@@ -110,17 +110,20 @@ class MatchedUserChat extends React.Component {
   }
 
   async componentDidMount() {
-    /*
+    ///*
     this.guid = await this.props.CreateProfileDataReducer.guid;
 
     this.user_firstName = await this.props.CreateProfileDataReducer.aboutYouData
       .firstName;
-*/
-    this.guid = "";
-    this.user_firstName = "You";
+    //*/
+    //this.guid = "";
+    //this.user_firstName = "You";
 
     //emit an event to tell the socket the user has enter the room
-    this.socket.emit("add user", this.user_firstName);
+    this.socket.emit("add user", {
+      guid: this.guid,
+      user_firstName: this.user_firstName
+    });
 
     this.setState({
       isLoading: true
@@ -162,7 +165,10 @@ class MatchedUserChat extends React.Component {
   submitMessage = () => {
     let str = `${this.state.currentMessage}`;
     this.addChatMessage(1, str, this.user_firstName);
-    this.socket.emit("new message", this.state.currentMessage);
+    this.socket.emit("new message", {
+      guid: this.guid,
+      message: this.state.currentMessage
+    });
     this.setState({
       currentMessage: ""
     });
