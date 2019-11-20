@@ -58,7 +58,7 @@ export default class LocationServices extends Component {
                 userLongitude: position.coords.longitude,
                 error: null,
               },()=>{
-                fetch("http://192.168.1.67:4060/", {
+                fetch("http://10.1.10.90:4060/", {
                     method: "POST",
                     headers: {
                       "Content-Type": "application/json"

@@ -227,7 +227,7 @@ class HomeScreen extends React.Component {
     try {
       const { username, password } = this._form.getValue();
 
-      let data = await fetch("http://74.80.250.210:3002/api/auth/login", {
+      let data = await fetch("http://10.1.10.90:3070/api/auth/login", {
         method: "POST",
         mode: "cors",
         credentials: "same-origin",
@@ -277,7 +277,7 @@ class HomeScreen extends React.Component {
   DBCheck = async info => {
     try {
       console.log(info.uid);
-      let data = await fetch("http://10.0.0.246:3003/api/auth/login", {
+      let data = await fetch("http://10.1.10.90:3070/api/auth/login", {
         method: "POST",
         mode: "cors",
         credentials: "same-origin",
@@ -307,7 +307,7 @@ class HomeScreen extends React.Component {
           return data;
         })
         .then(fbData => {
-          fetch("http://10.0.0.246:3003/api/auth/login", {
+          fetch("http://10.1.10.90:3070/api/auth/login", {
             method: "POST",
             mode: "cors",
             credentials: "same-origin",

@@ -81,7 +81,7 @@ class TellUsMore extends React.Component {
   handleSubmit = () => {
     if (this.state.passed) {
       //Send data to database
-      fetch("http://74.80.250.210:5000/api/profile/interestsSubmit", {
+      fetch("http://10.1.10.90:5000/api/profile/interestsSubmit", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"

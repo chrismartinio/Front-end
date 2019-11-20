@@ -92,7 +92,7 @@ class AboutYou extends Component {
       }
     }
 
-    await fetch("http://74.80.250.210:4000/api/profile/query", {
+    await fetch("http://10.1.10.90:4000/api/profile/query", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -438,7 +438,7 @@ class AboutYou extends Component {
           isDelaying: true
         },
         () => {
-          fetch("http://74.80.250.210:4000/api/profile/update", {
+          fetch("http://10.1.10.90:4000/api/profile/update", {
             method: "POST",
             headers: {
               "Content-Type": "application/json"
