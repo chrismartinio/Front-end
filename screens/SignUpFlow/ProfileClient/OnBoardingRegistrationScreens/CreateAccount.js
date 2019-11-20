@@ -56,7 +56,7 @@ import {
 } from "../Util/OnBoardingRegistrationScreenWarnings.js";
 
 async function registerForPushNotificationsAsync() {
-  console.log("Getting Device ID");
+  console.log("Inside Create Account.js Getting Device ID");
   const { status: existingStatus } = await Permissions.getAsync(
     Permissions.NOTIFICATIONS
   );
@@ -109,7 +109,7 @@ class CreateAccount extends Component {
   }
 
   getDataFromDB = async () => {
-    await fetch("http://10.1.10.90:4000/api/profile/query", {
+    await fetch("http://10.0.0.119:4000/api/profile/query", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -159,8 +159,8 @@ class CreateAccount extends Component {
           );
           //Only insert or replace id = 1
           let insertSqlStatement =
-            "INSERT OR REPLACE into device_user_createAccount(id, guid, email, password, isAdmin, checklist, phoneNumber) " +
-            "values(1, ?, ?, ?, ?, ?, ?);";
+            "INSERT OR REPLACE into device_user_createAccount(id, guid, email, password, isAdmin, checklist, phoneNumber, deviceID) " +
+            "values(1, ?, ?, ?, ?, ?, ?, ?);";
 
           db.transaction(
             tx => {
@@ -173,7 +173,8 @@ class CreateAccount extends Component {
                   "Password",
                   false,
                   json_checklist,
-                  "temp"
+                  "temp",
+                  global.deviceToken
                 ],
                 (tx, result) => {
                   console.log("inner success");
@@ -451,7 +452,7 @@ class CreateAccount extends Component {
         },
         () => {
           //insert a profile into database
-          fetch("http://10.1.10.90:4000/api/profile/insert", {
+          fetch("http://10.0.0.119:4000/api/profile/insert", {
             method: "POST",
             headers: {
               "Content-Type": "application/json"
@@ -498,7 +499,7 @@ class CreateAccount extends Component {
                         json_checklist,
                         "temp",
                         global.deviceToken
-                      ],
+                                            ],
                       (tx, result) => {
                         console.log("inner success");
                       },

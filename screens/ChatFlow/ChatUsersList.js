@@ -32,7 +32,7 @@ class ChatUsersList extends React.Component {
     };
     this.guid = "";
     this.user_firstName = "";
-    //this.socket = io("http://10.1.10.90:3060");
+    //this.socket = io("http://10.0.0.119:3060");
     this.scrollY;
   }
 
