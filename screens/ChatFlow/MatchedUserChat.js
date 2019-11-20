@@ -14,6 +14,8 @@ import {
   SafeAreaView,
   KeyboardAvoidingView,
   ImageBackground,
+  Modal,
+  TouchableHighlight,
   AppState
 } from "react-native";
 import { connect } from "react-redux";
@@ -33,7 +35,8 @@ class MatchedUserChat extends React.Component {
       timerSecond: 90,
       appState: AppState.currentState,
       counting: false,
-      endTime: ""
+      endTime: "",
+      modalVisible: false
     };
     this.guid = "";
     this.user_firstName = "";
@@ -81,7 +84,7 @@ class MatchedUserChat extends React.Component {
         this.interval = setInterval(this.countDown, 1000);
         let currentTime = new Date();
         this.setState({
-          endTime: currentTime.getTime() + 90 * 1000,
+          endTime: currentTime.getTime() + 90 * 1000
         });
       }
 
@@ -173,7 +176,7 @@ class MatchedUserChat extends React.Component {
         //when app wakes up again
         //check if currentTime exceed endTime we set earlier
         if (currentTime.getTime() > this.state.endTime) {
-          this.backToChatUsersList();
+          this.exitChat();
         } else {
           //if not then do some calculation do calculate current time
           this.setState({
@@ -229,16 +232,20 @@ class MatchedUserChat extends React.Component {
       timerSecond: --this.state.timerSecond
     });
     if (this.state.timerSecond <= 0) {
-      this.backToChatUsersList();
+      this.exitChat();
     }
   };
 
-  backToChatUsersList = () => {
+  exitChat = () => {
     clearInterval(this.interval);
     //THIS WORK ONLY FROM CHATLIST TO CHATROOM
     this.props.navigation.getParam.forceRender;
     this.socket.emit("disconnect");
     this.props.navigation.navigate("ChatUsersList");
+  };
+
+  exitChatPopUp = visible => {
+    this.setState({ modalVisible: visible });
   };
 
   messageType = (messageItem, index) => {
@@ -309,7 +316,13 @@ class MatchedUserChat extends React.Component {
             source={require("../../assets/Assets_V1/Butterfly_Background/butterflyBackground.png")}
             style={styles.backgroundImage}
           >
-            <Button title="Back" onPress={this.backToChatUsersList} />
+            {/*Exit Button*/}
+            <Button
+              title="Exit"
+              onPress={() => {
+                this.exitChatPopUp(true);
+              }}
+            />
             <Text>{this.state.timerSecond} seconds left</Text>
             <Image
               style={{
@@ -326,6 +339,8 @@ class MatchedUserChat extends React.Component {
               }}
               source={require("../../assets/Assets_V1/bluebar.jpg")}
             />
+
+            {/*Messages*/}
             <ScrollView
               ref={scrollView => {
                 this.scrollView = scrollView;
@@ -347,7 +362,52 @@ class MatchedUserChat extends React.Component {
                 </View>
               )}
             </ScrollView>
-            {/* <KeyboardAvoidingView style={styles.container} behavior="padding" enabled> */}
+
+            <Modal
+              animationType="slide"
+              transparent={true}
+              visible={this.state.modalVisible}
+            >
+              <View
+                style={{
+                  marginTop: 350,
+                  marginBottom: 350,
+                  marginLeft: 100,
+                  marginRight: 100,
+                  height: 100,
+                  width: 150,
+                  alignSelf: "center",
+                  backgroundColor: "green"
+                }}
+              >
+                <View>
+                  <Text>Do you want to exit the chat?</Text>
+
+                  {/*Send Button*/}
+                  <View style={styles.buttonStyle}>
+                    <Button
+                      title="Yes"
+                      onPress={() => {
+                        this.exitChat();
+                        this.exitChatPopUp(!this.state.modalVisible);
+                      }}
+                    />
+                  </View>
+
+                  {/*Send Button*/}
+                  <View style={styles.buttonStyle}>
+                    <Button
+                      title="No"
+                      onPress={() => {
+                        this.exitChatPopUp(!this.state.modalVisible);
+                      }}
+                    />
+                  </View>
+                </View>
+              </View>
+            </Modal>
+
+            {/*Input*/}
             <View style={styles.messageInputBox}>
               <TextInput
                 style={styles.messageInputStyle}
@@ -357,12 +417,13 @@ class MatchedUserChat extends React.Component {
                 }
                 value={this.state.currentMessage}
               />
+
+              {/*Send Button*/}
               <View style={styles.buttonStyle}>
-                <Button title="Submit Message" onPress={this.submitMessage} />
+                <Button title="Send" onPress={this.submitMessage} />
               </View>
               <View style={{ padding: "3%" }} />
             </View>
-            {/* </KeyboardAvoidingView> */}
           </ImageBackground>
         </KeyboardAvoidingView>
       </SafeAreaView>

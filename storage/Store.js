@@ -1,5 +1,4 @@
 import { createStore, applyMiddleware } from 'redux';
-import axios from 'axios'
 import promise from 'redux-promise-middleware';
 import thunk from 'redux-thunk'
 import { createLogger } from 'redux-logger'
