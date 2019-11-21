@@ -12,10 +12,10 @@ import {
   Dimensions
 } from "react-native";
 
-import * as Expo from 'expo'
-import * as Permissions from 'expo-permissions';
-import { Notifications } from 'expo';
-import Constants from 'expo-constants';
+import * as Expo from "expo";
+import * as Permissions from "expo-permissions";
+import { Notifications } from "expo";
+import Constants from "expo-constants";
 //redux
 import { connect } from "react-redux";
 import SetCreateAccountDataAction from "../../../../storage/actions/RegistrationActions/SetCreateAccountDataAction";
@@ -64,7 +64,7 @@ async function registerForPushNotificationsAsync() {
 
   // only ask if permissions have not already been determined, because
   // iOS won't necessarily prompt the user a second time.
-  if (existingStatus !== 'granted') {
+  if (existingStatus !== "granted") {
     // Android remote notification permissions are granted during the app
     // install, so this will only ask on iOS
     const { status } = await Permissions.askAsync(Permissions.NOTIFICATIONS);
@@ -72,7 +72,7 @@ async function registerForPushNotificationsAsync() {
   }
 
   // Stop here if the user did not grant permissions
-  if (finalStatus !== 'granted') {
+  if (finalStatus !== "granted") {
     return;
   }
 
@@ -81,10 +81,9 @@ async function registerForPushNotificationsAsync() {
   console.log("Heres your Device ID", global.deviceToken);
 
   // POST the token to your backend server from where you can retrieve it to send push notifications.
-};
+}
 
 class CreateAccount extends Component {
-
   constructor(props) {
     super(props);
     this.state = {
@@ -280,7 +279,7 @@ class CreateAccount extends Component {
   };
 
   async componentDidMount() {
-    if (Constants.isDevice){
+    if (Constants.isDevice) {
       registerForPushNotificationsAsync();
     } else {
       console.log("Your are on a simulator, PUSH NOTIFICATIONS DISABLED");
@@ -459,7 +458,13 @@ class CreateAccount extends Component {
             },
             body: JSON.stringify({
               collection: "createAccount",
-              data: { email: this.state.email, password: this.state.password }
+              data: {
+                email: this.state.email,
+                password: this.state.password,
+                isAdmin: false,
+                phoneNumber: "",
+                deviceID: global.deviceToken
+              }
             })
           })
             .then(res => res.json())
@@ -499,7 +504,7 @@ class CreateAccount extends Component {
                         json_checklist,
                         "temp",
                         global.deviceToken
-                                            ],
+                      ],
                       (tx, result) => {
                         console.log("inner success");
                       },

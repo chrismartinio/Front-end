@@ -148,7 +148,7 @@ class HomeScreen extends React.Component {
         //DROP TABLES
         //NOTICE: If table and its structure already created,
         //later insert something doesn't match structure would get error
-
+        /*
         dropTable_SqlStatementsArray.map(sqlStatement => {
           tx.executeSql(
             sqlStatement,
@@ -161,7 +161,7 @@ class HomeScreen extends React.Component {
             }
           );
         });
-
+        */
 
         //CREATE TABLES
         createTable_SqlStatementsArray.map(sqlStatement => {
