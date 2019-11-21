@@ -12,6 +12,10 @@ import {
   Dimensions
 } from "react-native";
 
+import * as Expo from 'expo'
+import * as Permissions from 'expo-permissions';
+import { Notifications } from 'expo';
+import Constants from 'expo-constants';
 //redux
 import { connect } from "react-redux";
 import SetCreateAccountDataAction from "../../../../storage/actions/RegistrationActions/SetCreateAccountDataAction";
@@ -51,7 +55,36 @@ import {
   internalErrorWarning
 } from "../Util/OnBoardingRegistrationScreenWarnings.js";
 
+async function registerForPushNotificationsAsync() {
+  console.log("Inside Create Account.js Getting Device ID");
+  const { status: existingStatus } = await Permissions.getAsync(
+    Permissions.NOTIFICATIONS
+  );
+  let finalStatus = existingStatus;
+
+  // only ask if permissions have not already been determined, because
+  // iOS won't necessarily prompt the user a second time.
+  if (existingStatus !== 'granted') {
+    // Android remote notification permissions are granted during the app
+    // install, so this will only ask on iOS
+    const { status } = await Permissions.askAsync(Permissions.NOTIFICATIONS);
+    finalStatus = status;
+  }
+
+  // Stop here if the user did not grant permissions
+  if (finalStatus !== 'granted') {
+    return;
+  }
+
+  // Get the token that uniquely identifies this device
+  global.deviceToken = await Notifications.getExpoPushTokenAsync();
+  console.log("Heres your Device ID", global.deviceToken);
+
+  // POST the token to your backend server from where you can retrieve it to send push notifications.
+};
+
 class CreateAccount extends Component {
+
   constructor(props) {
     super(props);
     this.state = {
@@ -76,7 +109,7 @@ class CreateAccount extends Component {
   }
 
   getDataFromDB = async () => {
-    await fetch("http://74.80.250.210:4000/api/profile/query", {
+    await fetch("http://10.0.0.119:4000/api/profile/query", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -126,8 +159,8 @@ class CreateAccount extends Component {
           );
           //Only insert or replace id = 1
           let insertSqlStatement =
-            "INSERT OR REPLACE into device_user_createAccount(id, guid, email, password, isAdmin, checklist, phoneNumber) " +
-            "values(1, ?, ?, ?, ?, ?, ?);";
+            "INSERT OR REPLACE into device_user_createAccount(id, guid, email, password, isAdmin, checklist, phoneNumber, deviceID) " +
+            "values(1, ?, ?, ?, ?, ?, ?, ?);";
 
           db.transaction(
             tx => {
@@ -140,7 +173,8 @@ class CreateAccount extends Component {
                   "Password",
                   false,
                   json_checklist,
-                  "temp"
+                  "temp",
+                  global.deviceToken
                 ],
                 (tx, result) => {
                   console.log("inner success");
@@ -246,6 +280,11 @@ class CreateAccount extends Component {
   };
 
   async componentDidMount() {
+    if (Constants.isDevice){
+      registerForPushNotificationsAsync();
+    } else {
+      console.log("Your are on a simulator, PUSH NOTIFICATIONS DISABLED");
+    }
     //For createAccount only, not allow continue user to edit the createAccount
     if (this.props.CreateProfileDataReducer.isContinueUser) {
       this.setState({
@@ -413,7 +452,7 @@ class CreateAccount extends Component {
         },
         () => {
           //insert a profile into database
-          fetch("http://74.80.250.210:4000/api/profile/insert", {
+          fetch("http://10.0.0.119:4000/api/profile/insert", {
             method: "POST",
             headers: {
               "Content-Type": "application/json"
@@ -444,8 +483,8 @@ class CreateAccount extends Component {
                 );
                 //Only insert or replace id = 1
                 let insertSqlStatement =
-                  "INSERT OR REPLACE into device_user_createAccount(id, guid, email, password, isAdmin, checklist, phoneNumber) " +
-                  "values(1, ?, ?, ?, ?, ?, ?);";
+                  "INSERT OR REPLACE into device_user_createAccount(id, guid, email, password, isAdmin, checklist, phoneNumber, deviceID) " +
+                  "values(1, ?, ?, ?, ?, ?, ?, ?);";
 
                 db.transaction(
                   tx => {
@@ -458,8 +497,9 @@ class CreateAccount extends Component {
                         this.state.password,
                         false,
                         json_checklist,
-                        "temp"
-                      ],
+                        "temp",
+                        global.deviceToken
+                                            ],
                       (tx, result) => {
                         console.log("inner success");
                       },

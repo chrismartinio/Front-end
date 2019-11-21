@@ -72,7 +72,7 @@ class Interests extends Component {
       return;
     }
 
-    await fetch("http://74.80.250.210:4000/api/profile/query", {
+    await fetch("http://10.0.0.119:4000/api/profile/query", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -245,7 +245,7 @@ class Interests extends Component {
         },
         () => {
           //Send data to database
-          fetch("http://74.80.250.210:4000/api/profile/update", {
+          fetch("http://10.0.0.119:4000/api/profile/update", {
             method: "POST",
             headers: {
               "Content-Type": "application/json"

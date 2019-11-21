@@ -190,7 +190,7 @@ class LocationDestinations extends React.Component {
   handleSubmit = () => {
     if (this.state.passed) {
       //Send data to database
-      fetch("http://74.80.250.210:5000/api/profile/localDestinationsSubmit", {
+      fetch("http://10.0.0.119:5000/api/profile/localDestinationsSubmit", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"

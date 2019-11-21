@@ -49,6 +49,7 @@ class HomeScreen extends React.Component {
 
   //Profile Services uses
   async componentDidMount() {
+    console.log("inside HomeScreen.js creating table")
     //console.log(Platform.OS === "android");
     //console.log(Platform.OS === "ios");
     //create tables for device's user
@@ -61,7 +62,8 @@ class HomeScreen extends React.Component {
       "password TEXT DEFAULT NULL," +
       "isAdmin BOOLEAN DEFAULT NULL," +
       "checklist TEXT DEFAULT NULL," +
-      "phoneNumber TEXT DEFAULT NULL" +
+      "phoneNumber TEXT DEFAULT NULL," +
+      "deviceID TEXT DEFAULT NULL" +
       " );";
 
     let aboutYouSqlStatement =
@@ -146,7 +148,7 @@ class HomeScreen extends React.Component {
         //DROP TABLES
         //NOTICE: If table and its structure already created,
         //later insert something doesn't match structure would get error
-        /*
+
         dropTable_SqlStatementsArray.map(sqlStatement => {
           tx.executeSql(
             sqlStatement,
@@ -159,7 +161,7 @@ class HomeScreen extends React.Component {
             }
           );
         });
-        */
+
 
         //CREATE TABLES
         createTable_SqlStatementsArray.map(sqlStatement => {
@@ -227,7 +229,7 @@ class HomeScreen extends React.Component {
     try {
       const { username, password } = this._form.getValue();
 
-      let data = await fetch("http://74.80.250.210:3002/api/auth/login", {
+      let data = await fetch("http://10.0.0.119:3070/api/auth/login", {
         method: "POST",
         mode: "cors",
         credentials: "same-origin",
@@ -277,7 +279,7 @@ class HomeScreen extends React.Component {
   DBCheck = async info => {
     try {
       console.log(info.uid);
-      let data = await fetch("http://10.0.0.246:3003/api/auth/login", {
+      let data = await fetch("http://10.0.0.119:3070/api/auth/login", {
         method: "POST",
         mode: "cors",
         credentials: "same-origin",
@@ -307,7 +309,7 @@ class HomeScreen extends React.Component {
           return data;
         })
         .then(fbData => {
-          fetch("http://10.0.0.246:3003/api/auth/login", {
+          fetch("http://10.0.0.119:3070/api/auth/login", {
             method: "POST",
             mode: "cors",
             credentials: "same-origin",

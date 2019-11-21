@@ -303,7 +303,7 @@ class AboutYou extends Component {
       //if all tests passed, set passed to true and navigate to next screen
 
       //Send data to database
-      fetch("http://74.80.250.210:5000/api/profile/aboutYouSubmit", {
+      fetch("http://10.0.0.119:5000/api/profile/aboutYouSubmit", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"

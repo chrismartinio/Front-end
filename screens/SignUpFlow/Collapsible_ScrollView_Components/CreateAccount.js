@@ -25,7 +25,7 @@ import { Chevron } from "react-native-shapes";
 
 //click password button to toggle password
 
-const profileServer = "http://74.80.250.210:5000/dbRouter/";
+const profileServer = "http://10.0.0.119:5000/dbRouter/";
 
 class CreateAccount extends Component {
   constructor(props) {
@@ -312,7 +312,7 @@ class CreateAccount extends Component {
       this.mode = "";
 
       //Send data to database
-      fetch("http://74.80.250.210:5000/api/profile/createAccountSubmit", {
+      fetch("http://10.0.0.119:5000/api/profile/createAccountSubmit", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
