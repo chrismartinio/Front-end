@@ -471,7 +471,7 @@ class LocationDestinations extends Component {
               styles.locationsButtonWrap,
               {
                 backgroundColor:
-                  this.state.localDestination !== e ? "transparent" : "white",
+                  this.state.localDestination !== e ? "#fff" : "rgb(67, 33, 140)",
                 minWidth:
                   e === "San Francisco" || e === "Morro Bay" ? "50%" : "45%"
               }
@@ -484,8 +484,8 @@ class LocationDestinations extends Component {
                 {
                   color:
                     this.state.localDestination !== e
-                      ? "white"
-                      : this.changeColor(`b${index}y`)
+                      ? "rgb(67, 33, 140)"
+                      : "#fff"
                 }
               ]}
             >
@@ -566,7 +566,7 @@ const { height, width } = Dimensions.get("window");
 
 const styles = StyleSheet.create({
   locationsButton: {
-    color: "#fff",
+    color: "rgb(67, 33, 140)",
     fontSize: 20
   },
   locationsButtonWrap: {
@@ -574,7 +574,7 @@ const styles = StyleSheet.create({
     padding: width / 37.5,
     borderRadius: 40,
     borderWidth: 2,
-    borderColor: "#fff",
+    borderColor: "rgb(67, 33, 140)",
     width: "auto",
     minWidth: "45%",
     marginLeft: 5,
@@ -591,8 +591,8 @@ const styles = StyleSheet.create({
     alignItems: "center"
     //marginTop: "15%"
   },
-  spendAWeekendText: { color: "white", fontSize: 24 },
-  pick1Text: { opacity: 0.7, color: "white" }
+  spendAWeekendText: { color: "rgb(67, 33, 140)", fontSize: 24 },
+  pick1Text: { opacity: 0.7, color: "rgb(67, 33, 140)" }
 });
 
 const mapStateToProps = state => ({

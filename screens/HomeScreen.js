@@ -63,7 +63,9 @@ class HomeScreen extends React.Component {
       "isAdmin BOOLEAN DEFAULT NULL," +
       "checklist TEXT DEFAULT NULL," +
       "phoneNumber TEXT DEFAULT NULL," +
-      "deviceID TEXT DEFAULT NULL" +
+      "deviceID TEXT DEFAULT NULL," +
+      "deviceLatLong TEXT DEFAULT NULL," +
+      "deviceAltitude TEXT DEFAULT NULL" +
       " );";
 
     let aboutYouSqlStatement =
@@ -148,7 +150,7 @@ class HomeScreen extends React.Component {
         //DROP TABLES
         //NOTICE: If table and its structure already created,
         //later insert something doesn't match structure would get error
-
+        /*
         dropTable_SqlStatementsArray.map(sqlStatement => {
           tx.executeSql(
             sqlStatement,
@@ -161,7 +163,7 @@ class HomeScreen extends React.Component {
             }
           );
         });
-
+        */
 
         //CREATE TABLES
         createTable_SqlStatementsArray.map(sqlStatement => {

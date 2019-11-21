@@ -532,7 +532,7 @@ const styles = StyleSheet.create({
     top: height * (1 / 3),
     left: width * (1 / 2)
   },
-  whatDoYouPreferText: { opacity: 0.7, color: "white" }
+  whatDoYouPreferText: { opacity: 0.7, color: "rgb(67, 33, 140)" }
 });
 
 const mapStateToProps = state => ({

@@ -606,18 +606,21 @@ class AboutYou extends Component {
         <View style={{ width: "100%" }}>
           <Input
             placeholder="first name"
-            placeholderTextColor="#fff"
-            containerStyle={styles.inputContainerStyle}
+            placeholderTextColor="rgb(67, 33, 140)"
             inputStyle={styles.inputStyle}
             value={this.state.firstName}
             rightIcon={
               this.state.firstNameWarning === "" ? (
-                <Icon type="font-awesome" name="check" color="#fff" />
+                <Icon
+                  type="font-awesome"
+                  name="check"
+                  color="rgb(67, 33, 140)"
+                />
               ) : (
                 <Icon
                   type="font-awesome"
                   name="exclamation-circle"
-                  color="#fff"
+                  color="rgb(67, 33, 140)"
                 />
               )
             }
@@ -644,18 +647,21 @@ class AboutYou extends Component {
         <View style={{ width: "100%" }}>
           <Input
             placeholder="last name"
-            placeholderTextColor="#fff"
-            containerStyle={styles.inputContainerStyle}
+            placeholderTextColor="rgb(67, 33, 140)"
             inputStyle={styles.inputStyle}
             value={this.state.lastName}
             rightIcon={
               this.state.lastNameWarning === "" ? (
-                <Icon type="font-awesome" name="check" color="#fff" />
+                <Icon
+                  type="font-awesome"
+                  name="check"
+                  color="rgb(67, 33, 140)"
+                />
               ) : (
                 <Icon
                   type="font-awesome"
                   name="exclamation-circle"
-                  color="#fff"
+                  color="rgb(67, 33, 140)"
                 />
               )
             }
@@ -696,13 +702,13 @@ class AboutYou extends Component {
                   <Chevron
                     size={1.5}
                     style={{ top: 0, right: 15 }}
-                    color="#fff"
+                    color="rgb(67, 33, 140)"
                   />
                 ) : (
                   <Icon
                     type="font-awesome"
                     name="exclamation-circle"
-                    color="#fff"
+                    color="rgb(67, 33, 140)"
                     size={24}
                     iconStyle={{ top: 0, right: 15 }}
                   />
@@ -746,13 +752,13 @@ class AboutYou extends Component {
                   <Chevron
                     size={1.5}
                     style={{ top: 15, right: 15 }}
-                    color="#fff"
+                    color="rgb(67, 33, 140)"
                   />
                 ) : (
                   <Icon
                     type="font-awesome"
                     name="exclamation-circle"
-                    color="#fff"
+                    color="rgb(67, 33, 140)"
                     size={24}
                     iconStyle={{ top: 8, right: 10 }}
                   />
@@ -799,13 +805,13 @@ class AboutYou extends Component {
                   <Chevron
                     size={1.5}
                     style={{ top: 15, right: 15 }}
-                    color="#fff"
+                    color="rgb(67, 33, 140)"
                   />
                 ) : (
                   <Icon
                     type="font-awesome"
                     name="exclamation-circle"
-                    color="#fff"
+                    color="rgb(67, 33, 140)"
                     size={24}
                     iconStyle={{ top: 5, right: 10 }}
                   />
@@ -821,8 +827,7 @@ class AboutYou extends Component {
           <View style={styles.zipCodeInputWrap}>
             <Input
               placeholder="zip code"
-              placeholderTextColor="#fff"
-              containerStyle={styles.inputContainerStyle}
+              placeholderTextColor="rgb(67, 33, 140)"
               inputStyle={styles.inputStyle}
               autoCompleteType={"off"}
               autoCapitalize="none"
@@ -832,12 +837,16 @@ class AboutYou extends Component {
               value={this.state.zipCode}
               rightIcon={
                 this.state.zipCodeWarning === "" ? (
-                  <Icon type="font-awesome" name="check" color="#fff" />
+                  <Icon
+                    type="font-awesome"
+                    name="check"
+                    color="rgb(67, 33, 140)"
+                  />
                 ) : (
                   <Icon
                     type="font-awesome"
                     name="exclamation-circle"
-                    color="#fff"
+                    color="rgb(67, 33, 140)"
                   />
                 )
               }
@@ -897,20 +906,14 @@ const styles = StyleSheet.create({
   container: {
     flex: 1
   },
-  inputContainerStyle: {
-    borderTopWidth: 0,
-    borderLeftWidth: 0,
-    borderRightWidth: 0,
-    borderBottomWidth: 1,
-    borderColor: "#fff"
-  },
+
   inputStyle: {
-    color: "#fff",
+    color: "rgb(67, 33, 140)",
     fontSize: Math.round(width / 28.84)
   },
   birthdatePicker: {
     width: "45%",
-    color: "#fff",
+    color: "rgb(67, 33, 140)",
     position: "absolute",
     left: "0%"
   },
@@ -944,24 +947,24 @@ const styles = StyleSheet.create({
 
 const genderPicker = {
   inputIOS: {
-    color: "#fff",
+    color: "rgb(67, 33, 140)",
     borderBottomWidth: 1,
-    borderColor: "#fff",
+    borderColor: "rgb(67, 33, 140)",
     fontSize: Math.round(width / 28.84),
     paddingVertical: 11.5,
     paddingHorizontal: 9
   },
   inputAndroid: {
-    color: "#fff",
+    color: "rgb(67, 33, 140)",
     paddingVertical: 4,
     paddingHorizontal: 5,
     borderBottomWidth: 1.5,
-    borderColor: "#fff",
+    borderColor: "rgb(67, 33, 140)",
     fontSize: Math.round(width / 28.84),
     borderRadius: 8
   },
   placeholder: {
-    color: "#fff",
+    color: "rgb(67, 33, 140)",
     paddingVertical: Platform.OS === "ios" ? 11.5 : 5
   }
 };
@@ -975,17 +978,17 @@ const birthdatePickerCustom = {
     borderLeftWidth: 0,
     borderRightWidth: 0,
     borderBottomWidth: 1,
-    borderColor: "#fff"
+    borderColor: "rgb(67, 33, 140)"
   },
   dateText: {
-    color: "#fff",
+    color: "rgb(67, 33, 140)",
     fontSize: Math.round(width / 37.5),
     position: "absolute",
     left: "0%",
     paddingHorizontal: 9
   },
   placeholderText: {
-    color: "#fff",
+    color: "rgb(67, 33, 140)",
     fontSize: Math.round(width / 28.84),
     position: "absolute",
     left: "0%",
@@ -996,25 +999,25 @@ const birthdatePickerCustom = {
 const countryPicker = {
   inputIOS: {
     width: "90%",
-    color: "#fff",
+    color: "rgb(67, 33, 140)",
     borderBottomWidth: 1,
-    borderColor: "#fff",
+    borderColor: "rgb(67, 33, 140)",
     fontSize: Math.round(width / 28.84),
     paddingVertical: 9,
     paddingHorizontal: 9
   },
   inputAndroid: {
     width: "95%",
-    color: "#fff",
+    color: "rgb(67, 33, 140)",
     paddingVertical: 3,
     paddingHorizontal: 5,
     borderBottomWidth: 1.5,
     fontSize: Math.round(width / 28.84),
-    borderColor: "#fff",
+    borderColor: "rgb(67, 33, 140)",
     borderRadius: 8
   },
   placeholder: {
-    color: "#fff",
+    color: "rgb(67, 33, 140)",
     paddingVertical: Platform.OS === "ios" ? 9 : 3
   }
 };
