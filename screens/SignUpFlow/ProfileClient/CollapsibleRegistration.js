@@ -1,20 +1,15 @@
 import React, { Component } from "react";
-import { AsyncStorage } from "react-native";
 import {
-  Button,
   Keyboard,
-  KeyboardAvoidingView,
   Platform,
   SafeAreaView,
   StyleSheet,
   Text,
-  TextInput,
   TouchableWithoutFeedback,
   View,
   Image,
   ScrollView,
-  Dimensions,
-  TouchableOpacity
+  Dimensions
 } from "react-native";
 
 //background color
@@ -61,6 +56,7 @@ const db = SQLite.openDatabase("that.db");
 
 class CollapisbleRegistration extends Component {
   //LinksScreen Test Tool
+  /*
   static navigationOptions = {
     title: "Welcomes!",
     headerStyle: {
@@ -75,6 +71,7 @@ class CollapisbleRegistration extends Component {
       fontSize: 24
     }
   };
+  */
 
   constructor(props) {
     super(props);
@@ -98,7 +95,7 @@ class CollapisbleRegistration extends Component {
       wouldYouRatherStatus: "empty",
       localDestinationStatus: "empty",
       isLoading: false, //use to make sure if there data inside redux before rendering
-      scrollY: 0,
+      scrollY: 0
     };
   }
 
@@ -216,7 +213,6 @@ class CollapisbleRegistration extends Component {
   };
 
   async componentDidMount() {
-
     //a warning that if checklist is [true, true, true, true, true, true]
     //Since Auth will handle if the checklist is a continue user or new user
     //continue user : [true, false, false, true, true, true]
@@ -372,11 +368,7 @@ class CollapisbleRegistration extends Component {
 
   successScreen = () => {
     return (
-      <LinearGradient
-        textStyle={{ color: "#fff" }}
-        colors={["#18cdf6", "#43218c"]}
-        style={{ flex: 1 }}
-      >
+      <View style={{ flex: 1 }}>
         <ScrollView
           ref={scrollView => {
             this.scrollView = scrollView;
@@ -389,13 +381,31 @@ class CollapisbleRegistration extends Component {
           <SafeAreaView style={styles.container}>
             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
               <View style={styles.inner}>
-                <View style={styles.joinBlindlyTextWrap}>
-                  <Text style={styles.joinBlindlyText}>Join Blindly</Text>
+                {/*Join Blindly Text*/}
+                <View style={{ alignItems: "center" }}>
+                  <View style={styles.joinBlindlyTextWrap}>
+                    <Image
+                      source={require("../../../assets/images/butterfly.png")}
+                      style={{
+                        width: 50,
+                        height: 50,
+                        transform: [{ rotate: "300deg" }]
+                      }}
+                    />
+                    {/*Spaces*/}
+                    <View
+                      style={{
+                        padding: "2%"
+                      }}
+                    />
+                    <Text style={styles.joinBlindlyText}>Join Blindly</Text>
+                  </View>
                 </View>
+
                 {/*Spaces*/}
                 <View
                   style={{
-                    padding: "15%"
+                    padding: "10%"
                   }}
                 />
 
@@ -525,7 +535,7 @@ class CollapisbleRegistration extends Component {
             </TouchableWithoutFeedback>
           </SafeAreaView>
         </ScrollView>
-      </LinearGradient>
+      </View>
     );
   };
 
@@ -556,61 +566,16 @@ const styles = StyleSheet.create({
     fontSize: 36,
     marginBottom: 48
   },
-  input: {
-    height: 40,
-    borderColor: "#000000",
-    borderBottomWidth: 1,
-    marginBottom: 36
-  },
-  btnContainer: {
-    backgroundColor: "white",
-    marginTop: 12
-  },
-  button: {
-    color: "#fff",
-    fontSize: 20
-  },
-  _textInput: {
-    color: "#fff",
-    fontSize: 20,
-    textAlign: "left",
-    paddingTop: "20%",
-    borderBottomWidth: 1,
-    borderColor: "#fff"
-  },
-  smallText: {
-    margin: 10,
-    color: "#fff",
-    fontSize: 10
-  },
-  titleText: {
-    margin: 10,
-    color: "#fff",
-    fontSize: 48,
-    textAlign: "center",
-    fontWeight: "100"
-  },
-  button2: {
-    alignItems: "center",
-    //backgroundColor: '#fff',
-    padding: 10,
-    borderRadius: 40,
-    borderWidth: 2,
-    borderColor: "#fff",
-    width: "55%"
-  },
-  backgroundImage: {
-    height: "100%",
-    width: "100%",
-    flex: 1
-  },
   joinBlindlyText: {
-    color: "#fff",
-    fontSize: Math.round(width / 10.4),
-    fontWeight: "100"
+    color: "rgb(67, 33, 140)",
+    fontSize: Math.round(width / 15),
+    top: 10,
+    fontWeight: "500"
   },
   joinBlindlyTextWrap: {
-    alignItems: "center"
+    flexDirection: "row",
+    flexWrap: "wrap",
+    right: 30
   }
 });
 const mapStateToProps = state => {

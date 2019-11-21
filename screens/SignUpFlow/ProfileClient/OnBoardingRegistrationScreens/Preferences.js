@@ -77,7 +77,7 @@ class Preferences extends Component {
       return;
     }
 
-    await fetch("http://10.0.0.119:4000/api/profile/query", {
+    await fetch("http://74.80.250.210:4000/api/profile/query", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -340,56 +340,6 @@ class Preferences extends Component {
     }
   };
 
-  changeColor = bname => {
-    let topY = this.props.scrollY;
-    let otherScreenOffset1 = 0,
-      otherScreenOffset2 = 0,
-      otherScreenOffset3 = 0,
-      speedOfYChange = 1.2;
-
-    this.props.otherToggle.forEach(toggle => {
-      if (toggle) {
-        otherScreenOffset1 += 25;
-        otherScreenOffset2 += 100;
-        otherScreenOffset3 += 61;
-      }
-    });
-
-    const topRed = 24;
-    const topGreen = 205;
-    const topBlue = 246;
-
-    const bottomRed = 67;
-    const bottomGreen = 33;
-    const bottomBlue = 140;
-
-    let pos = (this[bname] - topY) / screenHeight;
-
-    //not the best solution (kinda hard code)
-    //the toggle above will add up Offset for other screens
-    //and there also a constant number which is the current screen otherScreenOffset
-
-    let colorRed =
-      (topRed + (bottomRed - topRed) * pos) * speedOfYChange +
-      24 +
-      otherScreenOffset1;
-    let colorGreen =
-      (topGreen + (bottomGreen - topGreen) * pos) * speedOfYChange -
-      150 -
-      otherScreenOffset2;
-    let colorBlue =
-      (topBlue + (bottomBlue - topBlue) * pos) * speedOfYChange -
-      116 -
-      otherScreenOffset3;
-
-    //default
-    colorRed = 67;
-    colorGreen = 33;
-    colorBlue = 140;
-
-    return `rgb(${colorRed},${colorGreen},${colorBlue})`;
-  };
-
   handleSubmit = () => {
     //if the screen passed and guid is not null (that means user had finished createAccount)
     if (
@@ -418,7 +368,7 @@ class Preferences extends Component {
         },
         () => {
           //Send data to database
-          fetch("http://10.0.0.119:4000/api/profile/update", {
+          fetch("http://74.80.250.210:4000/api/profile/update", {
             method: "POST",
             headers: {
               "Content-Type": "application/json"
@@ -603,7 +553,9 @@ class Preferences extends Component {
             style={[
               styles.genderButtonWrap,
               {
-                backgroundColor: this.state.pickedMen ? "white" : "transparent"
+                backgroundColor: this.state.pickedMen
+                  ? "rgb(67, 33, 140)"
+                  : "#fff"
               }
             ]}
             onPress={() => {
@@ -614,9 +566,7 @@ class Preferences extends Component {
               style={[
                 styles.genderButtonText,
                 {
-                  color: this.state.pickedMen
-                    ? this.changeColor(`bMaley`)
-                    : "white"
+                  color: this.state.pickedMen ? "#fff" : "rgb(67, 33, 140)"
                 }
               ]}
             >
@@ -630,8 +580,8 @@ class Preferences extends Component {
               styles.genderButtonWrap,
               {
                 backgroundColor: this.state.pickedWomen
-                  ? "white"
-                  : "transparent"
+                  ? "rgb(67, 33, 140)"
+                  : "#fff"
               }
             ]}
             onPress={() => {
@@ -642,9 +592,7 @@ class Preferences extends Component {
               style={[
                 styles.genderButtonText,
                 {
-                  color: this.state.pickedWomen
-                    ? this.changeColor(`bFemaley`)
-                    : "white"
+                  color: this.state.pickedWomen ? "#fff" : "rgb(67, 33, 140)"
                 }
               ]}
             >
@@ -688,7 +636,7 @@ class Preferences extends Component {
             sliderLength={Math.round(width / 1.33)}
             trackStyle={{
               shadowColor: "red",
-              backgroundColor: "white"
+              backgroundColor: "rgb(67, 33, 140)"
             }}
           />
         </View>
@@ -760,13 +708,13 @@ const styles = StyleSheet.create({
   },
   ageRangeNumbersText: {
     margin: 10,
-    color: "#fff",
+    color: "rgb(67, 33, 140)",
     textAlign: "center"
   },
   sliderTitleText: {
     //top: 40,
     //margin: 10,
-    color: "#fff",
+    color: "rgb(67, 33, 140)",
     fontSize: 20,
     textAlign: "center"
   },
@@ -775,11 +723,11 @@ const styles = StyleSheet.create({
     padding: 7,
     borderRadius: 40,
     borderWidth: 2,
-    borderColor: "#fff",
+    borderColor: "rgb(67, 33, 140)",
     width: "65%"
   },
   genderButtonText: {
-    color: "#fff",
+    color: "rgb(67, 33, 140)",
     fontSize: 20
   },
   flexContainer: {
@@ -788,12 +736,12 @@ const styles = StyleSheet.create({
     alignItems: "stretch"
   },
   imInterestedInText: {
-    color: "white",
+    color: "rgb(67, 33, 140)",
     fontSize: Math.round(width / 15.625)
   },
   pickOneorBothText: {
     opacity: 0.7,
-    color: "white",
+    color: "rgb(67, 33, 140)",
     fontSize: Math.round(width / 25)
   }
 });

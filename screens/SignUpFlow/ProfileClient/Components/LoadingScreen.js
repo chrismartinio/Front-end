@@ -24,7 +24,7 @@ export default function LoadingScreen(props) {
       />
       {/*Loading Text*/}
       <View alignItems="center">
-        <ActivityIndicator size="small" color="white" />
+        <ActivityIndicator size="small" color="rgb(67, 33, 140)" />
       </View>
       {/*Spaces*/}
       <View

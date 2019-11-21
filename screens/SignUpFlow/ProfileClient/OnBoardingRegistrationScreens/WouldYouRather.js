@@ -61,7 +61,7 @@ class WouldYouRather extends Component {
       return;
     }
 
-    await fetch("http://10.0.0.119:4000/api/profile/query", {
+    await fetch("http://74.80.250.210:4000/api/profile/query", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -236,7 +236,7 @@ class WouldYouRather extends Component {
         },
         () => {
           //Send data to database
-          fetch("http://10.0.0.119:4000/api/profile/update", {
+          fetch("http://74.80.250.210:4000/api/profile/update", {
             method: "POST",
             headers: {
               "Content-Type": "application/json"
@@ -532,7 +532,7 @@ const styles = StyleSheet.create({
     top: height * (1 / 3),
     left: width * (1 / 2)
   },
-  whatDoYouPreferText: { opacity: 0.7, color: "white" }
+  whatDoYouPreferText: { opacity: 0.7, color: "rgb(67, 33, 140)" }
 });
 
 const mapStateToProps = state => ({

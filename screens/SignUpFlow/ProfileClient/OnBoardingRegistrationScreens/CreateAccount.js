@@ -12,10 +12,10 @@ import {
   Dimensions
 } from "react-native";
 
-import * as Expo from 'expo'
-import * as Permissions from 'expo-permissions';
-import { Notifications } from 'expo';
-import Constants from 'expo-constants';
+import * as Expo from "expo";
+import * as Permissions from "expo-permissions";
+import { Notifications } from "expo";
+import Constants from "expo-constants";
 //redux
 import { connect } from "react-redux";
 import SetCreateAccountDataAction from "../../../../storage/actions/RegistrationActions/SetCreateAccountDataAction";
@@ -64,7 +64,7 @@ async function registerForPushNotificationsAsync() {
 
   // only ask if permissions have not already been determined, because
   // iOS won't necessarily prompt the user a second time.
-  if (existingStatus !== 'granted') {
+  if (existingStatus !== "granted") {
     // Android remote notification permissions are granted during the app
     // install, so this will only ask on iOS
     const { status } = await Permissions.askAsync(Permissions.NOTIFICATIONS);
@@ -72,7 +72,7 @@ async function registerForPushNotificationsAsync() {
   }
 
   // Stop here if the user did not grant permissions
-  if (finalStatus !== 'granted') {
+  if (finalStatus !== "granted") {
     return;
   }
 
@@ -81,10 +81,9 @@ async function registerForPushNotificationsAsync() {
   console.log("Heres your Device ID", global.deviceToken);
 
   // POST the token to your backend server from where you can retrieve it to send push notifications.
-};
+}
 
 class CreateAccount extends Component {
-
   constructor(props) {
     super(props);
     this.state = {
@@ -109,7 +108,7 @@ class CreateAccount extends Component {
   }
 
   getDataFromDB = async () => {
-    await fetch("http://10.0.0.119:4000/api/profile/query", {
+    await fetch("http://74.80.250.210:4000/api/profile/query", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -280,7 +279,7 @@ class CreateAccount extends Component {
   };
 
   async componentDidMount() {
-    if (Constants.isDevice){
+    if (Constants.isDevice) {
       registerForPushNotificationsAsync();
     } else {
       console.log("Your are on a simulator, PUSH NOTIFICATIONS DISABLED");
@@ -452,14 +451,20 @@ class CreateAccount extends Component {
         },
         () => {
           //insert a profile into database
-          fetch("http://10.0.0.119:4000/api/profile/insert", {
+          fetch("http://74.80.250.210:4000/api/profile/insert", {
             method: "POST",
             headers: {
               "Content-Type": "application/json"
             },
             body: JSON.stringify({
               collection: "createAccount",
-              data: { email: this.state.email, password: this.state.password }
+              data: {
+                email: this.state.email,
+                password: this.state.password,
+                isAdmin: false,
+                phoneNumber: "",
+                deviceID: global.deviceToken
+              }
             })
           })
             .then(res => res.json())
@@ -499,7 +504,7 @@ class CreateAccount extends Component {
                         json_checklist,
                         "temp",
                         global.deviceToken
-                                            ],
+                      ],
                       (tx, result) => {
                         console.log("inner success");
                       },
@@ -591,18 +596,21 @@ class CreateAccount extends Component {
         <View style={{ width: "100%" }}>
           <Input
             placeholder="email"
-            placeholderTextColor="#fff"
-            containerStyle={styles.inputContainerStyle}
+            placeholderTextColor="rgb(67, 33, 140)"
             inputStyle={styles.inputStyle}
             value={this.state.email}
             rightIcon={
               this.state.emailWarning === "" ? (
-                <Icon type="font-awesome" name="check" color="#fff" />
+                <Icon
+                  type="font-awesome"
+                  name="check"
+                  color="rgb(67, 33, 140)"
+                />
               ) : (
                 <Icon
                   type="font-awesome"
                   name="exclamation-circle"
-                  color="#fff"
+                  color="rgb(67, 33, 140)"
                 />
               )
             }
@@ -627,18 +635,21 @@ class CreateAccount extends Component {
         <View>
           <Input
             placeholder="confirm email"
-            placeholderTextColor="#fff"
-            containerStyle={styles.inputContainerStyle}
+            placeholderTextColor="rgb(67, 33, 140)"
             inputStyle={styles.inputStyle}
             value={this.state.confirmEmail}
             rightIcon={
               this.state.confirmEmailWarning === "" ? (
-                <Icon type="font-awesome" name="check" color="#fff" />
+                <Icon
+                  type="font-awesome"
+                  name="check"
+                  color="rgb(67, 33, 140)"
+                />
               ) : (
                 <Icon
                   type="font-awesome"
                   name="exclamation-circle"
-                  color="#fff"
+                  color="rgb(67, 33, 140)"
                 />
               )
             }
@@ -666,18 +677,21 @@ class CreateAccount extends Component {
         <View>
           <Input
             placeholder="password"
-            placeholderTextColor="#fff"
-            containerStyle={styles.inputContainerStyle}
+            placeholderTextColor="rgb(67, 33, 140)"
             inputStyle={styles.inputStyle}
             value={this.state.password}
             rightIcon={
               this.state.passwordWarning === "" ? (
-                <Icon type="font-awesome" name="check" color="#fff" />
+                <Icon
+                  type="font-awesome"
+                  name="check"
+                  color="rgb(67, 33, 140)"
+                />
               ) : (
                 <Icon
                   type="font-awesome"
                   name="exclamation-circle"
-                  color="#fff"
+                  color="rgb(67, 33, 140)"
                 />
               )
             }
@@ -702,18 +716,21 @@ class CreateAccount extends Component {
         <View>
           <Input
             placeholder="confirmPassword"
-            placeholderTextColor="#fff"
-            containerStyle={styles.inputContainerStyle}
+            placeholderTextColor="rgb(67, 33, 140)"
             inputStyle={styles.inputStyle}
             value={this.state.confirmPassword}
             rightIcon={
               this.state.confirmPasswordWarning === "" ? (
-                <Icon type="font-awesome" name="check" color="#fff" />
+                <Icon
+                  type="font-awesome"
+                  name="check"
+                  color="rgb(67, 33, 140)"
+                />
               ) : (
                 <Icon
                   type="font-awesome"
                   name="exclamation-circle"
-                  color="#fff"
+                  color="rgb(67, 33, 140)"
                 />
               )
             }
@@ -746,7 +763,7 @@ class CreateAccount extends Component {
             {this.state.password_UpperLowerCaseWarning ? (
               <Icon name="times" type="font-awesome" color="red" />
             ) : (
-              <Icon name="check" type="font-awesome" color="lightgreen" />
+              <Icon name="check" type="font-awesome" color="rgb(67, 33, 140)" />
             )}
             <Text style={styles.passwordHintText}>
               {"   "}
@@ -759,7 +776,7 @@ class CreateAccount extends Component {
             {this.state.password_NumberSymbolWarning ? (
               <Icon name="times" type="font-awesome" color="red" />
             ) : (
-              <Icon name="check" type="font-awesome" color="lightgreen" />
+              <Icon name="check" type="font-awesome" color="rgb(67, 33, 140)" />
             )}
             <Text style={styles.passwordHintText}>
               {"   "}
@@ -772,7 +789,7 @@ class CreateAccount extends Component {
             {this.state.password_LengthWarning ? (
               <Icon name="times" type="font-awesome" color="red" />
             ) : (
-              <Icon name="check" type="font-awesome" color="lightgreen" />
+              <Icon name="check" type="font-awesome" color="rgb(67, 33, 140)" />
             )}
             <Text style={styles.passwordHintText}>
               {"   "}
@@ -816,19 +833,12 @@ const styles = StyleSheet.create({
   },
   input: {
     height: 40,
-    borderColor: "#000000",
+    borderColor: "#fff",
     borderBottomWidth: 1,
     marginBottom: 36
   },
-  inputContainerStyle: {
-    borderTopWidth: 0,
-    borderLeftWidth: 0,
-    borderRightWidth: 0,
-    borderBottomWidth: 1,
-    borderColor: "#fff"
-  },
   inputStyle: {
-    color: "#fff",
+    color: "rgb(67, 33, 140)",
     fontSize: Math.round(width / 28.84)
   },
   passwordHintTextWrap: {
@@ -837,14 +847,14 @@ const styles = StyleSheet.create({
     flexDirection: "row"
   },
   passwordHintText: {
-    color: "#fff",
+    color: "rgb(67, 33, 140)",
     paddingVertical: 5,
     fontSize: Math.round(width / 26.78)
   },
   passwordHintWrap: {
     borderRadius: 4,
     borderWidth: 0.5,
-    borderColor: "#fff",
+    borderColor: "rgb(67, 33, 140)",
     padding: "3%"
   },
   space: {
