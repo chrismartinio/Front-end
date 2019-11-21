@@ -596,18 +596,21 @@ class CreateAccount extends Component {
         <View style={{ width: "100%" }}>
           <Input
             placeholder="email"
-            placeholderTextColor="#fff"
-            containerStyle={styles.inputContainerStyle}
+            placeholderTextColor="rgb(67, 33, 140)"
             inputStyle={styles.inputStyle}
             value={this.state.email}
             rightIcon={
               this.state.emailWarning === "" ? (
-                <Icon type="font-awesome" name="check" color="#fff" />
+                <Icon
+                  type="font-awesome"
+                  name="check"
+                  color="rgb(67, 33, 140)"
+                />
               ) : (
                 <Icon
                   type="font-awesome"
                   name="exclamation-circle"
-                  color="#fff"
+                  color="rgb(67, 33, 140)"
                 />
               )
             }
@@ -632,18 +635,21 @@ class CreateAccount extends Component {
         <View>
           <Input
             placeholder="confirm email"
-            placeholderTextColor="#fff"
-            containerStyle={styles.inputContainerStyle}
+            placeholderTextColor="rgb(67, 33, 140)"
             inputStyle={styles.inputStyle}
             value={this.state.confirmEmail}
             rightIcon={
               this.state.confirmEmailWarning === "" ? (
-                <Icon type="font-awesome" name="check" color="#fff" />
+                <Icon
+                  type="font-awesome"
+                  name="check"
+                  color="rgb(67, 33, 140)"
+                />
               ) : (
                 <Icon
                   type="font-awesome"
                   name="exclamation-circle"
-                  color="#fff"
+                  color="rgb(67, 33, 140)"
                 />
               )
             }
@@ -671,18 +677,21 @@ class CreateAccount extends Component {
         <View>
           <Input
             placeholder="password"
-            placeholderTextColor="#fff"
-            containerStyle={styles.inputContainerStyle}
+            placeholderTextColor="rgb(67, 33, 140)"
             inputStyle={styles.inputStyle}
             value={this.state.password}
             rightIcon={
               this.state.passwordWarning === "" ? (
-                <Icon type="font-awesome" name="check" color="#fff" />
+                <Icon
+                  type="font-awesome"
+                  name="check"
+                  color="rgb(67, 33, 140)"
+                />
               ) : (
                 <Icon
                   type="font-awesome"
                   name="exclamation-circle"
-                  color="#fff"
+                  color="rgb(67, 33, 140)"
                 />
               )
             }
@@ -707,18 +716,21 @@ class CreateAccount extends Component {
         <View>
           <Input
             placeholder="confirmPassword"
-            placeholderTextColor="#fff"
-            containerStyle={styles.inputContainerStyle}
+            placeholderTextColor="rgb(67, 33, 140)"
             inputStyle={styles.inputStyle}
             value={this.state.confirmPassword}
             rightIcon={
               this.state.confirmPasswordWarning === "" ? (
-                <Icon type="font-awesome" name="check" color="#fff" />
+                <Icon
+                  type="font-awesome"
+                  name="check"
+                  color="rgb(67, 33, 140)"
+                />
               ) : (
                 <Icon
                   type="font-awesome"
                   name="exclamation-circle"
-                  color="#fff"
+                  color="rgb(67, 33, 140)"
                 />
               )
             }
@@ -751,7 +763,7 @@ class CreateAccount extends Component {
             {this.state.password_UpperLowerCaseWarning ? (
               <Icon name="times" type="font-awesome" color="red" />
             ) : (
-              <Icon name="check" type="font-awesome" color="lightgreen" />
+              <Icon name="check" type="font-awesome" color="rgb(67, 33, 140)" />
             )}
             <Text style={styles.passwordHintText}>
               {"   "}
@@ -764,7 +776,7 @@ class CreateAccount extends Component {
             {this.state.password_NumberSymbolWarning ? (
               <Icon name="times" type="font-awesome" color="red" />
             ) : (
-              <Icon name="check" type="font-awesome" color="lightgreen" />
+              <Icon name="check" type="font-awesome" color="rgb(67, 33, 140)" />
             )}
             <Text style={styles.passwordHintText}>
               {"   "}
@@ -777,7 +789,7 @@ class CreateAccount extends Component {
             {this.state.password_LengthWarning ? (
               <Icon name="times" type="font-awesome" color="red" />
             ) : (
-              <Icon name="check" type="font-awesome" color="lightgreen" />
+              <Icon name="check" type="font-awesome" color="rgb(67, 33, 140)" />
             )}
             <Text style={styles.passwordHintText}>
               {"   "}
@@ -821,19 +833,12 @@ const styles = StyleSheet.create({
   },
   input: {
     height: 40,
-    borderColor: "#000000",
+    borderColor: "#fff",
     borderBottomWidth: 1,
     marginBottom: 36
   },
-  inputContainerStyle: {
-    borderTopWidth: 0,
-    borderLeftWidth: 0,
-    borderRightWidth: 0,
-    borderBottomWidth: 1,
-    borderColor: "#fff"
-  },
   inputStyle: {
-    color: "#fff",
+    color: "rgb(67, 33, 140)",
     fontSize: Math.round(width / 28.84)
   },
   passwordHintTextWrap: {
@@ -842,14 +847,14 @@ const styles = StyleSheet.create({
     flexDirection: "row"
   },
   passwordHintText: {
-    color: "#fff",
+    color: "rgb(67, 33, 140)",
     paddingVertical: 5,
     fontSize: Math.round(width / 26.78)
   },
   passwordHintWrap: {
     borderRadius: 4,
     borderWidth: 0.5,
-    borderColor: "#fff",
+    borderColor: "rgb(67, 33, 140)",
     padding: "3%"
   },
   space: {

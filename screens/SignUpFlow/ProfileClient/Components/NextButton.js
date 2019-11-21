@@ -23,7 +23,7 @@ export default function NextButton(props) {
         disabled={(props.passed && props.isDelaying) || !props.passed}
       >
         {props.passed && props.isDelaying ? (
-          <ActivityIndicator size="small" color="white" />
+          <ActivityIndicator size="small" color="rgb(67, 33, 140)" />
         ) : (
           <Text style={styles.nextButtonText}>Next</Text>
         )}
@@ -34,7 +34,7 @@ export default function NextButton(props) {
 
 const styles = StyleSheet.create({
   nextButtonText: {
-    color: "#fff",
+    color: "rgb(67, 33, 140)",
     fontSize: Math.round(width / 18.75)
   },
   nextButton: {
@@ -42,7 +42,7 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 40,
     borderWidth: 2,
-    borderColor: "#fff",
+    borderColor: "rgb(67, 33, 140)",
     width: "55%"
   }
 });

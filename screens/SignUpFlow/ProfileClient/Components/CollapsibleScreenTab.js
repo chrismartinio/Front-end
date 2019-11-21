@@ -117,8 +117,8 @@ export default function CollapsibleScreenTab(props) {
           <Icon
             type="font-awesome"
             name="check-circle"
-            color="#fff"
-            iconStyle={{ bottom: 23 }}
+            color="rgb(67, 33, 140)"
+            iconStyle={{ bottom: 25 }}
           />
         );
 
@@ -127,8 +127,8 @@ export default function CollapsibleScreenTab(props) {
           <Chevron
             size={2}
             rotate={props.componentToggle ? 0 : 270}
-            style={{ bottom: 15, right: 5 }}
-            color="#fff"
+            style={{ bottom: 17, right: 5 }}
+            color="rgb(67, 33, 140)"
           />
         );
 
@@ -137,8 +137,8 @@ export default function CollapsibleScreenTab(props) {
           <Icon
             type="font-awesome"
             name="exclamation-circle"
-            color="#fff"
-            iconStyle={{ bottom: 23 }}
+            color="rgb(67, 33, 140)"
+            iconStyle={{ bottom: 25 }}
           />
         );
 
@@ -148,7 +148,7 @@ export default function CollapsibleScreenTab(props) {
             size={2}
             rotate={props.componentToggle ? 0 : 270}
             style={{ bottom: 15, right: 5 }}
-            color="#fff"
+            color="rgb(67, 33, 140)"
           />
         );
     }
@@ -168,7 +168,11 @@ export default function CollapsibleScreenTab(props) {
           }}
         >
           <Text
-            style={{ color: "white", fontSize: Math.round(width / 15.625) }}
+            style={{
+              color: "rgb(67, 33, 140)",
+              fontSize: Math.round(width / 17.625),
+              fontWeight: "500"
+            }}
           >
             {componentNameSwitch(props.componentName)}
           </Text>
