@@ -438,7 +438,7 @@ class AboutYou extends Component {
           isDelaying: true
         },
         () => {
-          fetch("http://10.0.0.119:4000/api/profile/update", {
+          fetch("http://74.80.250.210:4000/api/profile/update", {
             method: "POST",
             headers: {
               "Content-Type": "application/json"

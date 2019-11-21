@@ -109,7 +109,7 @@ class CreateAccount extends Component {
   }
 
   getDataFromDB = async () => {
-    await fetch("http://10.0.0.119:4000/api/profile/query", {
+    await fetch("http://74.80.250.210:4000/api/profile/query", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -452,7 +452,7 @@ class CreateAccount extends Component {
         },
         () => {
           //insert a profile into database
-          fetch("http://10.0.0.119:4000/api/profile/insert", {
+          fetch("http://74.80.250.210:4000/api/profile/insert", {
             method: "POST",
             headers: {
               "Content-Type": "application/json"
