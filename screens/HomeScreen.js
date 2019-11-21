@@ -12,7 +12,6 @@ import {
 import Firebase from "../storage/Store";
 import { MonoText } from "../components/StyledText";
 import t from "tcomb-form-native";
-import axios from "axios";
 import { signInWithFacebook } from "../utils/auth.js";
 import { connect } from "react-redux";
 import SetFbDataAction from "../storage/actions/DataReducerActions/SetFbDataAction";

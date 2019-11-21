@@ -22,7 +22,6 @@ import SetUserDataAction from "../../../storage/actions/SetUserDataAction";
 import firebase from "../../../utils/mainFire";
 import { Icon, Input } from "react-native-elements";
 import { Chevron } from "react-native-shapes";
-import axios from "axios";
 
 //click password button to toggle password
 

@@ -19,7 +19,6 @@ import {
 
 import { LinearGradient } from 'expo-linear-gradient'
 
-import axios from 'axios'
 import { connect } from 'react-redux'
 import firebase from '../../utils/mainFire'
 
