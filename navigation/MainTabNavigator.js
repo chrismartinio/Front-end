@@ -64,4 +64,4 @@ export default createBottomTabNavigator({
   SettingsStack
 });
 //The order of this will determine which screen show first
-//change to createStackNavigator if don't want the botTabs
+//change to createStackNavigator if don't want the botTab
