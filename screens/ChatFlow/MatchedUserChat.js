@@ -20,6 +20,8 @@ import { connect } from "react-redux";
 import io from "socket.io-client";
 
 import LoadingScreen from "./components/LoadingScreen";
+//import console = require("console");
+//import console = require("console");
 
 class MatchedUserChat extends React.Component {
   constructor(props) {
@@ -29,12 +31,12 @@ class MatchedUserChat extends React.Component {
       currentMessage: "",
       isLoading: false,
       isTyping: false,
-      timerSecond: 5
+      timerSecond: 90
     };
     this.guid = "";
     this.user_firstName = "";
     this.matched_user_firstName = "";
-    this.socket = io("http://74.80.250.210:3060");
+    this.socket = io("http://192.168.1.67:3060");
 
     //handle new message
     this.socket.on("new message", data => {
@@ -115,12 +117,15 @@ class MatchedUserChat extends React.Component {
 
     this.user_firstName = await this.props.CreateProfileDataReducer.aboutYouData
       .firstName;
-*/
+    */
     this.guid = "";
-    this.user_firstName = "You";
+    this.user_firstName = "you";
 
     //emit an event to tell the socket the user has enter the room
-    this.socket.emit("add user", this.user_firstName);
+    this.socket.emit("add user", {
+      guid: this.guid,
+      user_firstName: this.user_firstName
+    });
 
     this.setState({
       isLoading: true
@@ -143,7 +148,11 @@ class MatchedUserChat extends React.Component {
     clearInterval(this.interval);
     this.socket.close();
   }
-
+TimeStamp(){
+  var today = new Date();
+  var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+  return time;
+}
   //add a new message into the allMessageArray
   addChatMessage = (type, message, username) => {
     let allMessages = this.state.allMessages;
@@ -151,7 +160,7 @@ class MatchedUserChat extends React.Component {
       type: type,
       message: message,
       userName: username,
-      timeStamp: new Date()
+      timeStamp: this.TimeStamp()
     });
     this.setState({
       allMessages: allMessages
@@ -161,8 +170,12 @@ class MatchedUserChat extends React.Component {
   //user send a message
   submitMessage = () => {
     let str = `${this.state.currentMessage}`;
+    if(str=='')return;
     this.addChatMessage(1, str, this.user_firstName);
-    this.socket.emit("new message", this.state.currentMessage);
+    this.socket.emit("new message", {
+      guid: this.guid,
+      message: this.state.currentMessage
+    });
     this.setState({
       currentMessage: ""
     });
@@ -175,6 +188,9 @@ class MatchedUserChat extends React.Component {
     });
     if (this.state.timerSecond <= 0) {
       clearInterval(this.interval);
+      //THIS WORK ONLY FROM CHATLIST TO CHATROOM
+      this.props.navigation.getParam.forceRender;
+
       this.backToChatUsersList();
     }
   };
@@ -193,13 +209,15 @@ class MatchedUserChat extends React.Component {
         return (
           <View key={index} style={styles.deviceUserMessageView}>
             <View style={styles.textContainer}>
-              <Text style={styles.deviceUserMessageText}>
-                {`${messageItem.message}\n`}
-                <Text style={styles.dateTime}>{`${
+            <View style={styles.deviceUserMessageText}>
+              <Text >
+                {`${messageItem.message}`}
+              </Text>
+              <Text style={styles.dateTime}>{`${
                   messageItem.timeStamp
                 }`}</Text>
-              </Text>
-              <Text style={styles.circle}> {messageItem.userName[0]}</Text>
+              </View>
+              <Text style={styles.circle}> {messageItem.userName[0].toUpperCase()}</Text>
             </View>
           </View>
         );
@@ -210,14 +228,16 @@ class MatchedUserChat extends React.Component {
             <View style={styles.textContainer}>
               <Text style={styles.circlePurple}>
                 {" "}
-                {messageItem.userName[0]}
+                {messageItem.userName[0].toUpperCase()}
               </Text>
-              <Text style={styles.targetMessageText}>
-                {`${messageItem.message}\n`}
-                <Text style={styles.dateTimeLeft}>{`${
+              <View style={styles.targetMessageText}><Text >
+                {`${messageItem.message}`}
+                
+              </Text>
+              <Text style={styles.dateTimeLeft}>{`${
                   messageItem.timeStamp
                 }`}</Text>
-              </Text>
+                </View>
             </View>
           </View>
         );
@@ -253,9 +273,10 @@ class MatchedUserChat extends React.Component {
             style={styles.backgroundImage}
           >
             <Button title="Back" onPress={this.backToChatUsersList} />
-            <Text>{this.state.timerSecond} seconds left</Text>
+            <Text style = {{marginLeft:5}}>{this.state.timerSecond} seconds left</Text>
             <Image
               style={{
+                marginLeft:5,
                 width: 90 * 2,
                 height: 10
               }}
@@ -263,6 +284,7 @@ class MatchedUserChat extends React.Component {
             />
             <Image
               style={{
+                marginLeft:5,
                 top: -10,
                 width: this.state.timerSecond * 2,
                 height: 10
@@ -354,7 +376,8 @@ const styles = StyleSheet.create({
   deviceUserMessageText: {
     overflow: "hidden",
     borderRadius: 10,
-    width: 300,
+    minWidth:50,
+    maxWidth: 300,
     borderColor: "#3399ff",
     backgroundColor: "#3399ff",
     color: "#fff",
@@ -363,7 +386,8 @@ const styles = StyleSheet.create({
   targetMessageText: {
     overflow: "hidden",
     borderRadius: 10,
-    width: 300,
+    minWidth:50,
+    maxWidth: 300,
     borderColor: "#cccccc",
     backgroundColor: "#cccccc",
     color: "#000",
