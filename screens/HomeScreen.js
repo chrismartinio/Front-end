@@ -63,7 +63,9 @@ class HomeScreen extends React.Component {
       "isAdmin BOOLEAN DEFAULT NULL," +
       "checklist TEXT DEFAULT NULL," +
       "phoneNumber TEXT DEFAULT NULL," +
-      "deviceID TEXT DEFAULT NULL" +
+      "deviceID TEXT DEFAULT NULL," +
+      "deviceLatLong TEXT DEFAULT NULL," +
+      "deviceAltitude TEXT DEFAULT NULL" +
       " );";
 
     let aboutYouSqlStatement =

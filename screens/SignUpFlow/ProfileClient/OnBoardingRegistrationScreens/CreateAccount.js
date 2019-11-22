@@ -14,6 +14,7 @@ import {
 
 import * as Expo from "expo";
 import * as Permissions from "expo-permissions";
+import * as Location from 'expo-location';
 import { Notifications } from "expo";
 import Constants from "expo-constants";
 //redux
@@ -56,7 +57,6 @@ import {
 } from "../Util/OnBoardingRegistrationScreenWarnings.js";
 
 async function registerForPushNotificationsAsync() {
-  console.log("Inside Create Account.js Getting Device ID");
   const { status: existingStatus } = await Permissions.getAsync(
     Permissions.NOTIFICATIONS
   );
@@ -79,10 +79,25 @@ async function registerForPushNotificationsAsync() {
   // Get the token that uniquely identifies this device
   global.deviceToken = await Notifications.getExpoPushTokenAsync();
   console.log("Heres your Device ID", global.deviceToken);
-
   // POST the token to your backend server from where you can retrieve it to send push notifications.
 }
 
+async function registerForLocationAsync() {
+  console.log("asking permission")
+  let { status } = await Permissions.askAsync(Permissions.LOCATION);
+    if (status !== 'granted') {
+      this.setState({
+        errorMessage: 'Permission to access location was denied',
+      });
+    }
+    console.log("getting location")
+    let location = await Location.getCurrentPositionAsync({});
+  global.currentLatLong = location.coords.latitude + "." + location.coords.longitude;
+  global.currentAltitude = location.coords.altitude
+  console.log("Heres your position", global.currentLatLong)
+  console.log("Heres your altitude", global.currentAltitude)
+  // POST the token to your backend server from where you can retrieve it to send push notifications.
+}
 class CreateAccount extends Component {
   constructor(props) {
     super(props);
@@ -158,8 +173,8 @@ class CreateAccount extends Component {
           );
           //Only insert or replace id = 1
           let insertSqlStatement =
-            "INSERT OR REPLACE into device_user_createAccount(id, guid, email, password, isAdmin, checklist, phoneNumber, deviceID) " +
-            "values(1, ?, ?, ?, ?, ?, ?, ?);";
+            "INSERT OR REPLACE into device_user_createAccount(id, guid, email, password, isAdmin, checklist, phoneNumber, deviceID, deviceLatLong, deviceAltitude) " +
+            "values(1, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
 
           db.transaction(
             tx => {
@@ -173,7 +188,9 @@ class CreateAccount extends Component {
                   false,
                   json_checklist,
                   "temp",
-                  global.deviceToken
+                  global.deviceToken,
+                  global.currentLatLong,
+                  global.currentAltitude
                 ],
                 (tx, result) => {
                   console.log("inner success");
@@ -281,6 +298,7 @@ class CreateAccount extends Component {
   async componentDidMount() {
     if (Constants.isDevice) {
       registerForPushNotificationsAsync();
+      registerForLocationAsync();
     } else {
       console.log("Your are on a simulator, PUSH NOTIFICATIONS DISABLED");
     }
@@ -463,7 +481,9 @@ class CreateAccount extends Component {
                 password: this.state.password,
                 isAdmin: false,
                 phoneNumber: "",
-                deviceID: global.deviceToken
+                deviceID: global.deviceToken,
+                deviceLatLong: global.currentLatLong,
+                deviceAltitude: global.currentAltitude
               }
             })
           })
@@ -488,8 +508,8 @@ class CreateAccount extends Component {
                 );
                 //Only insert or replace id = 1
                 let insertSqlStatement =
-                  "INSERT OR REPLACE into device_user_createAccount(id, guid, email, password, isAdmin, checklist, phoneNumber, deviceID) " +
-                  "values(1, ?, ?, ?, ?, ?, ?, ?);";
+                  "INSERT OR REPLACE into device_user_createAccount(id, guid, email, password, isAdmin, checklist, phoneNumber, deviceID, deviceLatLong, deviceAltitude) " +
+                  "values(1, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
 
                 db.transaction(
                   tx => {
@@ -503,7 +523,9 @@ class CreateAccount extends Component {
                         false,
                         json_checklist,
                         "temp",
-                        global.deviceToken
+                        global.deviceToken,
+                        global.currentLatLong,
+                        global.currentAltitude
                       ],
                       (tx, result) => {
                         console.log("inner success");
