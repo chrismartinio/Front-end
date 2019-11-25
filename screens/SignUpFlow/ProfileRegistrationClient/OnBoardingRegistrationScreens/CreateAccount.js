@@ -621,6 +621,7 @@ class CreateAccount extends Component {
             placeholderTextColor="rgb(67, 33, 140)"
             inputStyle={styles.inputStyle}
             value={this.state.email}
+            returnKeyType="done"
             rightIcon={
               this.state.emailWarning === "" ? (
                 <Icon
@@ -660,6 +661,7 @@ class CreateAccount extends Component {
             placeholderTextColor="rgb(67, 33, 140)"
             inputStyle={styles.inputStyle}
             value={this.state.confirmEmail}
+            returnKeyType="done"
             rightIcon={
               this.state.confirmEmailWarning === "" ? (
                 <Icon
@@ -702,6 +704,7 @@ class CreateAccount extends Component {
             placeholderTextColor="rgb(67, 33, 140)"
             inputStyle={styles.inputStyle}
             value={this.state.password}
+            returnKeyType="done"
             rightIcon={
               this.state.passwordWarning === "" ? (
                 <Icon
@@ -741,6 +744,7 @@ class CreateAccount extends Component {
             placeholderTextColor="rgb(67, 33, 140)"
             inputStyle={styles.inputStyle}
             value={this.state.confirmPassword}
+            returnKeyType="done"
             rightIcon={
               this.state.confirmPasswordWarning === "" ? (
                 <Icon

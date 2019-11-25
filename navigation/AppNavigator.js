@@ -44,7 +44,7 @@ import ChatUsersList from "../screens/ChatFlow/ChatUsersList";
 import MatchedUserChat from "../screens/ChatFlow/MatchedUserChat";
 
 //On-Boarding Collapsible Screen (Includes all on-boarding screens)
-import Collapsible from "../screens/SignUpFlow/ProfileClient/CollapsibleRegistration";
+import Collapsible from "../screens/SignUpFlow/ProfileRegistrationClient/CollapsibleRegistration";
 import LinksScreen from "../screens/LinksScreen";
 
 const TestStack = createStackNavigator({

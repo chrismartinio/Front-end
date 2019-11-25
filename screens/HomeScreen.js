@@ -77,6 +77,7 @@ class HomeScreen extends React.Component {
       "lastName TEXT DEFAULT NULL," +
       "gender TEXT DEFAULT NULL," +
       "zipCode TEXT DEFAULT NULL," +
+      "userBio TEXT DEFAULT NULL," +
       "createAccount_id INTEGER," +
       "FOREIGN KEY (createAccount_id) REFERENCES device_user_createAccount (id)" +
       " );";

@@ -77,7 +77,8 @@ class AboutYou extends Component {
       birthDateWarning: "empty",
       internalErrorWarning: false,
       isSuccess: true,
-      isDelaying: false
+      isDelaying: false,
+      userBio: ""
     };
     this.isContinueUserFetched = false;
   }
@@ -92,7 +93,9 @@ class AboutYou extends Component {
       }
     }
 
-    await fetch("http://10.0.0.119:4000/api/profile/query", {
+
+
+    await fetch("http://74.80.250.210:4000/api/profile/query", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -107,6 +110,7 @@ class AboutYou extends Component {
         let object = JSON.parse(JSON.stringify(res));
         //console.log(object);
         //SUCCESS ON QUERYING DATA
+
         if (object.success) {
           let {
             firstName,
@@ -114,7 +118,8 @@ class AboutYou extends Component {
             birthDate,
             gender,
             country,
-            zipCode
+            zipCode,
+            userBio
           } = object.result;
 
           //setState
@@ -125,6 +130,7 @@ class AboutYou extends Component {
             gender: gender,
             country: country,
             zipCode: zipCode,
+            userBio: userBio,
             firstNameWarning: firstName === "" ? "empty" : "",
             lastNameWarning: lastName === "" ? "empty" : "",
             birthDateWarning: birthDate === "" ? "empty" : "",
@@ -137,15 +143,23 @@ class AboutYou extends Component {
           //LocalStorage
           //Only insert or replace id = 1
           let insertSqlStatement =
-            "INSERT OR REPLACE into device_user_aboutYou(id, createAccount_id, firstName, lastName, birthDate, gender, country, zipCode) " +
-            "values(1, 1, ?, ?, ?, ?, ?, ?);";
+            "INSERT OR REPLACE into device_user_aboutYou(id, createAccount_id, firstName, lastName, birthDate, gender, country, zipCode, userBio) " +
+            "values(1, 1, ?, ?, ?, ?, ?, ?, ?);";
 
           db.transaction(
             tx => {
               //INSERT DATA
               tx.executeSql(
                 insertSqlStatement,
-                [firstName, lastName, birthDate, gender, country, zipCode],
+                [
+                  firstName,
+                  lastName,
+                  birthDate,
+                  gender,
+                  country,
+                  zipCode,
+                  userBio
+                ],
                 (tx, result) => {
                   console.log("inner success");
                 },
@@ -180,7 +194,8 @@ class AboutYou extends Component {
             birthDate: birthDate,
             gender: gender,
             country: country,
-            zipCode: zipCode
+            zipCode: zipCode,
+            userBio: userBio
           });
         } else {
           //INTERNAL ERROR
@@ -197,7 +212,8 @@ class AboutYou extends Component {
               birthDate,
               gender,
               country,
-              zipCode
+              zipCode,
+              userBio
             } = result.rows._array[0];
             //setState
             this.setState({
@@ -207,6 +223,7 @@ class AboutYou extends Component {
               gender: gender,
               country: country,
               zipCode: zipCode,
+              userBio: userBio,
               firstNameWarning: firstName === "" ? "empty" : "",
               lastNameWarning: lastName === "" ? "empty" : "",
               birthDateWarning: birthDate === "" ? "empty" : "",
@@ -453,6 +470,7 @@ class AboutYou extends Component {
                 gender: this.state.gender,
                 country: this.state.country,
                 zipCode: this.state.zipCode,
+                userBio: this.state.userBio,
                 checklist: checklist
               }
             })
@@ -470,7 +488,8 @@ class AboutYou extends Component {
                   birthDate: this.state.birthDate,
                   gender: this.state.gender,
                   country: this.state.country,
-                  zipCode: this.state.zipCode
+                  zipCode: this.state.zipCode,
+                  userBio: this.state.userBio
                 });
                 this.props.SetChecklistAction({
                   checklist: checklist
@@ -480,8 +499,8 @@ class AboutYou extends Component {
                 let json_checklist = JSON.stringify(checklist);
                 //Only insert or replace id = 1
                 let insertSqlStatement =
-                  "INSERT OR REPLACE into device_user_aboutYou(id, createAccount_id, firstName, lastName, birthDate, gender, country, zipCode) " +
-                  "values(1, 1, ?, ?, ?, ?, ?, ?);";
+                  "INSERT OR REPLACE into device_user_aboutYou(id, createAccount_id, firstName, lastName, birthDate, gender, country, zipCode, userBio) " +
+                  "values(1, 1, ?, ?, ?, ?, ?, ?, ?);";
 
                 db.transaction(
                   tx => {
@@ -494,7 +513,8 @@ class AboutYou extends Component {
                         this.state.birthDate,
                         this.state.gender,
                         this.state.country,
-                        this.state.zipCode
+                        this.state.zipCode,
+                        this.state.userBio
                       ],
                       (tx, result) => {
                         console.log("inner success");
@@ -609,6 +629,7 @@ class AboutYou extends Component {
             placeholderTextColor="rgb(67, 33, 140)"
             inputStyle={styles.inputStyle}
             value={this.state.firstName}
+            returnKeyType="done"
             rightIcon={
               this.state.firstNameWarning === "" ? (
                 <Icon
@@ -650,6 +671,7 @@ class AboutYou extends Component {
             placeholderTextColor="rgb(67, 33, 140)"
             inputStyle={styles.inputStyle}
             value={this.state.lastName}
+            returnKeyType="done"
             rightIcon={
               this.state.lastNameWarning === "" ? (
                 <Icon
@@ -834,6 +856,7 @@ class AboutYou extends Component {
               autoCorrect={false}
               keyboardType="numeric"
               maxLength={5}
+              returnKeyType="done"
               value={this.state.zipCode}
               rightIcon={
                 this.state.zipCodeWarning === "" ? (
@@ -860,10 +883,32 @@ class AboutYou extends Component {
             {this.state.zipCodeWarning === "invalid" && invalidZipCodeWarning}
           </View>
         </View>
+
         {/*Spaces*/}
         <View
           style={{
-            padding: "10%"
+            padding: "7%"
+          }}
+        />
+
+        {/*User Bio*/}
+        <View style={styles.userBioWrap}>
+          <TextInput
+            style={styles.userBioInputStyle}
+            placeholder="Tell us about yourself"
+            placeholderTextColor="rgb(67, 33, 140)"
+            multiline={true}
+            numberOfLines={4}
+            value={this.state.userBio}
+            returnKeyType="done"
+            onChangeText={userBio => this.setState({ userBio })}
+          />
+        </View>
+
+        {/*Spaces*/}
+        <View
+          style={{
+            padding: "5%"
             //borderRadius: 4,
             //borderWidth: 0.5,
             //borderColor: "#d6d7da"
@@ -906,7 +951,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1
   },
-
   inputStyle: {
     color: "rgb(67, 33, 140)",
     fontSize: Math.round(width / 28.84)
@@ -942,6 +986,18 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     flexWrap: "wrap",
     marginBottom: "15%"
+  },
+  userBioWrap: {
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: "rgb(67, 33, 140)",
+    height: 100
+  },
+  userBioInputStyle: {
+    color: "rgb(67, 33, 140)",
+    fontSize: Math.round(width / 28.84),
+    paddingHorizontal: 15,
+    paddingVertical: 15
   }
 });
 
