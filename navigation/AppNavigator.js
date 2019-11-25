@@ -9,7 +9,7 @@ import {
 import MainTabNavigator from "./MainTabNavigator";
 
 //MainScreen
-import mainSignInPage from "../screens/HomeScreen";
+import mainSignInPage from "../screens/LoginScreen";
 
 //Other Screens
 import MatchesPage from "../screens/SignUpFlow/Matches";

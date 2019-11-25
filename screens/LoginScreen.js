@@ -37,7 +37,7 @@ const User = t.struct({
 import * as SQLite from "expo-sqlite";
 const db = SQLite.openDatabase("that.db");
 
-class HomeScreen extends React.Component {
+class LoginScreen extends React.Component {
   static navigationOptions = {
     header: null
   };
@@ -548,4 +548,4 @@ const mapDispatchToProps = dispatch => ({
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(HomeScreen);
+)(LoginScreen);

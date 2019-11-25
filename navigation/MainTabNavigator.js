@@ -6,18 +6,18 @@ import {
 } from "react-navigation";
 
 import TabBarIcon from "../components/TabBarIcon";
-import HomeScreen from "../screens/HomeScreen";
+import LoginScreen from "../screens/LoginScreen";
 import SettingsScreen from "../screens/SettingsScreen";
 
 import LinksScreen from "../screens/LinksScreen";
 //import LinksScreen from "../screens/LinksScreen_OnBoarding";
 
-const HomeStack = createStackNavigator({
-  Home: HomeScreen
+const LoginStack = createStackNavigator({
+  Login: LoginScreen
 });
 
-HomeStack.navigationOptions = {
-  tabBarLabel: "Home",
+LoginStack.navigationOptions = {
+  tabBarLabel: "Login",
   tabBarIcon: ({ focused }) => (
     <TabBarIcon
       focused={focused}
@@ -59,7 +59,7 @@ SettingsStack.navigationOptions = {
 };
 
 export default createBottomTabNavigator({
-  HomeStack,
+  LoginStack,
   LinksStack,
   SettingsStack
 });
