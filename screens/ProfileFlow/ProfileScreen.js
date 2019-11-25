@@ -19,6 +19,9 @@ import { Card } from "react-native-paper";
 //it will hit the db
 
 export default class Profile extends React.Component {
+  static navigationOptions = {
+    title: "My Profile"
+  };
   state = {
     userName: "Alex Wagner",
     age: "27",
@@ -64,18 +67,6 @@ export default class Profile extends React.Component {
 
     return (
       <View style={styles.container}>
-        <View style={{ margin: 10 }}>
-          <Text
-            style={{
-              color: "black",
-              fontSize: 15,
-              fontWeight: "500",
-              alignSelf: "center"
-            }}
-          >
-            My Profile
-          </Text>
-        </View>
         <ScrollView>
           <View style={{ alignItems: "center" }}>
             {/**User Image */}

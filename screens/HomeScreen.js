@@ -21,6 +21,9 @@ import LoadingScreen from "./ChatFlow/components/LoadingScreen";
 import MatchedUserChat from "./ChatFlow/MatchedUserChat";
 
 class HomeScreen extends React.Component {
+  static navigationOptions = {
+    title: "Home"
+  };
   constructor(props) {
     super(props);
     this.state = {

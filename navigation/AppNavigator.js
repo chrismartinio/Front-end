@@ -84,8 +84,20 @@ const AuthStack = createStackNavigator({
 
 //ChatRoom
 const ChatStack = createStackNavigator({
-  Main: MainTabNavigator, //Default screen
-  MatchedUserChat: MatchedUserChat
+  Main: {
+    screen: MainTabNavigator,
+    navigationOptions: () => ({
+      title: `Home`,
+      header: null,
+    })
+  },
+  MatchedUserChat: {
+    screen: MatchedUserChat,
+    navigationOptions: () => ({
+      title: `ChatRoom`
+    })
+  }
+
   //ChatPage: ChatPage,
   //InitialMatchChoice: InitialMatchChoice,
   //GhostingOthers: GhostingOthersScreen,
