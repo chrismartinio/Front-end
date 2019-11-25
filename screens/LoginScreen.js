@@ -49,7 +49,7 @@ class LoginScreen extends React.Component {
 
   //Profile Services uses
   async componentDidMount() {
-    console.log("inside HomeScreen.js creating table")
+    console.log("inside HomeScreen.js creating table");
     //console.log(Platform.OS === "android");
     //console.log(Platform.OS === "ios");
     //create tables for device's user
@@ -232,7 +232,7 @@ class LoginScreen extends React.Component {
     try {
       const { username, password } = this._form.getValue();
 
-      let data = await fetch("http://74.80.250.210:3070/api/auth/login", {
+      let data = await fetch("http://74.80.250.210:3002/api/auth/login", {
         method: "POST",
         mode: "cors",
         credentials: "same-origin",
@@ -265,8 +265,7 @@ class LoginScreen extends React.Component {
           country: "",
           zipCode: ""
         });
-        //this.props.navigation.navigate("ChatUsersList");
-        this.props.navigation.navigate("MatchedUserChat");
+        this.props.navigation.navigate("Main");
       } else {
         alert(jsonData.error);
       }
@@ -399,6 +398,16 @@ class LoginScreen extends React.Component {
               color="blue"
             />
           </View>
+
+          {/*Testing USE*/}
+          <Button
+            title="Testing - Go to Link Screen"
+            onPress={() => this.props.navigation.navigate("Links")}
+          />
+          <Button
+            title="Testing - Go to Main Screen"
+            onPress={() => this.props.navigation.navigate("Main")}
+          />
         </ScrollView>
       </View>
     );
