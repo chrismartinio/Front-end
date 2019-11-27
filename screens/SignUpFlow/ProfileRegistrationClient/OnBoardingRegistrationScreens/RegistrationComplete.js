@@ -19,8 +19,7 @@ import {
   List,
   ListItem
 } from "react-native";
-import { LinearGradient } from 'expo-linear-gradient'
-
+import { LinearGradient } from "expo-linear-gradient";
 
 import { Chevron } from "react-native-shapes";
 import { Icon, Input } from "react-native-elements";
@@ -33,64 +32,66 @@ class RegistrationComplete extends Component {
 
   render() {
     return (
-      <LinearGradient
-        textStyle={{ color: "#fff" }}
-        colors={["#18cdf6", "#43218c"]}
-        style={{ flex: 1 }}
+      <View
+        style={{
+          flex: 1,
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center"
+        }}
       >
+        <Image
+          source={require("../../../../assets/images/butterfly.png")}
+          style={{
+            width: 100,
+            height: 100
+          }}
+        />
+        <Text />
+        <Text style={{ fontSize: 24, color: "rgb(67, 33, 140)" }}>
+          Welcome to Blindly
+        </Text>
+        {/*Spaces*/}
         <View
           style={{
-            flex: 1,
-            flexDirection: "column",
-            justifyContent: "center",
-            alignItems: "center"
+            padding: "3%"
+            //borderRadius: 4,
+            //borderWidth: 0.5,
+            //borderColor: "#d6d7da"
           }}
-        >
-          <Text style={{ fontSize: 24, color: "#fff" }}>
-            Welcome to Blindly
-          </Text>
-          {/*Spaces*/}
-          <View
-            style={{
-              padding: "3%"
-              //borderRadius: 4,
-              //borderWidth: 0.5,
-              //borderColor: "#d6d7da"
+        />
+
+        {/*Back Button*/}
+        {/*<View alignItems="center">
+          <TouchableOpacity
+            onPress={() => {
+              this.props.navigation.goBack();
             }}
-          />
+          >
+            <Text style={styles.button}>Back to Login</Text>
+          </TouchableOpacity>
+          <Text />
+        </View>*/}
 
-          {/*Back Button*/}
-          <View alignItems="center">
-            <TouchableOpacity
-              onPress={() => {
-                this.props.navigation.navigate("SignIn");
-              }}
-            >
-              <Text style={styles.button}>Back to Login</Text>
-            </TouchableOpacity>
-            <Text />
-          </View>
-
-          {/*Continue Button*/}
-          <View alignItems="center">
-            <TouchableOpacity
-              onPress={() => {
-                //this.props.navigation.navigate("TestRegistrationComplete");
-              }}
-            >
-              <Text style={styles.button}>Continue to Profile</Text>
-            </TouchableOpacity>
-            <Text />
-          </View>
+        {/*Continue Button*/}
+        <View alignItems="center">
+          <TouchableOpacity
+            onPress={() => {
+              this.props.navigation.navigate("Main");
+            }}
+          >
+            <Text style={styles.button}>Start Matching!</Text>
+          </TouchableOpacity>
+          <Text />
         </View>
-      </LinearGradient>
+      </View>
     );
   }
 }
 
 const styles = StyleSheet.create({
   button: {
-    color: "#fff",
+    color: "rgb(67, 33, 140)",
     fontSize: 15
   },
   ButtonWrap: {
@@ -98,7 +99,7 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 40,
     borderWidth: 2,
-    borderColor: "#fff",
+    borderColor: "rgb(67, 33, 140)",
     width: "90%",
     margin: 5
   }

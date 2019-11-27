@@ -93,8 +93,6 @@ class AboutYou extends Component {
       }
     }
 
-
-
     await fetch("http://74.80.250.210:4000/api/profile/query", {
       method: "POST",
       headers: {
@@ -119,7 +117,9 @@ class AboutYou extends Component {
             gender,
             country,
             zipCode,
-            userBio
+            userBio,
+            city,
+            state
           } = object.result;
 
           //setState
@@ -143,8 +143,8 @@ class AboutYou extends Component {
           //LocalStorage
           //Only insert or replace id = 1
           let insertSqlStatement =
-            "INSERT OR REPLACE into device_user_aboutYou(id, createAccount_id, firstName, lastName, birthDate, gender, country, zipCode, userBio) " +
-            "values(1, 1, ?, ?, ?, ?, ?, ?, ?);";
+            "INSERT OR REPLACE into device_user_aboutYou(id, createAccount_id, firstName, lastName, birthDate, gender, country, zipCode, userBio, city, state) " +
+            "values(1, 1, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
 
           db.transaction(
             tx => {
@@ -158,7 +158,9 @@ class AboutYou extends Component {
                   gender,
                   country,
                   zipCode,
-                  userBio
+                  userBio,
+                  city,
+                  state
                 ],
                 (tx, result) => {
                   console.log("inner success");
@@ -195,7 +197,9 @@ class AboutYou extends Component {
             gender: gender,
             country: country,
             zipCode: zipCode,
-            userBio: userBio
+            userBio: userBio,
+            city: city,
+            state: state
           });
         } else {
           //INTERNAL ERROR
@@ -213,7 +217,9 @@ class AboutYou extends Component {
               gender,
               country,
               zipCode,
-              userBio
+              userBio,
+              city,
+              state
             } = result.rows._array[0];
             //setState
             this.setState({
@@ -231,6 +237,19 @@ class AboutYou extends Component {
               countryWarning: country === "" ? "empty" : "",
               zipCodeWarning: zipCode === "" ? "empty" : "",
               isSuccess: true
+            });
+
+            //Redux
+            this.props.SetAboutYouDataAction({
+              firstName: firstName,
+              lastName: lastName,
+              birthDate: birthDate,
+              gender: gender,
+              country: country,
+              zipCode: zipCode,
+              userBio: userBio,
+              city: city,
+              state: state
             });
           })
           .catch(err => {
@@ -499,8 +518,8 @@ class AboutYou extends Component {
                 let json_checklist = JSON.stringify(checklist);
                 //Only insert or replace id = 1
                 let insertSqlStatement =
-                  "INSERT OR REPLACE into device_user_aboutYou(id, createAccount_id, firstName, lastName, birthDate, gender, country, zipCode, userBio) " +
-                  "values(1, 1, ?, ?, ?, ?, ?, ?, ?);";
+                  "INSERT OR REPLACE into device_user_aboutYou(id, createAccount_id, firstName, lastName, birthDate, gender, country, zipCode, userBio, city, state) " +
+                  "values(1, 1, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
 
                 db.transaction(
                   tx => {
@@ -514,7 +533,9 @@ class AboutYou extends Component {
                         this.state.gender,
                         this.state.country,
                         this.state.zipCode,
-                        this.state.userBio
+                        this.state.userBio,
+                        "",
+                        ""
                       ],
                       (tx, result) => {
                         console.log("inner success");

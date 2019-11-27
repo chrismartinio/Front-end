@@ -35,7 +35,6 @@ import ImInterestedIn from "../screens/SignUpFlow/IndividualScreensTestingSync/I
 import SpendWeekend from "../screens/SignUpFlow/IndividualScreensTestingSync/SpendAWeekend";
 import WouldRather from "../screens/SignUpFlow/IndividualScreensTestingSync/WouldRather";
 import TellUsMore from "../screens/SignUpFlow/IndividualScreensTestingSync/TellUsMore";
-import RegistrationComplete from "../screens/SignUpFlow/Collapsible_ScrollView_Components/RegistrationComplete.js";
 
 //Chat
 import ChatUsersList from "../screens/ChatFlow/ChatUsersList";
@@ -43,6 +42,8 @@ import MatchedUserChat from "../screens/ChatFlow/MatchedUserChat";
 
 //On-Boarding Collapsible Screen (Includes all on-boarding screens)
 import CollapsibleRegistration from "../screens/SignUpFlow/ProfileRegistrationClient/CollapsibleRegistration";
+import RegistrationComplete from "../screens/SignUpFlow/ProfileRegistrationClient/OnBoardingRegistrationScreens/RegistrationComplete";
+
 
 //LinkScreen
 import LinksScreen from "../screens/LinksScreen";
@@ -122,6 +123,10 @@ const MatchStack = createStackNavigator({
 //in order for "navigation" to navigate to that screen
 //that begin said, don't put stack inside createSwitchNavigator
 //that stack's screens cannot be navigate
+
+//putting screen/stack in Switch doesn't have back button
+//if you want to have back button
+//navigate the screen/ that stack name
 export default createAppContainer(
   createSwitchNavigator(
     {
