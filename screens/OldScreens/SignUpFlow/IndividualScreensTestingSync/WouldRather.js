@@ -11,7 +11,7 @@ import {
 import { LinearGradient } from 'expo-linear-gradient'
 
 import Slider from "../components/Slider";
-import SetWouldRatherDataAction from "../../../storage/actions/SetWouldRatherDataAction";
+import SetWouldRatherDataAction from "../../../../storage/actions/SetWouldRatherDataAction";
 import { connect } from "react-redux";
 
 class WouldRather extends React.Component {

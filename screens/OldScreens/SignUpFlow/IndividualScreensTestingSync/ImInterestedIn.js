@@ -17,8 +17,8 @@ import { LinearGradient } from 'expo-linear-gradient'
 // import Categories from '../../components/SignUpFlow/Categories'
 import t from "tcomb-form-native";
 import { connect } from "react-redux";
-import SetInterestedDataAction from "../../../storage/actions/SetInterestedDataAction";
-import firebase from "../../../utils/mainFire";
+import SetInterestedDataAction from "../../../../storage/actions/SetInterestedDataAction";
+import firebase from "../../../../utils/mainFire";
 import Slider from "../CSlider";
 import { Math } from "core-js";
 import MultiSlider from '@ptomasroos/react-native-multi-slider'

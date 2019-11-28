@@ -10,17 +10,17 @@ import {
 import MainTabNavigator from "./MainTabNavigator";
 
 //Signup flow Screens
-import MatchesPage from "../screens/SignUpFlow/Matches";
-import RegistrationPage from "../screens/SignUpFlow/RegistrationPage";
-import SelfiePage from "../screens/SignUpFlow/SelfiePage";
-import PhotoReview from "../screens/SignUpFlow/PhotoReview";
-import ProfilePage from "../screens/SignUpFlow/ProfilePage";
-import SignupPage from "../screens/SignUpFlow/IndividualScreensTestingSync/SignupPage";
-import AboutYou from "../screens/SignUpFlow/IndividualScreensTestingSync/AboutYou";
-import ImInterestedIn from "../screens/SignUpFlow/IndividualScreensTestingSync/ImInterestedIn";
-import SpendWeekend from "../screens/SignUpFlow/IndividualScreensTestingSync/SpendAWeekend";
-import WouldRather from "../screens/SignUpFlow/IndividualScreensTestingSync/WouldRather";
-import TellUsMore from "../screens/SignUpFlow/IndividualScreensTestingSync/TellUsMore";
+import MatchesPage from "../screens/OldScreens/SignUpFlow/Matches";
+import RegistrationPage from "../screens/OldScreens/SignUpFlow/RegistrationPage";
+import SelfiePage from "../screens/OldScreens/SignUpFlow/SelfiePage";
+import PhotoReview from "../screens/OldScreens/SignUpFlow/PhotoReview";
+import ProfilePage from "../screens/OldScreens/SignUpFlow/ProfilePage";
+import SignupPage from "../screens/OldScreens/SignUpFlow/IndividualScreensTestingSync/SignupPage";
+import AboutYou from "../screens/OldScreens/SignUpFlow/IndividualScreensTestingSync/AboutYou";
+import ImInterestedIn from "../screens/OldScreens/SignUpFlow/IndividualScreensTestingSync/ImInterestedIn";
+import SpendWeekend from "../screens/OldScreens/SignUpFlow/IndividualScreensTestingSync/SpendAWeekend";
+import WouldRather from "../screens/OldScreens/SignUpFlow/IndividualScreensTestingSync/WouldRather";
+import TellUsMore from "../screens/OldScreens/SignUpFlow/IndividualScreensTestingSync/TellUsMore";
 
 
 //Match flow screens
@@ -44,6 +44,7 @@ import ChatUsersList from "../screens/ChatFlow/ChatUsersList";
 import MatchedUserChat from "../screens/ChatFlow/MatchedUserChat";
 
 //Profile Flow - Profile_Registration
+import ProfileScreen from "../screens/ProfileFlow/Profile/ProfileScreen";
 import Profile_Registration from "../screens/ProfileFlow/Profile_Registration/Profile_Registration";
 import RegistrationComplete from "../screens/ProfileFlow/Profile_Registration/RegistrationScreens/RegistrationComplete";
 
@@ -59,7 +60,7 @@ const TestStack = createStackNavigator({
   TestSignUp: SignupPage,
   TestRegistration: RegistrationPage,
   TestSelfie: SelfiePage,
-  TestProfile: ProfilePage,
+  TestProfileScreen: ProfileScreen,
   TestChatPage: ChatPage,
   TestChat: Chat,
   TestPhotoReview: PhotoReview,
