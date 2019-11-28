@@ -39,6 +39,8 @@ import { locationsChecker } from "../Util/RegistrationScreenCheckers.js";
 import * as SQLite from "expo-sqlite";
 const db = SQLite.openDatabase("that.db");
 
+import { localhost } from "../../../../config/ipconfig";
+
 //warnings
 import {
   internalErrorWarning,
@@ -65,7 +67,7 @@ class LocationDestinations extends Component {
       return;
     }
 
-    await fetch("http://74.80.250.210:4000/api/profile/query", {
+    await fetch(`http://${localhost}:4000/api/profile/query`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -150,7 +152,6 @@ class LocationDestinations extends Component {
             this.props.SetLocalDestinationDataAction({
               localDestination: localDestination
             });
-
           })
           .catch(err => {
             //If error while fetching, direct user to failScreen
@@ -328,7 +329,7 @@ class LocationDestinations extends Component {
         },
         () => {
           //Send data to database
-          fetch("http://74.80.250.210:4000/api/profile/update", {
+          fetch(`http://${localhost}:4000/api/profile/update`, {
             method: "POST",
             headers: {
               "Content-Type": "application/json"
@@ -477,7 +478,9 @@ class LocationDestinations extends Component {
               styles.locationsButtonWrap,
               {
                 backgroundColor:
-                  this.state.localDestination !== e ? "#fff" : "rgb(67, 33, 140)",
+                  this.state.localDestination !== e
+                    ? "#fff"
+                    : "rgb(67, 33, 140)",
                 minWidth:
                   e === "San Francisco" || e === "Morro Bay" ? "50%" : "45%"
               }

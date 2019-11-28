@@ -20,6 +20,8 @@ import io from "socket.io-client";
 import LoadingScreen from "./components/LoadingScreen";
 import MatchedUserChat from "./MatchedUserChat";
 
+import { localhost } from "../../config/ipconfig";
+
 class ChatUsersList extends React.Component {
   constructor(props) {
     super(props);
@@ -32,7 +34,7 @@ class ChatUsersList extends React.Component {
     };
     this.guid = "";
     this.user_firstName = "";
-    //this.socket = io("http://74.80.250.210:3060");
+    //this.socket = io(`http://${localhost}:3060`);
     this.scrollY;
   }
 
@@ -46,7 +48,7 @@ class ChatUsersList extends React.Component {
     this.guid = "";
     this.user_firstName = "You";
     /*
-    fetch("http://10.0.0.246:3003/api/chat/", {
+    fetch(`http://${localhost}:3003/api/chat/`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"

@@ -20,6 +20,8 @@ import io from "socket.io-client";
 import LoadingScreen from "./ChatFlow/components/LoadingScreen";
 import MatchedUserChat from "./ChatFlow/MatchedUserChat";
 
+import { localhost } from "../config/ipconfig";
+
 class HomeScreen extends React.Component {
   static navigationOptions = {
     title: "Home"

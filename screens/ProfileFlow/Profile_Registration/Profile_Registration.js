@@ -112,8 +112,8 @@ class CollapisbleRegistration extends Component {
 
     //For demo use only
     //make the jwt has something to prevent jwt === ""
-    jwt = true;
-    //jwt = "";
+    //jwt = true;
+    jwt = "";
     //For demo use only
 
     //If some cases that the jwt is empty, then return as a new User
@@ -154,8 +154,8 @@ class CollapisbleRegistration extends Component {
       createAccount: true,
       aboutYou: true,
       preferences: true,
-      interests: true,
-      wouldYouRather: false,
+      interests: false,
+      wouldYouRather: true,
       localDestination: true
     };
     isThirdPartiesServiceUser = false; //set true if third parties user

@@ -34,6 +34,8 @@ import NextButton from "../../Profile_SharedComponents/NextButton";
 import * as SQLite from "expo-sqlite";
 const db = SQLite.openDatabase("that.db");
 
+import { localhost } from "../../../../config/ipconfig";
+
 //checker functions
 import {
   emailCheck,
@@ -129,7 +131,7 @@ class CreateAccount extends Component {
 
   //Query data from database
   getDataFromDB = async () => {
-    await fetch("http://74.80.250.210:4000/api/profile/query", {
+    await fetch(`http://${localhost}:4000/api/profile/query`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -482,7 +484,7 @@ class CreateAccount extends Component {
         },
         () => {
           //insert a profile into database
-          fetch("http://74.80.250.210:4000/api/profile/insert", {
+          fetch(`http://${localhost}:4000/api/profile/insert`, {
             method: "POST",
             headers: {
               "Content-Type": "application/json"

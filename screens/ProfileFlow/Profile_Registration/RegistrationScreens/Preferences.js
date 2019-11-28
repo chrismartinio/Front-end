@@ -40,6 +40,8 @@ import { genderChecker } from "../Util/RegistrationScreenCheckers.js";
 import * as SQLite from "expo-sqlite";
 const db = SQLite.openDatabase("that.db");
 
+import { localhost } from "../../../../config/ipconfig";
+
 //warnings
 import {
   emptyGenderWarning,
@@ -77,7 +79,7 @@ class Preferences extends Component {
       return;
     }
 
-    await fetch("http://74.80.250.210:4000/api/profile/query", {
+    await fetch(`http://${localhost}:4000/api/profile/query`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -378,7 +380,7 @@ class Preferences extends Component {
         },
         () => {
           //Send data to database
-          fetch("http://74.80.250.210:4000/api/profile/update", {
+          fetch(`http://${localhost}:4000/api/profile/update`, {
             method: "POST",
             headers: {
               "Content-Type": "application/json"

@@ -24,6 +24,8 @@ import io from "socket.io-client";
 
 import LoadingScreen from "./components/LoadingScreen";
 
+import { localhost } from "../../config/ipconfig";
+
 class MatchedUserChat extends React.Component {
   static navigationOptions = ({ navigation }) => {
     return {
@@ -50,7 +52,7 @@ class MatchedUserChat extends React.Component {
     this.guid = "";
     this.user_firstName = "";
     this.matched_user_firstName = "";
-    this.socket = io("http://74.80.250.210:3060");
+    this.socket = io(`http://${localhost}:3060`);
 
     //handle new message
     this.socket.on("new message", data => {

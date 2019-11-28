@@ -37,6 +37,8 @@ import NextButton from "../../Profile_SharedComponents/NextButton";
 import * as SQLite from "expo-sqlite";
 const db = SQLite.openDatabase("that.db");
 
+import { localhost } from "../../../../config/ipconfig";
+
 //checker functions
 import {
   checkZipCode,
@@ -93,7 +95,7 @@ class AboutYou extends Component {
       }
     }
 
-    await fetch("http://74.80.250.210:4000/api/profile/query", {
+    await fetch(`http://${localhost}:4000/api/profile/query`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -256,7 +258,7 @@ class AboutYou extends Component {
           .catch(err => {
             //If error after fail on querying database and localstorage,
             //direct user to failScreen
-            
+
             //setState
             this.setState({
               isSuccess: false
@@ -477,7 +479,7 @@ class AboutYou extends Component {
           isDelaying: true
         },
         () => {
-          fetch("http://74.80.250.210:4000/api/profile/update", {
+          fetch(`http://${localhost}:4000/api/profile/update`, {
             method: "POST",
             headers: {
               "Content-Type": "application/json"

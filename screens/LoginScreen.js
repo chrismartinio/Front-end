@@ -33,6 +33,8 @@ const User = t.struct({
   password: t.String
 });
 
+import { localhost } from "../config/ipconfig";
+
 //SQLite
 import * as SQLite from "expo-sqlite";
 const db = SQLite.openDatabase("that.db");
@@ -234,7 +236,7 @@ class LoginScreen extends React.Component {
     try {
       const { username, password } = this._form.getValue();
 
-      let data = await fetch("http://74.80.250.210:3002/api/auth/login", {
+      let data = await fetch(`http://${localhost}:3002/api/auth/login`, {
         method: "POST",
         mode: "cors",
         credentials: "same-origin",
@@ -283,7 +285,7 @@ class LoginScreen extends React.Component {
   DBCheck = async info => {
     try {
       console.log(info.uid);
-      let data = await fetch("http://74.80.250.210:3070/api/auth/login", {
+      let data = await fetch(`http://${localhost}:3070/api/auth/login`, {
         method: "POST",
         mode: "cors",
         credentials: "same-origin",
@@ -313,7 +315,7 @@ class LoginScreen extends React.Component {
           return data;
         })
         .then(fbData => {
-          fetch("http://74.80.250.210:3070/api/auth/login", {
+          fetch(`http://${localhost}:3070/api/auth/login`, {
             method: "POST",
             mode: "cors",
             credentials: "same-origin",
