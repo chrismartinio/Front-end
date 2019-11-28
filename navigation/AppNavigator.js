@@ -5,11 +5,9 @@ import {
   createStackNavigator
 } from "react-navigation";
 
-//Navigator
+//Main Navigator
+//Profile Home Settings
 import MainTabNavigator from "./MainTabNavigator";
-
-//MainScreen
-import mainSignInPage from "../screens/HomeScreen";
 
 //Other Screens
 import MatchesPage from "../screens/SignUpFlow/Matches";
@@ -37,18 +35,23 @@ import ImInterestedIn from "../screens/SignUpFlow/IndividualScreensTestingSync/I
 import SpendWeekend from "../screens/SignUpFlow/IndividualScreensTestingSync/SpendAWeekend";
 import WouldRather from "../screens/SignUpFlow/IndividualScreensTestingSync/WouldRather";
 import TellUsMore from "../screens/SignUpFlow/IndividualScreensTestingSync/TellUsMore";
-import RegistrationComplete from "../screens/SignUpFlow/Collapsible_ScrollView_Components/RegistrationComplete.js";
 
 //Chat
 import ChatUsersList from "../screens/ChatFlow/ChatUsersList";
 import MatchedUserChat from "../screens/ChatFlow/MatchedUserChat";
 
 //On-Boarding Collapsible Screen (Includes all on-boarding screens)
-import Collapsible from "../screens/SignUpFlow/ProfileClient/CollapsibleRegistration";
-import LinksScreen from "../screens/LinksScreen";
+import CollapsibleRegistration from "../screens/SignUpFlow/ProfileRegistrationClient/CollapsibleRegistration";
+import RegistrationComplete from "../screens/SignUpFlow/ProfileRegistrationClient/OnBoardingRegistrationScreens/RegistrationComplete";
 
+
+//LinkScreen
+import LinksScreen from "../screens/LinksScreen";
+import LoginScreen from "../screens/LoginScreen";
+
+//register screens here for testing in linkscreen
 const TestStack = createStackNavigator({
-  TestLinksScreen: LinksScreen,
+  Links: LinksScreen,
   TestLocationServices: LocationServices,
   TestQuestionaries: CreateQuestionaire,
   TestSignUp: SignupPage,
@@ -65,46 +68,79 @@ const TestStack = createStackNavigator({
   TestWouldRather: WouldRather,
   TestSpendWeekend: SpendWeekend,
   TestImInterestedIn: ImInterestedIn,
-  TestCollapsible: Collapsible,
-  TestRegistrationComplete: RegistrationComplete
+  TestCollapsible: CollapsibleRegistration,
+  TestRegistrationComplete: RegistrationComplete,
+  TestChatUsersList: ChatUsersList,
+  TestMatchedUserChat: MatchedUserChat
 });
 
+//Sign Up
 const AuthStack = createStackNavigator({
-  TestLinksScreen: LinksScreen,
-  SignUp: Collapsible,
-  Registration: RegistrationPage,
-  Selfie: SelfiePage,
-  Profile: ProfilePage
+  Login: LoginScreen, //Default Screen
+  SignUp: CollapsibleRegistration
+  //Registration: RegistrationPage,
+  //Selfie: SelfiePage,
+  //Profile: ProfilePage
 });
 
+//ChatRoom
 const ChatStack = createStackNavigator({
-  TestLinksScreen: LinksScreen, //this TestLinksScreen is to for this stack screen to return to linkscreen
-  ChatPage: ChatPage,
-  ChatUsersList: ChatUsersList,
-  MatchedUserChat: MatchedUserChat,
-  InitialMatchChoice: InitialMatchChoice,
-  GhostingOthers: GhostingOthersScreen,
-  GotLucky: GotLucky,
-  Selection: Selection,
-  GotGhosted: GotGhosted
+  Main: {
+    screen: MainTabNavigator,
+    navigationOptions: () => ({
+      title: `Home`,
+      header: null,
+    })
+  },
+  MatchedUserChat: {
+    screen: MatchedUserChat,
+    navigationOptions: () => ({
+      title: `ChatRoom`
+    })
+  }
+
+  //ChatPage: ChatPage,
+  //InitialMatchChoice: InitialMatchChoice,
+  //GhostingOthers: GhostingOthersScreen,
+  //GotLucky: GotLucky,
+  //Selection: Selection,
+  //GotGhosted: GotGhosted
 });
 
+/*
 const MatchStack = createStackNavigator({
-  TestLinksScreen: LinksScreen,
+  Links: LinksScreen,
   CreateQuestionaire: CreateQuestionaire,
   ViewQuestionaire: ViewQuestionaire,
   ReplyQuestionaire: ReplyQuestionaire
 });
+*/
 
+//purpose of putting stacks inside createSwitchNavigator
+//because in order to navigate to some screens
+//need to put the screen inside createStackNavigator
+//then need to put the stack inside createSwitchNavigator
+//in order for "navigation" to navigate to that screen
+//that begin said, don't put stack inside createSwitchNavigator
+//that stack's screens cannot be navigate
+
+//putting screen/stack in Switch doesn't have back button
+//if you want to have back button
+//navigate the screen/ that stack name
 export default createAppContainer(
-  createSwitchNavigator({
-    // You could add another route here for authentication.
-    // Read more at https://reactnavigation.org/docs/en/auth-flow.html
-    Main: MainTabNavigator,
-    Auth: AuthStack,
-    Chat: ChatStack,
-    SignIn: mainSignInPage,
-    Match: MatchStack,
-    Test: TestStack
-  })
+  createSwitchNavigator(
+    {
+      // You could add another route here for authentication.
+      // Read more at https://reactnavigation.org/docs/en/auth-flow.html
+      Login: LoginScreen, //Login
+      Main: MainTabNavigator, //Profile Home Settings
+      Auth: AuthStack, //Stacks for LoginScreen <-> SignUp
+      Chat: ChatStack, //Stacks for Homescreen <-> ChatRoom
+      Test: TestStack //Stacks for LinksScreen <-> test screens
+      //Match: MatchStack,
+    },
+    {
+      initialRouteName: "Login"
+    }
+  )
 );

@@ -14,7 +14,7 @@ import {
 
 import * as Expo from "expo";
 import * as Permissions from "expo-permissions";
-import * as Location from 'expo-location';
+import * as Location from "expo-location";
 import { Notifications } from "expo";
 import Constants from "expo-constants";
 //redux
@@ -83,19 +83,20 @@ async function registerForPushNotificationsAsync() {
 }
 
 async function registerForLocationAsync() {
-  console.log("asking permission")
+  console.log("asking permission");
   let { status } = await Permissions.askAsync(Permissions.LOCATION);
-    if (status !== 'granted') {
-      this.setState({
-        errorMessage: 'Permission to access location was denied',
-      });
-    }
-    console.log("getting location")
-    let location = await Location.getCurrentPositionAsync({});
-  global.currentLatLong = location.coords.latitude + "." + location.coords.longitude;
-  global.currentAltitude = location.coords.altitude
-  console.log("Heres your position", global.currentLatLong)
-  console.log("Heres your altitude", global.currentAltitude)
+  if (status !== "granted") {
+    this.setState({
+      errorMessage: "Permission to access location was denied"
+    });
+  }
+  console.log("getting location");
+  let location = await Location.getCurrentPositionAsync({});
+  global.currentLatLong =
+    location.coords.latitude + "." + location.coords.longitude;
+  global.currentAltitude = location.coords.altitude;
+  console.log("Heres your position", global.currentLatLong);
+  console.log("Heres your altitude", global.currentAltitude);
   // POST the token to your backend server from where you can retrieve it to send push notifications.
 }
 class CreateAccount extends Component {
@@ -182,7 +183,7 @@ class CreateAccount extends Component {
               tx.executeSql(
                 insertSqlStatement,
                 [
-                  object.guid,
+                  object.result._id,
                   object.result.email,
                   "Password",
                   false,
@@ -621,6 +622,7 @@ class CreateAccount extends Component {
             placeholderTextColor="rgb(67, 33, 140)"
             inputStyle={styles.inputStyle}
             value={this.state.email}
+            returnKeyType="done"
             rightIcon={
               this.state.emailWarning === "" ? (
                 <Icon
@@ -660,6 +662,7 @@ class CreateAccount extends Component {
             placeholderTextColor="rgb(67, 33, 140)"
             inputStyle={styles.inputStyle}
             value={this.state.confirmEmail}
+            returnKeyType="done"
             rightIcon={
               this.state.confirmEmailWarning === "" ? (
                 <Icon
@@ -702,6 +705,7 @@ class CreateAccount extends Component {
             placeholderTextColor="rgb(67, 33, 140)"
             inputStyle={styles.inputStyle}
             value={this.state.password}
+            returnKeyType="done"
             rightIcon={
               this.state.passwordWarning === "" ? (
                 <Icon
@@ -741,6 +745,7 @@ class CreateAccount extends Component {
             placeholderTextColor="rgb(67, 33, 140)"
             inputStyle={styles.inputStyle}
             value={this.state.confirmPassword}
+            returnKeyType="done"
             rightIcon={
               this.state.confirmPasswordWarning === "" ? (
                 <Icon
