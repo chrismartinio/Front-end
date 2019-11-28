@@ -60,7 +60,7 @@ export default class LinksScreen extends React.Component {
       "TestChatPage", //show user list
       "TestChat", //chat screen
       "TestLocationServices",
-      "TestCollapsible",
+      "TestProfile_Registration",
       "TestRegistrationComplete",
       "TestProfile",
       //"TestMatches",

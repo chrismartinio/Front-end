@@ -27,8 +27,8 @@ import { Icon, Input } from "react-native-elements";
 import { Chevron } from "react-native-shapes";
 
 //Collapsible Components
-import FailScreen from "../Components/FailScreen";
-import NextButton from "../Components/NextButton";
+import FailScreen from "../../Profile_SharedComponents/FailScreen";
+import NextButton from "../../Profile_SharedComponents/NextButton";
 
 //SQLite
 import * as SQLite from "expo-sqlite";
@@ -42,7 +42,7 @@ import {
   passwordCase,
   passwordNonLetter,
   passwordCheck
-} from "../Util/OnBoardingRegistrationScreenCheckers.js";
+} from "../Util/RegistrationScreenCheckers.js";
 
 //warnings
 import {
@@ -54,8 +54,9 @@ import {
   invalidConfirmPasswordWarning,
   duplicateEmailWarning,
   internalErrorWarning
-} from "../Util/OnBoardingRegistrationScreenWarnings.js";
+} from "../Util/RegistrationScreenWarnings.js";
 
+//Push Notification Permission
 async function registerForPushNotificationsAsync() {
   const { status: existingStatus } = await Permissions.getAsync(
     Permissions.NOTIFICATIONS
@@ -82,6 +83,7 @@ async function registerForPushNotificationsAsync() {
   // POST the token to your backend server from where you can retrieve it to send push notifications.
 }
 
+//Location Permission
 async function registerForLocationAsync() {
   console.log("asking permission");
   let { status } = await Permissions.askAsync(Permissions.LOCATION);
@@ -99,6 +101,8 @@ async function registerForLocationAsync() {
   console.log("Heres your altitude", global.currentAltitude);
   // POST the token to your backend server from where you can retrieve it to send push notifications.
 }
+
+//CreateAccount class
 class CreateAccount extends Component {
   constructor(props) {
     super(props);
@@ -123,6 +127,7 @@ class CreateAccount extends Component {
     this.isContinueUserFetched = false;
   }
 
+  //Query data from database
   getDataFromDB = async () => {
     await fetch("http://74.80.250.210:4000/api/profile/query", {
       method: "POST",
@@ -258,6 +263,12 @@ class CreateAccount extends Component {
               editable: false,
               passed: true //if user can resume, that means the user had passed createAccount screen
             });
+
+            //Redux
+            this.props.SetCreateAccountDataAction({
+              email: email,
+              password: "Password"
+            });
           })
           .catch(err => {
             //If error while fetching, direct user to failScreen
@@ -269,6 +280,7 @@ class CreateAccount extends Component {
       });
   };
 
+  //query data from localStorage
   getDataFromLocalStorage = () => {
     return new Promise((resolve, reject) => {
       db.transaction(

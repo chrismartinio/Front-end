@@ -16,8 +16,8 @@ import {
 import { LinearGradient } from "expo-linear-gradient";
 
 //Collapsible Components
-import CollapsibleScreenTab from "./Components/CollapsibleScreenTab";
-import LoadingScreen from "./Components/LoadingScreen";
+import CollapsibleScreenTab from "../Profile_SharedComponents/CollapsibleScreenTab";
+import LoadingScreen from "../Profile_SharedComponents/LoadingScreen";
 
 //Icons
 import { Chevron } from "react-native-shapes";
@@ -112,8 +112,8 @@ class CollapisbleRegistration extends Component {
 
     //For demo use only
     //make the jwt has something to prevent jwt === ""
-    //jwt = true;
-    jwt = "";
+    jwt = true;
+    //jwt = "";
     //For demo use only
 
     //If some cases that the jwt is empty, then return as a new User
@@ -149,14 +149,14 @@ class CollapisbleRegistration extends Component {
     //Continue User or Third Parties Services User
     //For Third Parties Services User - since onAuth would store those user to db
     //when onAuth pass the user (guid) to profile, they are similar with Continue User
-    guid = "5dddf7158297b85a4ee2a7b3";
+    guid = "5ddf267d7fe29e67bddb75f6";
     checklist = {
       createAccount: true,
       aboutYou: true,
-      preferences: false,
-      interests: false,
+      preferences: true,
+      interests: true,
       wouldYouRather: false,
-      localDestination: false
+      localDestination: true
     };
     isThirdPartiesServiceUser = false; //set true if third parties user
 
@@ -410,12 +410,7 @@ class CollapisbleRegistration extends Component {
                 />
 
                 {/*Create Account*/}
-                <View
-                  onLayout={event => {
-                    const layout = event.nativeEvent.layout;
-                    this.createAccountPositionY = layout.y;
-                  }}
-                >
+                <View>
                   <CollapsibleScreenTab
                     componentToggle={this.state.createAccountToggle}
                     componentPassed={this.state.createAccountPassed}
@@ -427,12 +422,7 @@ class CollapisbleRegistration extends Component {
                 </View>
 
                 {/*About You*/}
-                <View
-                  onLayout={event => {
-                    const layout = event.nativeEvent.layout;
-                    this.aboutYouPositionY = layout.y;
-                  }}
-                >
+                <View>
                   <CollapsibleScreenTab
                     componentToggle={this.state.aboutYouToggle}
                     componentPassed={this.state.aboutYouPassed}
@@ -444,12 +434,7 @@ class CollapisbleRegistration extends Component {
                 </View>
 
                 {/*Preferences*/}
-                <View
-                  onLayout={event => {
-                    const layout = event.nativeEvent.layout;
-                    this.preferencesPositionY = layout.y;
-                  }}
-                >
+                <View>
                   <CollapsibleScreenTab
                     componentToggle={this.state.preferencesToggle}
                     componentPassed={this.state.preferencesPassed}
@@ -457,21 +442,11 @@ class CollapisbleRegistration extends Component {
                     componentName={"preferences"}
                     handleToggle={this.handleToggle}
                     handlePassed={this.handlePassed}
-                    otherToggle={[
-                      this.state.createAccountToggle,
-                      this.state.aboutYouToggle
-                    ]}
-                    scrollY={this.state.scrollY}
                   />
                 </View>
 
                 {/*interests*/}
-                <View
-                  onLayout={event => {
-                    const layout = event.nativeEvent.layout;
-                    this.interestsPositionY = layout.y;
-                  }}
-                >
+                <View>
                   <CollapsibleScreenTab
                     componentToggle={this.state.interestsToggle}
                     componentPassed={this.state.interestsPassed}
@@ -479,22 +454,11 @@ class CollapisbleRegistration extends Component {
                     componentName={"interests"}
                     handleToggle={this.handleToggle}
                     handlePassed={this.handlePassed}
-                    otherToggle={[
-                      this.state.createAccountToggle,
-                      this.state.aboutYouToggle,
-                      this.state.preferencesToggle
-                    ]}
-                    scrollY={this.state.scrollY}
                   />
                 </View>
 
                 {/*wouldYouRather*/}
-                <View
-                  onLayout={event => {
-                    const layout = event.nativeEvent.layout;
-                    this.wouldYouRatherPositionY = layout.y;
-                  }}
-                >
+                <View>
                   <CollapsibleScreenTab
                     componentToggle={this.state.wouldYouRatherToggle}
                     componentPassed={this.state.wouldYouRatherPassed}
@@ -506,12 +470,7 @@ class CollapisbleRegistration extends Component {
                 </View>
 
                 {/*localDestination*/}
-                <View
-                  onLayout={event => {
-                    const layout = event.nativeEvent.layout;
-                    this.localDestinationPositionY = layout.y;
-                  }}
-                >
+                <View>
                   <CollapsibleScreenTab
                     componentToggle={this.state.localDestinationToggle}
                     componentPassed={this.state.localDestinationPassed}
@@ -519,14 +478,6 @@ class CollapisbleRegistration extends Component {
                     componentName={"localDestination"}
                     handleToggle={this.handleToggle}
                     handlePassed={this.handlePassed}
-                    otherToggle={[
-                      this.state.createAccountToggle,
-                      this.state.aboutYouToggle,
-                      this.state.preferencesToggle,
-                      this.state.interestsToggle,
-                      this.state.wouldYouRatherToggle
-                    ]}
-                    scrollY={this.state.scrollY}
                   />
                 </View>
                 {/*Temporay solution for scrollView; without this would not scroll properly*/}

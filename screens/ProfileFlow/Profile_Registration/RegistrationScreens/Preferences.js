@@ -26,15 +26,15 @@ import { Icon } from "react-native-elements";
 const screenHeight = Math.round(Dimensions.get("window").height);
 
 //Collapsible Components
-import FailScreen from "../Components/FailScreen";
-import NextButton from "../Components/NextButton";
+import FailScreen from "../../Profile_SharedComponents/FailScreen";
+import NextButton from "../../Profile_SharedComponents/NextButton";
 
 //Sliders
-import Slider from "../Components/Sliders/PreferencesSlider";
+import Slider from "../../Profile_SharedComponents/Sliders/PreferencesSlider";
 import MultiSlider from "@ptomasroos/react-native-multi-slider";
 
 //checker functions
-import { genderChecker } from "../Util/OnBoardingRegistrationScreenCheckers.js";
+import { genderChecker } from "../Util/RegistrationScreenCheckers.js";
 
 //SQLite
 import * as SQLite from "expo-sqlite";
@@ -44,7 +44,7 @@ const db = SQLite.openDatabase("that.db");
 import {
   emptyGenderWarning,
   internalErrorWarning
-} from "../Util/OnBoardingRegistrationScreenWarnings.js";
+} from "../Util/RegistrationScreenWarnings.js";
 
 class Preferences extends Component {
   //having null header means no back  button is present!
@@ -168,6 +168,7 @@ class Preferences extends Component {
             distanceRange: object.result.distanceRange,
             interestedGender: object.result.interestedGender
           });
+
         } else {
           //INTERNAL ERROR DURING QUERYING
           throw new Error("internal Error");
@@ -197,6 +198,7 @@ class Preferences extends Component {
               pickedMen = false;
               pickedWomen = false;
             }
+
             //setState
             this.setState({
               pickedMen: pickedMen,
@@ -207,6 +209,14 @@ class Preferences extends Component {
               distanceRange: distanceRange,
               isSuccess: true
             });
+
+            //Redux
+            this.props.SetPreferencesDataAction({
+              ageRange: ageRange,
+              distanceRange: distanceRange,
+              interestedGender: interestedGender
+            });
+
           })
           .catch(err => {
             //If error while fetching, direct user to failScreen

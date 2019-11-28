@@ -20,10 +20,7 @@ import { connect } from "react-redux";
 //5. make all the db call into one files
 //6. on every fetch files, create an ip so other ppl can only change that ip to do fetch
 
-
-
-
-import LoadingScreen from "../SignUpFlow/ProfileRegistrationClient/Components/LoadingScreen";
+import LoadingScreen from "../Profile_SharedComponents/LoadingScreen";
 
 //SQLite
 import * as SQLite from "expo-sqlite";

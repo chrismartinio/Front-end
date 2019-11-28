@@ -10,7 +10,7 @@ import LoginScreen from "../screens/LoginScreen";
 import SettingsScreen from "../screens/SettingsScreen";
 import HomeScreen from "../screens/HomeScreen";
 import LinksScreen from "../screens/LinksScreen";
-import ProfileScreen from "../screens/ProfileFlow/ProfileScreen";
+import ProfileScreen from "../screens/ProfileFlow/Profile/ProfileScreen";
 
 //import LinksScreen from "../screens/LinksScreen_OnBoarding";
 

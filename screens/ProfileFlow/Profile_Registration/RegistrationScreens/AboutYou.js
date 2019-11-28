@@ -30,8 +30,8 @@ import { Icon, Input } from "react-native-elements";
 import { Chevron } from "react-native-shapes";
 
 //Collapsible Components
-import FailScreen from "../Components/FailScreen";
-import NextButton from "../Components/NextButton";
+import FailScreen from "../../Profile_SharedComponents/FailScreen";
+import NextButton from "../../Profile_SharedComponents/NextButton";
 
 //SQLite
 import * as SQLite from "expo-sqlite";
@@ -44,7 +44,7 @@ import {
   maxDate,
   minDate,
   checkage
-} from "../Util/OnBoardingRegistrationScreenCheckers.js";
+} from "../Util/RegistrationScreenCheckers.js";
 
 //warnings
 import {
@@ -56,7 +56,7 @@ import {
   invalidZipCodeWarning,
   emptyWarning,
   internalErrorWarning
-} from "../Util/OnBoardingRegistrationScreenWarnings.js";
+} from "../Util/RegistrationScreenWarnings.js";
 
 class AboutYou extends Component {
   constructor(props) {
@@ -221,6 +221,7 @@ class AboutYou extends Component {
               city,
               state
             } = result.rows._array[0];
+
             //setState
             this.setState({
               firstName: firstName,
@@ -253,7 +254,9 @@ class AboutYou extends Component {
             });
           })
           .catch(err => {
-            //If error while fetching, direct user to failScreen
+            //If error after fail on querying database and localstorage,
+            //direct user to failScreen
+            
             //setState
             this.setState({
               isSuccess: false

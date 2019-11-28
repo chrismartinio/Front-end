@@ -9,12 +9,28 @@ import {
 //Profile Home Settings
 import MainTabNavigator from "./MainTabNavigator";
 
-//Other Screens
+//Signup flow Screens
 import MatchesPage from "../screens/SignUpFlow/Matches";
 import RegistrationPage from "../screens/SignUpFlow/RegistrationPage";
 import SelfiePage from "../screens/SignUpFlow/SelfiePage";
 import PhotoReview from "../screens/SignUpFlow/PhotoReview";
 import ProfilePage from "../screens/SignUpFlow/ProfilePage";
+import SignupPage from "../screens/SignUpFlow/IndividualScreensTestingSync/SignupPage";
+import AboutYou from "../screens/SignUpFlow/IndividualScreensTestingSync/AboutYou";
+import ImInterestedIn from "../screens/SignUpFlow/IndividualScreensTestingSync/ImInterestedIn";
+import SpendWeekend from "../screens/SignUpFlow/IndividualScreensTestingSync/SpendAWeekend";
+import WouldRather from "../screens/SignUpFlow/IndividualScreensTestingSync/WouldRather";
+import TellUsMore from "../screens/SignUpFlow/IndividualScreensTestingSync/TellUsMore";
+
+
+//Match flow screens
+import CreateQuestionaire from "../screens/FindMatchFlow/matchCreateQuestionaire";
+import ReplyQuestionaire from "../screens/FindMatchFlow/matchCreateReply";
+import ViewQuestionaire from "../screens/FindMatchFlow/matchViewReply";
+import LocationServices from "../screens/LocationServices/LocationServices";
+
+
+//Chat Flow screens
 import ChatPage from "../screens/ChatFlow/chatMain";
 import Chat from "../screens/ChatFlow/Chat";
 import TestScreen from "../screens/ChatFlow/InitialMatchChoice";
@@ -23,27 +39,13 @@ import GotLucky from "../screens/ChatFlow/GotLuckyGoToChat";
 import InitialMatchChoice from "../screens/ChatFlow/InitialMatchChoice";
 import Selection from "../screens/ChatFlow/Selection";
 import GotGhosted from "../screens/ChatFlow/GotGhosted";
-import CreateQuestionaire from "../screens/FindMatchFlow/matchCreateQuestionaire";
-import ReplyQuestionaire from "../screens/FindMatchFlow/matchCreateReply";
-import ViewQuestionaire from "../screens/FindMatchFlow/matchViewReply";
-import LocationServices from "../screens/LocationServices/LocationServices";
 
-//On-Boarding Individual Screens
-import SignupPage from "../screens/SignUpFlow/IndividualScreensTestingSync/SignupPage";
-import AboutYou from "../screens/SignUpFlow/IndividualScreensTestingSync/AboutYou";
-import ImInterestedIn from "../screens/SignUpFlow/IndividualScreensTestingSync/ImInterestedIn";
-import SpendWeekend from "../screens/SignUpFlow/IndividualScreensTestingSync/SpendAWeekend";
-import WouldRather from "../screens/SignUpFlow/IndividualScreensTestingSync/WouldRather";
-import TellUsMore from "../screens/SignUpFlow/IndividualScreensTestingSync/TellUsMore";
-
-//Chat
 import ChatUsersList from "../screens/ChatFlow/ChatUsersList";
 import MatchedUserChat from "../screens/ChatFlow/MatchedUserChat";
 
-//On-Boarding Collapsible Screen (Includes all on-boarding screens)
-import CollapsibleRegistration from "../screens/SignUpFlow/ProfileRegistrationClient/CollapsibleRegistration";
-import RegistrationComplete from "../screens/SignUpFlow/ProfileRegistrationClient/OnBoardingRegistrationScreens/RegistrationComplete";
-
+//Profile Flow - Profile_Registration
+import Profile_Registration from "../screens/ProfileFlow/Profile_Registration/Profile_Registration";
+import RegistrationComplete from "../screens/ProfileFlow/Profile_Registration/RegistrationScreens/RegistrationComplete";
 
 //LinkScreen
 import LinksScreen from "../screens/LinksScreen";
@@ -68,7 +70,7 @@ const TestStack = createStackNavigator({
   TestWouldRather: WouldRather,
   TestSpendWeekend: SpendWeekend,
   TestImInterestedIn: ImInterestedIn,
-  TestCollapsible: CollapsibleRegistration,
+  TestProfile_Registration: Profile_Registration,
   TestRegistrationComplete: RegistrationComplete,
   TestChatUsersList: ChatUsersList,
   TestMatchedUserChat: MatchedUserChat
@@ -77,7 +79,7 @@ const TestStack = createStackNavigator({
 //Sign Up
 const AuthStack = createStackNavigator({
   Login: LoginScreen, //Default Screen
-  SignUp: CollapsibleRegistration
+  SignUp: Profile_Registration
   //Registration: RegistrationPage,
   //Selfie: SelfiePage,
   //Profile: ProfilePage

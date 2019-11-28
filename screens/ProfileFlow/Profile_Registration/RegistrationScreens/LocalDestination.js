@@ -29,11 +29,11 @@ const screenHeight = Math.round(Dimensions.get("window").height);
 import { locations } from "../Data/Locations.js";
 
 //Collapsible Components
-import FailScreen from "../Components/FailScreen";
-import NextButton from "../Components/NextButton";
+import FailScreen from "../../Profile_SharedComponents/FailScreen";
+import NextButton from "../../Profile_SharedComponents/NextButton";
 
 //checker functions
-import { locationsChecker } from "../Util/OnBoardingRegistrationScreenCheckers.js";
+import { locationsChecker } from "../Util/RegistrationScreenCheckers.js";
 
 //SQLite
 import * as SQLite from "expo-sqlite";
@@ -43,7 +43,7 @@ const db = SQLite.openDatabase("that.db");
 import {
   internalErrorWarning,
   emptyCityWarning
-} from "../Util/OnBoardingRegistrationScreenWarnings.js";
+} from "../Util/RegistrationScreenWarnings.js";
 
 class LocationDestinations extends Component {
   //having null header means no back  button is present!
@@ -145,6 +145,12 @@ class LocationDestinations extends Component {
               localDestination: localDestination,
               isSuccess: true
             });
+
+            //Redux
+            this.props.SetLocalDestinationDataAction({
+              localDestination: localDestination
+            });
+
           })
           .catch(err => {
             //If error while fetching, direct user to failScreen

@@ -1,63 +1,74 @@
 import React, { Component } from "react";
 import {
-  View,
-  Text,
-  StyleSheet,
-  Dimensions,
-  Button,
+  Image,
+  Platform,
   ScrollView,
+  StyleSheet,
+  Text,
   TouchableOpacity,
+  View,
+  Button,
+  TextInput,
+  Picker,
+  DatePickerIOS,
+  TouchableHighlight,
+  SafeAreaView,
+  Dimensions,
   ActivityIndicator
 } from "react-native";
 
 //Redux
 import { connect } from "react-redux";
-import SetWouldYouRatherDataAction from "../../../../storage/actions/RegistrationActions/SetWouldYouRatherDataAction";
+import SetInterestsDataAction from "../../../../storage/actions/RegistrationActions/SetInterestsDataAction";
 import SetChecklistAction from "../../../../storage/actions/RegistrationActions/SetChecklistAction";
 
-//Collapsible Components
-import FailScreen from "../Components/FailScreen";
-import NextButton from "../Components/NextButton";
+//data
+import { likes } from "../Data/Likes.js";
 
-//Slider
-import Slider from "../Components/Sliders/WouldYouRatherSlider";
+//Icons
+import { Icon } from "react-native-elements";
+
+//ScrollView
+const screenHeight = Math.round(Dimensions.get("window").height);
+
+//Collapsible Components
+import FailScreen from "../../Profile_SharedComponents/FailScreen";
+import NextButton from "../../Profile_SharedComponents/NextButton";
+
+//Picker
+import DatePicker from "react-native-datepicker";
+import RNPickerSelect from "react-native-picker-select";
+
+//checker functions
+import { likesChecker } from "../Util/RegistrationScreenCheckers.js";
 
 //SQLite
 import * as SQLite from "expo-sqlite";
 const db = SQLite.openDatabase("that.db");
 
 //warnings
-import { internalErrorWarning } from "../Util/OnBoardingRegistrationScreenWarnings.js";
+import {
+  invalidLikesWarning,
+  internalErrorWarning
+} from "../Util/RegistrationScreenWarnings.js";
 
-class WouldYouRather extends Component {
-  static navigationOptions = {
-    header: null
-  };
-
+class Interests extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      displaySlider1Value: 0,
-      displaySlider2Value: 0,
-      displaySlider3Value: 0,
-      passed: true,
+      passed: false,
+      likesArray: [],
       internalErrorWarning: false,
       isSuccess: true,
       isDelaying: false
     };
-    this.s1r1 = 50;
-    this.s1r2 = 50;
-    this.s2r1 = 50;
-    this.s2r2 = 50;
-    this.s3r1 = 50;
-    this.s3r2 = 50;
 
     this.isContinueUserFetched = false;
   }
 
   getDataFromDB = async () => {
     //if checklist says this screen is not complete, return (don't do query)
-    if (!this.props.CreateProfileDataReducer.checklist.wouldYouRather) {
+    if (!this.props.CreateProfileDataReducer.checklist.interests) {
       return;
     }
 
@@ -68,7 +79,7 @@ class WouldYouRather extends Component {
       },
       body: JSON.stringify({
         guid: this.props.CreateProfileDataReducer.guid,
-        collection: "wouldYouRather"
+        collection: "interests"
       })
     })
       .then(res => res.json())
@@ -77,40 +88,27 @@ class WouldYouRather extends Component {
         //console.log(object);
         //SUCCESS ON QUERYING DATA
         if (object.success) {
-          //set this
-          this.s1r1 = object.result.s1r1;
-          this.s1r2 = object.result.s1r2;
-          this.s2r1 = object.result.s2r1;
-          this.s2r2 = object.result.s2r2;
-          this.s3r1 = object.result.s3r1;
-          this.s3r2 = object.result.s3r2;
           //setState
           this.setState({
-            displaySlider1Value: object.result.s1r2 - 50,
-            displaySlider2Value: object.result.s2r2 - 50,
-            displaySlider3Value: object.result.s3r2 - 50,
+            likesArray: object.result.likesArray,
             isSuccess: true
           });
 
           //LocalStorage
+          let json_likesArray = JSON.stringify({
+            likesArray: object.result.likesArray
+          });
           //Only insert or replace id = 1
           let insertSqlStatement =
-            "INSERT OR REPLACE into device_user_wouldYouRather(id, createAccount_id, s1r1, s1r2, s2r1, s2r2, s3r1, s3r2) " +
-            "values(1, 1, ?, ?, ?, ?, ?, ?);";
+            "INSERT OR REPLACE into device_user_interests(id, createAccount_id, likesArray) " +
+            "values(1, 1, ?);";
 
           db.transaction(
             tx => {
               //INSERT DATA
               tx.executeSql(
                 insertSqlStatement,
-                [
-                  object.result.s1r1,
-                  object.result.s1r2,
-                  object.result.s2r1,
-                  object.result.s2r2,
-                  object.result.s3r1,
-                  object.result.s3r2
-                ],
+                [json_likesArray],
                 (tx, result) => {
                   console.log("inner success");
                 },
@@ -120,7 +118,7 @@ class WouldYouRather extends Component {
               );
               //DISPLAY DATA
               tx.executeSql(
-                "select * from device_user_wouldYouRather",
+                "select * from device_user_interests",
                 null,
                 (tx, result) => {
                   console.log(result);
@@ -139,13 +137,8 @@ class WouldYouRather extends Component {
           );
 
           //Redux
-          this.props.SetWouldYouRatherDataAction({
-            s1r1: object.result.s1r1,
-            s1r2: object.result.s1r2,
-            s2r1: object.result.s2r1,
-            s2r2: object.result.s2r2,
-            s3r1: object.result.s3r1,
-            s3r2: object.result.s3r2
+          this.props.SetInterestsDataAction({
+            likesArray: object.result.likesArray
           });
         } else {
           //INTERNAL ERROR
@@ -156,21 +149,20 @@ class WouldYouRather extends Component {
         //HANDLE ANY CATCHED ERRORS
         this.getDataFromLocalStorage()
           .then(result => {
-            let { s1r1, s1r2, s2r1, s2r2, s3r1, s3r2 } = result.rows._array[0];
-            //set this
-            this.s1r1 = s1r1;
-            this.s1r2 = s1r2;
-            this.s2r1 = s2r1;
-            this.s2r2 = s2r2;
-            this.s3r1 = s3r1;
-            this.s3r2 = s3r2;
+            let { likesArray } = result.rows._array[0];
+            likesArray = JSON.parse(likesArray).likesArray;
+
             //setState
             this.setState({
-              displaySlider1Value: s1r2 - 50,
-              displaySlider2Value: s2r2 - 50,
-              displaySlider3Value: s3r2 - 50,
+              likesArray: likesArray,
               isSuccess: true
             });
+
+            //Redux
+            this.props.SetInterestsDataAction({
+              likesArray: likesArray
+            });
+
           })
           .catch(err => {
             //If error while fetching, direct user to failScreen
@@ -188,7 +180,7 @@ class WouldYouRather extends Component {
         tx => {
           //DISPLAY DATA
           tx.executeSql(
-            "select * from device_user_wouldYouRather",
+            "select * from device_user_interests",
             null,
             (tx, result) => {
               if (result.rows.length <= 0) reject(new Error("Internal Error"));
@@ -209,10 +201,30 @@ class WouldYouRather extends Component {
     });
   };
 
+  reset = () => {
+    this.setState({
+      isSuccess: true
+    });
+  };
+
   componentDidUpdate(prevProps, prevState, snapshot) {
-    if (prevProps.wouldYouRatherToggle !== this.props.wouldYouRatherToggle) {
+    //if there have any udpate to the warnings by checking this.state and prevState
+    //then call the allChecker()
+    //allCheck will check if there any warnings
+    //If there have warnings: button show transparent (passed)
+    //If there have no warnings: button show green (passed)
+
+    if (prevState.likesArray !== this.state.likesArray) {
+      this.allChecker();
+      //For new user only, if something is modified, remove the check icon
+      if (!this.props.CreateProfileDataReducer.isContinueUser) {
+        this.props.handlePassed("interests", 2);
+      }
+    }
+
+    if (prevProps.interestsToggle !== this.props.interestsToggle) {
       if (
-        this.props.wouldYouRatherToggle &&
+        this.props.interestsToggle &&
         this.props.CreateProfileDataReducer.isContinueUser
       ) {
         if (!this.isContinueUserFetched) {
@@ -225,10 +237,13 @@ class WouldYouRather extends Component {
 
   handleSubmit = () => {
     //if the screen passed and guid is not null (that means user had finished createAccount)
-    if (this.props.CreateProfileDataReducer.guid !== null) {
+    if (
+      this.state.passed &&
+      this.props.CreateProfileDataReducer.guid !== null
+    ) {
       //Set the screen's checklist index to true
       let checklist = this.props.CreateProfileDataReducer.checklist;
-      checklist.wouldYouRather = true;
+      checklist.interests = true;
 
       this.setState(
         {
@@ -243,14 +258,9 @@ class WouldYouRather extends Component {
             },
             body: JSON.stringify({
               guid: this.props.CreateProfileDataReducer.guid,
-              collection: "wouldYouRather",
+              collection: "interests",
               data: {
-                s1r1: this.s1r1,
-                s1r2: this.s1r2,
-                s2r1: this.s2r1,
-                s2r2: this.s2r2,
-                s3r1: this.s3r1,
-                s3r2: this.s3r2,
+                likesArray: this.state.likesArray,
                 checklist: checklist
               }
             })
@@ -261,14 +271,9 @@ class WouldYouRather extends Component {
               //console.log(object);
               //SUCCESS ON SUBMITTING DATA
               if (object.success) {
-                //Redux
-                this.props.SetWouldYouRatherDataAction({
-                  s1r1: this.s1r1,
-                  s1r2: this.s1r2,
-                  s2r1: this.s2r1,
-                  s2r2: this.s2r2,
-                  s3r1: this.s3r1,
-                  s3r2: this.s3r2
+                //Send Data to Redux
+                this.props.SetInterestsDataAction({
+                  likesArray: this.state.likesArray
                 });
                 this.props.SetChecklistAction({
                   checklist: checklist
@@ -276,24 +281,20 @@ class WouldYouRather extends Component {
 
                 //LocalStorage
                 let json_checklist = JSON.stringify(checklist);
+                let json_likesArray = JSON.stringify({
+                  likesArray: this.state.likesArray
+                });
                 //Only insert or replace id = 1
                 let insertSqlStatement =
-                  "INSERT OR REPLACE into device_user_wouldYouRather(id, createAccount_id, s1r1, s1r2, s2r1, s2r2, s3r1, s3r2) " +
-                  "values(1, 1, ?, ?, ?, ?, ?, ?);";
+                  "INSERT OR REPLACE into device_user_interests(id, createAccount_id, likesArray) " +
+                  "values(1, 1, ?);";
 
                 db.transaction(
                   tx => {
                     //INSERT DATA
                     tx.executeSql(
                       insertSqlStatement,
-                      [
-                        this.s1r1,
-                        this.s1r2,
-                        this.s2r1,
-                        this.s2r2,
-                        this.s3r1,
-                        this.s3r2
-                      ],
+                      [json_likesArray],
                       (tx, result) => {
                         console.log("inner success");
                       },
@@ -314,7 +315,7 @@ class WouldYouRather extends Component {
                     );
                     //DISPLAY DATA
                     tx.executeSql(
-                      "select * from device_user_wouldYouRather",
+                      "select * from device_user_interests",
                       null,
                       (tx, result) => {
                         console.log(result);
@@ -339,12 +340,12 @@ class WouldYouRather extends Component {
                     isDelaying: false
                   },
                   () => {
-                    //it will put a check mark for wouldYouRather
-                    this.props.handlePassed("wouldYouRather", 1);
+                    //it will put a check mark for interests
+                    this.props.handlePassed("interests", 1);
                   }
                 );
               } else {
-                //setState
+                //INTERNAL ERROR
                 throw new Error("Internal Error ");
               }
             })
@@ -357,8 +358,8 @@ class WouldYouRather extends Component {
                   isDelaying: false
                 },
                 () => {
-                  //put a error marker for wouldYouRather
-                  this.props.handlePassed("wouldYouRather", 3);
+                  //put a error marker for interests
+                  this.props.handlePassed("interests", 3);
                 }
               );
             });
@@ -379,45 +380,137 @@ class WouldYouRather extends Component {
           isDelaying: false
         },
         () => {
-          this.props.handlePassed("wouldYouRather", 3);
+          this.props.handlePassed("interests", 3);
         }
       );
     }
   };
 
-  reset = () => {
-    this.setState({
-      isSuccess: true
-    });
+  allChecker = () => {
+    if (likesChecker(this.state.likesArray.length)) {
+      this.setState({
+        passed: true
+      });
+    } else {
+      this.setState({
+        passed: false
+      });
+    }
   };
 
-  handleListener1 = arg => {
-    this.s1r1 = 50 - arg;
-    this.s1r2 = 50 + arg;
-    this.setState({
-      displaySlider1Value: this.s1r2 - 50,
+  changeColor = bname => {
+    let topY = this.props.scrollY;
+    let otherScreenOffset1 = 0,
+      otherScreenOffset2 = 0,
+      otherScreenOffset3 = 0,
+      speedOfYChange = 1.2;
+
+    this.props.otherToggle.forEach((toggle, i = 0) => {
+      if (toggle) {
+        if (i === 2) {
+          otherScreenOffset1 += 41;
+          otherScreenOffset2 += 161;
+          otherScreenOffset3 += 100;
+        } else {
+          otherScreenOffset1 += 26;
+          otherScreenOffset2 += 105;
+          otherScreenOffset3 += 65;
+        }
+      }
+      i++;
     });
+
+    const topRed = 24;
+    const topGreen = 205;
+    const topBlue = 246;
+
+    const bottomRed = 67;
+    const bottomGreen = 33;
+    const bottomBlue = 140;
+
+    let pos = (this[bname] - topY) / screenHeight;
+
+    let colorRed =
+      (topRed + (bottomRed - topRed) * pos) * speedOfYChange +
+      38 +
+      otherScreenOffset1;
+    let colorGreen =
+      (topGreen + (bottomGreen - topGreen) * pos) * speedOfYChange -
+      209 -
+      otherScreenOffset2;
+    let colorBlue =
+      (topBlue + (bottomBlue - topBlue) * pos) * speedOfYChange -
+      151 -
+      otherScreenOffset3;
+
+    //default
+    colorRed = 67;
+    colorGreen = 33;
+    colorBlue = 140;
+
+    return `rgb(${colorRed},${colorGreen},${colorBlue})`;
   };
 
-  handleListener2 = arg => {
-    this.s2r1 = 50 - arg;
-    this.s2r2 = 50 + arg;
-    this.setState({
-      displaySlider2Value: this.s2r2 - 50,
-    });
-  };
-
-  handleListener3 = arg => {
-    this.s3r1 = 50 - arg;
-    this.s3r2 = 50 + arg;
-    this.setState({
-      displaySlider3Value: this.s3r2 - 50,
-    });
+  handlePress = name => {
+    // blocks duplicates
+    let index = this.state.likesArray.indexOf(name);
+    if (index !== -1) {
+      let tempAry = [
+        ...this.state.likesArray.slice(0, index),
+        ...this.state.likesArray.slice(index + 1)
+      ];
+      this.setState({
+        likesArray: tempAry
+      });
+    } else {
+      this.setState({
+        likesArray: [...this.state.likesArray, name]
+      });
+    }
   };
 
   successScreen = () => {
+    let displaylikes = likes.map((e, index = 0) => {
+      return (
+        <View
+          key={index++}
+          onLayout={event => {
+            const layout = event.nativeEvent.layout;
+            //this[`b${index}y`] = layout.y + this.props.interestsPositionY;
+            this[`b${index}y`] = layout.y;
+          }}
+        >
+          <TouchableOpacity
+            style={[
+              styles.likeButtonWrap,
+              {
+                backgroundColor:
+                  this.state.likesArray.indexOf(e) === -1
+                    ? "#fff"
+                    : "rgb(67, 33, 140)"
+              }
+            ]}
+            onPress={() => this.handlePress(e)}
+          >
+            <Text
+              style={[
+                styles.likeButton,
+                {
+                  color:
+                    this.state.likesArray.indexOf(e) === -1
+                      ? "rgb(67, 33, 140)"
+                      : "#fff"
+                }
+              ]}
+            >
+              {e}
+            </Text>
+          </TouchableOpacity>
+        </View>
+      );
+    });
     return (
-      <View>
+      <View style={{ flex: 1 }}>
         {/*Internal Error Warning*/}
         {this.state.internalErrorWarning && internalErrorWarning}
 
@@ -428,9 +521,11 @@ class WouldYouRather extends Component {
           }}
         />
 
-        {/*which do you prefer Text*/}
+        {/*I'm interested in Text & Pick one of both Text*/}
         <View style={{ alignItems: "center" }}>
-          <Text style={styles.whatDoYouPreferText}>Which do you prefer?</Text>
+          <Text style={styles.imInterestedInText}>I'm interested in</Text>
+          <Text />
+          <Text style={styles.pick3Text}>Pick 3</Text>
           {/*Spaces*/}
           <View
             style={{
@@ -439,59 +534,17 @@ class WouldYouRather extends Component {
           />
         </View>
 
-        {/*Sliders*/}
-        <View style={{ alignItems: "center" }}>
-          {/*Slider1*/}
-          <View style={{ width: "90%" }}>
-            {/*Line 447 is to fix the UI leak for android*/}
-            {this.props.wouldYouRatherToggle ? (
-              <Slider
-                functionListener={this.handleListener1}
-                minimumValue={0}
-                maximumValue={100}
-                leftBound={"Books"}
-                rightBound={"Movie"}
-                value={this.state.displaySlider1Value}
-              />
-            ) : null}
-            <Text />
-          </View>
-
-          {/*Slider2*/}
-          <View style={{ width: "90%" }}>
-            {this.props.wouldYouRatherToggle ? (
-              <Slider
-                functionListener={this.handleListener2}
-                minimumValue={0}
-                maximumValue={100}
-                leftBound={"Wine"}
-                rightBound={"Beer"}
-                value={this.state.displaySlider2Value}
-              />
-            ) : null}
-            <Text />
-          </View>
-
-          {/*Slider3*/}
-          <View style={{ width: "90%" }}>
-            {this.props.wouldYouRatherToggle ? (
-              <Slider
-                functionListener={this.handleListener3}
-                minimumValue={0}
-                maximumValue={100}
-                leftBound={"Beach"}
-                rightBound={"Mountains"}
-                value={this.state.displaySlider3Value}
-              />
-            ) : null}
-            <Text />
-          </View>
+        {/*likes*/}
+        <View style={styles.likeWrapCenter}>
+          <View style={styles.likesWrap}>{displaylikes}</View>
         </View>
+        <Text />
+        {this.state.likesArray.length !== 3 && invalidLikesWarning}
 
         {/*Spaces*/}
         <View
           style={{
-            padding: "10%"
+            padding: "7%"
           }}
         />
 
@@ -528,23 +581,52 @@ class WouldYouRather extends Component {
 const { height, width } = Dimensions.get("window");
 
 const styles = StyleSheet.create({
-  header: {
-    top: height * (1 / 3),
-    left: width * (1 / 2)
+  likeButton: {
+    color: "rgb(67, 33, 140)",
+    fontSize: 20
   },
-  whatDoYouPreferText: { opacity: 0.7, color: "rgb(67, 33, 140)" }
+  likeButtonWrap: {
+    alignItems: "center",
+    padding: Math.round(width / 37.5),
+    borderRadius: 40,
+    borderWidth: 2,
+    borderColor: "rgb(67, 33, 140)",
+    width: "auto",
+    minWidth: "25%",
+    marginLeft: Math.round(width / 125),
+    marginRight: Math.round(width / 125),
+    marginTop: Math.round(width / 37.5),
+    marginBottom: Math.round(width / 37.5)
+  },
+  imInterestedInText: {
+    color: "rgb(67, 33, 140)",
+    fontSize: 24
+  },
+  pick3Text: { opacity: 0.7, color: "rgb(67, 33, 140)" },
+  likesWrap: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "center"
+  },
+  likeWrapCenter: {
+    alignItems: "center"
+    //marginTop: "15%"
+  }
 });
 
-const mapStateToProps = state => ({
-  ...state
-});
-const mapDispatchToProps = dispatch => ({
-  SetWouldYouRatherDataAction: payload =>
-    dispatch(SetWouldYouRatherDataAction(payload)),
-  SetChecklistAction: payload => dispatch(SetChecklistAction(payload))
-});
+const mapStateToProps = state => {
+  return { ...state };
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    SetInterestsDataAction: payload =>
+      dispatch(SetInterestsDataAction(payload)),
+    SetChecklistAction: payload => dispatch(SetChecklistAction(payload))
+  };
+};
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(WouldYouRather);
+)(Interests);

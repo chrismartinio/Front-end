@@ -12,12 +12,12 @@ import { Chevron } from "react-native-shapes";
 import { Icon, Input } from "react-native-elements";
 
 //CollapsibleScreens
-import CreateAccount from "../OnBoardingRegistrationScreens/CreateAccount";
-import AboutYou from "../OnBoardingRegistrationScreens/AboutYou";
-import Preferences from "../OnBoardingRegistrationScreens/Preferences";
-import Interests from "../OnBoardingRegistrationScreens/Interests";
-import WouldYouRather from "../OnBoardingRegistrationScreens/WouldYouRather";
-import LocalDestination from "../OnBoardingRegistrationScreens/LocalDestination";
+import CreateAccount from "../Profile_Registration/RegistrationScreens/CreateAccount";
+import AboutYou from "../Profile_Registration/RegistrationScreens/AboutYou";
+import Preferences from "../Profile_Registration/RegistrationScreens/Preferences";
+import Interests from "../Profile_Registration/RegistrationScreens/Interests";
+import WouldYouRather from "../Profile_Registration/RegistrationScreens/WouldYouRather";
+import LocalDestination from "../Profile_Registration/RegistrationScreens/LocalDestination";
 
 //Dimensions
 const { height, width } = Dimensions.get("window");
