@@ -531,6 +531,21 @@ class AboutYou extends Component {
                     this.props.handlePassed("aboutYou", 1);
                   }
                 );
+              } else if (object.success === false && object.status === 422) {
+                //Invalid ZipCode
+
+                //setState
+                this.setState(
+                  {
+                    zipCodeWarning: "invalid",
+                    internalErrorWarning: false,
+                    isDelaying: false
+                  },
+                  () => {
+                    //put a error marker for aboutYou
+                    this.props.handlePassed("aboutYou", 3);
+                  }
+                );
               } else {
                 //INTERNAL ERROR
                 throw new Error("Internal Error ");

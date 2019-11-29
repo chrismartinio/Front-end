@@ -62,11 +62,9 @@ export const invalidBirthDateWarning = (
 export const invalidGenderWarning = (
   <Text style={styles.warningText}>* Please enter a valid gender</Text>
 );
-
 export const invalidCountryWarning = (
   <Text style={styles.warningText}>* Please enter a valid gender</Text>
 );
-
 export const invalidZipCodeWarning = (
   <Text style={styles.warningText}>* Please enter a valid zip code</Text>
 );
