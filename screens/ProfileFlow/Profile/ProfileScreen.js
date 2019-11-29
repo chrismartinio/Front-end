@@ -14,11 +14,9 @@ import {
 import { connect } from "react-redux";
 
 //1. any user edit, make the profile screen to hit the db
-//2. make everything relate to profile into one folder
 //3. make the edit button only visible to device's user
 //4. make the profile edit screen
 //5. make all the db call into one files
-//6. on every fetch files, create an ip so other ppl can only change that ip to do fetch
 
 import LoadingScreen from "../Profile_SharedComponents/LoadingScreen";
 

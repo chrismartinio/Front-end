@@ -35,6 +35,10 @@ import * as SQLite from "expo-sqlite";
 const db = SQLite.openDatabase("that.db");
 
 import { localhost } from "../../../../config/ipconfig";
+import {
+  insertDataIntoLocalStorage,
+  selectDataFromLocalStorage
+} from "../../LocalStorage/localStorage.js";
 
 //checker functions
 import {
@@ -142,7 +146,7 @@ class CreateAccount extends Component {
       })
     })
       .then(res => res.json())
-      .then(res => {
+      .then(async res => {
         let object = JSON.parse(JSON.stringify(res));
         //SUCCESS ON QUERYING DATA
         if (object.success) {
@@ -184,48 +188,28 @@ class CreateAccount extends Component {
             "INSERT OR REPLACE into device_user_createAccount(id, guid, email, password, isAdmin, checklist, phoneNumber, deviceID, deviceLatLong, deviceAltitude) " +
             "values(1, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
 
-          db.transaction(
-            tx => {
-              //INSERT DATA
-              tx.executeSql(
-                insertSqlStatement,
-                [
-                  object.result._id,
-                  object.result.email,
-                  "Password",
-                  false,
-                  json_checklist,
-                  "temp",
-                  global.deviceToken,
-                  global.currentLatLong,
-                  global.currentAltitude
-                ],
-                (tx, result) => {
-                  console.log("inner success");
-                },
-                (tx, err) => {
-                  console.log("inner error: ", err);
-                }
-              );
-              //DISPLAY DATA
-              tx.executeSql(
-                "select * from device_user_createAccount",
-                null,
-                (tx, result) => {
-                  console.log(result);
-                },
-                (tx, err) => {
-                  console.log("inner error: ", err);
-                }
-              );
-            },
-            (tx, err) => {
-              console.log(err);
-            },
-            () => {
-              console.log("outer success");
-            }
+          let { success } = await insertDataIntoLocalStorage(
+            insertSqlStatement,
+            "device_user_createAccount",
+            [
+              object.result._id,
+              object.result.email,
+              "Password",
+              false,
+              json_checklist,
+              "temp",
+              global.deviceToken,
+              global.currentLatLong,
+              global.currentAltitude
+            ],
+            false
           );
+
+          if (!success) {
+            console.log("failed storing data into localStorage");
+            //not sure what to do if fail on storing to localStorage
+            //but success on querying data and setState
+          }
 
           //Redux
           this.props.SetCreateAccountDataAction({
@@ -243,71 +227,49 @@ class CreateAccount extends Component {
           throw new Error("internal Error");
         }
       })
-      .catch(err => {
+      .catch(async err => {
         //HANDLE ANY CATCHED ERRORS
-        this.getDataFromLocalStorage()
-          .then(result => {
-            let { email } = result.rows._array[0];
-            //setState
-            this.setState({
-              email: email,
-              confirmEmail: email,
-              password: "Password",
-              confirmPassword: "Password",
-              emailWarning: "",
-              confirmEmailWarning: "",
-              passwordWarning: "",
-              confirmPasswordWarning: "",
-              password_UpperLowerCaseWarning: false,
-              password_NumberSymbolWarning: false,
-              password_LengthWarning: false,
-              isSuccess: true,
-              editable: false,
-              passed: true //if user can resume, that means the user had passed createAccount screen
-            });
 
-            //Redux
-            this.props.SetCreateAccountDataAction({
-              email: email,
-              password: "Password"
-            });
-          })
-          .catch(err => {
-            //If error while fetching, direct user to failScreen
-            //setState
-            this.setState({
-              isSuccess: false
-            });
+        let object = await selectDataFromLocalStorage(
+          "device_user_createAccount"
+        );
+        if (object.success) {
+          let { email } = object.result.rows._array[0];
+          //setState
+          this.setState({
+            email: email,
+            confirmEmail: email,
+            password: "Passwords",
+            confirmPassword: "Password",
+            emailWarning: "",
+            confirmEmailWarning: "",
+            passwordWarning: "",
+            confirmPasswordWarning: "",
+            password_UpperLowerCaseWarning: false,
+            password_NumberSymbolWarning: false,
+            password_LengthWarning: false,
+            isSuccess: true,
+            editable: false,
+            passed: true
+            //if user can resume,
+            //that means the user had passed createAccount screen
           });
-      });
-  };
 
-  //query data from localStorage
-  getDataFromLocalStorage = () => {
-    return new Promise((resolve, reject) => {
-      db.transaction(
-        tx => {
-          //DISPLAY DATA
-          tx.executeSql(
-            "select * from device_user_createAccount",
-            null,
-            (tx, result) => {
-              if (result.rows.length <= 0) reject(new Error("Internal Error"));
-              resolve(result);
-            },
-            (tx, err) => {
-              reject(err);
-            }
-          );
-        },
-        (tx, err) => {
-          reject(err);
-        },
-        () => {
-          console.log("outer success");
+          //Redux
+          this.props.SetCreateAccountDataAction({
+            email: email,
+            password: "Password"
+          });
+        } else {
+          //If error while querying from database,
+          //direct user to failScreen
+
+          //setState
+          this.setState({
+            isSuccess: false
+          });
         }
-      );
-    });
+      });
   };
 
   async componentDidMount() {
