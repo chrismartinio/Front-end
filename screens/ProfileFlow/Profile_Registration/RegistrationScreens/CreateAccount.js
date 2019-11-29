@@ -12,35 +12,39 @@ import {
   Dimensions
 } from "react-native";
 
+//Expo
 import * as Expo from "expo";
 import * as Permissions from "expo-permissions";
 import * as Location from "expo-location";
 import { Notifications } from "expo";
 import Constants from "expo-constants";
-//redux
+
+//Redux
 import { connect } from "react-redux";
 import SetCreateAccountDataAction from "../../../../storage/actions/RegistrationActions/SetCreateAccountDataAction";
 import SetGUIDAction from "../../../../storage/actions/RegistrationActions/SetGUIDAction";
+import SetChecklistAction from "../../../../storage/actions/RegistrationActions/SetChecklistAction";
 
-//icons
+//Icons
 import { Icon, Input } from "react-native-elements";
 import { Chevron } from "react-native-shapes";
 
-//Collapsible Components
+//Shared Components
 import FailScreen from "../../Profile_SharedComponents/FailScreen";
 import NextButton from "../../Profile_SharedComponents/NextButton";
 
 //SQLite
 import * as SQLite from "expo-sqlite";
 const db = SQLite.openDatabase("that.db");
-
-import { localhost } from "../../../../config/ipconfig";
 import {
   insertDataIntoLocalStorage,
   selectDataFromLocalStorage
 } from "../../LocalStorage/localStorage.js";
 
-//checker functions
+//IP config
+import { localhost } from "../../../../config/ipconfig";
+
+//Checker Functions
 import {
   emailCheck,
   nullCheck,
@@ -50,7 +54,7 @@ import {
   passwordCheck
 } from "../Util/RegistrationScreenCheckers.js";
 
-//warnings
+//Warning Texts
 import {
   emptyEmailWarning,
   emptyPasswordWarning,
@@ -108,7 +112,6 @@ async function registerForLocationAsync() {
   // POST the token to your backend server from where you can retrieve it to send push notifications.
 }
 
-//CreateAccount class
 class CreateAccount extends Component {
   constructor(props) {
     super(props);
@@ -148,6 +151,7 @@ class CreateAccount extends Component {
       .then(res => res.json())
       .then(async res => {
         let object = JSON.parse(JSON.stringify(res));
+
         //SUCCESS ON QUERYING DATA
         if (object.success) {
           //setState
@@ -202,13 +206,12 @@ class CreateAccount extends Component {
               global.currentLatLong,
               global.currentAltitude
             ],
-            false
+            true
           );
 
           if (!success) {
             console.log("failed storing data into localStorage");
-            //not sure what to do if fail on storing to localStorage
-            //but success on querying data and setState
+            //handle error on inserting data into localStorage
           }
 
           //Redux
@@ -233,6 +236,7 @@ class CreateAccount extends Component {
         let object = await selectDataFromLocalStorage(
           "device_user_createAccount"
         );
+
         if (object.success) {
           let { email } = object.result.rows._array[0];
           //setState
@@ -435,6 +439,9 @@ class CreateAccount extends Component {
     //The only way of make this.state.passed to true; make the next button clickable
     //is to input all the fields,
     if (this.state.passed) {
+      let checklist = this.props.CreateProfileDataReducer.checklist;
+      checklist.createAccount = true;
+
       //When user submit email/password
       //set editable to true so the user cannot resubmit other email
       //We do not want the user to submit other one (generate a new guid) on the same registration
@@ -465,7 +472,7 @@ class CreateAccount extends Component {
             })
           })
             .then(res => res.json())
-            .then(res => {
+            .then(async res => {
               let object = JSON.parse(JSON.stringify(res));
               //console.log(object);
               //SUCCESS ON SUBMITTING DATA
@@ -478,58 +485,39 @@ class CreateAccount extends Component {
                 this.props.SetGUIDAction({
                   guid: object.guid
                 });
+                this.props.SetChecklistAction({
+                  checklist: checklist
+                });
 
                 //LocalStorage
-                let json_checklist = JSON.stringify(
-                  this.props.CreateProfileDataReducer.checklist
-                );
+                json_checklist = JSON.stringify(checklist);
+
                 //Only insert or replace id = 1
                 let insertSqlStatement =
                   "INSERT OR REPLACE into device_user_createAccount(id, guid, email, password, isAdmin, checklist, phoneNumber, deviceID, deviceLatLong, deviceAltitude) " +
                   "values(1, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
 
-                db.transaction(
-                  tx => {
-                    //INSERT DATA
-                    tx.executeSql(
-                      insertSqlStatement,
-                      [
-                        object.guid,
-                        this.state.email,
-                        this.state.password,
-                        false,
-                        json_checklist,
-                        "temp",
-                        global.deviceToken,
-                        global.currentLatLong,
-                        global.currentAltitude
-                      ],
-                      (tx, result) => {
-                        console.log("inner success");
-                      },
-                      (tx, err) => {
-                        console.log("inner error: ", err);
-                      }
-                    );
-                    //DISPLAY DATA
-                    tx.executeSql(
-                      "select * from device_user_createAccount",
-                      null,
-                      (tx, result) => {
-                        console.log(result);
-                      },
-                      (tx, err) => {
-                        console.log("inner error: ", err);
-                      }
-                    );
-                  },
-                  (tx, err) => {
-                    console.log(err);
-                  },
-                  () => {
-                    console.log("outer success");
-                  }
+                let { success } = await insertDataIntoLocalStorage(
+                  insertSqlStatement,
+                  "device_user_createAccount",
+                  [
+                    object.guid,
+                    this.state.email,
+                    this.state.password,
+                    false,
+                    json_checklist,
+                    "temp",
+                    global.deviceToken,
+                    global.currentLatLong,
+                    global.currentAltitude
+                  ],
+                  true
                 );
+
+                if (!success) {
+                  console.log("failed storing data into localStorage");
+                  //handle error on inserting data into localStorage
+                }
 
                 //setState
                 this.setState(
@@ -544,6 +532,7 @@ class CreateAccount extends Component {
                 );
               } else if (object.success === false && object.status === 409) {
                 //DUPLICATE EMAIL
+
                 //setState
                 this.setState(
                   {
@@ -873,7 +862,8 @@ const mapDispatchToProps = dispatch => {
   return {
     SetCreateAccountDataAction: payload =>
       dispatch(SetCreateAccountDataAction(payload)),
-    SetGUIDAction: payload => dispatch(SetGUIDAction(payload))
+    SetGUIDAction: payload => dispatch(SetGUIDAction(payload)),
+    SetChecklistAction: payload => dispatch(SetChecklistAction(payload))
   };
 };
 

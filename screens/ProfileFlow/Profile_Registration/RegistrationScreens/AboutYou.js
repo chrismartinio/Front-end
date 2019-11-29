@@ -18,28 +18,33 @@ import { connect } from "react-redux";
 import SetAboutYouDataAction from "../../../../storage/actions/RegistrationActions/SetAboutYouDataAction";
 import SetChecklistAction from "../../../../storage/actions/RegistrationActions/SetChecklistAction";
 
-//pickers
+//Pickers
 import DatePicker from "react-native-datepicker";
 import RNPickerSelect from "react-native-picker-select";
 
-//data
+//Data
 import { countries, genders } from "../Data/CountriesAndGenders.js";
 
-//icons
+//Icons
 import { Icon, Input } from "react-native-elements";
 import { Chevron } from "react-native-shapes";
 
-//Collapsible Components
+//Shared Components
 import FailScreen from "../../Profile_SharedComponents/FailScreen";
 import NextButton from "../../Profile_SharedComponents/NextButton";
 
 //SQLite
 import * as SQLite from "expo-sqlite";
 const db = SQLite.openDatabase("that.db");
+import {
+  insertDataIntoLocalStorage,
+  selectDataFromLocalStorage
+} from "../../LocalStorage/localStorage.js";
 
+//IP config
 import { localhost } from "../../../../config/ipconfig";
 
-//checker functions
+//Checkers Functions
 import {
   checkZipCode,
   checkName,
@@ -48,7 +53,7 @@ import {
   checkage
 } from "../Util/RegistrationScreenCheckers.js";
 
-//warnings
+//Warnings Texts
 import {
   invalidFirstNameWarning,
   invalidLastNameWarning,
@@ -106,11 +111,10 @@ class AboutYou extends Component {
       })
     })
       .then(res => res.json())
-      .then(res => {
+      .then(async res => {
         let object = JSON.parse(JSON.stringify(res));
-        //console.log(object);
-        //SUCCESS ON QUERYING DATA
 
+        //SUCCESS ON QUERYING DATA
         if (object.success) {
           let {
             firstName,
@@ -148,48 +152,27 @@ class AboutYou extends Component {
             "INSERT OR REPLACE into device_user_aboutYou(id, createAccount_id, firstName, lastName, birthDate, gender, country, zipCode, userBio, city, state) " +
             "values(1, 1, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
 
-          db.transaction(
-            tx => {
-              //INSERT DATA
-              tx.executeSql(
-                insertSqlStatement,
-                [
-                  firstName,
-                  lastName,
-                  birthDate,
-                  gender,
-                  country,
-                  zipCode,
-                  userBio,
-                  city,
-                  state
-                ],
-                (tx, result) => {
-                  console.log("inner success");
-                },
-                (tx, err) => {
-                  console.log("inner error: ", err);
-                }
-              );
-              //DISPLAY DATA
-              tx.executeSql(
-                "select * from device_user_aboutYou",
-                null,
-                (tx, result) => {
-                  console.log(result);
-                },
-                (tx, err) => {
-                  console.log("inner error: ", err);
-                }
-              );
-            },
-            (tx, err) => {
-              console.log(err);
-            },
-            () => {
-              console.log("outer success");
-            }
+          let { success } = await insertDataIntoLocalStorage(
+            insertSqlStatement,
+            "device_user_aboutYou",
+            [
+              firstName,
+              lastName,
+              birthDate,
+              gender,
+              country,
+              zipCode,
+              userBio,
+              city,
+              state
+            ],
+            true
           );
+
+          if (!success) {
+            console.log("failed storing data into localStorage");
+            //handle error on inserting data into localStorage
+          }
 
           //Redux
           this.props.SetAboutYouDataAction({
@@ -208,90 +191,64 @@ class AboutYou extends Component {
           throw new Error("internal Error");
         }
       })
-      .catch(err => {
+      .catch(async err => {
         //HANDLE ANY CATCHED ERRORS
-        this.getDataFromLocalStorage()
-          .then(result => {
-            let {
-              firstName,
-              lastName,
-              birthDate,
-              gender,
-              country,
-              zipCode,
-              userBio,
-              city,
-              state
-            } = result.rows._array[0];
 
-            //setState
-            this.setState({
-              firstName: firstName,
-              lastName: lastName,
-              birthDate: birthDate,
-              gender: gender,
-              country: country,
-              zipCode: zipCode,
-              userBio: userBio,
-              firstNameWarning: firstName === "" ? "empty" : "",
-              lastNameWarning: lastName === "" ? "empty" : "",
-              birthDateWarning: birthDate === "" ? "empty" : "",
-              genderWarning: gender === "" ? "empty" : "",
-              countryWarning: country === "" ? "empty" : "",
-              zipCodeWarning: zipCode === "" ? "empty" : "",
-              isSuccess: true
-            });
+        let object = await selectDataFromLocalStorage("device_user_aboutYou");
 
-            //Redux
-            this.props.SetAboutYouDataAction({
-              firstName: firstName,
-              lastName: lastName,
-              birthDate: birthDate,
-              gender: gender,
-              country: country,
-              zipCode: zipCode,
-              userBio: userBio,
-              city: city,
-              state: state
-            });
-          })
-          .catch(err => {
-            //If error after fail on querying database and localstorage,
-            //direct user to failScreen
+        if (object.success) {
+          let {
+            firstName,
+            lastName,
+            birthDate,
+            gender,
+            country,
+            zipCode,
+            userBio,
+            city,
+            state
+          } = object.result.rows._array[0];
 
-            //setState
-            this.setState({
-              isSuccess: false
-            });
+          //setState
+          this.setState({
+            firstName: firstName,
+            lastName: lastName,
+            birthDate: birthDate,
+            gender: gender,
+            country: country,
+            zipCode: zipCode,
+            userBio: userBio,
+            firstNameWarning: firstName === "" ? "empty" : "",
+            lastNameWarning: lastName === "" ? "empty" : "",
+            birthDateWarning: birthDate === "" ? "empty" : "",
+            genderWarning: gender === "" ? "empty" : "",
+            countryWarning: country === "" ? "empty" : "",
+            zipCodeWarning: zipCode === "" ? "empty" : "",
+            isSuccess: true
           });
-      });
-  };
 
-  getDataFromLocalStorage = () => {
-    return new Promise((resolve, reject) => {
-      db.transaction(
-        tx => {
-          //DISPLAY DATA
-          tx.executeSql(
-            "select * from device_user_aboutYou",
-            null,
-            (tx, result) => {
-              if (result.rows.length <= 0) reject(new Error("Internal Error"));
-              resolve(result);
-            },
-            (tx, err) => {
-              reject(err);
-            }
-          );
-        },
-        (tx, err) => {
-          reject(err);
-        },
-        () => {
-          console.log("outer success");
+          //Redux
+          this.props.SetAboutYouDataAction({
+            firstName: firstName,
+            lastName: lastName,
+            birthDate: birthDate,
+            gender: gender,
+            country: country,
+            zipCode: zipCode,
+            userBio: userBio,
+            city: city,
+            state: state
+          });
+        } else {
+          //If error while querying from database,
+          //direct user to failScreen
+
+          //setState
+          this.setState({
+            isSuccess: false
+          });
         }
-      );
-    });
+      });
   };
 
   reset = () => {
@@ -500,7 +457,7 @@ class AboutYou extends Component {
             })
           })
             .then(res => res.json())
-            .then(res => {
+            .then(async res => {
               let object = JSON.parse(JSON.stringify(res));
               //console.log(object);
               //SUCCESS ON SUBMITTING DATA
@@ -526,59 +483,42 @@ class AboutYou extends Component {
                   "INSERT OR REPLACE into device_user_aboutYou(id, createAccount_id, firstName, lastName, birthDate, gender, country, zipCode, userBio, city, state) " +
                   "values(1, 1, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
 
-                db.transaction(
-                  tx => {
-                    //INSERT DATA
-                    tx.executeSql(
-                      insertSqlStatement,
-                      [
-                        this.state.firstName,
-                        this.state.lastName,
-                        this.state.birthDate,
-                        this.state.gender,
-                        this.state.country,
-                        this.state.zipCode,
-                        this.state.userBio,
-                        "",
-                        ""
-                      ],
-                      (tx, result) => {
-                        console.log("inner success");
-                      },
-                      (tx, err) => {
-                        console.log("inner error: ", err);
-                      }
-                    );
-                    //UPDATE CHECKLIST
-                    tx.executeSql(
-                      "UPDATE device_user_createAccount SET checklist = ? WHERE id = 1;",
-                      [json_checklist],
-                      (tx, result) => {
-                        console.log("inner success");
-                      },
-                      (tx, err) => {
-                        console.log("inner error: ", err);
-                      }
-                    );
-                    //DISPLAY DATA
-                    tx.executeSql(
-                      "select * from device_user_aboutYou",
-                      null,
-                      (tx, result) => {
-                        console.log(result);
-                      },
-                      (tx, err) => {
-                        console.log("inner error: ", err);
-                      }
-                    );
-                  },
-                  (tx, err) => {
-                    console.log(err);
-                  },
-                  () => {
-                    console.log("outer success");
-                  }
+                let { success } = await insertDataIntoLocalStorage(
+                  insertSqlStatement,
+                  "device_user_aboutYou",
+                  [
+                    this.state.firstName,
+                    this.state.lastName,
+                    this.state.birthDate,
+                    this.state.gender,
+                    this.state.country,
+                    this.state.zipCode,
+                    this.state.userBio,
+                    "",
+                    ""
+                  ],
+                  true
                 );
+
+                if (!success) {
+                  console.log("failed storing data into localStorage");
+                  //handle error on inserting data into localStorage
+                }
+
+                //update checklist
+                let updateSqlStatement =
+                  "UPDATE device_user_createAccount SET checklist = ? WHERE id = 1;";
+                success = await insertDataIntoLocalStorage(
+                  updateSqlStatement,
+                  "device_user_createAccount",
+                  [json_checklist],
+                  true
+                );
+
+                if (!success) {
+                  console.log("failed storing data into localStorage");
+                  //handle error on inserting data into localStorage
+                }
 
                 //setState
                 this.setState(

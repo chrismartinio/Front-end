@@ -8,35 +8,28 @@ export function selectDataFromLocalStorage(tableName) {
       //callback
       tx => {
         //DISPLAY DATA
-
         let selectSqlStatement = `select * from ${tableName}`;
         tx.executeSql(
           selectSqlStatement,
           null,
           (tx, result) => {
             console.log("*** SELECT DATA SUCCESS ***");
-            if (result.rows.length <= 0) reject({ success: false });
+            if (result.rows.length <= 0) {
+              console.log("No data is in the localStorage")
+              resolve({ success: false })
+            };
             resolve({ result: result, success: true });
+          },
+          (tx, err) => {
+            console.log("*** SELECT DATA FAIL ***");
+            console.log(err);
           }
-          /*
-            //This will log the error, but will override the transaction error callback function
-            (tx, err) => {
-              console.log("*** SELECT DATA FAIL ***");
-              console.log(err);
-            }
-            */
         );
       },
       //Transaction error
-      (tx, err) => {
-        console.log("Failed: Transaction closed.");
-        resolve({ success: false });
-      },
+      null,
       //Transaction success
-      () => {
-        //Transaction (itself) success
-        console.log("Successed: Transaction closed.");
-      }
+      null
     );
   });
 }
@@ -57,14 +50,14 @@ export function insertDataIntoLocalStorage(
           dataArray,
           (tx, result) => {
             console.log("*** INSERT DATA SUCCESS ***");
-          }
-          /*
-          //This will log the error, but will override the transaction error callback function
+            resolve({ success: true });
+          },
+
           (tx, err) => {
             console.log("*** INSERT DATA FAIL ***");
             console.log(err);
+            resolve({ success: false });
           }
-          */
         );
 
         //DISPLAY DATA
@@ -76,28 +69,18 @@ export function insertDataIntoLocalStorage(
             (tx, result) => {
               console.log("*** SELECT DATA SUCCESS ***");
               console.log(result);
-            }
-            /*
-            //This will log the error, but will override the transaction error callback function
+            },
             (tx, err) => {
               console.log("*** SELECT DATA FAIL ***");
               console.log(err);
             }
-            */
           );
         }
       },
       //Transaction error
-      (tx, err) => {
-        console.log("Failed: Transaction closed.");
-        resolve({ success: false });
-      },
+      null,
       //Transaction success
-      () => {
-        //Transaction (itself) success
-        console.log("Successed: Transaction closed.");
-        resolve({ success: true });
-      }
+      null
     );
   });
 }

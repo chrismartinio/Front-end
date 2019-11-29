@@ -25,23 +25,28 @@ import { Icon } from "react-native-elements";
 //ScrollView
 const screenHeight = Math.round(Dimensions.get("window").height);
 
-//data
+//Data
 import { locations } from "../Data/Locations.js";
 
-//Collapsible Components
+//Shared Components
 import FailScreen from "../../Profile_SharedComponents/FailScreen";
 import NextButton from "../../Profile_SharedComponents/NextButton";
 
-//checker functions
+//Checker Function
 import { locationsChecker } from "../Util/RegistrationScreenCheckers.js";
 
 //SQLite
 import * as SQLite from "expo-sqlite";
 const db = SQLite.openDatabase("that.db");
+import {
+  insertDataIntoLocalStorage,
+  selectDataFromLocalStorage
+} from "../../LocalStorage/localStorage.js";
 
+//IP config
 import { localhost } from "../../../../config/ipconfig";
 
-//warnings
+//Warning Texts
 import {
   internalErrorWarning,
   emptyCityWarning
@@ -78,7 +83,7 @@ class LocationDestinations extends Component {
       })
     })
       .then(res => res.json())
-      .then(res => {
+      .then(async res => {
         let object = JSON.parse(JSON.stringify(res));
         //console.log(object);
         //SUCCESS ON QUERYING DATA
@@ -95,38 +100,17 @@ class LocationDestinations extends Component {
             "INSERT OR REPLACE into device_user_localDestination(id, createAccount_id, localDestination) " +
             "values(1, 1, ?);";
 
-          db.transaction(
-            tx => {
-              //INSERT DATA
-              tx.executeSql(
-                insertSqlStatement,
-                [object.result.localDestination],
-                (tx, result) => {
-                  console.log("inner success");
-                },
-                (tx, err) => {
-                  console.log("inner error: ", err);
-                }
-              );
-              //DISPLAY DATA
-              tx.executeSql(
-                "select * from device_user_localDestination",
-                null,
-                (tx, result) => {
-                  console.log(result);
-                },
-                (tx, err) => {
-                  console.log("inner error: ", err);
-                }
-              );
-            },
-            (tx, err) => {
-              console.log(err);
-            },
-            () => {
-              console.log("outer success");
-            }
+          let { success } = await insertDataIntoLocalStorage(
+            insertSqlStatement,
+            "device_user_localDestination",
+            [object.result.localDestination],
+            true
           );
+
+          if (!success) {
+            console.log("failed storing data into localStorage");
+            //handle error on inserting data into localStorage
+          }
 
           //Redux
           this.props.SetLocalDestinationDataAction({
@@ -137,57 +121,33 @@ class LocationDestinations extends Component {
           throw new Error("internal Error");
         }
       })
-      .catch(err => {
+      .catch(async err => {
         //HANDLE ANY CATCHED ERRORS
-        this.getDataFromLocalStorage()
-          .then(result => {
-            let { localDestination } = result.rows._array[0];
-            //setState
-            this.setState({
-              localDestination: localDestination,
-              isSuccess: true
-            });
 
-            //Redux
-            this.props.SetLocalDestinationDataAction({
-              localDestination: localDestination
-            });
-          })
-          .catch(err => {
-            //If error while fetching, direct user to failScreen
-            //setState
-            this.setState({
-              isSuccess: false
-            });
+        let object = await selectDataFromLocalStorage(
+          "device_user_localDestination"
+        );
+
+        if (object.success) {
+          let { localDestination } = object.result.rows._array[0];
+          //setState
+          this.setState({
+            localDestination: localDestination,
+            isSuccess: true
           });
-      });
-  };
 
-  getDataFromLocalStorage = () => {
-    return new Promise((resolve, reject) => {
-      db.transaction(
-        tx => {
-          //DISPLAY DATA
-          tx.executeSql(
-            "select * from device_user_localDestination",
-            null,
-            (tx, result) => {
-              if (result.rows.length <= 0) reject(new Error("Internal Error"));
-              resolve(result);
-            },
-            (tx, err) => {
-              reject(err);
-            }
-          );
-        },
-        (tx, err) => {
-          reject(err);
-        },
-        () => {
-          console.log("outer success");
+          //Redux
+          this.props.SetLocalDestinationDataAction({
+            localDestination: localDestination
+          });
+        } else {
+          //If error while fetching, direct user to failScreen
+          //setState
+          this.setState({
+            isSuccess: false
+          });
         }
-      );
-    });
+      });
   };
 
   reset = () => {
@@ -256,63 +216,6 @@ class LocationDestinations extends Component {
     }
   };
 
-  changeColor = bname => {
-    let topY = this.props.scrollY;
-    let otherScreenOffset1 = 0,
-      otherScreenOffset2 = 0,
-      otherScreenOffset3 = 0,
-      speedOfYChange = 1.2;
-
-    this.props.otherToggle.forEach((toggle, i = 0) => {
-      if (toggle) {
-        if (i === 2) {
-          otherScreenOffset1 += 41;
-          otherScreenOffset2 += 161;
-          otherScreenOffset3 += 100;
-        } else if (i === 3) {
-          otherScreenOffset1 += 28;
-          otherScreenOffset2 += 113;
-          otherScreenOffset3 += 68;
-        } else {
-          otherScreenOffset1 += 30.5;
-          otherScreenOffset2 += 106;
-          otherScreenOffset3 += 64;
-        }
-      }
-      i++;
-    });
-
-    const topRed = 24;
-    const topGreen = 205;
-    const topBlue = 246;
-
-    const bottomRed = 67;
-    const bottomGreen = 33;
-    const bottomBlue = 140;
-
-    let pos = (this[bname] - topY) / screenHeight;
-
-    let colorRed =
-      (topRed + (bottomRed - topRed) * pos) * speedOfYChange +
-      51 +
-      otherScreenOffset1;
-    let colorGreen =
-      (topGreen + (bottomGreen - topGreen) * pos) * speedOfYChange -
-      263 -
-      otherScreenOffset2;
-    let colorBlue =
-      (topBlue + (bottomBlue - topBlue) * pos) * speedOfYChange -
-      186 -
-      otherScreenOffset3;
-
-    //default
-    colorRed = 67;
-    colorGreen = 33;
-    colorBlue = 140;
-
-    return `rgb(${colorRed},${colorGreen},${colorBlue})`;
-  };
-
   handleSubmit = () => {
     //if the screen passed and guid is not null (that means user had finished createAccount)
     if (
@@ -344,7 +247,7 @@ class LocationDestinations extends Component {
             })
           })
             .then(res => res.json())
-            .then(res => {
+            .then(async res => {
               let object = JSON.parse(JSON.stringify(res));
               //console.log(object);
               //SUCCESS ON SUBMITTING DATA
@@ -364,49 +267,32 @@ class LocationDestinations extends Component {
                   "INSERT OR REPLACE into device_user_localDestination(id, createAccount_id, localDestination) " +
                   "values(1, 1, ?);";
 
-                db.transaction(
-                  tx => {
-                    //INSERT DATA
-                    tx.executeSql(
-                      insertSqlStatement,
-                      [this.state.localDestination],
-                      (tx, result) => {
-                        console.log("inner success");
-                      },
-                      (tx, err) => {
-                        console.log("inner error: ", err);
-                      }
-                    );
-                    //UPDATE CHECKLIST
-                    tx.executeSql(
-                      "UPDATE device_user_createAccount SET checklist = ? WHERE id = 1;",
-                      [json_checklist],
-                      (tx, result) => {
-                        console.log("inner success");
-                      },
-                      (tx, err) => {
-                        console.log("inner error: ", err);
-                      }
-                    );
-                    //DISPLAY DATA
-                    tx.executeSql(
-                      "select * from device_user_localDestination",
-                      null,
-                      (tx, result) => {
-                        console.log(result);
-                      },
-                      (tx, err) => {
-                        console.log("inner error: ", err);
-                      }
-                    );
-                  },
-                  (tx, err) => {
-                    console.log(err);
-                  },
-                  () => {
-                    console.log("outer success");
-                  }
+                let { success } = await insertDataIntoLocalStorage(
+                  insertSqlStatement,
+                  "device_user_localDestination",
+                  [this.state.localDestination],
+                  true
                 );
+
+                if (!success) {
+                  console.log("failed storing data into localStorage");
+                  //handle error on inserting data into localStorage
+                }
+
+                //update checklist
+                let updateSqlStatement =
+                  "UPDATE device_user_createAccount SET checklist = ? WHERE id = 1;";
+                success = await insertDataIntoLocalStorage(
+                  updateSqlStatement,
+                  "device_user_createAccount",
+                  [json_checklist],
+                  true
+                );
+
+                if (!success) {
+                  console.log("failed storing data into localStorage");
+                  //handle error on inserting data into localStorage
+                }
 
                 //setState
                 this.setState(
