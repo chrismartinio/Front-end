@@ -22,9 +22,12 @@ import MatchedUserChat from "./ChatFlow/MatchedUserChat";
 
 import { localhost } from "../config/ipconfig";
 
+import HeaderRight from "../sharedComponents/HeaderRight"
+
 class HomeScreen extends React.Component {
   static navigationOptions = {
-    title: "Home"
+    title: "Home",
+    headerRight: <HeaderRight />
   };
   constructor(props) {
     super(props);

@@ -21,7 +21,7 @@ import { connect } from "react-redux";
 import LoadingScreen from "../Profile_SharedComponents/LoadingScreen";
 
 function _calculateAge(birthday) {
-  birthday = new Date(birthday)
+  birthday = new Date(birthday);
   // birthday is a date
   var ageDifMs = Date.now() - birthday.getTime();
   var ageDate = new Date(ageDifMs); // miliseconds from epoch
@@ -36,9 +36,13 @@ import {
   selectDataFromLocalStorage
 } from "../LocalStorage/localStorage.js";
 
+//header
+import HeaderRight from "../../../sharedComponents/HeaderRight"
+
 class Profile extends React.Component {
   static navigationOptions = {
-    title: "My Profile"
+    title: "My Profile",
+    headerRight: <HeaderRight />
   };
   constructor(props) {
     super(props);
