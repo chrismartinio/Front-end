@@ -20,9 +20,21 @@ import { connect } from "react-redux";
 
 import LoadingScreen from "../Profile_SharedComponents/LoadingScreen";
 
+function _calculateAge(birthday) {
+  birthday = new Date(birthday)
+  // birthday is a date
+  var ageDifMs = Date.now() - birthday.getTime();
+  var ageDate = new Date(ageDifMs); // miliseconds from epoch
+  return Math.abs(ageDate.getUTCFullYear() - 1970);
+}
+
 //SQLite
 import * as SQLite from "expo-sqlite";
 const db = SQLite.openDatabase("that.db");
+import {
+  insertDataIntoLocalStorage,
+  selectDataFromLocalStorage
+} from "../LocalStorage/localStorage.js";
 
 class Profile extends React.Component {
   static navigationOptions = {
@@ -31,15 +43,14 @@ class Profile extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      firstName: "Alex",
-      lastName: "Wagner",
-      age: "27",
-      city: "San Francsico",
-      state: "CA",
+      firstName: "",
+      lastName: "",
+      age: "",
+      city: "",
+      state: "",
       userImage: "https://facebook.github.io/react-native/img/tiny_logo.png",
-      likesArray: ["cycling", "film", "photography"],
-      userBio:
-        "Grew up in Portland, Oregion area. Survived middle school by becoming a skatar kid (still havne't grown out of it) Now I'm trying to pay my rent, play my msuic and maek my way. I'm into photography. so I like to snap pictures with either my phone or my camera whenever I find inspiration.",
+      likesArray: [],
+      userBio: "",
       photosArray: [
         "https://facebook.github.io/react-native/img/tiny_logo.png",
         "https://facebook.github.io/react-native/img/tiny_logo.png",
@@ -56,21 +67,20 @@ class Profile extends React.Component {
   async componentDidMount() {
     //this.guid = await this.props.CreateProfileDataReducer.guid;
 
-    this.guid = "5dddd2d8d302b94d37ade030";
+    this.guid = "5de096afa39b91b1f98bbafe";
 
     //on editing, siwtch isFetched = false
     if (!this.isFetched) {
       this.getDataFromDB();
       this.isFetched = true;
     }
-
     this.setState({
       isSuccess: true
     });
   }
 
   getDataFromDB = async () => {
-    await fetch("http://74.80.250.210:4000/api/profile/query", {
+    await fetch("http://74.80.250.210:4000/api/profile/profile_query", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -82,9 +92,9 @@ class Profile extends React.Component {
       })
     })
       .then(res => res.json())
-      .then(res => {
+      .then(async res => {
         let object = JSON.parse(JSON.stringify(res));
-        //console.log(object);
+        console.log(object);
         //SUCCESS ON QUERYING DATA
 
         if (object.success) {
@@ -92,12 +102,10 @@ class Profile extends React.Component {
             firstName,
             lastName,
             birthDate,
-            gender,
-            country,
-            zipCode,
-            userBio,
+            state,
             city,
-            state
+            userBio,
+            likesArray
           } = object.result;
 
           //setState
@@ -105,10 +113,11 @@ class Profile extends React.Component {
             firstName: firstName,
             lastName: lastName,
             birthDate: birthDate,
-            zipCode: zipCode,
             userBio: userBio,
+            age: _calculateAge(birthDate),
             city: city,
             state: state,
+            likesArray: likesArray,
             isSuccess: true
           });
 
@@ -118,125 +127,45 @@ class Profile extends React.Component {
             "INSERT OR REPLACE into device_user_aboutYou(id, createAccount_id, firstName, lastName, birthDate, gender, country, zipCode, userBio, city, state) " +
             "values(1, 1, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
 
-          db.transaction(
-            tx => {
-              //INSERT DATA
-              tx.executeSql(
-                insertSqlStatement,
-                [
-                  firstName,
-                  lastName,
-                  birthDate,
-                  gender,
-                  country,
-                  zipCode,
-                  userBio,
-                  city,
-                  state
-                ],
-                (tx, result) => {
-                  console.log("inner success");
-                },
-                (tx, err) => {
-                  console.log("inner error: ", err);
-                }
-              );
-
-              //DISPLAY DATA
-              tx.executeSql(
-                "select * from device_user_aboutYou",
-                null,
-                (tx, result) => {
-                  console.log(result);
-                },
-                (tx, err) => {
-                  console.log("inner error: ", err);
-                }
-              );
-            },
-            (tx, err) => {
-              console.log(err);
-            },
-            () => {
-              console.log("outer success");
-            }
+          let { success } = await insertDataIntoLocalStorage(
+            insertSqlStatement,
+            "device_user_aboutYou",
+            [firstName, lastName, birthDate, state, city, userBio],
+            true
           );
 
-          //Redux
-          this.props.SetAboutYouDataAction({
-            firstName: firstName,
-            lastName: lastName,
-            birthDate: birthDate,
-            gender: gender,
-            country: country,
-            zipCode: zipCode,
-            userBio: userBio,
-            city: city,
-            state: state
-          });
+          if (!success) {
+            console.log("failed storing data into localStorage");
+            //handle error on inserting data into localStorage
+          }
         } else {
           //INTERNAL ERROR
           throw new Error("internal Error");
         }
       })
-      .catch(err => {
+      .catch(async err => {
+        console.log(err);
         //HANDLE ANY CATCHED ERRORS
-        this.getDataFromLocalStorage()
-          .then(result => {
-            let {
-              firstName,
-              lastName,
-              zipCode,
-              userBio,
-              city,
-              state
-            } = result.rows._array[0];
-            //setState
-            this.setState({
-              firstName: firstName,
-              lastName: lastName,
-              zipCode: zipCode,
-              userBio: userBio,
-              city: city,
-              state: state,
-              isSuccess: true
-            });
-          })
-          .catch(err => {
-            //If error while fetching, direct user to failScreen
-            //setState
-            this.setState({
-              isSuccess: false
-            });
-          });
-      });
-  };
 
-  getDataFromLocalStorage = () => {
-    return new Promise((resolve, reject) => {
-      db.transaction(
-        tx => {
-          //DISPLAY DATA
-          tx.executeSql(
-            "select * from device_user_aboutYou",
-            null,
-            (tx, result) => {
-              if (result.rows.length <= 0) reject(new Error("Internal Error"));
-              resolve(result);
-            },
-            (tx, err) => {
-              reject(err);
-            }
-          );
-        },
-        (tx, err) => {
-          reject(err);
-        },
-        () => {
-          console.log("outer success");
+        let object = await selectDataFromLocalStorage("device_user_aboutYou");
+
+        if (object.success) {
+          let {
+            firstName,
+            lastName,
+            zipCode,
+            userBio,
+            city,
+            state
+          } = object.result.rows._array[0];
+        } else {
+          //If error while fetching, direct user to failScreen
+          //setState
+          this.setState({
+            isSuccess: false
+          });
         }
-      );
-    });
+      });
   };
 
   successScreen = () => {
@@ -268,34 +197,12 @@ class Profile extends React.Component {
         <ScrollView>
           <View style={{ alignItems: "center" }}>
             {/**User Image */}
-            <ImageBackground
+            <Image
               source={{
                 uri: this.state.userImage
               }}
               style={{ width: 350, height: 350, borderRadius: 50 }}
-            >
-              {/*Make this edit button only visible (also lock) to device user */}
-              <View style={{ alignItems: "flex-end" }}>
-                <TouchableOpacity
-                  style={{
-                    paddingLeft: 50,
-                    paddingRight: 50,
-                    paddingTop: 10,
-                    paddingBottom: 10,
-                    backgroundColor: "purple",
-                    borderRadius: 50
-                  }}
-                  onPress={() => {
-                    this.isFetched = false;
-                    //this.props.navigation.navigate("EditScreen");
-                    //when user do any updates on edit screen, trigger isFetched = false
-                    //so the only time of update the profile screen would be editing any data or from login to profile screen
-                  }}
-                >
-                  <Text style={{ color: "white" }}>Edit</Text>
-                </TouchableOpacity>
-              </View>
-            </ImageBackground>
+            />
           </View>
 
           {/**User Name */}
