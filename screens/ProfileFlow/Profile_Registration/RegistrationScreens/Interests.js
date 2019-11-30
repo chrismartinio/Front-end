@@ -22,7 +22,7 @@ import { connect } from "react-redux";
 import SetInterestsDataAction from "../../../../storage/actions/RegistrationActions/SetInterestsDataAction";
 import SetChecklistAction from "../../../../storage/actions/RegistrationActions/SetChecklistAction";
 
-//data
+//Data
 import { likes } from "../Data/Likes.js";
 
 //Icons
@@ -31,26 +31,33 @@ import { Icon } from "react-native-elements";
 //ScrollView
 const screenHeight = Math.round(Dimensions.get("window").height);
 
-//Collapsible Components
-import FailScreen from "../Components/FailScreen";
-import NextButton from "../Components/NextButton";
+//Shared Components
+import FailScreen from "../../Profile_SharedComponents/FailScreen";
+import NextButton from "../../Profile_SharedComponents/NextButton";
 
 //Picker
 import DatePicker from "react-native-datepicker";
 import RNPickerSelect from "react-native-picker-select";
 
-//checker functions
-import { likesChecker } from "../Util/OnBoardingRegistrationScreenCheckers.js";
+//Checker Functions
+import { likesChecker } from "../Util/RegistrationScreenCheckers.js";
 
 //SQLite
 import * as SQLite from "expo-sqlite";
 const db = SQLite.openDatabase("that.db");
+import {
+  insertDataIntoLocalStorage,
+  selectDataFromLocalStorage
+} from "../../LocalStorage/localStorage.js";
 
-//warnings
+//IP config
+import { localhost } from "../../../../config/ipconfig";
+
+//Warning Texts
 import {
   invalidLikesWarning,
   internalErrorWarning
-} from "../Util/OnBoardingRegistrationScreenWarnings.js";
+} from "../Util/RegistrationScreenWarnings.js";
 
 class Interests extends Component {
   constructor(props) {
@@ -72,7 +79,7 @@ class Interests extends Component {
       return;
     }
 
-    await fetch("http://74.80.250.210:4000/api/profile/query", {
+    await fetch(`http://${localhost}:4000/api/profile/query`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -83,7 +90,7 @@ class Interests extends Component {
       })
     })
       .then(res => res.json())
-      .then(res => {
+      .then(async res => {
         let object = JSON.parse(JSON.stringify(res));
         //console.log(object);
         //SUCCESS ON QUERYING DATA
@@ -103,38 +110,17 @@ class Interests extends Component {
             "INSERT OR REPLACE into device_user_interests(id, createAccount_id, likesArray) " +
             "values(1, 1, ?);";
 
-          db.transaction(
-            tx => {
-              //INSERT DATA
-              tx.executeSql(
-                insertSqlStatement,
-                [json_likesArray],
-                (tx, result) => {
-                  console.log("inner success");
-                },
-                (tx, err) => {
-                  console.log("inner error: ", err);
-                }
-              );
-              //DISPLAY DATA
-              tx.executeSql(
-                "select * from device_user_interests",
-                null,
-                (tx, result) => {
-                  console.log(result);
-                },
-                (tx, err) => {
-                  console.log("inner error: ", err);
-                }
-              );
-            },
-            (tx, err) => {
-              console.log(err);
-            },
-            () => {
-              console.log("outer success");
-            }
+          let { success } = await insertDataIntoLocalStorage(
+            insertSqlStatement,
+            "device_user_interests",
+            [json_likesArray],
+            true
           );
+
+          if (!success) {
+            console.log("failed storing data into localStorage");
+            //handle error on inserting data into localStorage
+          }
 
           //Redux
           this.props.SetInterestsDataAction({
@@ -145,54 +131,32 @@ class Interests extends Component {
           throw new Error("internal Error");
         }
       })
-      .catch(err => {
+      .catch(async err => {
         //HANDLE ANY CATCHED ERRORS
-        this.getDataFromLocalStorage()
-          .then(result => {
-            let { likesArray } = result.rows._array[0];
-            likesArray = JSON.parse(likesArray).likesArray;
+        let object = await selectDataFromLocalStorage("device_user_interests");
 
-            //setState
-            this.setState({
-              likesArray: likesArray,
-              isSuccess: true
-            });
-          })
-          .catch(err => {
-            //If error while fetching, direct user to failScreen
-            //setState
-            this.setState({
-              isSuccess: false
-            });
+        if (object.success) {
+          let { likesArray } = object.result.rows._array[0];
+          likesArray = JSON.parse(likesArray).likesArray;
+
+          //setState
+          this.setState({
+            likesArray: likesArray,
+            isSuccess: true
           });
-      });
-  };
 
-  getDataFromLocalStorage = () => {
-    return new Promise((resolve, reject) => {
-      db.transaction(
-        tx => {
-          //DISPLAY DATA
-          tx.executeSql(
-            "select * from device_user_interests",
-            null,
-            (tx, result) => {
-              if (result.rows.length <= 0) reject(new Error("Internal Error"));
-              resolve(result);
-            },
-            (tx, err) => {
-              reject(err);
-            }
-          );
-        },
-        (tx, err) => {
-          reject(err);
-        },
-        () => {
-          console.log("outer success");
+          //Redux
+          this.props.SetInterestsDataAction({
+            likesArray: likesArray
+          });
+        } else {
+          //If error while fetching, direct user to failScreen
+          //setState
+          this.setState({
+            isSuccess: false
+          });
         }
-      );
-    });
+      });
   };
 
   reset = () => {
@@ -245,7 +209,7 @@ class Interests extends Component {
         },
         () => {
           //Send data to database
-          fetch("http://74.80.250.210:4000/api/profile/update", {
+          fetch(`http://${localhost}:4000/api/profile/update`, {
             method: "POST",
             headers: {
               "Content-Type": "application/json"
@@ -260,7 +224,7 @@ class Interests extends Component {
             })
           })
             .then(res => res.json())
-            .then(res => {
+            .then(async res => {
               let object = JSON.parse(JSON.stringify(res));
               //console.log(object);
               //SUCCESS ON SUBMITTING DATA
@@ -283,49 +247,32 @@ class Interests extends Component {
                   "INSERT OR REPLACE into device_user_interests(id, createAccount_id, likesArray) " +
                   "values(1, 1, ?);";
 
-                db.transaction(
-                  tx => {
-                    //INSERT DATA
-                    tx.executeSql(
-                      insertSqlStatement,
-                      [json_likesArray],
-                      (tx, result) => {
-                        console.log("inner success");
-                      },
-                      (tx, err) => {
-                        console.log("inner error: ", err);
-                      }
-                    );
-                    //UPDATE CHECKLIST
-                    tx.executeSql(
-                      "UPDATE device_user_createAccount SET checklist = ? WHERE id = 1;",
-                      [json_checklist],
-                      (tx, result) => {
-                        console.log("inner success");
-                      },
-                      (tx, err) => {
-                        console.log("inner error: ", err);
-                      }
-                    );
-                    //DISPLAY DATA
-                    tx.executeSql(
-                      "select * from device_user_interests",
-                      null,
-                      (tx, result) => {
-                        console.log(result);
-                      },
-                      (tx, err) => {
-                        console.log("inner error: ", err);
-                      }
-                    );
-                  },
-                  (tx, err) => {
-                    console.log(err);
-                  },
-                  () => {
-                    console.log("outer success");
-                  }
+                let { success } = await insertDataIntoLocalStorage(
+                  insertSqlStatement,
+                  "device_user_interests",
+                  [json_likesArray],
+                  true
                 );
+
+                if (!success) {
+                  console.log("failed storing data into localStorage");
+                  //handle error on inserting data into localStorage
+                }
+
+                //update checklist
+                let updateSqlStatement =
+                  "UPDATE device_user_createAccount SET checklist = ? WHERE id = 1;";
+                success = await insertDataIntoLocalStorage(
+                  updateSqlStatement,
+                  "device_user_createAccount",
+                  [json_checklist],
+                  true
+                );
+
+                if (!success) {
+                  console.log("failed storing data into localStorage");
+                  //handle error on inserting data into localStorage
+                }
 
                 //setState
                 this.setState(

@@ -15,12 +15,12 @@ import {
   ConfirmationButton,
   ActivityTag,
   ProfileContainer
-} from '../../components/SignUpFlow/Index'
+} from '../../../components/SignUpFlow/Index'
 
 import { LinearGradient } from 'expo-linear-gradient'
 
 import { connect } from 'react-redux'
-import firebase from '../../utils/mainFire'
+import firebase from '../../../utils/mainFire'
 
 class ProfilePage extends React.Component {
 

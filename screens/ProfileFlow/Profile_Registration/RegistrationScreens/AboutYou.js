@@ -18,35 +18,42 @@ import { connect } from "react-redux";
 import SetAboutYouDataAction from "../../../../storage/actions/RegistrationActions/SetAboutYouDataAction";
 import SetChecklistAction from "../../../../storage/actions/RegistrationActions/SetChecklistAction";
 
-//pickers
+//Pickers
 import DatePicker from "react-native-datepicker";
 import RNPickerSelect from "react-native-picker-select";
 
-//data
+//Data
 import { countries, genders } from "../Data/CountriesAndGenders.js";
 
-//icons
+//Icons
 import { Icon, Input } from "react-native-elements";
 import { Chevron } from "react-native-shapes";
 
-//Collapsible Components
-import FailScreen from "../Components/FailScreen";
-import NextButton from "../Components/NextButton";
+//Shared Components
+import FailScreen from "../../Profile_SharedComponents/FailScreen";
+import NextButton from "../../Profile_SharedComponents/NextButton";
 
 //SQLite
 import * as SQLite from "expo-sqlite";
 const db = SQLite.openDatabase("that.db");
+import {
+  insertDataIntoLocalStorage,
+  selectDataFromLocalStorage
+} from "../../LocalStorage/localStorage.js";
 
-//checker functions
+//IP config
+import { localhost } from "../../../../config/ipconfig";
+
+//Checkers Functions
 import {
   checkZipCode,
   checkName,
   maxDate,
   minDate,
   checkage
-} from "../Util/OnBoardingRegistrationScreenCheckers.js";
+} from "../Util/RegistrationScreenCheckers.js";
 
-//warnings
+//Warnings Texts
 import {
   invalidFirstNameWarning,
   invalidLastNameWarning,
@@ -56,7 +63,7 @@ import {
   invalidZipCodeWarning,
   emptyWarning,
   internalErrorWarning
-} from "../Util/OnBoardingRegistrationScreenWarnings.js";
+} from "../Util/RegistrationScreenWarnings.js";
 
 class AboutYou extends Component {
   constructor(props) {
@@ -77,7 +84,8 @@ class AboutYou extends Component {
       birthDateWarning: "empty",
       internalErrorWarning: false,
       isSuccess: true,
-      isDelaying: false
+      isDelaying: false,
+      userBio: ""
     };
     this.isContinueUserFetched = false;
   }
@@ -92,7 +100,7 @@ class AboutYou extends Component {
       }
     }
 
-    await fetch("http://10.0.0.119:4000/api/profile/query", {
+    await fetch(`http://${localhost}:4000/api/profile/query`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -103,9 +111,9 @@ class AboutYou extends Component {
       })
     })
       .then(res => res.json())
-      .then(res => {
+      .then(async res => {
         let object = JSON.parse(JSON.stringify(res));
-        //console.log(object);
+
         //SUCCESS ON QUERYING DATA
         if (object.success) {
           let {
@@ -114,7 +122,10 @@ class AboutYou extends Component {
             birthDate,
             gender,
             country,
-            zipCode
+            zipCode,
+            userBio,
+            city,
+            state
           } = object.result;
 
           //setState
@@ -125,6 +136,7 @@ class AboutYou extends Component {
             gender: gender,
             country: country,
             zipCode: zipCode,
+            userBio: userBio,
             firstNameWarning: firstName === "" ? "empty" : "",
             lastNameWarning: lastName === "" ? "empty" : "",
             birthDateWarning: birthDate === "" ? "empty" : "",
@@ -137,41 +149,30 @@ class AboutYou extends Component {
           //LocalStorage
           //Only insert or replace id = 1
           let insertSqlStatement =
-            "INSERT OR REPLACE into device_user_aboutYou(id, createAccount_id, firstName, lastName, birthDate, gender, country, zipCode) " +
-            "values(1, 1, ?, ?, ?, ?, ?, ?);";
+            "INSERT OR REPLACE into device_user_aboutYou(id, createAccount_id, firstName, lastName, birthDate, gender, country, zipCode, userBio, city, state) " +
+            "values(1, 1, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
 
-          db.transaction(
-            tx => {
-              //INSERT DATA
-              tx.executeSql(
-                insertSqlStatement,
-                [firstName, lastName, birthDate, gender, country, zipCode],
-                (tx, result) => {
-                  console.log("inner success");
-                },
-                (tx, err) => {
-                  console.log("inner error: ", err);
-                }
-              );
-              //DISPLAY DATA
-              tx.executeSql(
-                "select * from device_user_aboutYou",
-                null,
-                (tx, result) => {
-                  console.log(result);
-                },
-                (tx, err) => {
-                  console.log("inner error: ", err);
-                }
-              );
-            },
-            (tx, err) => {
-              console.log(err);
-            },
-            () => {
-              console.log("outer success");
-            }
+          let { success } = await insertDataIntoLocalStorage(
+            insertSqlStatement,
+            "device_user_aboutYou",
+            [
+              firstName,
+              lastName,
+              birthDate,
+              gender,
+              country,
+              zipCode,
+              userBio,
+              city,
+              state
+            ],
+            true
           );
+
+          if (!success) {
+            console.log("failed storing data into localStorage");
+            //handle error on inserting data into localStorage
+          }
 
           //Redux
           this.props.SetAboutYouDataAction({
@@ -180,77 +181,74 @@ class AboutYou extends Component {
             birthDate: birthDate,
             gender: gender,
             country: country,
-            zipCode: zipCode
+            zipCode: zipCode,
+            userBio: userBio,
+            city: city,
+            state: state
           });
         } else {
           //INTERNAL ERROR
           throw new Error("internal Error");
         }
       })
-      .catch(err => {
+      .catch(async err => {
         //HANDLE ANY CATCHED ERRORS
-        this.getDataFromLocalStorage()
-          .then(result => {
-            let {
-              firstName,
-              lastName,
-              birthDate,
-              gender,
-              country,
-              zipCode
-            } = result.rows._array[0];
-            //setState
-            this.setState({
-              firstName: firstName,
-              lastName: lastName,
-              birthDate: birthDate,
-              gender: gender,
-              country: country,
-              zipCode: zipCode,
-              firstNameWarning: firstName === "" ? "empty" : "",
-              lastNameWarning: lastName === "" ? "empty" : "",
-              birthDateWarning: birthDate === "" ? "empty" : "",
-              genderWarning: gender === "" ? "empty" : "",
-              countryWarning: country === "" ? "empty" : "",
-              zipCodeWarning: zipCode === "" ? "empty" : "",
-              isSuccess: true
-            });
-          })
-          .catch(err => {
-            //If error while fetching, direct user to failScreen
-            //setState
-            this.setState({
-              isSuccess: false
-            });
-          });
-      });
-  };
 
-  getDataFromLocalStorage = () => {
-    return new Promise((resolve, reject) => {
-      db.transaction(
-        tx => {
-          //DISPLAY DATA
-          tx.executeSql(
-            "select * from device_user_aboutYou",
-            null,
-            (tx, result) => {
-              if (result.rows.length <= 0) reject(new Error("Internal Error"));
-              resolve(result);
-            },
-            (tx, err) => {
-              reject(err);
-            }
-          );
-        },
-        (tx, err) => {
-          reject(err);
-        },
-        () => {
-          console.log("outer success");
+        let object = await selectDataFromLocalStorage("device_user_aboutYou");
+
+        if (object.success) {
+          let {
+            firstName,
+            lastName,
+            birthDate,
+            gender,
+            country,
+            zipCode,
+            userBio,
+            city,
+            state
+          } = object.result.rows._array[0];
+
+          //setState
+          this.setState({
+            firstName: firstName,
+            lastName: lastName,
+            birthDate: birthDate,
+            gender: gender,
+            country: country,
+            zipCode: zipCode,
+            userBio: userBio,
+            firstNameWarning: firstName === "" ? "empty" : "",
+            lastNameWarning: lastName === "" ? "empty" : "",
+            birthDateWarning: birthDate === "" ? "empty" : "",
+            genderWarning: gender === "" ? "empty" : "",
+            countryWarning: country === "" ? "empty" : "",
+            zipCodeWarning: zipCode === "" ? "empty" : "",
+            isSuccess: true
+          });
+
+          //Redux
+          this.props.SetAboutYouDataAction({
+            firstName: firstName,
+            lastName: lastName,
+            birthDate: birthDate,
+            gender: gender,
+            country: country,
+            zipCode: zipCode,
+            userBio: userBio,
+            city: city,
+            state: state
+          });
+        } else {
+          //If error while querying from database,
+          //direct user to failScreen
+
+          //setState
+          this.setState({
+            isSuccess: false
+          });
         }
-      );
-    });
+      });
   };
 
   reset = () => {
@@ -438,7 +436,7 @@ class AboutYou extends Component {
           isDelaying: true
         },
         () => {
-          fetch("http://74.80.250.210:4000/api/profile/update", {
+          fetch(`http://${localhost}:4000/api/profile/update`, {
             method: "POST",
             headers: {
               "Content-Type": "application/json"
@@ -453,12 +451,13 @@ class AboutYou extends Component {
                 gender: this.state.gender,
                 country: this.state.country,
                 zipCode: this.state.zipCode,
+                userBio: this.state.userBio,
                 checklist: checklist
               }
             })
           })
             .then(res => res.json())
-            .then(res => {
+            .then(async res => {
               let object = JSON.parse(JSON.stringify(res));
               //console.log(object);
               //SUCCESS ON SUBMITTING DATA
@@ -470,7 +469,8 @@ class AboutYou extends Component {
                   birthDate: this.state.birthDate,
                   gender: this.state.gender,
                   country: this.state.country,
-                  zipCode: this.state.zipCode
+                  zipCode: this.state.zipCode,
+                  userBio: this.state.userBio
                 });
                 this.props.SetChecklistAction({
                   checklist: checklist
@@ -480,59 +480,45 @@ class AboutYou extends Component {
                 let json_checklist = JSON.stringify(checklist);
                 //Only insert or replace id = 1
                 let insertSqlStatement =
-                  "INSERT OR REPLACE into device_user_aboutYou(id, createAccount_id, firstName, lastName, birthDate, gender, country, zipCode) " +
-                  "values(1, 1, ?, ?, ?, ?, ?, ?);";
+                  "INSERT OR REPLACE into device_user_aboutYou(id, createAccount_id, firstName, lastName, birthDate, gender, country, zipCode, userBio, city, state) " +
+                  "values(1, 1, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
 
-                db.transaction(
-                  tx => {
-                    //INSERT DATA
-                    tx.executeSql(
-                      insertSqlStatement,
-                      [
-                        this.state.firstName,
-                        this.state.lastName,
-                        this.state.birthDate,
-                        this.state.gender,
-                        this.state.country,
-                        this.state.zipCode
-                      ],
-                      (tx, result) => {
-                        console.log("inner success");
-                      },
-                      (tx, err) => {
-                        console.log("inner error: ", err);
-                      }
-                    );
-                    //UPDATE CHECKLIST
-                    tx.executeSql(
-                      "UPDATE device_user_createAccount SET checklist = ? WHERE id = 1;",
-                      [json_checklist],
-                      (tx, result) => {
-                        console.log("inner success");
-                      },
-                      (tx, err) => {
-                        console.log("inner error: ", err);
-                      }
-                    );
-                    //DISPLAY DATA
-                    tx.executeSql(
-                      "select * from device_user_aboutYou",
-                      null,
-                      (tx, result) => {
-                        console.log(result);
-                      },
-                      (tx, err) => {
-                        console.log("inner error: ", err);
-                      }
-                    );
-                  },
-                  (tx, err) => {
-                    console.log(err);
-                  },
-                  () => {
-                    console.log("outer success");
-                  }
+                let { success } = await insertDataIntoLocalStorage(
+                  insertSqlStatement,
+                  "device_user_aboutYou",
+                  [
+                    this.state.firstName,
+                    this.state.lastName,
+                    this.state.birthDate,
+                    this.state.gender,
+                    this.state.country,
+                    this.state.zipCode,
+                    this.state.userBio,
+                    "",
+                    ""
+                  ],
+                  true
                 );
+
+                if (!success) {
+                  console.log("failed storing data into localStorage");
+                  //handle error on inserting data into localStorage
+                }
+
+                //update checklist
+                let updateSqlStatement =
+                  "UPDATE device_user_createAccount SET checklist = ? WHERE id = 1;";
+                success = await insertDataIntoLocalStorage(
+                  updateSqlStatement,
+                  "device_user_createAccount",
+                  [json_checklist],
+                  true
+                );
+
+                if (!success) {
+                  console.log("failed storing data into localStorage");
+                  //handle error on inserting data into localStorage
+                }
 
                 //setState
                 this.setState(
@@ -543,6 +529,21 @@ class AboutYou extends Component {
                   () => {
                     // it will put a check mark for aboutYou
                     this.props.handlePassed("aboutYou", 1);
+                  }
+                );
+              } else if (object.success === false && object.status === 422) {
+                //Invalid ZipCode
+
+                //setState
+                this.setState(
+                  {
+                    zipCodeWarning: "invalid",
+                    internalErrorWarning: false,
+                    isDelaying: false
+                  },
+                  () => {
+                    //put a error marker for aboutYou
+                    this.props.handlePassed("aboutYou", 3);
                   }
                 );
               } else {
@@ -609,6 +610,7 @@ class AboutYou extends Component {
             placeholderTextColor="rgb(67, 33, 140)"
             inputStyle={styles.inputStyle}
             value={this.state.firstName}
+            returnKeyType="done"
             rightIcon={
               this.state.firstNameWarning === "" ? (
                 <Icon
@@ -650,6 +652,7 @@ class AboutYou extends Component {
             placeholderTextColor="rgb(67, 33, 140)"
             inputStyle={styles.inputStyle}
             value={this.state.lastName}
+            returnKeyType="done"
             rightIcon={
               this.state.lastNameWarning === "" ? (
                 <Icon
@@ -834,6 +837,7 @@ class AboutYou extends Component {
               autoCorrect={false}
               keyboardType="numeric"
               maxLength={5}
+              returnKeyType="done"
               value={this.state.zipCode}
               rightIcon={
                 this.state.zipCodeWarning === "" ? (
@@ -860,10 +864,32 @@ class AboutYou extends Component {
             {this.state.zipCodeWarning === "invalid" && invalidZipCodeWarning}
           </View>
         </View>
+
         {/*Spaces*/}
         <View
           style={{
-            padding: "10%"
+            padding: "7%"
+          }}
+        />
+
+        {/*User Bio*/}
+        <View style={styles.userBioWrap}>
+          <TextInput
+            style={styles.userBioInputStyle}
+            placeholder="Tell us about yourself"
+            placeholderTextColor="rgb(67, 33, 140)"
+            multiline={true}
+            numberOfLines={4}
+            value={this.state.userBio}
+            returnKeyType="done"
+            onChangeText={userBio => this.setState({ userBio })}
+          />
+        </View>
+
+        {/*Spaces*/}
+        <View
+          style={{
+            padding: "5%"
             //borderRadius: 4,
             //borderWidth: 0.5,
             //borderColor: "#d6d7da"
@@ -906,7 +932,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1
   },
-
   inputStyle: {
     color: "rgb(67, 33, 140)",
     fontSize: Math.round(width / 28.84)
@@ -942,6 +967,18 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     flexWrap: "wrap",
     marginBottom: "15%"
+  },
+  userBioWrap: {
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: "rgb(67, 33, 140)",
+    height: 100
+  },
+  userBioInputStyle: {
+    color: "rgb(67, 33, 140)",
+    fontSize: Math.round(width / 28.84),
+    paddingHorizontal: 15,
+    paddingVertical: 15
   }
 });
 

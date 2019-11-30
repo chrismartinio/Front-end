@@ -1,12 +1,12 @@
 import React from "react";
 import { ScrollView, StyleSheet, Text, View, Button } from "react-native";
 import { ExpoLinksView } from "@expo/samples";
-import ProfilePage from "./SignUpFlow/ProfilePage";
-import MatchesPage from "./SignUpFlow/Matches";
-import RegistrationPage from "./SignUpFlow/RegistrationPage";
-import SelfiePage from "./SignUpFlow/SelfiePage";
-import SignupPage from "./SignUpFlow/SignupPage";
-import PhotoReview from "./SignUpFlow/PhotoReview";
+import ProfilePage from "./OldScreens/SignUpFlow/ProfilePage";
+import MatchesPage from "./OldScreens/SignUpFlow/Matches";
+import RegistrationPage from "./OldScreens/SignUpFlow/RegistrationPage";
+import SelfiePage from "./OldScreens/SignUpFlow/SelfiePage";
+import SignupPage from "./OldScreens/SignUpFlow/SignupPage";
+import PhotoReview from "./OldScreens/SignUpFlow/PhotoReview";
 import MatchBackground from "../components/ChatFlow/MatchBackground";
 import InitialMatchChoice from "./ChatFlow/InitialMatchChoice";
 import Selection from "./ChatFlow/Selection";
@@ -17,8 +17,10 @@ import ChatPage from "./ChatFlow/chatMain";
 import firebase from "../utils/mainFire";
 import LocationServices from "./LocationServices/LocationServices";
 
+/*
 import t from "tcomb-form-native";
 const Form = t.form.Form;
+
 
 var Component = t.enums(
   {
@@ -42,27 +44,30 @@ var Component = t.enums(
   },
   "Component"
 );
+*/
 
+/*
 var details = t.struct({
   Component: Component
 });
-
+*/
 export default class LinksScreen extends React.Component {
   static navigationOptions = {
     title: "Testing Screen"
   };
   constructor(props) {
     super(props);
+    /*
     this.state = {
       CurrentScreen: ProfilePage
-    };
+    };*/
     this.buttonAry = [
       "TestChatPage", //show user list
       "TestChat", //chat screen
       "TestLocationServices",
-      "TestCollapsible",
+      "TestProfile_Registration",
       "TestRegistrationComplete",
-      "TestProfile",
+      "TestProfileScreen",
       //"TestMatches",
       //"TestRegistration",
       //"TestSelfie",
@@ -75,8 +80,8 @@ export default class LinksScreen extends React.Component {
       //"CreateQuestionaire",
       //"ReplyQuestionaire",
       //"ViewQuestionaire",
-      "ChatUsersList",
-      "MatchedUserChat"
+      "TestChatUsersList",
+      "TestMatchedUserChat"
       //"TestSignUp",
       //"TestAboutYou",
       //"TestTellUsMore",
@@ -86,6 +91,7 @@ export default class LinksScreen extends React.Component {
     ];
   }
 
+  /*
   handleChange = () => {
     if (this._form.getValue().Component === "sPROFILE") {
       this.props.navigation.navigate("TestProfile");
@@ -123,7 +129,7 @@ export default class LinksScreen extends React.Component {
       this.props.navigation.navigate("TestSpendWeekend");
     }
   };
-
+*/
   /*
   handleClick = (page) => {
     this.props.navigation.navigate(page)
@@ -151,7 +157,7 @@ export default class LinksScreen extends React.Component {
 
   render() {
     this.storeHighScore("fun@mailcom", 200);
-    let CurrentScreen = this.state.CurrentScreen;
+    //let CurrentScreen = this.state.CurrentScreen;
     let displayButton = this.buttonAry.map((e, index = 0) => {
       return (
         <Button

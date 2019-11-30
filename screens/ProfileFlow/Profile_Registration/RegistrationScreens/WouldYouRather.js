@@ -15,19 +15,26 @@ import { connect } from "react-redux";
 import SetWouldYouRatherDataAction from "../../../../storage/actions/RegistrationActions/SetWouldYouRatherDataAction";
 import SetChecklistAction from "../../../../storage/actions/RegistrationActions/SetChecklistAction";
 
-//Collapsible Components
-import FailScreen from "../Components/FailScreen";
-import NextButton from "../Components/NextButton";
+//Shared Components
+import FailScreen from "../../Profile_SharedComponents/FailScreen";
+import NextButton from "../../Profile_SharedComponents/NextButton";
 
 //Slider
-import Slider from "../Components/Sliders/WouldYouRatherSlider";
+import Slider from "../../Profile_SharedComponents/Sliders/WouldYouRatherSlider";
 
 //SQLite
 import * as SQLite from "expo-sqlite";
 const db = SQLite.openDatabase("that.db");
+import {
+  insertDataIntoLocalStorage,
+  selectDataFromLocalStorage
+} from "../../LocalStorage/localStorage.js";
 
-//warnings
-import { internalErrorWarning } from "../Util/OnBoardingRegistrationScreenWarnings.js";
+//IP Config
+import { localhost } from "../../../../config/ipconfig";
+
+//Warning Texts
+import { internalErrorWarning } from "../Util/RegistrationScreenWarnings.js";
 
 class WouldYouRather extends Component {
   static navigationOptions = {
@@ -61,7 +68,7 @@ class WouldYouRather extends Component {
       return;
     }
 
-    await fetch("http://74.80.250.210:4000/api/profile/query", {
+    await fetch(`http://${localhost}:4000/api/profile/query`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -72,7 +79,7 @@ class WouldYouRather extends Component {
       })
     })
       .then(res => res.json())
-      .then(res => {
+      .then(async res => {
         let object = JSON.parse(JSON.stringify(res));
         //console.log(object);
         //SUCCESS ON QUERYING DATA
@@ -98,45 +105,24 @@ class WouldYouRather extends Component {
             "INSERT OR REPLACE into device_user_wouldYouRather(id, createAccount_id, s1r1, s1r2, s2r1, s2r2, s3r1, s3r2) " +
             "values(1, 1, ?, ?, ?, ?, ?, ?);";
 
-          db.transaction(
-            tx => {
-              //INSERT DATA
-              tx.executeSql(
-                insertSqlStatement,
-                [
-                  object.result.s1r1,
-                  object.result.s1r2,
-                  object.result.s2r1,
-                  object.result.s2r2,
-                  object.result.s3r1,
-                  object.result.s3r2
-                ],
-                (tx, result) => {
-                  console.log("inner success");
-                },
-                (tx, err) => {
-                  console.log("inner error: ", err);
-                }
-              );
-              //DISPLAY DATA
-              tx.executeSql(
-                "select * from device_user_wouldYouRather",
-                null,
-                (tx, result) => {
-                  console.log(result);
-                },
-                (tx, err) => {
-                  console.log("inner error: ", err);
-                }
-              );
-            },
-            (tx, err) => {
-              console.log(err);
-            },
-            () => {
-              console.log("outer success");
-            }
+          let { success } = await insertDataIntoLocalStorage(
+            insertSqlStatement,
+            "device_user_wouldYouRather",
+            [
+              object.result.s1r1,
+              object.result.s1r2,
+              object.result.s2r1,
+              object.result.s2r2,
+              object.result.s3r1,
+              object.result.s3r2
+            ],
+            true
           );
+
+          if (!success) {
+            console.log("failed storing data into localStorage");
+            //handle error on inserting data into localStorage
+          }
 
           //Redux
           this.props.SetWouldYouRatherDataAction({
@@ -152,61 +138,55 @@ class WouldYouRather extends Component {
           throw new Error("internal Error");
         }
       })
-      .catch(err => {
+      .catch(async err => {
         //HANDLE ANY CATCHED ERRORS
-        this.getDataFromLocalStorage()
-          .then(result => {
-            let { s1r1, s1r2, s2r1, s2r2, s3r1, s3r2 } = result.rows._array[0];
-            //set this
-            this.s1r1 = s1r1;
-            this.s1r2 = s1r2;
-            this.s2r1 = s2r1;
-            this.s2r2 = s2r2;
-            this.s3r1 = s3r1;
-            this.s3r2 = s3r2;
-            //setState
-            this.setState({
-              displaySlider1Value: s1r2 - 50,
-              displaySlider2Value: s2r2 - 50,
-              displaySlider3Value: s3r2 - 50,
-              isSuccess: true
-            });
-          })
-          .catch(err => {
-            //If error while fetching, direct user to failScreen
-            //setState
-            this.setState({
-              isSuccess: false
-            });
-          });
-      });
-  };
 
-  getDataFromLocalStorage = () => {
-    return new Promise((resolve, reject) => {
-      db.transaction(
-        tx => {
-          //DISPLAY DATA
-          tx.executeSql(
-            "select * from device_user_wouldYouRather",
-            null,
-            (tx, result) => {
-              if (result.rows.length <= 0) reject(new Error("Internal Error"));
-              resolve(result);
-            },
-            (tx, err) => {
-              reject(err);
-            }
-          );
-        },
-        (tx, err) => {
-          reject(err);
-        },
-        () => {
-          console.log("outer success");
+        let object = await selectDataFromLocalStorage(
+          "device_user_wouldYouRather"
+        );
+
+        if (object.success) {
+          let {
+            s1r1,
+            s1r2,
+            s2r1,
+            s2r2,
+            s3r1,
+            s3r2
+          } = object.result.rows._array[0];
+          //set this
+          this.s1r1 = s1r1;
+          this.s1r2 = s1r2;
+          this.s2r1 = s2r1;
+          this.s2r2 = s2r2;
+          this.s3r1 = s3r1;
+          this.s3r2 = s3r2;
+
+          //setState
+          this.setState({
+            displaySlider1Value: s1r2 - 50,
+            displaySlider2Value: s2r2 - 50,
+            displaySlider3Value: s3r2 - 50,
+            isSuccess: true
+          });
+
+          //Redux
+          this.props.SetWouldYouRatherDataAction({
+            s1r1: s1r1,
+            s1r2: s1r2,
+            s2r1: s2r1,
+            s2r2: s2r2,
+            s3r1: s3r1,
+            s3r2: s3r2
+          });
+        } else {
+          //If error while fetching, direct user to failScreen
+          //setState
+          this.setState({
+            isSuccess: false
+          });
         }
-      );
-    });
+      });
   };
 
   componentDidUpdate(prevProps, prevState, snapshot) {
@@ -236,7 +216,7 @@ class WouldYouRather extends Component {
         },
         () => {
           //Send data to database
-          fetch("http://74.80.250.210:4000/api/profile/update", {
+          fetch(`http://${localhost}:4000/api/profile/update`, {
             method: "POST",
             headers: {
               "Content-Type": "application/json"
@@ -256,7 +236,7 @@ class WouldYouRather extends Component {
             })
           })
             .then(res => res.json())
-            .then(res => {
+            .then(async res => {
               let object = JSON.parse(JSON.stringify(res));
               //console.log(object);
               //SUCCESS ON SUBMITTING DATA
@@ -281,56 +261,39 @@ class WouldYouRather extends Component {
                   "INSERT OR REPLACE into device_user_wouldYouRather(id, createAccount_id, s1r1, s1r2, s2r1, s2r2, s3r1, s3r2) " +
                   "values(1, 1, ?, ?, ?, ?, ?, ?);";
 
-                db.transaction(
-                  tx => {
-                    //INSERT DATA
-                    tx.executeSql(
-                      insertSqlStatement,
-                      [
-                        this.s1r1,
-                        this.s1r2,
-                        this.s2r1,
-                        this.s2r2,
-                        this.s3r1,
-                        this.s3r2
-                      ],
-                      (tx, result) => {
-                        console.log("inner success");
-                      },
-                      (tx, err) => {
-                        console.log("inner error: ", err);
-                      }
-                    );
-                    //UPDATE CHECKLIST
-                    tx.executeSql(
-                      "UPDATE device_user_createAccount SET checklist = ? WHERE id = 1;",
-                      [json_checklist],
-                      (tx, result) => {
-                        console.log("inner success");
-                      },
-                      (tx, err) => {
-                        console.log("inner error: ", err);
-                      }
-                    );
-                    //DISPLAY DATA
-                    tx.executeSql(
-                      "select * from device_user_wouldYouRather",
-                      null,
-                      (tx, result) => {
-                        console.log(result);
-                      },
-                      (tx, err) => {
-                        console.log("inner error: ", err);
-                      }
-                    );
-                  },
-                  (tx, err) => {
-                    console.log(err);
-                  },
-                  () => {
-                    console.log("outer success");
-                  }
+                let { success } = await insertDataIntoLocalStorage(
+                  insertSqlStatement,
+                  "device_user_wouldYouRather",
+                  [
+                    this.s1r1,
+                    this.s1r2,
+                    this.s2r1,
+                    this.s2r2,
+                    this.s3r1,
+                    this.s3r2
+                  ],
+                  true
                 );
+
+                if (!success) {
+                  console.log("failed storing data into localStorage");
+                  //handle error on inserting data into localStorage
+                }
+
+                //update checklist
+                let updateSqlStatement =
+                  "UPDATE device_user_createAccount SET checklist = ? WHERE id = 1;";
+                success = await insertDataIntoLocalStorage(
+                  updateSqlStatement,
+                  "device_user_createAccount",
+                  [json_checklist],
+                  true
+                );
+
+                if (!success) {
+                  console.log("failed storing data into localStorage");
+                  //handle error on inserting data into localStorage
+                }
 
                 //setState
                 this.setState(
@@ -395,7 +358,7 @@ class WouldYouRather extends Component {
     this.s1r1 = 50 - arg;
     this.s1r2 = 50 + arg;
     this.setState({
-      displaySlider1Value: this.s1r2 - 50,
+      displaySlider1Value: this.s1r2 - 50
     });
   };
 
@@ -403,7 +366,7 @@ class WouldYouRather extends Component {
     this.s2r1 = 50 - arg;
     this.s2r2 = 50 + arg;
     this.setState({
-      displaySlider2Value: this.s2r2 - 50,
+      displaySlider2Value: this.s2r2 - 50
     });
   };
 
@@ -411,7 +374,7 @@ class WouldYouRather extends Component {
     this.s3r1 = 50 - arg;
     this.s3r2 = 50 + arg;
     this.setState({
-      displaySlider3Value: this.s3r2 - 50,
+      displaySlider3Value: this.s3r2 - 50
     });
   };
 

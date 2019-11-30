@@ -10,8 +10,8 @@ import {
     Dimensions
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient'
-import Camera from '../../components/SignUpFlow/Camera';
-import SetProfilePictureAction from '../../storage/actions/SetProfilePictureAction';
+import Camera from '../../../components/SignUpFlow/Camera';
+import SetProfilePictureAction from '../../../storage/actions/SetProfilePictureAction';
 import { connect } from 'react-redux'
 import { white } from 'ansi-colors';
 var {height, width}= Dimensions.get('window')

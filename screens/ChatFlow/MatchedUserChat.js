@@ -24,7 +24,18 @@ import io from "socket.io-client";
 
 import LoadingScreen from "./components/LoadingScreen";
 
+import { localhost } from "../../config/ipconfig";
+
 class MatchedUserChat extends React.Component {
+  static navigationOptions = ({ navigation }) => {
+    return {
+      headerTitle: "ChatRoom",
+      headerLeft: () => (
+        <Button title="Exit" onPress={navigation.getParam("exitChatPopUp")} />
+      )
+    };
+  };
+
   constructor(props) {
     super(props);
     this.state = {
@@ -41,7 +52,7 @@ class MatchedUserChat extends React.Component {
     this.guid = "";
     this.user_firstName = "";
     this.matched_user_firstName = "";
-    this.socket = io("http://74.80.250.210:3060");
+    this.socket = io(`http://${localhost}:3060`);
 
     //handle new message
     this.socket.on("new message", data => {
@@ -137,6 +148,11 @@ class MatchedUserChat extends React.Component {
   }
 
   async componentDidMount() {
+    this.props.navigation.setParams({
+      exitChatPopUp: () => {
+        this.exitChatPopUp(true);
+      }
+    });
     /*
     this.guid = await this.props.CreateProfileDataReducer.guid;
 
@@ -241,7 +257,7 @@ class MatchedUserChat extends React.Component {
     //THIS WORK ONLY FROM CHATLIST TO CHATROOM
     this.props.navigation.getParam.forceRender;
     this.socket.emit("disconnect");
-    this.props.navigation.navigate("ChatUsersList");
+    this.props.navigation.goBack();
   };
 
   exitChatPopUp = visible => {
@@ -272,10 +288,7 @@ class MatchedUserChat extends React.Component {
         return (
           <View key={index}>
             <View style={styles.textContainer}>
-              <Text style={styles.circlePurple}>
-                {" "}
-                {messageItem.userName[0]}
-              </Text>
+              <Text style={styles.circlePurple}> {messageItem.userName}</Text>
               <Text style={styles.targetMessageText}>
                 {`${messageItem.message}\n`}
                 <Text style={styles.dateTimeLeft}>{`${
@@ -316,13 +329,6 @@ class MatchedUserChat extends React.Component {
             source={require("../../assets/Assets_V1/Butterfly_Background/butterflyBackground.png")}
             style={styles.backgroundImage}
           >
-            {/*Exit Button*/}
-            <Button
-              title="Exit"
-              onPress={() => {
-                this.exitChatPopUp(true);
-              }}
-            />
             <Text>{this.state.timerSecond} seconds left</Text>
             <Image
               style={{

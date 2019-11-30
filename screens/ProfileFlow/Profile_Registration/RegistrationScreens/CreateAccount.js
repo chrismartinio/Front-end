@@ -12,29 +12,39 @@ import {
   Dimensions
 } from "react-native";
 
+//Expo
 import * as Expo from "expo";
 import * as Permissions from "expo-permissions";
-import * as Location from 'expo-location';
+import * as Location from "expo-location";
 import { Notifications } from "expo";
 import Constants from "expo-constants";
-//redux
+
+//Redux
 import { connect } from "react-redux";
 import SetCreateAccountDataAction from "../../../../storage/actions/RegistrationActions/SetCreateAccountDataAction";
 import SetGUIDAction from "../../../../storage/actions/RegistrationActions/SetGUIDAction";
+import SetChecklistAction from "../../../../storage/actions/RegistrationActions/SetChecklistAction";
 
-//icons
+//Icons
 import { Icon, Input } from "react-native-elements";
 import { Chevron } from "react-native-shapes";
 
-//Collapsible Components
-import FailScreen from "../Components/FailScreen";
-import NextButton from "../Components/NextButton";
+//Shared Components
+import FailScreen from "../../Profile_SharedComponents/FailScreen";
+import NextButton from "../../Profile_SharedComponents/NextButton";
 
 //SQLite
 import * as SQLite from "expo-sqlite";
 const db = SQLite.openDatabase("that.db");
+import {
+  insertDataIntoLocalStorage,
+  selectDataFromLocalStorage
+} from "../../LocalStorage/localStorage.js";
 
-//checker functions
+//IP config
+import { localhost } from "../../../../config/ipconfig";
+
+//Checker Functions
 import {
   emailCheck,
   nullCheck,
@@ -42,9 +52,9 @@ import {
   passwordCase,
   passwordNonLetter,
   passwordCheck
-} from "../Util/OnBoardingRegistrationScreenCheckers.js";
+} from "../Util/RegistrationScreenCheckers.js";
 
-//warnings
+//Warning Texts
 import {
   emptyEmailWarning,
   emptyPasswordWarning,
@@ -54,8 +64,9 @@ import {
   invalidConfirmPasswordWarning,
   duplicateEmailWarning,
   internalErrorWarning
-} from "../Util/OnBoardingRegistrationScreenWarnings.js";
+} from "../Util/RegistrationScreenWarnings.js";
 
+//Push Notification Permission
 async function registerForPushNotificationsAsync() {
   const { status: existingStatus } = await Permissions.getAsync(
     Permissions.NOTIFICATIONS
@@ -82,22 +93,25 @@ async function registerForPushNotificationsAsync() {
   // POST the token to your backend server from where you can retrieve it to send push notifications.
 }
 
+//Location Permission
 async function registerForLocationAsync() {
-  console.log("asking permission")
+  console.log("asking permission");
   let { status } = await Permissions.askAsync(Permissions.LOCATION);
-    if (status !== 'granted') {
-      this.setState({
-        errorMessage: 'Permission to access location was denied',
-      });
-    }
-    console.log("getting location")
-    let location = await Location.getCurrentPositionAsync({});
-  global.currentLatLong = location.coords.latitude + "." + location.coords.longitude;
-  global.currentAltitude = location.coords.altitude
-  console.log("Heres your position", global.currentLatLong)
-  console.log("Heres your altitude", global.currentAltitude)
+  if (status !== "granted") {
+    this.setState({
+      errorMessage: "Permission to access location was denied"
+    });
+  }
+  console.log("getting location");
+  let location = await Location.getCurrentPositionAsync({});
+  global.currentLatLong =
+    location.coords.latitude + "." + location.coords.longitude;
+  global.currentAltitude = location.coords.altitude;
+  console.log("Heres your position", global.currentLatLong);
+  console.log("Heres your altitude", global.currentAltitude);
   // POST the token to your backend server from where you can retrieve it to send push notifications.
 }
+
 class CreateAccount extends Component {
   constructor(props) {
     super(props);
@@ -122,8 +136,9 @@ class CreateAccount extends Component {
     this.isContinueUserFetched = false;
   }
 
+  //Query data from database
   getDataFromDB = async () => {
-    await fetch("http://74.80.250.210:4000/api/profile/query", {
+    await fetch(`http://${localhost}:4000/api/profile/query`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -134,8 +149,9 @@ class CreateAccount extends Component {
       })
     })
       .then(res => res.json())
-      .then(res => {
+      .then(async res => {
         let object = JSON.parse(JSON.stringify(res));
+
         //SUCCESS ON QUERYING DATA
         if (object.success) {
           //setState
@@ -176,48 +192,27 @@ class CreateAccount extends Component {
             "INSERT OR REPLACE into device_user_createAccount(id, guid, email, password, isAdmin, checklist, phoneNumber, deviceID, deviceLatLong, deviceAltitude) " +
             "values(1, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
 
-          db.transaction(
-            tx => {
-              //INSERT DATA
-              tx.executeSql(
-                insertSqlStatement,
-                [
-                  object.guid,
-                  object.result.email,
-                  "Password",
-                  false,
-                  json_checklist,
-                  "temp",
-                  global.deviceToken,
-                  global.currentLatLong,
-                  global.currentAltitude
-                ],
-                (tx, result) => {
-                  console.log("inner success");
-                },
-                (tx, err) => {
-                  console.log("inner error: ", err);
-                }
-              );
-              //DISPLAY DATA
-              tx.executeSql(
-                "select * from device_user_createAccount",
-                null,
-                (tx, result) => {
-                  console.log(result);
-                },
-                (tx, err) => {
-                  console.log("inner error: ", err);
-                }
-              );
-            },
-            (tx, err) => {
-              console.log(err);
-            },
-            () => {
-              console.log("outer success");
-            }
+          let { success } = await insertDataIntoLocalStorage(
+            insertSqlStatement,
+            "device_user_createAccount",
+            [
+              object.result._id,
+              object.result.email,
+              "Password",
+              false,
+              json_checklist,
+              "temp",
+              global.deviceToken,
+              global.currentLatLong,
+              global.currentAltitude
+            ],
+            true
           );
+
+          if (!success) {
+            console.log("failed storing data into localStorage");
+            //handle error on inserting data into localStorage
+          }
 
           //Redux
           this.props.SetCreateAccountDataAction({
@@ -235,64 +230,50 @@ class CreateAccount extends Component {
           throw new Error("internal Error");
         }
       })
-      .catch(err => {
+      .catch(async err => {
         //HANDLE ANY CATCHED ERRORS
-        this.getDataFromLocalStorage()
-          .then(result => {
-            let { email } = result.rows._array[0];
-            //setState
-            this.setState({
-              email: email,
-              confirmEmail: email,
-              password: "Password",
-              confirmPassword: "Password",
-              emailWarning: "",
-              confirmEmailWarning: "",
-              passwordWarning: "",
-              confirmPasswordWarning: "",
-              password_UpperLowerCaseWarning: false,
-              password_NumberSymbolWarning: false,
-              password_LengthWarning: false,
-              isSuccess: true,
-              editable: false,
-              passed: true //if user can resume, that means the user had passed createAccount screen
-            });
-          })
-          .catch(err => {
-            //If error while fetching, direct user to failScreen
-            //setState
-            this.setState({
-              isSuccess: false
-            });
-          });
-      });
-  };
 
-  getDataFromLocalStorage = () => {
-    return new Promise((resolve, reject) => {
-      db.transaction(
-        tx => {
-          //DISPLAY DATA
-          tx.executeSql(
-            "select * from device_user_createAccount",
-            null,
-            (tx, result) => {
-              if (result.rows.length <= 0) reject(new Error("Internal Error"));
-              resolve(result);
-            },
-            (tx, err) => {
-              reject(err);
-            }
-          );
-        },
-        (tx, err) => {
-          reject(err);
-        },
-        () => {
-          console.log("outer success");
+        let object = await selectDataFromLocalStorage(
+          "device_user_createAccount"
+        );
+
+        if (object.success) {
+          let { email } = object.result.rows._array[0];
+          //setState
+          this.setState({
+            email: email,
+            confirmEmail: email,
+            password: "Passwords",
+            confirmPassword: "Password",
+            emailWarning: "",
+            confirmEmailWarning: "",
+            passwordWarning: "",
+            confirmPasswordWarning: "",
+            password_UpperLowerCaseWarning: false,
+            password_NumberSymbolWarning: false,
+            password_LengthWarning: false,
+            isSuccess: true,
+            editable: false,
+            passed: true
+            //if user can resume,
+            //that means the user had passed createAccount screen
+          });
+
+          //Redux
+          this.props.SetCreateAccountDataAction({
+            email: email,
+            password: "Password"
+          });
+        } else {
+          //If error while querying from database,
+          //direct user to failScreen
+
+          //setState
+          this.setState({
+            isSuccess: false
+          });
         }
-      );
-    });
+      });
   };
 
   async componentDidMount() {
@@ -458,6 +439,9 @@ class CreateAccount extends Component {
     //The only way of make this.state.passed to true; make the next button clickable
     //is to input all the fields,
     if (this.state.passed) {
+      let checklist = this.props.CreateProfileDataReducer.checklist;
+      checklist.createAccount = true;
+
       //When user submit email/password
       //set editable to true so the user cannot resubmit other email
       //We do not want the user to submit other one (generate a new guid) on the same registration
@@ -469,7 +453,7 @@ class CreateAccount extends Component {
         },
         () => {
           //insert a profile into database
-          fetch("http://74.80.250.210:4000/api/profile/insert", {
+          fetch(`http://${localhost}:4000/api/profile/insert`, {
             method: "POST",
             headers: {
               "Content-Type": "application/json"
@@ -488,7 +472,7 @@ class CreateAccount extends Component {
             })
           })
             .then(res => res.json())
-            .then(res => {
+            .then(async res => {
               let object = JSON.parse(JSON.stringify(res));
               //console.log(object);
               //SUCCESS ON SUBMITTING DATA
@@ -501,58 +485,39 @@ class CreateAccount extends Component {
                 this.props.SetGUIDAction({
                   guid: object.guid
                 });
+                this.props.SetChecklistAction({
+                  checklist: checklist
+                });
 
                 //LocalStorage
-                let json_checklist = JSON.stringify(
-                  this.props.CreateProfileDataReducer.checklist
-                );
+                json_checklist = JSON.stringify(checklist);
+
                 //Only insert or replace id = 1
                 let insertSqlStatement =
                   "INSERT OR REPLACE into device_user_createAccount(id, guid, email, password, isAdmin, checklist, phoneNumber, deviceID, deviceLatLong, deviceAltitude) " +
                   "values(1, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
 
-                db.transaction(
-                  tx => {
-                    //INSERT DATA
-                    tx.executeSql(
-                      insertSqlStatement,
-                      [
-                        object.guid,
-                        this.state.email,
-                        this.state.password,
-                        false,
-                        json_checklist,
-                        "temp",
-                        global.deviceToken,
-                        global.currentLatLong,
-                        global.currentAltitude
-                      ],
-                      (tx, result) => {
-                        console.log("inner success");
-                      },
-                      (tx, err) => {
-                        console.log("inner error: ", err);
-                      }
-                    );
-                    //DISPLAY DATA
-                    tx.executeSql(
-                      "select * from device_user_createAccount",
-                      null,
-                      (tx, result) => {
-                        console.log(result);
-                      },
-                      (tx, err) => {
-                        console.log("inner error: ", err);
-                      }
-                    );
-                  },
-                  (tx, err) => {
-                    console.log(err);
-                  },
-                  () => {
-                    console.log("outer success");
-                  }
+                let { success } = await insertDataIntoLocalStorage(
+                  insertSqlStatement,
+                  "device_user_createAccount",
+                  [
+                    object.guid,
+                    this.state.email,
+                    this.state.password,
+                    false,
+                    json_checklist,
+                    "temp",
+                    global.deviceToken,
+                    global.currentLatLong,
+                    global.currentAltitude
+                  ],
+                  true
                 );
+
+                if (!success) {
+                  console.log("failed storing data into localStorage");
+                  //handle error on inserting data into localStorage
+                }
 
                 //setState
                 this.setState(
@@ -567,6 +532,7 @@ class CreateAccount extends Component {
                 );
               } else if (object.success === false && object.status === 409) {
                 //DUPLICATE EMAIL
+
                 //setState
                 this.setState(
                   {
@@ -621,6 +587,7 @@ class CreateAccount extends Component {
             placeholderTextColor="rgb(67, 33, 140)"
             inputStyle={styles.inputStyle}
             value={this.state.email}
+            returnKeyType="done"
             rightIcon={
               this.state.emailWarning === "" ? (
                 <Icon
@@ -660,6 +627,7 @@ class CreateAccount extends Component {
             placeholderTextColor="rgb(67, 33, 140)"
             inputStyle={styles.inputStyle}
             value={this.state.confirmEmail}
+            returnKeyType="done"
             rightIcon={
               this.state.confirmEmailWarning === "" ? (
                 <Icon
@@ -702,6 +670,7 @@ class CreateAccount extends Component {
             placeholderTextColor="rgb(67, 33, 140)"
             inputStyle={styles.inputStyle}
             value={this.state.password}
+            returnKeyType="done"
             rightIcon={
               this.state.passwordWarning === "" ? (
                 <Icon
@@ -741,6 +710,7 @@ class CreateAccount extends Component {
             placeholderTextColor="rgb(67, 33, 140)"
             inputStyle={styles.inputStyle}
             value={this.state.confirmPassword}
+            returnKeyType="done"
             rightIcon={
               this.state.confirmPasswordWarning === "" ? (
                 <Icon
@@ -892,7 +862,8 @@ const mapDispatchToProps = dispatch => {
   return {
     SetCreateAccountDataAction: payload =>
       dispatch(SetCreateAccountDataAction(payload)),
-    SetGUIDAction: payload => dispatch(SetGUIDAction(payload))
+    SetGUIDAction: payload => dispatch(SetGUIDAction(payload)),
+    SetChecklistAction: payload => dispatch(SetChecklistAction(payload))
   };
 };
 

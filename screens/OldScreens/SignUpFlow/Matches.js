@@ -16,7 +16,7 @@ import {
 import { LinearGradient } from 'expo-linear-gradient'
 import Hello from './hello'
 
-import SetProfilePictureAction from '../../storage/actions/SetProfilePictureAction';
+import SetProfilePictureAction from '../../../storage/actions/SetProfilePictureAction';
 import { connect } from 'react-redux'
 //import console = require('console');
 
@@ -281,7 +281,7 @@ class SelfiePage extends React.Component {
           colors={['#18cdf6', '#43218c']}
           style={{flex:1}}
         >
-        <ImageBackground source={require('../../assets/Assets_V1/Butterfly_Background/butterflyBackground.png')} style={styles.backgroundImage}>
+        <ImageBackground source={require('../../../assets/Assets_V1/Butterfly_Background/butterflyBackground.png')} style={styles.backgroundImage}>
 
         <ScrollView>
         <Text style={{fontSize:60,top:height*.3,left:width/3,color:'white', alignSelf:"center"}}>
@@ -298,7 +298,7 @@ class SelfiePage extends React.Component {
           </TouchableOpacity>
 
           <Image //circle image
-            source={require('../../assets/images/WhiteCircle.png')}
+            source={require('../../../assets/images/WhiteCircle.png')}
             style={styles.imageStyles}
             top={-10}
             left={width*.275}
