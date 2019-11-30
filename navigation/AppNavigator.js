@@ -7,7 +7,7 @@ import {
 
 //Main Navigator
 //Profile Home Settings
-import MainTabNavigator from "./MainTabNavigator";
+import MainNavigator from "./MainNavigator";
 
 //Signup flow Screens
 import MatchesPage from "../screens/OldScreens/SignUpFlow/Matches";
@@ -89,7 +89,7 @@ const AuthStack = createStackNavigator({
 //ChatRoom
 const ChatStack = createStackNavigator({
   Main: {
-    screen: MainTabNavigator,
+    screen: MainNavigator,
     navigationOptions: () => ({
       title: `Home`,
       header: null,
@@ -136,7 +136,7 @@ export default createAppContainer(
       // You could add another route here for authentication.
       // Read more at https://reactnavigation.org/docs/en/auth-flow.html
       Login: LoginScreen, //Login
-      Main: MainTabNavigator, //Profile Home Settings
+      Main: MainNavigator, //Profile Home Settings
       Auth: AuthStack, //Stacks for LoginScreen <-> SignUp
       Chat: ChatStack, //Stacks for Homescreen <-> ChatRoom
       Test: TestStack //Stacks for LinksScreen <-> test screens

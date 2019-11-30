@@ -22,13 +22,7 @@ import MatchedUserChat from "./ChatFlow/MatchedUserChat";
 
 import { localhost } from "../config/ipconfig";
 
-import HeaderRight from "../sharedComponents/HeaderRight"
-
 class HomeScreen extends React.Component {
-  static navigationOptions = {
-    title: "Home",
-    headerRight: <HeaderRight />
-  };
   constructor(props) {
     super(props);
     this.state = {
@@ -164,7 +158,11 @@ class HomeScreen extends React.Component {
                 />
               </View>
               <View
-                style={{ width: 100, height: 75, backgroundColor: "powderblue" }}
+                style={{
+                  width: 100,
+                  height: 75,
+                  backgroundColor: "powderblue"
+                }}
               >
                 <Button
                   title="Go to Setting"

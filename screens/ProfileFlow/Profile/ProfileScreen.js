@@ -36,13 +36,9 @@ import {
   selectDataFromLocalStorage
 } from "../LocalStorage/localStorage.js";
 
-//header
-import HeaderRight from "../../../sharedComponents/HeaderRight"
-
 class Profile extends React.Component {
   static navigationOptions = {
-    title: "My Profile",
-    headerRight: <HeaderRight />
+    title: "My Profile"
   };
   constructor(props) {
     super(props);
