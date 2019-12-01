@@ -1,6 +1,10 @@
 import React from "react";
 import { ScrollView, StyleSheet, Text, View, Button } from "react-native";
 import { ExpoLinksView } from "@expo/samples";
+
+import firebase from "../utils/mainFire";
+
+/*
 import ProfilePage from "./OldScreens/SignUpFlow/ProfilePage";
 import MatchesPage from "./OldScreens/SignUpFlow/Matches";
 import RegistrationPage from "./OldScreens/SignUpFlow/RegistrationPage";
@@ -14,8 +18,8 @@ import GhostingOthers from "./ChatFlow/GhostingOthers";
 import GotGhosted from "./ChatFlow/GotGhosted";
 import GotLucky from "./ChatFlow/GotLuckyGoToChat";
 import ChatPage from "./ChatFlow/chatMain";
-import firebase from "../utils/mainFire";
 import LocationServices from "./LocationServices/LocationServices";
+*/
 
 /*
 import t from "tcomb-form-native";
@@ -68,7 +72,7 @@ export default class LinksScreen extends React.Component {
       "TestProfile_Registration",
       "TestRegistrationComplete",
       "TestProfileScreen",
-      //"TestMatches",
+      "TestMatches",
       //"TestRegistration",
       //"TestSelfie",
       //"TestPhotoReview",
@@ -77,9 +81,9 @@ export default class LinksScreen extends React.Component {
       //"GhostingOthers",
       //"GotGhosted",
       //"GotLucky",
-      //"CreateQuestionaire",
-      //"ReplyQuestionaire",
-      //"ViewQuestionaire",
+      //"TestQuestionaries",
+      //"TestReplyQuestionaire",
+      //"TestViewQuestionaire",
       "TestChatUsersList",
       "TestMatchedUserChat"
       //"TestSignUp",
@@ -159,11 +163,28 @@ export default class LinksScreen extends React.Component {
     this.storeHighScore("fun@mailcom", 200);
     //let CurrentScreen = this.state.CurrentScreen;
     let displayButton = this.buttonAry.map((e, index = 0) => {
+      if (e === "TestProfileScreen") {
+        return (
+          <Button
+            key={index++}
+            title={e}
+            onPress={() =>
+              this.props.navigation.navigate(e, {
+                guid: "5de3369b0af6c53e16b3bf60",
+                isDeviceUser: false
+              })
+            }
+          />
+        );
+      }
+
       return (
         <Button
           key={index++}
           title={e}
-          onPress={() => this.props.navigation.navigate(e)}
+          onPress={() =>
+            this.props.navigation.navigate(e, { isDeviceUser: false })
+          }
         />
       );
     });

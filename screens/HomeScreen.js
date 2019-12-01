@@ -146,7 +146,12 @@ class HomeScreen extends React.Component {
               >
                 <Button
                   title="Go to Profile"
-                  onPress={() => this.props.navigation.navigate("Profile")}
+                  onPress={() =>
+                    this.props.navigation.navigate("Profile", {
+                      guid: this.props.CreateProfileDataReducer.guid,
+                      isDeviceUser: true
+                    })
+                  }
                 />
               </View>
               <View

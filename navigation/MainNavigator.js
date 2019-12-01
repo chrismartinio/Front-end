@@ -11,6 +11,7 @@ import SettingsScreen from "../screens/SettingsScreen";
 import HomeScreen from "../screens/HomeScreen";
 import LinksScreen from "../screens/LinksScreen";
 import ProfileScreen from "../screens/ProfileFlow/Profile/ProfileScreen";
+import EditScreen from "../screens/ProfileFlow/Profile/EditScreen";
 import NotificationButton from "../sharedComponents/NotificationButton";
 import NotificationScreen from "../sharedComponents/NotificationScreen";
 
@@ -19,8 +20,8 @@ const MainStack = createStackNavigator(
     Profile: {
       screen: ProfileScreen,
       navigationOptions: ({ navigation }) => ({
-        title: `Profile`,
-        headerRight: <NotificationButton navigation={navigation} />
+        title: `Profile`
+        //headerRight is set inside ProfileScreen.js
       })
     },
     Home: {
@@ -38,15 +39,16 @@ const MainStack = createStackNavigator(
       })
     },
     Edit: {
-      screen: SettingsScreen,
+      screen: EditScreen,
       navigationOptions: () => ({
         title: `Edit`
       })
     },
     Match: {
       screen: SettingsScreen,
-      navigationOptions: () => ({
-        title: `Match`
+      navigationOptions: ({ navigation }) => ({
+        title: `Match`,
+        headerRight: <NotificationButton navigation={navigation} />
       })
     }
   },

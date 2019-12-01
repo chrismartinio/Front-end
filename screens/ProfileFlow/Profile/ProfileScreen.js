@@ -14,11 +14,13 @@ import {
 import { connect } from "react-redux";
 
 //1. any user edit, make the profile screen to hit the db
-//3. make the edit button only visible to device's user
-//4. make the profile edit screen
-//5. make all the db call into one files
+//2. query all createAccount data in profile screen and store into localstorage
+
+
 
 import LoadingScreen from "../Profile_SharedComponents/LoadingScreen";
+
+import NotificationButton from "../../../sharedComponents/NotificationButton";
 
 function _calculateAge(birthday) {
   birthday = new Date(birthday);
@@ -37,9 +39,25 @@ import {
 } from "../LocalStorage/localStorage.js";
 
 class Profile extends React.Component {
-  static navigationOptions = {
-    title: "My Profile"
-  };
+  static navigationOptions = ({ navigation }) => ({
+    title: "My Profile",
+    headerRight: (
+      <View style={{ flex: 1 }}>
+        <View style={{ flexDirection: "row" }}>
+          {navigation.getParam("isDeviceUser") && (
+            <Button
+              title={"Edit"}
+              color={"black"}
+              onPress={() => {
+                navigation.navigate("Edit");
+              }}
+            />
+          )}
+          <NotificationButton navigation={navigation} />
+        </View>
+      </View>
+    )
+  });
   constructor(props) {
     super(props);
     this.state = {
@@ -65,9 +83,19 @@ class Profile extends React.Component {
   }
 
   async componentDidMount() {
-    //this.guid = await this.props.CreateProfileDataReducer.guid;
+    //LOGIC
+    //ProfileScreen would also accept the guid pass from navigation
+    //Home - > Profile (pass redux guid through navigation)
+    //Chat - > Profile (pass other user guid through navigation)
+    //so either device's user or matched's user can use this screen
+    //edit button would only display when user login and go to profile screen
 
-    this.guid = "5de096afa39b91b1f98bbafe";
+    //And inside the edit screen, it only use the redux guid (it would not use the navigation guid)
+    //And redux guid would only be store or update by registration and login
+
+    const { navigation } = this.props;
+    this.guid = navigation.getParam("guid");
+    console.log(this.guid);
 
     //on editing, siwtch isFetched = false
     if (!this.isFetched) {
@@ -138,6 +166,7 @@ class Profile extends React.Component {
             console.log("failed storing data into localStorage");
             //handle error on inserting data into localStorage
           }
+
         } else {
           //INTERNAL ERROR
           throw new Error("internal Error");

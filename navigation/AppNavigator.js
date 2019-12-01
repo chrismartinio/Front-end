@@ -55,26 +55,39 @@ import LoginScreen from "../screens/LoginScreen";
 //register screens here for testing in linkscreen
 const TestStack = createStackNavigator({
   Links: LinksScreen,
+
+  //Location
   TestLocationServices: LocationServices,
+
+  //Match Flow
   TestQuestionaries: CreateQuestionaire,
+  TestViewQuestionaire: ViewQuestionaire,
+  TestReplyQuestionaire: ReplyQuestionaire,
+
+  //Old Sign Up flow
   TestSignUp: SignupPage,
   TestRegistration: RegistrationPage,
   TestSelfie: SelfiePage,
-  TestProfileScreen: ProfileScreen,
-  TestChatPage: ChatPage,
-  TestChat: Chat,
-  TestPhotoReview: PhotoReview,
-  TestScreen: TestScreen,
-  TestMatches: MatchesPage,
   TestAboutYou: AboutYou,
   TestTellUsMore: TellUsMore,
   TestWouldRather: WouldRather,
   TestSpendWeekend: SpendWeekend,
   TestImInterestedIn: ImInterestedIn,
+  TestChatUsersList: ChatUsersList,
+  TestMatchedUserChat: MatchedUserChat,
+  TestMatches: MatchesPage,
+
+  //Chat flow
+  TestChatPage: ChatPage,
+  TestChat: Chat,
+  TestPhotoReview: PhotoReview,
+  TestScreen: TestScreen,
+
+  //Profile Flow
+  TestProfileScreen: ProfileScreen,
   TestProfile_Registration: Profile_Registration,
   TestRegistrationComplete: RegistrationComplete,
-  TestChatUsersList: ChatUsersList,
-  TestMatchedUserChat: MatchedUserChat
+
 });
 
 //Sign Up
