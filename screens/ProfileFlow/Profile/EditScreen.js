@@ -65,6 +65,7 @@ class EditScreen extends React.Component {
 
   //Handle the status of screen
   handlePassed = (componentName, passed) => {
+    this.props.navigation.state.params.dataIsEdited();
     let toggleName = componentName + "Toggle";
     let statusName = componentName + "Status";
     //1 means screen is passed

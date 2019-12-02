@@ -14,10 +14,14 @@ import { MonoText } from "../components/StyledText";
 import t from "tcomb-form-native";
 import { signInWithFacebook } from "../utils/auth.js";
 
+//Redux
+import { connect } from "react-redux";
 import SetFbDataAction from "../storage/actions/DataReducerActions/SetFbDataAction";
 import SetJwtAction from "../storage/actions/DataReducerActions/SetJwtAction";
 import SetGUIDAction from "..//storage/actions/RegistrationActions/SetGUIDAction";
 import SetAboutYouDataAction from "../storage/actions/RegistrationActions/SetAboutYouDataAction";
+import SetIsContinueUserAction from "../storage/actions/RegistrationActions/SetIsContinueUserAction";
+
 //import publicIP from "react-native-public-ip";
 import * as WebBrowser from "expo-web-browser";
 import * as Location from "expo-location";
@@ -25,10 +29,6 @@ import Constants from "expo-constants";
 import * as Permissions from "expo-permissions";
 
 const { manifest } = Constants;
-
-//Redux
-import { connect } from "react-redux";
-import SetChecklistAction from "../storage/actions/RegistrationActions/SetChecklistAction";
 
 const Form = t.form.Form;
 
@@ -66,7 +66,8 @@ class LoginScreen extends React.Component {
     //the checklist would be all false
     //but inside profile_registration, there is some code to set the checklist to false
     //this is just for in case
-    this.props.SetChecklistAction({
+    this.props.SetIsContinueUserAction({
+      isContinueUser: false,
       checklist: {
         createAccount: false,
         aboutYou: false,
@@ -138,7 +139,7 @@ class LoginScreen extends React.Component {
         this.props.SetJwtAction(jsonData.token);
 
         this.props.SetGUIDAction({
-          guid: guid
+          guid: "guid"
         });
 
         this.props.SetAboutYouDataAction({
@@ -286,7 +287,7 @@ class LoginScreen extends React.Component {
           {/*Testing USE*/}
           <Button
             title="Testing - Go to Link Screen"
-            //If Navigate to Profile, linkscreen has set a guid 
+            //If Navigate to Profile, linkscreen has set a guid
             onPress={() => {
               this.props.navigation.navigate("Links");
             }}
@@ -297,7 +298,7 @@ class LoginScreen extends React.Component {
               //TESTING USE (TEMP)
               //Set Device user GUID
               this.props.SetGUIDAction({
-                guid: "5de096afa39b91b1f98bbafe"
+                guid: "5de42b16b4dc5b1fba94e1d4"
               });
               //TESTING USE
               this.props.navigation.navigate("Main");
@@ -447,7 +448,7 @@ const mapDispatchToProps = dispatch => ({
   SetGUIDAction: payload => dispatch(SetGUIDAction(payload)),
   SetFbDataAction: payload => dispatch(SetFbDataAction(payload)),
   SetJwtAction: payload => dispatch(SetJwtAction(payload)),
-  SetChecklistAction: payload => dispatch(SetChecklistAction(payload))
+  SetIsContinueUserAction: payload => dispatch(SetIsContinueUserAction(payload))
 });
 
 export default connect(

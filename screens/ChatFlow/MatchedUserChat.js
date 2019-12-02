@@ -255,7 +255,7 @@ class MatchedUserChat extends React.Component {
   exitChat = () => {
     clearInterval(this.interval);
     //THIS WORK ONLY FROM CHATLIST TO CHATROOM
-    this.props.navigation.getParam.forceRender;
+    //this.props.navigation.getParam.forceReRender;
     this.socket.emit("disconnect");
     this.props.navigation.goBack();
   };
@@ -279,7 +279,7 @@ class MatchedUserChat extends React.Component {
                   messageItem.timeStamp
                 }`}</Text>
               </Text>
-              <Text style={styles.circle}> {messageItem.userName[0]}</Text>
+              <Text style={styles.circle}> {messageItem.userName}</Text>
             </View>
           </View>
         );
@@ -361,8 +361,8 @@ class MatchedUserChat extends React.Component {
               {this.state.isTyping && (
                 <View style={styles.textContainer}>
                   <Text style={styles.circlePurple}>
-                    {" "}
-                    {this.matched_user_firstName[0]}
+
+                    {this.matched_user_firstName}
                   </Text>
                   <Text style={styles.targetMessageText}>is typing...</Text>
                 </View>
@@ -389,7 +389,7 @@ class MatchedUserChat extends React.Component {
                 <View>
                   <Text>Do you want to exit the chat?</Text>
 
-                  {/*Send Button*/}
+                  {/*Yes Button*/}
                   <View style={styles.buttonStyle}>
                     <Button
                       title="Yes"
@@ -400,7 +400,7 @@ class MatchedUserChat extends React.Component {
                     />
                   </View>
 
-                  {/*Send Button*/}
+                  {/*No Button*/}
                   <View style={styles.buttonStyle}>
                     <Button
                       title="No"

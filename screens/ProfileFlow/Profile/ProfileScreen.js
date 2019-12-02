@@ -16,8 +16,6 @@ import { connect } from "react-redux";
 //1. any user edit, make the profile screen to hit the db
 //2. query all createAccount data in profile screen and store into localstorage
 
-
-
 import LoadingScreen from "../Profile_SharedComponents/LoadingScreen";
 
 import NotificationButton from "../../../sharedComponents/NotificationButton";
@@ -39,6 +37,7 @@ import {
 } from "../LocalStorage/localStorage.js";
 
 class Profile extends React.Component {
+  //Header
   static navigationOptions = ({ navigation }) => ({
     title: "My Profile",
     headerRight: (
@@ -49,7 +48,11 @@ class Profile extends React.Component {
               title={"Edit"}
               color={"black"}
               onPress={() => {
-                navigation.navigate("Edit");
+                navigation.navigate("Edit", {
+                  dataIsEdited: () => {
+                    navigation.state.params.dataIsEdited();
+                  }
+                });
               }}
             />
           )}
@@ -58,6 +61,7 @@ class Profile extends React.Component {
       </View>
     )
   });
+
   constructor(props) {
     super(props);
     this.state = {
@@ -77,10 +81,32 @@ class Profile extends React.Component {
         "https://facebook.github.io/react-native/img/tiny_logo.png",
         "https://facebook.github.io/react-native/img/tiny_logo.png"
       ],
-      isSuccess: false
+      isSuccess: false,
+      isEdited: false
     };
-    this.isFetched = false;
   }
+
+  //detect if there is data edit in editscreen
+  //if yes, fetch the new changed data from db
+  //then reset the state to false
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    if(this.state.isEdited !== prevState.isEdited) {
+      this.getDataFromDB();
+      this.setState({
+        isEdited: false
+      })
+    }
+  }
+
+  //This function will be pass into edit screen
+  //everytime if data is edited,
+  //set the isEdited to true
+  //and componentDidUpdate will detect the state changes
+  dataIsEdited = () => {
+    this.setState({
+      isEdited: true
+    })
+  };
 
   async componentDidMount() {
     //LOGIC
@@ -95,13 +121,11 @@ class Profile extends React.Component {
 
     const { navigation } = this.props;
     this.guid = navigation.getParam("guid");
-    console.log(this.guid);
+    console.log("USER GUID: ", this.guid);
+    this.props.navigation.setParams({ dataIsEdited: this.dataIsEdited });
 
-    //on editing, siwtch isFetched = false
-    if (!this.isFetched) {
-      this.getDataFromDB();
-      this.isFetched = true;
-    }
+    this.getDataFromDB();
+
     this.setState({
       isSuccess: true
     });
@@ -122,7 +146,7 @@ class Profile extends React.Component {
       .then(res => res.json())
       .then(async res => {
         let object = JSON.parse(JSON.stringify(res));
-        console.log(object);
+        //console.log(object);
         //SUCCESS ON QUERYING DATA
 
         if (object.success) {
@@ -150,43 +174,93 @@ class Profile extends React.Component {
           });
 
           //LocalStorage
-          //Only insert or replace id = 1
-          let insertSqlStatement =
-            "INSERT OR REPLACE into device_user_aboutYou(id, createAccount_id, firstName, lastName, birthDate, gender, country, zipCode, userBio, city, state) " +
-            "values(1, 1, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
+          if (this.guid === this.props.CreateProfileDataReducer.guid) {
+            //Store to device_user_aboutYou
+            let insertSqlStatement =
+              "INSERT OR REPLACE into device_user_aboutYou(id, createAccount_id, firstName, birthDate, userBio, city, state) " +
+              "values(1, 1, ?, ?, ?, ?, ?);";
 
-          let { success } = await insertDataIntoLocalStorage(
-            insertSqlStatement,
-            "device_user_aboutYou",
-            [firstName, lastName, birthDate, state, city, userBio],
-            true
-          );
+            let { success } = await insertDataIntoLocalStorage(
+              insertSqlStatement,
+              "device_user_aboutYou",
+              [firstName, birthDate, userBio, city, state],
+              true
+            );
 
-          if (!success) {
-            console.log("failed storing data into localStorage");
-            //handle error on inserting data into localStorage
+            //Store to device_user_interests
+            let json_likesArray = JSON.stringify({
+              likesArray: likesArray
+            });
+            insertSqlStatement =
+              "INSERT OR REPLACE into device_user_interests(id, createAccount_id, likesArray) " +
+              "values(1, 1, ?);";
+
+            success = await insertDataIntoLocalStorage(
+              insertSqlStatement,
+              "device_user_interests",
+              [json_likesArray],
+              true
+            );
+
+            if (!success) {
+              console.log("failed storing data into localStorage");
+              //handle error on inserting data into localStorage
+            }
+          } else {
+            //here is store to matched's user tables
+            //code coming soon
+            return;
           }
-
         } else {
           //INTERNAL ERROR
           throw new Error("internal Error");
         }
       })
       .catch(async err => {
-        console.log(err);
+        //console.log(err);
         //HANDLE ANY CATCHED ERRORS
 
-        let object = await selectDataFromLocalStorage("device_user_aboutYou");
+        //LocalStorage
+        if (this.guid === this.props.CreateProfileDataReducer.guid) {
+          //Get Device's User Data from localStorage device_user_aboutYou table
+          let aboutYouObject = await selectDataFromLocalStorage(
+            "device_user_aboutYou"
+          );
 
-        if (object.success) {
-          let {
-            firstName,
-            lastName,
-            zipCode,
-            userBio,
-            city,
-            state
-          } = object.result.rows._array[0];
+          let interestsObject = await selectDataFromLocalStorage(
+            "device_user_interests"
+          );
+
+          if (aboutYouObject.success && interestsObject.success) {
+            let {
+              firstName,
+              lastName,
+              birthDate,
+              state,
+              city,
+              userBio
+            } = aboutYouObject.result.rows._array[0];
+
+            let { likesArray } = interestsObject.result.rows._array[0];
+            likesArray = JSON.parse(likesArray).likesArray;
+
+            //setState
+            this.setState({
+              firstName: firstName,
+              lastName: lastName,
+              birthDate: birthDate,
+              userBio: userBio,
+              age: _calculateAge(birthDate),
+              city: city,
+              state: state,
+              likesArray: likesArray,
+              isSuccess: true
+            });
+          } else {
+            //Get Matched User's Data from localStorage
+            //code coming soon
+            return;
+          }
         } else {
           //If error while fetching, direct user to failScreen
           //setState

@@ -170,7 +170,7 @@ export default class LinksScreen extends React.Component {
             title={e}
             onPress={() =>
               this.props.navigation.navigate(e, {
-                guid: "5de3369b0af6c53e16b3bf60",
+                guid: "5de42a14b4dc5b1fba94e1d3",
                 isDeviceUser: false
               })
             }

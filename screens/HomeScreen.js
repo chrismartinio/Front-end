@@ -65,8 +65,8 @@ class HomeScreen extends React.Component {
         console.log(res.roomID[0].key); //1231231231.1231231232131
       });
 */
-    console.log(this.guid);
-    console.log(this.user_firstName);
+    //console.log(this.guid);
+    //console.log(this.user_firstName);
     this.setState({
       isLoading: true
     });
@@ -77,19 +77,12 @@ class HomeScreen extends React.Component {
   }
 
   enterChatRoom = chatRoomData => {
-    this.props.navigation.navigate("MatchedUserChat", {
-      forceRender: this.forceRender()
-    });
+    this.props.navigation.navigate("MatchedUserChat");
   };
 
   handleScroll = ({ nativeEvent }) => {
     const { contentOffset } = nativeEvent;
     this.scrollY = contentOffset.y;
-  };
-
-  forceRender = () => {
-    // Force a render with a simulated state change
-    this.setState({ state: this.state });
   };
 
   successScreen = () => {
