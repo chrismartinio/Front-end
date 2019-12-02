@@ -1,4 +1,5 @@
 export const countries = [
+  { label: "United States", value: "United States" },
   { label: "Afghanistan", value: "Afghanistan" },
   { label: "Albania", value: "Albania" },
   { label: "Algeria", value: "Algeria" },
@@ -265,7 +266,6 @@ export const countries = [
   { label: "Ukraine", value: "Ukraine" },
   { label: "United Arab Emirates", value: "United Arab Emirates" },
   { label: "United Kingdom", value: "United Kingdom" },
-  { label: "United States", value: "United States" },
   {
     label: "United States Minor Outlying Islands",
     value: "United States Minor Outlying Islands"

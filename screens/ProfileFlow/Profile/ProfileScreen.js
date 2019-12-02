@@ -120,10 +120,16 @@ class Profile extends React.Component {
     //And redux guid would only be store or update by registration and login
 
     const { navigation } = this.props;
+    //Retrieve the GUID passed from Homescreen
     this.guid = navigation.getParam("guid");
+
+    console.log("ProfileScreen")
     console.log("USER GUID: ", this.guid);
+
+    //Set Params for Navigation so EditScreen can use ProfileScreen function
     this.props.navigation.setParams({ dataIsEdited: this.dataIsEdited });
 
+    //Query Data
     this.getDataFromDB();
 
     this.setState({

@@ -139,7 +139,7 @@ class LoginScreen extends React.Component {
         this.props.SetJwtAction(jsonData.token);
 
         this.props.SetGUIDAction({
-          guid: "guid"
+          guid: guid
         });
 
         this.props.SetAboutYouDataAction({
@@ -299,6 +299,14 @@ class LoginScreen extends React.Component {
               //Set Device user GUID
               this.props.SetGUIDAction({
                 guid: "5de42b16b4dc5b1fba94e1d4"
+              });
+              this.props.SetAboutYouDataAction({
+                firstName: "Someone",
+                lastName: "",
+                birthDate: "",
+                gender: "",
+                country: "",
+                zipCode: ""
               });
               //TESTING USE
               this.props.navigation.navigate("Main");
