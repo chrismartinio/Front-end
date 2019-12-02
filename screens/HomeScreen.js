@@ -58,7 +58,8 @@ class HomeScreen extends React.Component {
     console.log("USER GUID: ", this.guid);
     console.log("USER firstName: ", this.user_firstName);
 
-    fetch(`http://${localhost}:3003/api/chat/`, {
+    /*
+    await fetch(`http://${localhost}:3003/api/chat/`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -74,7 +75,7 @@ class HomeScreen extends React.Component {
         //here's what I will get the chatobject
         console.log(res.roomID[0].key); //1231231231.1231231232131
       });
-
+*/
     this.setState({
       isLoading: true
     });

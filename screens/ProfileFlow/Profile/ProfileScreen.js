@@ -22,6 +22,8 @@ import NotificationButton from "../../../sharedComponents/NotificationButton";
 
 import Footer from "../../../sharedComponents/Footer";
 
+import { localhost } from "../../../config/ipconfig";
+
 function _calculateAge(birthday) {
   birthday = new Date(birthday);
   // birthday is a date
@@ -140,7 +142,7 @@ class ProfileScreen extends React.Component {
   }
 
   getDataFromDB = async () => {
-    await fetch("http://74.80.250.210:4000/api/profile/profile_query", {
+    await fetch(`http://${localhost}:4000/api/profile/profile_query`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
