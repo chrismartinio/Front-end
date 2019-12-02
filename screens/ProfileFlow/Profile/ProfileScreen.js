@@ -20,6 +20,8 @@ import LoadingScreen from "../Profile_SharedComponents/LoadingScreen";
 
 import NotificationButton from "../../../sharedComponents/NotificationButton";
 
+import Footer from "../../../sharedComponents/Footer";
+
 function _calculateAge(birthday) {
   birthday = new Date(birthday);
   // birthday is a date
@@ -36,7 +38,7 @@ import {
   selectDataFromLocalStorage
 } from "../LocalStorage/localStorage.js";
 
-class Profile extends React.Component {
+class ProfileScreen extends React.Component {
   //Header
   static navigationOptions = ({ navigation }) => ({
     title: "My Profile",
@@ -90,11 +92,11 @@ class Profile extends React.Component {
   //if yes, fetch the new changed data from db
   //then reset the state to false
   componentDidUpdate(prevProps, prevState, snapshot) {
-    if(this.state.isEdited !== prevState.isEdited) {
+    if (this.state.isEdited !== prevState.isEdited) {
       this.getDataFromDB();
       this.setState({
         isEdited: false
-      })
+      });
     }
   }
 
@@ -105,7 +107,7 @@ class Profile extends React.Component {
   dataIsEdited = () => {
     this.setState({
       isEdited: true
-    })
+    });
   };
 
   async componentDidMount() {
@@ -123,7 +125,7 @@ class Profile extends React.Component {
     //Retrieve the GUID passed from Homescreen
     this.guid = navigation.getParam("guid");
 
-    console.log("ProfileScreen")
+    console.log("ProfileScreen");
     console.log("USER GUID: ", this.guid);
 
     //Set Params for Navigation so EditScreen can use ProfileScreen function
@@ -303,118 +305,123 @@ class Profile extends React.Component {
 
     return (
       <View style={styles.container}>
-        <ScrollView>
-          <View style={{ alignItems: "center" }}>
-            {/**User Image */}
-            <Image
-              source={{
-                uri: this.state.userImage
-              }}
-              style={{ width: 350, height: 350, borderRadius: 50 }}
-            />
-          </View>
+        <View style={{ flex: 0.9 }}>
+          <ScrollView>
+            <View style={{ alignItems: "center" }}>
+              {/**User Image */}
+              <Image
+                source={{
+                  uri: this.state.userImage
+                }}
+                style={{ width: 350, height: 350, borderRadius: 50 }}
+              />
+            </View>
 
-          {/**User Name */}
-          <View style={{ margin: 20 }}>
-            <Text style={{ fontSize: 20, fontWeight: "500" }}>
-              {this.state.firstName} {this.state.lastName}, {this.state.age}
-            </Text>
-            <Text />
-            <Text style={{ fontSize: 15, fontWeight: "400" }}>
-              {this.state.city}, {this.state.state}
-            </Text>
-          </View>
+            {/**User Name */}
+            <View style={{ margin: 20 }}>
+              <Text style={{ fontSize: 20, fontWeight: "500" }}>
+                {this.state.firstName} {this.state.lastName}, {this.state.age}
+              </Text>
+              <Text />
+              <Text style={{ fontSize: 15, fontWeight: "400" }}>
+                {this.state.city}, {this.state.state}
+              </Text>
+            </View>
 
-          {/**border line */}
-          <View
-            style={{
-              borderWidth: 1,
-              borderColor: "#d6d7da"
-            }}
-          />
-
-          {/**Interest */}
-          <View
-            style={{
-              marginLeft: 15,
-              marginRight: 15,
-              marginTop: 20,
-              marginBottom: 3
-            }}
-          >
-            <Text style={{ fontSize: 17, fontWeight: "500" }}>Interests</Text>
-          </View>
-          <View>
-            <View style={{ flexDirection: "row" }}>{displaylikesArray}</View>
-          </View>
-          <View style={{ padding: 7.5 }} />
-
-          {/**border line */}
-          <View
-            style={{
-              borderWidth: 1,
-              borderColor: "#d6d7da"
-            }}
-          />
-
-          {/**About Me */}
-          <View
-            style={{
-              marginLeft: 15,
-              marginRight: 15,
-              marginTop: 20,
-              marginBottom: 3
-            }}
-          >
-            <Text style={{ fontSize: 17, fontWeight: "500" }}>About Me</Text>
-          </View>
-          <View style={{ margin: 15 }}>
-            <Text
-              style={{
-                fontSize: 17,
-                fontWeight: "100",
-                textAlign: "left",
-                lineHeight: 30
-              }}
-            >
-              {this.state.userBio}
-            </Text>
-          </View>
-
-          {/**border line */}
-          <View
-            style={{
-              borderWidth: 1,
-              borderColor: "#d6d7da"
-            }}
-          />
-
-          {/**Photo */}
-          <View
-            style={{
-              marginLeft: 15,
-              marginRight: 15,
-              marginTop: 20,
-              marginBottom: 3
-            }}
-          >
-            <Text style={{ fontSize: 17, fontWeight: "500" }}>Photo</Text>
-          </View>
-          <View
-            style={{
-              margin: 20
-            }}
-          >
+            {/**border line */}
             <View
               style={{
-                flexDirection: "row",
-                flexWrap: "wrap"
+                borderWidth: 1,
+                borderColor: "#d6d7da"
+              }}
+            />
+
+            {/**Interest */}
+            <View
+              style={{
+                marginLeft: 15,
+                marginRight: 15,
+                marginTop: 20,
+                marginBottom: 3
               }}
             >
-              {displayphotosArray}
+              <Text style={{ fontSize: 17, fontWeight: "500" }}>Interests</Text>
             </View>
-          </View>
-        </ScrollView>
+            <View>
+              <View style={{ flexDirection: "row" }}>{displaylikesArray}</View>
+            </View>
+            <View style={{ padding: 7.5 }} />
+
+            {/**border line */}
+            <View
+              style={{
+                borderWidth: 1,
+                borderColor: "#d6d7da"
+              }}
+            />
+
+            {/**About Me */}
+            <View
+              style={{
+                marginLeft: 15,
+                marginRight: 15,
+                marginTop: 20,
+                marginBottom: 3
+              }}
+            >
+              <Text style={{ fontSize: 17, fontWeight: "500" }}>About Me</Text>
+            </View>
+            <View style={{ margin: 15 }}>
+              <Text
+                style={{
+                  fontSize: 17,
+                  fontWeight: "100",
+                  textAlign: "left",
+                  lineHeight: 30
+                }}
+              >
+                {this.state.userBio}
+              </Text>
+            </View>
+
+            {/**border line */}
+            <View
+              style={{
+                borderWidth: 1,
+                borderColor: "#d6d7da"
+              }}
+            />
+
+            {/**Photo */}
+            <View
+              style={{
+                marginLeft: 15,
+                marginRight: 15,
+                marginTop: 20,
+                marginBottom: 3
+              }}
+            >
+              <Text style={{ fontSize: 17, fontWeight: "500" }}>Photo</Text>
+            </View>
+            <View
+              style={{
+                margin: 20
+              }}
+            >
+              <View
+                style={{
+                  flexDirection: "row",
+                  flexWrap: "wrap"
+                }}
+              >
+                {displayphotosArray}
+              </View>
+            </View>
+          </ScrollView>
+        </View>
+
+        {/*Footer*/}
+        <Footer navigation={this.props.navigation} />
       </View>
     );
   };
@@ -465,4 +472,4 @@ const mapDispatchToProps = dispatch => {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(Profile);
+)(ProfileScreen);

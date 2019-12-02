@@ -30,6 +30,14 @@ class HomeScreen extends React.Component {
     this.state = {
       matchedChatList: [
         { matched_user_name: "Apple", chatroomID: "12345" },
+        { matched_user_name: "Bay", chatroomID: "56789" },
+        { matched_user_name: "Apple", chatroomID: "12345" },
+        { matched_user_name: "Bay", chatroomID: "56789" },
+        { matched_user_name: "Apple", chatroomID: "12345" },
+        { matched_user_name: "Bay", chatroomID: "56789" },
+        { matched_user_name: "Apple", chatroomID: "12345" },
+        { matched_user_name: "Bay", chatroomID: "56789" },
+        { matched_user_name: "Apple", chatroomID: "12345" },
         { matched_user_name: "Bay", chatroomID: "56789" }
       ],
       isLoading: false
@@ -113,22 +121,18 @@ class HomeScreen extends React.Component {
           source={require("../assets/Assets_V1/Butterfly_Background/butterflyBackground.png")}
           style={styles.backgroundImage}
         >
-          {/*Title*/}
-          <View style={styles.titleBox}>
-            <Text style={styles.titleText}>Chat Rooms</Text>
+          <View style={{ flex: 0.9 }}>
+            {/*Room list */}
+            <ScrollView
+              ref={scrollView => {
+                this.scrollView = scrollView;
+              }}
+              onScroll={this.handleScroll}
+              scrollEventThrottle={16}
+            >
+              <View style={styles.chatRoomBoxWrap}>{displayAllChatList}</View>
+            </ScrollView>
           </View>
-
-          {/*Room list */}
-          <ScrollView
-            ref={scrollView => {
-              this.scrollView = scrollView;
-            }}
-            onScroll={this.handleScroll}
-            scrollEventThrottle={16}
-          >
-            <View style={styles.chatRoomBoxWrap}>{displayAllChatList}</View>
-          </ScrollView>
-
           {/*Footer*/}
           <Footer navigation={this.props.navigation} />
         </ImageBackground>
@@ -171,8 +175,7 @@ const styles = StyleSheet.create({
   },
   backgroundImage: {
     height: "100%",
-    width: "100%",
-    flex: 1
+    width: "100%"
   },
   titleBox: {
     padding: 15,

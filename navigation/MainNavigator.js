@@ -14,6 +14,7 @@ import ProfileScreen from "../screens/ProfileFlow/Profile/ProfileScreen";
 import EditScreen from "../screens/ProfileFlow/Profile/EditScreen";
 import NotificationButton from "../sharedComponents/NotificationButton";
 import NotificationScreen from "../sharedComponents/NotificationScreen";
+import MatchingScreen from "../screens/MatchFlow/MatchingScreen";
 
 const MainStack = createStackNavigator(
   {
@@ -44,10 +45,10 @@ const MainStack = createStackNavigator(
         title: `Edit`
       })
     },
-    Match: {
-      screen: SettingsScreen,
+    Matching: {
+      screen: MatchingScreen,
       navigationOptions: ({ navigation }) => ({
-        title: `Match`,
+        title: `Matching`,
         headerRight: <NotificationButton navigation={navigation} />
       })
     }

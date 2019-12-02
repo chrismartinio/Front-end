@@ -22,13 +22,15 @@ import SpendWeekend from "../screens/OldScreens/SignUpFlow/IndividualScreensTest
 import WouldRather from "../screens/OldScreens/SignUpFlow/IndividualScreensTestingSync/WouldRather";
 import TellUsMore from "../screens/OldScreens/SignUpFlow/IndividualScreensTestingSync/TellUsMore";
 
-
 //Match flow screens
-import CreateQuestionaire from "../screens/FindMatchFlow/matchCreateQuestionaire";
-import ReplyQuestionaire from "../screens/FindMatchFlow/matchCreateReply";
-import ViewQuestionaire from "../screens/FindMatchFlow/matchViewReply";
-import LocationServices from "../screens/LocationServices/LocationServices";
+import CreateQuestionaire from "../screens/MatchFlow/matchCreateQuestionaire";
+import ReplyQuestionaire from "../screens/MatchFlow/matchCreateReply";
+import ViewQuestionaire from "../screens/MatchFlow/matchViewReply";
+import MatchScreen from "../screens/MatchFlow/MatchScreen";
+import MatchingScreen from "../screens/MatchFlow/MatchingScreen";
 
+//LocationFlow
+import LocationServices from "../screens/LocationServices/LocationServices";
 
 //Chat Flow screens
 import ChatPage from "../screens/ChatFlow/chatMain";
@@ -86,8 +88,7 @@ const TestStack = createStackNavigator({
   //Profile Flow
   TestProfileScreen: ProfileScreen,
   TestProfile_Registration: Profile_Registration,
-  TestRegistrationComplete: RegistrationComplete,
-
+  TestRegistrationComplete: RegistrationComplete
 });
 
 //Sign Up
@@ -105,7 +106,7 @@ const ChatStack = createStackNavigator({
     screen: MainNavigator,
     navigationOptions: () => ({
       title: `Home`,
-      header: null,
+      header: null
     })
   },
   MatchedUserChat: {
@@ -123,14 +124,21 @@ const ChatStack = createStackNavigator({
   //GotGhosted: GotGhosted
 });
 
-/*
 const MatchStack = createStackNavigator({
-  Links: LinksScreen,
-  CreateQuestionaire: CreateQuestionaire,
-  ViewQuestionaire: ViewQuestionaire,
-  ReplyQuestionaire: ReplyQuestionaire
+  Matching: {
+    screen: MatchingScreen,
+    navigationOptions: () => ({
+      title: `MatchLoading`
+    })
+  },
+  Match: {
+    screen: MatchScreen,
+    navigationOptions: () => ({
+      title: `Match`,
+      header: null
+    })
+  }
 });
-*/
 
 //purpose of putting stacks inside createSwitchNavigator
 //because in order to navigate to some screens
