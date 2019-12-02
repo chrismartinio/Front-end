@@ -7,7 +7,7 @@ import {
 
 //Main Navigator
 //Profile Home Settings
-import MainTabNavigator from "./MainTabNavigator";
+import MainNavigator from "./MainNavigator";
 
 //Signup flow Screens
 import MatchesPage from "../screens/OldScreens/SignUpFlow/Matches";
@@ -55,26 +55,39 @@ import LoginScreen from "../screens/LoginScreen";
 //register screens here for testing in linkscreen
 const TestStack = createStackNavigator({
   Links: LinksScreen,
+
+  //Location
   TestLocationServices: LocationServices,
+
+  //Match Flow
   TestQuestionaries: CreateQuestionaire,
+  TestViewQuestionaire: ViewQuestionaire,
+  TestReplyQuestionaire: ReplyQuestionaire,
+
+  //Old Sign Up flow
   TestSignUp: SignupPage,
   TestRegistration: RegistrationPage,
   TestSelfie: SelfiePage,
-  TestProfileScreen: ProfileScreen,
-  TestChatPage: ChatPage,
-  TestChat: Chat,
-  TestPhotoReview: PhotoReview,
-  TestScreen: TestScreen,
-  TestMatches: MatchesPage,
   TestAboutYou: AboutYou,
   TestTellUsMore: TellUsMore,
   TestWouldRather: WouldRather,
   TestSpendWeekend: SpendWeekend,
   TestImInterestedIn: ImInterestedIn,
+  TestChatUsersList: ChatUsersList,
+  TestMatchedUserChat: MatchedUserChat,
+  TestMatches: MatchesPage,
+
+  //Chat flow
+  TestChatPage: ChatPage,
+  TestChat: Chat,
+  TestPhotoReview: PhotoReview,
+  TestScreen: TestScreen,
+
+  //Profile Flow
+  TestProfileScreen: ProfileScreen,
   TestProfile_Registration: Profile_Registration,
   TestRegistrationComplete: RegistrationComplete,
-  TestChatUsersList: ChatUsersList,
-  TestMatchedUserChat: MatchedUserChat
+
 });
 
 //Sign Up
@@ -89,7 +102,7 @@ const AuthStack = createStackNavigator({
 //ChatRoom
 const ChatStack = createStackNavigator({
   Main: {
-    screen: MainTabNavigator,
+    screen: MainNavigator,
     navigationOptions: () => ({
       title: `Home`,
       header: null,
@@ -136,7 +149,7 @@ export default createAppContainer(
       // You could add another route here for authentication.
       // Read more at https://reactnavigation.org/docs/en/auth-flow.html
       Login: LoginScreen, //Login
-      Main: MainTabNavigator, //Profile Home Settings
+      Main: MainNavigator, //Profile Home Settings
       Auth: AuthStack, //Stacks for LoginScreen <-> SignUp
       Chat: ChatStack, //Stacks for Homescreen <-> ChatRoom
       Test: TestStack //Stacks for LinksScreen <-> test screens

@@ -22,10 +22,9 @@ import MatchedUserChat from "./ChatFlow/MatchedUserChat";
 
 import { localhost } from "../config/ipconfig";
 
+import Footer from "../sharedComponents/Footer";
+
 class HomeScreen extends React.Component {
-  static navigationOptions = {
-    title: "Home"
-  };
   constructor(props) {
     super(props);
     this.state = {
@@ -42,14 +41,15 @@ class HomeScreen extends React.Component {
   }
 
   async componentDidMount() {
-    /*
     this.guid = await this.props.CreateProfileDataReducer.guid;
 
     this.user_firstName = await this.props.CreateProfileDataReducer.aboutYouData
       .firstName;
-      */
-    this.guid = "";
-    this.user_firstName = "You";
+
+    console.log("HomeScreen");
+    console.log("USER GUID: ", this.guid);
+    console.log("USER firstName: ", this.user_firstName);
+
     /*
     fetch("http://10.0.0.246:3003/api/chat/", {
       method: "POST",
@@ -68,8 +68,8 @@ class HomeScreen extends React.Component {
         console.log(res.roomID[0].key); //1231231231.1231231232131
       });
 */
-    console.log(this.guid);
-    console.log(this.user_firstName);
+    //console.log(this.guid);
+    //console.log(this.user_firstName);
     this.setState({
       isLoading: true
     });
@@ -80,19 +80,12 @@ class HomeScreen extends React.Component {
   }
 
   enterChatRoom = chatRoomData => {
-    this.props.navigation.navigate("MatchedUserChat", {
-      forceRender: this.forceRender()
-    });
+    this.props.navigation.navigate("MatchedUserChat");
   };
 
   handleScroll = ({ nativeEvent }) => {
     const { contentOffset } = nativeEvent;
     this.scrollY = contentOffset.y;
-  };
-
-  forceRender = () => {
-    // Force a render with a simulated state change
-    this.setState({ state: this.state });
   };
 
   successScreen = () => {
@@ -120,9 +113,12 @@ class HomeScreen extends React.Component {
           source={require("../assets/Assets_V1/Butterfly_Background/butterflyBackground.png")}
           style={styles.backgroundImage}
         >
+          {/*Title*/}
           <View style={styles.titleBox}>
             <Text style={styles.titleText}>Chat Rooms</Text>
           </View>
+
+          {/*Room list */}
           <ScrollView
             ref={scrollView => {
               this.scrollView = scrollView;
@@ -132,44 +128,9 @@ class HomeScreen extends React.Component {
           >
             <View style={styles.chatRoomBoxWrap}>{displayAllChatList}</View>
           </ScrollView>
-          <View
-            style={{
-              flex: 1,
-              flexDirection: "column",
-              justifyContent: "flex-end"
-            }}
-          >
-            <View style={{ flexDirection: "row", justifyContent: "center" }}>
-              <View
-                style={{
-                  width: 100,
-                  height: 75,
-                  backgroundColor: "powderblue"
-                }}
-              >
-                <Button
-                  title="Go to Profile"
-                  onPress={() => this.props.navigation.navigate("Profile")}
-                />
-              </View>
-              <View
-                style={{ width: 100, height: 75, backgroundColor: "skyblue" }}
-              >
-                <Button
-                  title="Go to Match"
-                  onPress={() => this.props.navigation.navigate("Match")}
-                />
-              </View>
-              <View
-                style={{ width: 100, height: 75, backgroundColor: "powderblue" }}
-              >
-                <Button
-                  title="Go to Setting"
-                  onPress={() => this.props.navigation.navigate("Setting")}
-                />
-              </View>
-            </View>
-          </View>
+
+          {/*Footer*/}
+          <Footer navigation={this.props.navigation} />
         </ImageBackground>
       </View>
     );

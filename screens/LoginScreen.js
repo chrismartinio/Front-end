@@ -13,11 +13,15 @@ import Firebase from "../storage/Store";
 import { MonoText } from "../components/StyledText";
 import t from "tcomb-form-native";
 import { signInWithFacebook } from "../utils/auth.js";
+
+//Redux
 import { connect } from "react-redux";
 import SetFbDataAction from "../storage/actions/DataReducerActions/SetFbDataAction";
 import SetJwtAction from "../storage/actions/DataReducerActions/SetJwtAction";
 import SetGUIDAction from "..//storage/actions/RegistrationActions/SetGUIDAction";
 import SetAboutYouDataAction from "../storage/actions/RegistrationActions/SetAboutYouDataAction";
+import SetIsContinueUserAction from "../storage/actions/RegistrationActions/SetIsContinueUserAction";
+
 //import publicIP from "react-native-public-ip";
 import * as WebBrowser from "expo-web-browser";
 import * as Location from "expo-location";
@@ -57,6 +61,23 @@ class LoginScreen extends React.Component {
 
   //Profile Services uses
   async componentDidMount() {
+    //Set to all false so if there is a way user can come back to login
+    //and go to registration as new user
+    //the checklist would be all false
+    //but inside profile_registration, there is some code to set the checklist to false
+    //this is just for in case
+    this.props.SetIsContinueUserAction({
+      isContinueUser: false,
+      checklist: {
+        createAccount: false,
+        aboutYou: false,
+        preferences: false,
+        interests: false,
+        wouldYouRather: false,
+        localDestination: false
+      }
+    });
+
     console.log("Inside HomeScreen.js creating table");
     //console.log(Platform.OS === "android");
     //console.log(Platform.OS === "ios");
@@ -266,11 +287,30 @@ class LoginScreen extends React.Component {
           {/*Testing USE*/}
           <Button
             title="Testing - Go to Link Screen"
-            onPress={() => this.props.navigation.navigate("Links")}
+            //If Navigate to Profile, linkscreen has set a guid
+            onPress={() => {
+              this.props.navigation.navigate("Links");
+            }}
           />
           <Button
             title="Testing - Go to Main Screen"
-            onPress={() => this.props.navigation.navigate("Main")}
+            onPress={() => {
+              //TESTING USE (TEMP)
+              //Set Device user GUID
+              this.props.SetGUIDAction({
+                guid: "5de42b16b4dc5b1fba94e1d4"
+              });
+              this.props.SetAboutYouDataAction({
+                firstName: "Someone",
+                lastName: "",
+                birthDate: "",
+                gender: "",
+                country: "",
+                zipCode: ""
+              });
+              //TESTING USE
+              this.props.navigation.navigate("Main");
+            }}
           />
         </ScrollView>
       </View>
@@ -415,7 +455,8 @@ const mapDispatchToProps = dispatch => ({
   SetAboutYouDataAction: payload => dispatch(SetAboutYouDataAction(payload)),
   SetGUIDAction: payload => dispatch(SetGUIDAction(payload)),
   SetFbDataAction: payload => dispatch(SetFbDataAction(payload)),
-  SetJwtAction: payload => dispatch(SetJwtAction(payload))
+  SetJwtAction: payload => dispatch(SetJwtAction(payload)),
+  SetIsContinueUserAction: payload => dispatch(SetIsContinueUserAction(payload))
 });
 
 export default connect(
