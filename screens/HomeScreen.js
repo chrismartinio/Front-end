@@ -30,6 +30,14 @@ class HomeScreen extends React.Component {
     this.state = {
       matchedChatList: [
         { matched_user_name: "Apple", chatroomID: "12345" },
+        { matched_user_name: "Bay", chatroomID: "56789" },
+        { matched_user_name: "Apple", chatroomID: "12345" },
+        { matched_user_name: "Bay", chatroomID: "56789" },
+        { matched_user_name: "Apple", chatroomID: "12345" },
+        { matched_user_name: "Bay", chatroomID: "56789" },
+        { matched_user_name: "Apple", chatroomID: "12345" },
+        { matched_user_name: "Bay", chatroomID: "56789" },
+        { matched_user_name: "Apple", chatroomID: "12345" },
         { matched_user_name: "Bay", chatroomID: "56789" }
       ],
       isLoading: false
@@ -50,8 +58,7 @@ class HomeScreen extends React.Component {
     console.log("USER GUID: ", this.guid);
     console.log("USER firstName: ", this.user_firstName);
 
-    /*
-    fetch("http://10.0.0.246:3003/api/chat/", {
+    fetch(`http://${localhost}:3003/api/chat/`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -67,9 +74,7 @@ class HomeScreen extends React.Component {
         //here's what I will get the chatobject
         console.log(res.roomID[0].key); //1231231231.1231231232131
       });
-*/
-    //console.log(this.guid);
-    //console.log(this.user_firstName);
+
     this.setState({
       isLoading: true
     });
@@ -113,22 +118,18 @@ class HomeScreen extends React.Component {
           source={require("../assets/Assets_V1/Butterfly_Background/butterflyBackground.png")}
           style={styles.backgroundImage}
         >
-          {/*Title*/}
-          <View style={styles.titleBox}>
-            <Text style={styles.titleText}>Chat Rooms</Text>
+          <View style={{ flex: 0.9 }}>
+            {/*Room list */}
+            <ScrollView
+              ref={scrollView => {
+                this.scrollView = scrollView;
+              }}
+              onScroll={this.handleScroll}
+              scrollEventThrottle={16}
+            >
+              <View style={styles.chatRoomBoxWrap}>{displayAllChatList}</View>
+            </ScrollView>
           </View>
-
-          {/*Room list */}
-          <ScrollView
-            ref={scrollView => {
-              this.scrollView = scrollView;
-            }}
-            onScroll={this.handleScroll}
-            scrollEventThrottle={16}
-          >
-            <View style={styles.chatRoomBoxWrap}>{displayAllChatList}</View>
-          </ScrollView>
-
           {/*Footer*/}
           <Footer navigation={this.props.navigation} />
         </ImageBackground>
@@ -171,8 +172,7 @@ const styles = StyleSheet.create({
   },
   backgroundImage: {
     height: "100%",
-    width: "100%",
-    flex: 1
+    width: "100%"
   },
   titleBox: {
     padding: 15,
