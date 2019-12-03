@@ -41,7 +41,8 @@ import GotLucky from "../screens/ChatFlow/GotLuckyGoToChat";
 import InitialMatchChoice from "../screens/ChatFlow/InitialMatchChoice";
 import Selection from "../screens/ChatFlow/Selection";
 import GotGhosted from "../screens/ChatFlow/GotGhosted";
-import ChatRoomScreen from "../screens/ChatFlow/ChatRoomScreen";
+import MinuteChatRoomScreen from "../screens/ChatFlow/MinuteChatRoomScreen";
+import PermanentChatRoomScreen from "../screens/ChatFlow/PermanentChatRoomScreen";
 
 //Profile Flow - Profile_Registration
 import ProfileScreen from "../screens/ProfileFlow/Profile/ProfileScreen";
@@ -102,8 +103,14 @@ const ChatStack = createStackNavigator({
       header: null
     })
   },
-  ChatRoom: {
-    screen: ChatRoomScreen,
+  MinuteChatRoom: {
+    screen: MinuteChatRoomScreen,
+    navigationOptions: () => ({
+      title: `ChatRoom`
+    })
+  },
+  PermanentChatRoom: {
+    screen: PermanentChatRoomScreen,
     navigationOptions: () => ({
       title: `ChatRoom`
     })
@@ -121,8 +128,7 @@ const MatchStack = createStackNavigator({
   Match: {
     screen: MatchScreen,
     navigationOptions: () => ({
-      title: `Match`,
-      header: null
+      title: `Match`
     })
   }
 });

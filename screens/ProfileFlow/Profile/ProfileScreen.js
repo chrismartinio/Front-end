@@ -83,6 +83,8 @@ class ProfileScreen extends React.Component {
         "https://facebook.github.io/react-native/img/tiny_logo.png",
         "https://facebook.github.io/react-native/img/tiny_logo.png"
       ],
+      userLatitude: 0,
+      userLongitude: 0,
       isSuccess: false,
       isEdited: false
     };
@@ -166,8 +168,20 @@ class ProfileScreen extends React.Component {
             city,
             userBio,
             zipCode,
-            likesArray
+            likesArray,
+            userLatitude,
+            userLongitude
           } = object.result;
+
+          //HANDLE EMPTY LAT and LONG
+          if (userLatitude === "" && userLongitude === "") {
+            //if there is not userLatitude and userLongitude
+            //go to error screen?
+            this.setState({
+              isSuccess: false
+            });
+            return;
+          }
 
           //setState
           this.setState({
@@ -180,17 +194,35 @@ class ProfileScreen extends React.Component {
             state: state,
             zipCode: zipCode,
             likesArray: likesArray,
+            userLatitude: userLatitude,
+            userLongitude: userLongitude,
             isSuccess: true
           });
 
           //LocalStorage
           if (this.guid === this.props.CreateProfileDataReducer.guid) {
-            //Store to device_user_aboutYou
+            //Store to device_user_createAccount
             let insertSqlStatement =
+              "INSERT OR REPLACE into device_user_createAccount(id, deviceLatLong) " +
+              "values(1, ?);";
+
+            let deviceLatLong = `${this.state.userLatitude}.${
+              this.state.userLongitude
+            }`;
+
+            let { success } = await insertDataIntoLocalStorage(
+              insertSqlStatement,
+              "device_user_createAccount",
+              [deviceLatLong],
+              true
+            );
+
+            //Store to device_user_aboutYou
+            insertSqlStatement =
               "INSERT OR REPLACE into device_user_aboutYou(id, createAccount_id, firstName, birthDate, userBio, city, state, zipCode) " +
               "values(1, 1, ?, ?, ?, ?, ?, ?);";
 
-            let { success } = await insertDataIntoLocalStorage(
+            success = await insertDataIntoLocalStorage(
               insertSqlStatement,
               "device_user_aboutYou",
               [firstName, birthDate, userBio, city, state, zipCode],
@@ -198,12 +230,13 @@ class ProfileScreen extends React.Component {
             );
 
             //Store to device_user_interests
-            let json_likesArray = JSON.stringify({
-              likesArray: likesArray
-            });
             insertSqlStatement =
               "INSERT OR REPLACE into device_user_interests(id, createAccount_id, likesArray) " +
               "values(1, 1, ?);";
+
+            let json_likesArray = JSON.stringify({
+              likesArray: likesArray
+            });
 
             success = await insertDataIntoLocalStorage(
               insertSqlStatement,
@@ -241,7 +274,15 @@ class ProfileScreen extends React.Component {
             "device_user_interests"
           );
 
-          if (aboutYouObject.success && interestsObject.success) {
+          let createAccountObject = await selectDataFromLocalStorage(
+            "device_user_createAccount"
+          );
+
+          if (
+            aboutYouObject.success &&
+            interestsObject.success &&
+            createAccountObject.success
+          ) {
             let {
               firstName,
               lastName,
@@ -255,6 +296,12 @@ class ProfileScreen extends React.Component {
             let { likesArray } = interestsObject.result.rows._array[0];
             likesArray = JSON.parse(likesArray).likesArray;
 
+            let { deviceLatLong } = createAccountObject.result.rows._array[0];
+            let pos1 = deviceLatLong.indexOf(".");
+            let pos2 = deviceLatLong.indexOf(".", pos1 + 1);
+            let userLatitude = deviceLatLong.slice(0, pos2);
+            let userLongitude = deviceLatLong.slice(pos2 + 1);
+
             //setState
             this.setState({
               firstName: firstName,
@@ -266,12 +313,13 @@ class ProfileScreen extends React.Component {
               state: state,
               zipCode: zipCode,
               likesArray: likesArray,
+              userLatitude: userLatitude,
+              userLongitude: userLongitude,
               isSuccess: true
             });
           } else {
-            //If error while fetching, direct user to failScreen
-            //setState
-            //Make an errorscreen
+            //If error while getting data from localstorage,
+            //then direct user to erroscreen
             this.setState({
               isSuccess: false
             });
@@ -279,6 +327,16 @@ class ProfileScreen extends React.Component {
         } else {
           //Get Matched User's Data from localStorage
           //code coming soon
+          let matched_user_querydata_success = false;
+
+          if (matched_user_querydata_success) {
+            console.log("getting data");
+          } else {
+            this.setState({
+              isSuccess: false
+            });
+          }
+
           return;
         }
       });
@@ -322,12 +380,26 @@ class ProfileScreen extends React.Component {
               />
             </View>
 
-            {/**User Name */}
             <View style={{ margin: 20 }}>
               <Text style={{ fontSize: 20, fontWeight: "500" }}>
+                {/**User Name */}
                 {this.state.firstName} {this.state.lastName}, {this.state.age}
               </Text>
               <Text />
+
+              {/*Map*/}
+              <Button
+                title={"Map"}
+                color={"black"}
+                onPress={() => {
+                  this.props.navigation.navigate("ProfileLocation", {
+                    userLatitude: this.state.userLatitude,
+                    userLongitude: this.state.userLongitude
+                  });
+                }}
+              />
+
+              {/*Address*/}
               <Text style={{ fontSize: 15, fontWeight: "400" }}>
                 {this.state.city}, {this.state.state}
               </Text>

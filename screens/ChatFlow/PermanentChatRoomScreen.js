@@ -26,7 +26,7 @@ import LoadingScreen from "../../sharedComponents/LoadingScreen";
 
 import { localhost } from "../../config/ipconfig";
 
-class ChatRoomScreen extends React.Component {
+class PermanentChatRoomScreen extends React.Component {
   static navigationOptions = ({ navigation }) => {
     return {
       headerTitle: "ChatRoom",
@@ -564,4 +564,4 @@ const mapDispatchToProps = dispatch => {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(ChatRoomScreen);
+)(PermanentChatRoomScreen);
