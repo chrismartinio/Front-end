@@ -16,7 +16,7 @@ import { connect } from "react-redux";
 //1. any user edit, make the profile screen to hit the db
 //2. query all createAccount data in profile screen and store into localstorage
 
-import LoadingScreen from "../Profile_SharedComponents/LoadingScreen";
+import LoadingScreen from "../../../sharedComponents/LoadingScreen";
 
 import NotificationButton from "../../../sharedComponents/NotificationButton";
 
@@ -429,7 +429,7 @@ class ProfileScreen extends React.Component {
   };
 
   loadingScreen = () => {
-    return <LoadingScreen />;
+    return <LoadingScreen navigation={this.props.navigation} />;
   };
 
   render() {

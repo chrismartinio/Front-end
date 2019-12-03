@@ -13,7 +13,7 @@ import {
 
 import { connect } from "react-redux";
 
-import LoadingScreen from "../ChatFlow/components/LoadingScreen";
+import LoadingScreen from "../../sharedComponents/LoadingScreen";
 
 import NotificationButton from "../../sharedComponents/NotificationButton";
 
@@ -61,7 +61,7 @@ class MatchingScreen extends React.Component {
   };
 
   loadingScreen = () => {
-    return <LoadingScreen />;
+    return <LoadingScreen navigation={this.props.navigation} />;
   };
 
   render() {

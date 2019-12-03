@@ -17,7 +17,8 @@ import { LinearGradient } from "expo-linear-gradient";
 
 //Collapsible Components
 import CollapsibleScreenTab from "../Profile_SharedComponents/CollapsibleScreenTab";
-import LoadingScreen from "../Profile_SharedComponents/LoadingScreen";
+
+import LoadingScreen from "../../../sharedComponents/LoadingScreen";
 
 //Icons
 import { Chevron } from "react-native-shapes";
@@ -94,7 +95,7 @@ class CollapisbleRegistration extends Component {
       interestsStatus: "empty",
       wouldYouRatherStatus: "empty",
       localDestinationStatus: "empty",
-      isLoading: false, //use to make sure if there data inside redux before rendering
+      isSuccess: false, //use to make sure if there data inside redux before rendering
       scrollY: 0
     };
   }
@@ -251,7 +252,7 @@ class CollapisbleRegistration extends Component {
 
     //Trigger render() again after guid and checklist are store into redux
     this.setState({
-      isLoading: true
+      isSuccess: true
     });
   }
 
@@ -492,11 +493,11 @@ class CollapisbleRegistration extends Component {
 
   loadingScreen = () => {
     //display fetching data
-    return <LoadingScreen />;
+    return <LoadingScreen navigation={this.props.navigation} />;
   };
 
   render() {
-    return this.state.isLoading ? this.successScreen() : this.loadingScreen();
+    return this.state.isSuccess ? this.successScreen() : this.loadingScreen();
   }
 }
 

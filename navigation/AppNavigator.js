@@ -41,9 +41,7 @@ import GotLucky from "../screens/ChatFlow/GotLuckyGoToChat";
 import InitialMatchChoice from "../screens/ChatFlow/InitialMatchChoice";
 import Selection from "../screens/ChatFlow/Selection";
 import GotGhosted from "../screens/ChatFlow/GotGhosted";
-
-import ChatUsersList from "../screens/ChatFlow/ChatUsersList";
-import MatchedUserChat from "../screens/ChatFlow/MatchedUserChat";
+import ChatRoomScreen from "../screens/ChatFlow/ChatRoomScreen";
 
 //Profile Flow - Profile_Registration
 import ProfileScreen from "../screens/ProfileFlow/Profile/ProfileScreen";
@@ -65,6 +63,7 @@ const TestStack = createStackNavigator({
   TestQuestionaries: CreateQuestionaire,
   TestViewQuestionaire: ViewQuestionaire,
   TestReplyQuestionaire: ReplyQuestionaire,
+  TestMatches: MatchesPage,
 
   //Old Sign Up flow
   TestSignUp: SignupPage,
@@ -75,9 +74,6 @@ const TestStack = createStackNavigator({
   TestWouldRather: WouldRather,
   TestSpendWeekend: SpendWeekend,
   TestImInterestedIn: ImInterestedIn,
-  TestChatUsersList: ChatUsersList,
-  TestMatchedUserChat: MatchedUserChat,
-  TestMatches: MatchesPage,
 
   //Chat flow
   TestChatPage: ChatPage,
@@ -91,16 +87,13 @@ const TestStack = createStackNavigator({
   TestRegistrationComplete: RegistrationComplete
 });
 
-//Sign Up
+//Auth Flow and Profile Flow
 const AuthStack = createStackNavigator({
   Login: LoginScreen, //Default Screen
   SignUp: Profile_Registration
-  //Registration: RegistrationPage,
-  //Selfie: SelfiePage,
-  //Profile: ProfilePage
 });
 
-//ChatRoom
+//Chat Flow
 const ChatStack = createStackNavigator({
   Main: {
     screen: MainNavigator,
@@ -109,21 +102,15 @@ const ChatStack = createStackNavigator({
       header: null
     })
   },
-  MatchedUserChat: {
-    screen: MatchedUserChat,
+  ChatRoom: {
+    screen: ChatRoomScreen,
     navigationOptions: () => ({
       title: `ChatRoom`
     })
   }
-
-  //ChatPage: ChatPage,
-  //InitialMatchChoice: InitialMatchChoice,
-  //GhostingOthers: GhostingOthersScreen,
-  //GotLucky: GotLucky,
-  //Selection: Selection,
-  //GotGhosted: GotGhosted
 });
 
+//Match Flow
 const MatchStack = createStackNavigator({
   Matching: {
     screen: MatchingScreen,

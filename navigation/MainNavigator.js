@@ -5,38 +5,30 @@ import {
   createBottomTabNavigator
 } from "react-navigation";
 
-import TabBarIcon from "../components/TabBarIcon";
-import LoginScreen from "../screens/LoginScreen";
+//Setting Flow
 import SettingsScreen from "../screens/SettingsScreen";
+
+//Match and Chat Flow
 import HomeScreen from "../screens/HomeScreen";
-import LinksScreen from "../screens/LinksScreen";
+import MatchingScreen from "../screens/MatchFlow/MatchingScreen";
+import ChatRoomScreen from "../screens/ChatFlow/ChatRoomScreen";
+
+//Profile Flow
 import ProfileScreen from "../screens/ProfileFlow/Profile/ProfileScreen";
 import EditScreen from "../screens/ProfileFlow/Profile/EditScreen";
+
+//Notification Components
 import NotificationButton from "../sharedComponents/NotificationButton";
 import NotificationScreen from "../sharedComponents/NotificationScreen";
-import MatchingScreen from "../screens/MatchFlow/MatchingScreen";
 
 const MainStack = createStackNavigator(
   {
+    //Profile Flow
     Profile: {
       screen: ProfileScreen,
       navigationOptions: ({ navigation }) => ({
         title: `Profile`
         //headerRight is set inside ProfileScreen.js
-      })
-    },
-    Home: {
-      screen: HomeScreen,
-      navigationOptions: ({ navigation }) => ({
-        title: `Home`,
-        headerRight: <NotificationButton navigation={navigation} />
-      })
-    },
-    Setting: {
-      screen: SettingsScreen,
-      navigationOptions: ({ navigation }) => ({
-        title: `Settings`,
-        headerRight: <NotificationButton navigation={navigation} />
       })
     },
     Edit: {
@@ -45,10 +37,36 @@ const MainStack = createStackNavigator(
         title: `Edit`
       })
     },
+
+    //Match and Chat Flow
+    Home: {
+      screen: HomeScreen,
+      navigationOptions: ({ navigation }) => ({
+        title: `Home`,
+        headerRight: <NotificationButton navigation={navigation} />
+      })
+    },
+
     Matching: {
       screen: MatchingScreen,
       navigationOptions: ({ navigation }) => ({
         title: `Matching`,
+        headerRight: <NotificationButton navigation={navigation} />
+      })
+    },
+
+    ChatRoom: {
+      screen: ChatRoomScreen,
+      navigationOptions: () => ({
+        title: `ChatRoom`
+      })
+    },
+
+    //Setting Flow
+    Setting: {
+      screen: SettingsScreen,
+      navigationOptions: ({ navigation }) => ({
+        title: `Settings`,
         headerRight: <NotificationButton navigation={navigation} />
       })
     }

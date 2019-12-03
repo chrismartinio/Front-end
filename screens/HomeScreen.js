@@ -17,8 +17,7 @@ import { connect } from "react-redux";
 
 import io from "socket.io-client";
 
-import LoadingScreen from "./ChatFlow/components/LoadingScreen";
-import MatchedUserChat from "./ChatFlow/MatchedUserChat";
+import LoadingScreen from "../sharedComponents/LoadingScreen";
 
 import { localhost } from "../config/ipconfig";
 
@@ -40,7 +39,7 @@ class HomeScreen extends React.Component {
         { matched_user_name: "Apple", chatroomID: "12345" },
         { matched_user_name: "Bay", chatroomID: "56789" }
       ],
-      isLoading: false
+      isSuccess: false
     };
     this.guid = "";
     this.user_firstName = "";
@@ -77,7 +76,7 @@ class HomeScreen extends React.Component {
       });
 */
     this.setState({
-      isLoading: true
+      isSuccess: true
     });
   }
 
@@ -86,7 +85,7 @@ class HomeScreen extends React.Component {
   }
 
   enterChatRoom = chatRoomData => {
-    this.props.navigation.navigate("MatchedUserChat");
+    this.props.navigation.navigate("ChatRoom");
   };
 
   handleScroll = ({ nativeEvent }) => {
@@ -139,11 +138,11 @@ class HomeScreen extends React.Component {
   };
 
   loadingScreen = () => {
-    return <LoadingScreen />;
+    return <LoadingScreen navigation={this.props.navigation} />;
   };
 
   render() {
-    return this.state.isLoading ? this.successScreen() : this.loadingScreen();
+    return this.state.isSuccess ? this.successScreen() : this.loadingScreen();
   }
 }
 
