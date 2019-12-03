@@ -301,7 +301,7 @@ class LoginScreen extends React.Component {
                 guid: "5de42b16b4dc5b1fba94e1d4"
               });
               this.props.SetAboutYouDataAction({
-                firstName: "Someone",
+                firstName: "Device's user",
                 lastName: "",
                 birthDate: "",
                 gender: "",

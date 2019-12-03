@@ -23,6 +23,8 @@ import { localhost } from "../config/ipconfig";
 
 import Footer from "../sharedComponents/Footer";
 
+//1. make an error screen for no data for profile screen and edit screen
+
 class HomeScreen extends React.Component {
   constructor(props) {
     super(props);

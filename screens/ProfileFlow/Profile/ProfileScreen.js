@@ -13,9 +13,6 @@ import {
 
 import { connect } from "react-redux";
 
-//1. any user edit, make the profile screen to hit the db
-//2. query all createAccount data in profile screen and store into localstorage
-
 import LoadingScreen from "../../../sharedComponents/LoadingScreen";
 
 import NotificationButton from "../../../sharedComponents/NotificationButton";
@@ -77,6 +74,7 @@ class ProfileScreen extends React.Component {
       userImage: "https://facebook.github.io/react-native/img/tiny_logo.png",
       likesArray: [],
       userBio: "",
+      zipCode: "",
       photosArray: [
         "https://facebook.github.io/react-native/img/tiny_logo.png",
         "https://facebook.github.io/react-native/img/tiny_logo.png",
@@ -167,6 +165,7 @@ class ProfileScreen extends React.Component {
             state,
             city,
             userBio,
+            zipCode,
             likesArray
           } = object.result;
 
@@ -179,6 +178,7 @@ class ProfileScreen extends React.Component {
             age: _calculateAge(birthDate),
             city: city,
             state: state,
+            zipCode: zipCode,
             likesArray: likesArray,
             isSuccess: true
           });
@@ -187,13 +187,13 @@ class ProfileScreen extends React.Component {
           if (this.guid === this.props.CreateProfileDataReducer.guid) {
             //Store to device_user_aboutYou
             let insertSqlStatement =
-              "INSERT OR REPLACE into device_user_aboutYou(id, createAccount_id, firstName, birthDate, userBio, city, state) " +
-              "values(1, 1, ?, ?, ?, ?, ?);";
+              "INSERT OR REPLACE into device_user_aboutYou(id, createAccount_id, firstName, birthDate, userBio, city, state, zipCode) " +
+              "values(1, 1, ?, ?, ?, ?, ?, ?);";
 
             let { success } = await insertDataIntoLocalStorage(
               insertSqlStatement,
               "device_user_aboutYou",
-              [firstName, birthDate, userBio, city, state],
+              [firstName, birthDate, userBio, city, state, zipCode],
               true
             );
 
@@ -248,7 +248,8 @@ class ProfileScreen extends React.Component {
               birthDate,
               state,
               city,
-              userBio
+              userBio,
+              zipCode
             } = aboutYouObject.result.rows._array[0];
 
             let { likesArray } = interestsObject.result.rows._array[0];
@@ -263,20 +264,22 @@ class ProfileScreen extends React.Component {
               age: _calculateAge(birthDate),
               city: city,
               state: state,
+              zipCode: zipCode,
               likesArray: likesArray,
               isSuccess: true
             });
           } else {
-            //Get Matched User's Data from localStorage
-            //code coming soon
-            return;
+            //If error while fetching, direct user to failScreen
+            //setState
+            //Make an errorscreen
+            this.setState({
+              isSuccess: false
+            });
           }
         } else {
-          //If error while fetching, direct user to failScreen
-          //setState
-          this.setState({
-            isSuccess: false
-          });
+          //Get Matched User's Data from localStorage
+          //code coming soon
+          return;
         }
       });
   };

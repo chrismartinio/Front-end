@@ -147,6 +147,7 @@ export default createAppContainer(
       Main: MainNavigator, //Profile Home Settings
       Auth: AuthStack, //Stacks for LoginScreen <-> SignUp
       Chat: ChatStack, //Stacks for Homescreen <-> ChatRoom
+      RegistrationComplete: RegistrationComplete,
       Test: TestStack //Stacks for LinksScreen <-> test screens
       //Match: MatchStack,
     },
