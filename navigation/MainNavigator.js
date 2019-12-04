@@ -21,6 +21,7 @@ import MatchScreen from "../screens/MatchFlow/MatchScreen";
 import ProfileScreen from "../screens/ProfileFlow/Profile/ProfileScreen";
 import EditScreen from "../screens/ProfileFlow/Profile/EditScreen";
 import ProfileLocationScreen from "../screens/ProfileFlow/Profile/ProfileLocationScreen";
+import SelfieScreen from "../screens/ProfileFlow/Profile_Registration/RegistrationScreens/SelfieScreen";
 
 //Notification Components
 import NotificationButton from "../sharedComponents/NotificationButton";
@@ -38,6 +39,12 @@ const MainStack = createStackNavigator(
     },
     Edit: {
       screen: EditScreen,
+      navigationOptions: () => ({
+        title: `Edit`
+      })
+    },
+    SeflieEdit: {
+      screen: SelfieScreen,
       navigationOptions: () => ({
         title: `Edit`
       })

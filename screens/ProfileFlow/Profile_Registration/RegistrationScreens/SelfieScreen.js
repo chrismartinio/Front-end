@@ -33,8 +33,24 @@ class SelfieScreen extends Component {
   }
 
   handleSubmit = () => {
-    this.props.navigation.navigate("RegistrationComplete");
+    if (this.isEdit) {
+      //Edit
+      //Call db or update db
+
+      return;
+    } else {
+      //Registration
+      //Call db or update db
+
+      //then go to complete screen
+      this.props.navigation.navigate("RegistrationComplete");
+    }
   };
+
+  componentDidMount() {
+    const { navigation } = this.props;
+    this.isEdit = navigation.getParam("isEdit");
+  }
 
   render() {
     return (
