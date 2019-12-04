@@ -95,14 +95,12 @@ export default class LinksScreen extends React.Component {
       //Match Flow
       "TestMatches",
       "MinuteChatRoom",
-      "PermanentChatRoom",
+      "PermanentChatRoom"
 
       //"TestPhotoReview",
       //"TestQuestionaries",
       //"TestReplyQuestionaire",
       //"TestViewQuestionaire",
-
-
     ];
   }
 
@@ -184,6 +182,22 @@ export default class LinksScreen extends React.Component {
               this.props.navigation.navigate(e, {
                 guid: "5de42a14b4dc5b1fba94e1d3",
                 isDeviceUser: false
+              })
+            }
+          />
+        );
+      }
+
+      if (e === "TestSelfie") {
+        //must turn on profile server for matched user profile
+        return (
+          <Button
+            key={index++}
+            title={e}
+            onPress={() =>
+              this.props.navigation.navigate(e, {
+                isEdit: false //Profile_Registration
+                //isEdit: true //EditScreen
               })
             }
           />

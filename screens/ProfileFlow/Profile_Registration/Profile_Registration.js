@@ -33,7 +33,6 @@ import SetGUIDAction from "../../../storage/actions/RegistrationActions/SetGUIDA
 import SetIsThirdPartyServicesUserAction from "../../../storage/actions/RegistrationActions/SetIsThirdPartyServicesUserAction";
 import SetAboutYouDataAction from "../../../storage/actions/RegistrationActions/SetAboutYouDataAction";
 
-
 //SQLite
 import * as SQLite from "expo-sqlite";
 const db = SQLite.openDatabase("that.db");
@@ -303,7 +302,7 @@ class CollapisbleRegistration extends Component {
         reset: true
       });
       */
-      this.props.navigation.navigate("Selfie");
+      this.props.navigation.navigate("Selfie", { isEdit: false });
       //Close the db?
       //db._db.close();
     }

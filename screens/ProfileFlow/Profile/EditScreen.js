@@ -148,6 +148,17 @@ class EditScreen extends React.Component {
                   }}
                 />
 
+                {/*Selfie*/}
+                <Button
+                  title={"selfie"}
+                  color={"black"}
+                  onPress={() => {
+                    this.props.navigation.navigate("SeflieEdit", {
+                      isEdit: true
+                    });
+                  }}
+                />
+
                 {/*About You*/}
                 <View>
                   <CollapsibleScreenTab
