@@ -10,7 +10,8 @@ import {
   View,
   Button,
   ImageBackground,
-  TouchableHighlight
+  TouchableHighlight,
+  AppState
 } from "react-native";
 
 import { connect } from "react-redux";
@@ -28,9 +29,11 @@ import Footer from "../sharedComponents/Footer";
 //3. fix faill storing
 
 class HomeScreen extends React.Component {
+
   constructor(props) {
     super(props);
     this.state = {
+      appState: AppState.currentState,
       matchedChatList: [
         { matched_user_name: "Apple", chatroomID: "12345" },
         { matched_user_name: "Bay", chatroomID: "56789" },
@@ -51,6 +54,7 @@ class HomeScreen extends React.Component {
   }
 
   async componentDidMount() {
+    AppState.addEventListener('change', this._handleAppStateChange);
     this.guid = await this.props.CreateProfileDataReducer.guid;
 
     this.user_firstName = await this.props.CreateProfileDataReducer.aboutYouData
@@ -85,7 +89,19 @@ class HomeScreen extends React.Component {
 
   componentWillUnmount() {
     //this.socket.off();
+    AppState.removeEventListener('change', this._handleAppStateChange);
   }
+
+  _handleAppStateChange = nextAppState => {
+   if (this.state.appState.match(/inactive|background/) && nextAppState === 'active') {
+     //Here should go some logic to to update the dB prob createAccount with appStatus: "foreground"
+     console.log('User: ' + this.guid + ' has come to the foreground!');
+   } else {
+     //Here should go some logic to to update the dB prob createAccount with appStatus: "background"
+     console.log('User: ' + this.guid + ' has gone to the background!')
+   }
+   this.setState({ appState: nextAppState });
+ };
 
   enterChatRoom = chatRoomData => {
     this.props.navigation.navigate("MinuteChatRoom");
