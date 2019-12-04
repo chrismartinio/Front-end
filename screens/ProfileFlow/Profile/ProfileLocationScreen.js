@@ -28,13 +28,12 @@ export default class LocationServices extends Component {
         <MapView
           //provider={PROVIDER_GOOGLE} // remove if not using Google Maps
           showsUserLocation
-          followsUserLocation
           style={styles.map}
           region={{
             latitude: this.state.userLatitude,
             longitude: this.state.userLongitude,
-            latitudeDelta: 10,
-            longitudeDelta: 10
+            latitudeDelta: 15,
+            longitudeDelta: 15
           }}
         />
       </View>

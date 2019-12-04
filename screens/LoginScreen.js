@@ -287,8 +287,16 @@ class LoginScreen extends React.Component {
           {/*Testing USE*/}
           <Button
             title="Testing - Go to Link Screen"
-            //If Navigate to Profile, linkscreen has set a guid
+            //If Navigate to Profile, in side linkscreen has set a guid
             onPress={() => {
+              this.props.SetAboutYouDataAction({
+                firstName: "Device's user",
+                lastName: "",
+                birthDate: "",
+                gender: "",
+                country: "",
+                zipCode: ""
+              });
               this.props.navigation.navigate("Links");
             }}
           />

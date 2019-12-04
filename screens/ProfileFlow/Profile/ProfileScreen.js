@@ -282,6 +282,11 @@ class ProfileScreen extends React.Component {
             let { likesArray } = interestsObject.result.rows._array[0];
             likesArray = JSON.parse(likesArray).likesArray;
 
+            let {
+              addressLatitude,
+              addressLongitude
+            } = createAccountObject.result.rows._array[0];
+
             //setState
             this.setState({
               firstName: firstName,

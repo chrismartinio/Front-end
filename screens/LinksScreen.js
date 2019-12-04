@@ -176,6 +176,7 @@ export default class LinksScreen extends React.Component {
     //let CurrentScreen = this.state.CurrentScreen;
     let displayButton = this.buttonAry.map((e, index = 0) => {
       if (e === "TestProfile") {
+        //must turn on profile server for matched user profile
         return (
           <Button
             key={index++}
