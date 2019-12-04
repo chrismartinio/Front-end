@@ -143,7 +143,10 @@ class MatchedUserChat extends React.Component {
       }
     }
   }
-
+  toTimeZone(time, zone) {
+    var format = 'YYYY/MM/DD HH:mm:ss ZZ';
+    return moment(time, format).tz(zone).format(format);
+}
   componentWillUnmount() {
     clearInterval(this.interval);
     this.socket.close();
