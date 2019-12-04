@@ -36,14 +36,7 @@ export default class LocationServices extends Component {
             latitudeDelta: 10,
             longitudeDelta: 10
           }}
-        >
-          <Marker
-            coordinate={{
-              latitude: this.state.userLatitude,
-              longitude: this.state.userLongitude
-            }}
-          />
-        </MapView>
+        />
       </View>
     );
   }
