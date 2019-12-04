@@ -18,11 +18,8 @@ Installation reqs:
   and it will install the Expo Client to the simulator and open up your app inside of it.
 
 5. android stuff
-
    Install Android Studio.
-
    Open ADV Manager
-
    Install a android emulator
 
 6. yarn install
