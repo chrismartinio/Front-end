@@ -92,13 +92,31 @@ class HomeScreen extends React.Component {
     AppState.removeEventListener('change', this._handleAppStateChange);
   }
 
-  _handleAppStateChange = nextAppState => {
+  _handleAppStateChange = async nextAppState => {
    if (this.state.appState.match(/inactive|background/) && nextAppState === 'active') {
      //Here should go some logic to to update the dB prob createAccount with appStatus: "foreground"
      console.log('User: ' + this.guid + ' has come to the foreground!');
+      await fetch(`http://${localhost}:3020/api/pushNotification/appState`, {
+       method: "POST",
+       headers: {
+         "Content-Type": "application/json"
+       },
+       body: JSON.stringify({
+         data: { guid: this.guid, appState: "foreground" }
+       })
+     })
    } else {
      //Here should go some logic to to update the dB prob createAccount with appStatus: "background"
      console.log('User: ' + this.guid + ' has gone to the background!')
+     await fetch(`http://${localhost}:3020/api/pushNotification/appState`, {
+       method: "POST",
+       headers: {
+         "Content-Type": "application/json"
+       },
+       body: JSON.stringify({
+         data: { guid: this.guid, appState: "background" }
+       })
+     })
    }
    this.setState({ appState: nextAppState });
  };
