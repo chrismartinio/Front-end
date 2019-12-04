@@ -160,7 +160,7 @@ class LoginScreen extends React.Component {
   };
 
   handleSignUp = () => {
-    this.props.navigation.navigate("SignUp");
+    this.props.navigation.navigate("Registration");
   };
 
   DBCheck = async info => {

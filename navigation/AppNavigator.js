@@ -45,15 +45,45 @@ import MinuteChatRoomScreen from "../screens/ChatFlow/MinuteChatRoomScreen";
 import PermanentChatRoomScreen from "../screens/ChatFlow/PermanentChatRoomScreen";
 
 //Profile Flow - Profile_Registration
+import Profile_Registration from "../screens/ProfileFlow/Profile_Registration/Profile_Registration";
+import SelfieScreen from "../screens/ProfileFlow/Profile_Registration/RegistrationScreens/SelfieScreen";
+import RegistrationComplete from "../screens/ProfileFlow/Profile_Registration/RegistrationScreens/RegistrationComplete";
+
+//Profile Flow - Profile Screen
 import ProfileScreen from "../screens/ProfileFlow/Profile/ProfileScreen";
 import EditScreen from "../screens/ProfileFlow/Profile/EditScreen";
 import ProfileLocationScreen from "../screens/ProfileFlow/Profile/ProfileLocationScreen";
-import Profile_Registration from "../screens/ProfileFlow/Profile_Registration/Profile_Registration";
-import RegistrationComplete from "../screens/ProfileFlow/Profile_Registration/RegistrationScreens/RegistrationComplete";
 
 //LinkScreen
 import LinksScreen from "../screens/LinksScreen";
 import LoginScreen from "../screens/LoginScreen";
+
+//Notification Components
+import NotificationButton from "../sharedComponents/NotificationButton";
+import NotificationScreen from "../sharedComponents/NotificationScreen";
+
+//Test Matched User Profile Stack
+const LinkProfileStack = createStackNavigator({
+  Profile: {
+    screen: ProfileScreen,
+    navigationOptions: ({ navigation }) => ({
+      title: `Profile`
+      //headerRight is set inside ProfileScreen.js
+    })
+  },
+  ProfileLocation: {
+    screen: ProfileLocationScreen,
+    navigationOptions: () => ({
+      title: `Location`
+    })
+  },
+  Notification: {
+    screen: NotificationScreen,
+    navigationOptions: () => ({
+      header: null
+    })
+  }
+});
 
 //register screens here for testing in linkscreen
 const TestStack = createStackNavigator(
@@ -72,7 +102,7 @@ const TestStack = createStackNavigator(
     //Old Sign Up flow
     TestSignUp: SignupPage,
     TestRegistration: RegistrationPage,
-    TestSelfie: SelfiePage,
+    TestOldSelfie: SelfiePage,
     TestAboutYou: AboutYou,
     TestTellUsMore: TellUsMore,
     TestWouldRather: WouldRather,
@@ -86,20 +116,48 @@ const TestStack = createStackNavigator(
     TestScreen: TestScreen,
 
     //Profile Flow
-    TestProfile: ProfileScreen,
+    TestProfile: LinkProfileStack,
+    TestProfileLocation: ProfileLocationScreen,
+
+    //Profile Registration Flow
     TestProfile_Registration: Profile_Registration,
-    TestRegistrationComplete: RegistrationComplete,
-    TestProfileLocation: ProfileLocationScreen
+    TestSelfie: SelfieScreen,
+    TestRegistrationComplete: RegistrationComplete
   },
   {
     initialRouteName: "Links"
   }
 );
 
-//Auth Flow and Profile Flow
-const AuthStack = createStackNavigator({
-  Login: LoginScreen, //Default Screen
-  SignUp: Profile_Registration
+//SignUp Flow
+const SignUpStack = createStackNavigator({
+  Login: {
+    screen: LoginScreen,
+    navigationOptions: () => ({
+      title: `Login`,
+      header: null
+    })
+  },
+  Registration: {
+    screen: Profile_Registration,
+    navigationOptions: () => ({
+      title: `Sign Up`
+    })
+  },
+  Selfie: {
+    screen: SelfieScreen,
+    navigationOptions: () => ({
+      title: `Selfie`,
+      header: null
+    })
+  },
+  RegistrationComplete: {
+    screen: RegistrationComplete,
+    navigationOptions: () => ({
+      title: `RegistrationComplete`,
+      header: null
+    })
+  }
 });
 
 //Chat Flow
@@ -114,13 +172,13 @@ const ChatStack = createStackNavigator({
   MinuteChatRoom: {
     screen: MinuteChatRoomScreen,
     navigationOptions: () => ({
-      title: `ChatRoom`
+      title: `MinuteChatRoom`
     })
   },
   PermanentChatRoom: {
     screen: PermanentChatRoomScreen,
     navigationOptions: () => ({
-      title: `ChatRoom`
+      title: `PermanentChatRoom`
     })
   }
 });
@@ -159,11 +217,10 @@ export default createAppContainer(
       // Read more at https://reactnavigation.org/docs/en/auth-flow.html
       Login: LoginScreen, //Login
       Main: MainNavigator, //Profile Home Settings
-      Auth: AuthStack, //Stacks for LoginScreen <-> SignUp
+      SignUp: SignUpStack, //Stacks for LoginScreen <-> SignUp
       Chat: ChatStack, //Stacks for Homescreen <-> ChatRoom
-      RegistrationComplete: RegistrationComplete,
-      Test: TestStack //Stacks for LinksScreen <-> test screens
-      //Match: MatchStack,
+      Test: TestStack, //Stacks for LinksScreen <-> test screens
+      Match: MatchStack
     },
     {
       initialRouteName: "Login"

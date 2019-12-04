@@ -31,6 +31,8 @@ import SetIsContinueUserAction from "../../../storage/actions/RegistrationAction
 import SetUserAllDataAction from "../../../storage/actions/RegistrationActions/SetUserAllDataAction";
 import SetGUIDAction from "../../../storage/actions/RegistrationActions/SetGUIDAction";
 import SetIsThirdPartyServicesUserAction from "../../../storage/actions/RegistrationActions/SetIsThirdPartyServicesUserAction";
+import SetAboutYouDataAction from "../../../storage/actions/RegistrationActions/SetAboutYouDataAction";
+
 
 //SQLite
 import * as SQLite from "expo-sqlite";
@@ -214,6 +216,18 @@ class CollapisbleRegistration extends Component {
   };
 
   async componentDidMount() {
+    //WorkScreen will require user firstName
+    //Need Auth need pass the firstName to this screen
+    //and this device's user firstname to redux
+    this.props.SetAboutYouDataAction({
+      firstName: "Device's user",
+      lastName: "",
+      birthDate: "",
+      gender: "",
+      country: "",
+      zipCode: ""
+    });
+
     //a warning that if checklist is [true, true, true, true, true, true]
     //Since Auth will handle if the checklist is a continue user or new user
     //continue user : [true, false, false, true, true, true]
@@ -289,7 +303,7 @@ class CollapisbleRegistration extends Component {
         reset: true
       });
       */
-      this.props.navigation.navigate("RegistrationComplete");
+      this.props.navigation.navigate("Selfie");
       //Close the db?
       //db._db.close();
     }
@@ -544,7 +558,8 @@ const mapDispatchToProps = dispatch => {
     SetUserAllDataAction: payload => dispatch(SetUserAllDataAction(payload)),
     SetGUIDAction: payload => dispatch(SetGUIDAction(payload)),
     SetIsThirdPartyServicesUserAction: payload =>
-      dispatch(SetIsThirdPartyServicesUserAction(payload))
+      dispatch(SetIsThirdPartyServicesUserAction(payload)),
+    SetAboutYouDataAction: payload => dispatch(SetAboutYouDataAction(payload))
   };
 };
 

@@ -88,7 +88,7 @@ class HomeScreen extends React.Component {
   }
 
   enterChatRoom = chatRoomData => {
-    this.props.navigation.navigate("ChatRoom");
+    this.props.navigation.navigate("MinuteChatRoom");
   };
 
   handleScroll = ({ nativeEvent }) => {

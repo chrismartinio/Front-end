@@ -66,7 +66,6 @@ var details = t.struct({
 //and home require firstname of device user when they login
 //therefore, there will be a error say no firstname since we are not logging when using linkscreen
 
-
 export default class LinksScreen extends React.Component {
   static navigationOptions = {
     title: "Testing Screen"
@@ -78,32 +77,32 @@ export default class LinksScreen extends React.Component {
       CurrentScreen: ProfilePage
     };*/
     this.buttonAry = [
-      "TestChatPage", //show user list
-      "TestChat", //chat screen
+      //MainNavigator
+      "Main",
+
+      //Location Flow
       "TestLocationServices",
+
+      //Profile Registraiton Flow
       "TestProfile_Registration",
       "TestRegistrationComplete",
-      "TestProfile",
+      "TestOldSelfie",
+      "TestSelfie",
+
+      //Profile Flow
+      "TestProfile", //Notification kinda buggy in linksScreen; regular flow (normal) will be not buggy
+
+      //Match Flow
       "TestMatches",
-      //"TestRegistration",
-      //"TestSelfie",
+      "MinuteChatRoom",
+      "PermanentChatRoom",
+
       //"TestPhotoReview",
-      //"TestScreen",
-      //"Selection",
-      //"GhostingOthers",
-      //"GotGhosted",
-      //"GotLucky",
       //"TestQuestionaries",
       //"TestReplyQuestionaire",
       //"TestViewQuestionaire",
-      "TestChatUsersList",
-      "TestMatchedUserChat"
-      //"TestSignUp",
-      //"TestAboutYou",
-      //"TestTellUsMore",
-      //"TestImInterestedIn",
-      //"TestSpendWeekend",
-      //"TestWouldRather",
+
+
     ];
   }
 
