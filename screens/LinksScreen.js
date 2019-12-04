@@ -55,6 +55,18 @@ var details = t.struct({
   Component: Component
 });
 */
+
+//NOTE
+//linkscreen -> testProfile working
+//but linkscreen -> testProfile -> profileLocation not working
+//Because profileLocation is set inside the MainNavigator stack,
+//And in the MainNavigator, the default screen is Home
+//And there is a back button in profileLocation (cuz is stack)
+//this back button is pointing to the stack default screen is home
+//and home require firstname of device user when they login
+//therefore, there will be a error say no firstname since we are not logging when using linkscreen
+
+
 export default class LinksScreen extends React.Component {
   static navigationOptions = {
     title: "Testing Screen"
@@ -71,7 +83,7 @@ export default class LinksScreen extends React.Component {
       "TestLocationServices",
       "TestProfile_Registration",
       "TestRegistrationComplete",
-      "TestProfileScreen",
+      "TestProfile",
       "TestMatches",
       //"TestRegistration",
       //"TestSelfie",
@@ -163,7 +175,8 @@ export default class LinksScreen extends React.Component {
     this.storeHighScore("fun@mailcom", 200);
     //let CurrentScreen = this.state.CurrentScreen;
     let displayButton = this.buttonAry.map((e, index = 0) => {
-      if (e === "TestProfileScreen") {
+      if (e === "TestProfile") {
+        //must turn on profile server for matched user profile
         return (
           <Button
             key={index++}

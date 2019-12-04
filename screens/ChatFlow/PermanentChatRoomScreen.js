@@ -22,11 +22,11 @@ import { connect } from "react-redux";
 
 import io from "socket.io-client";
 
-import LoadingScreen from "./components/LoadingScreen";
+import LoadingScreen from "../../sharedComponents/LoadingScreen";
 
 import { localhost } from "../../config/ipconfig";
 
-class MatchedUserChat extends React.Component {
+class PermanentChatRoomScreen extends React.Component {
   static navigationOptions = ({ navigation }) => {
     return {
       headerTitle: "ChatRoom",
@@ -41,7 +41,7 @@ class MatchedUserChat extends React.Component {
     this.state = {
       allMessages: [],
       currentMessage: "",
-      isLoading: false,
+      isSuccess: false,
       isTyping: false,
       timerSecond: 90,
       appState: AppState.currentState,
@@ -171,7 +171,7 @@ class MatchedUserChat extends React.Component {
     AppState.addEventListener("change", this._handleAppStateChange);
 
     this.setState({
-      isLoading: true
+      isSuccess: true
     });
   }
 
@@ -437,11 +437,11 @@ class MatchedUserChat extends React.Component {
   };
 
   loadingScreen = () => {
-    return <LoadingScreen />;
+    return <LoadingScreen navigation={this.props.navigation} />;
   };
 
   render() {
-    return this.state.isLoading ? this.successScreen() : this.loadingScreen();
+    return this.state.isSuccess ? this.successScreen() : this.loadingScreen();
   }
 }
 
@@ -564,4 +564,4 @@ const mapDispatchToProps = dispatch => {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(MatchedUserChat);
+)(PermanentChatRoomScreen);

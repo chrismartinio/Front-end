@@ -18,7 +18,7 @@ import {
 import { connect } from "react-redux";
 import SetIsContinueUserAction from "../../../storage/actions/RegistrationActions/SetIsContinueUserAction";
 
-import LoadingScreen from "../Profile_SharedComponents/LoadingScreen";
+import LoadingScreen from "../../../sharedComponents/LoadingScreen";
 
 import CollapsibleScreenTab from "../Profile_SharedComponents/CollapsibleScreenTab";
 
@@ -40,7 +40,7 @@ class EditScreen extends React.Component {
       wouldYouRatherStatus: "empty",
       localDestinationStatus: "empty",
 
-      isLoading: false,
+      isSuccess: false,
       scrollY: 0
     };
   }
@@ -59,7 +59,7 @@ class EditScreen extends React.Component {
     });
 
     this.setState({
-      isLoading: true
+      isSuccess: true
     });
   }
 
@@ -220,11 +220,11 @@ class EditScreen extends React.Component {
 
   loadingScreen = () => {
     //display fetching data
-    return <LoadingScreen />;
+    return <LoadingScreen navigation={this.props.navigation} />;
   };
 
   render() {
-    return this.state.isLoading ? this.successScreen() : this.loadingScreen();
+    return this.state.isSuccess ? this.successScreen() : this.loadingScreen();
   }
 }
 

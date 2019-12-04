@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Text, View, TouchableOpacity, Button } from "react-native";
-
+import { StackActions, NavigationActions } from "react-navigation";
 //Redux
 import { connect } from "react-redux";
 
@@ -10,10 +10,44 @@ class Footer extends React.Component {
   }
 
   render() {
+    const resetProfileAction = StackActions.reset({
+      index: 1,
+      actions: [
+        NavigationActions.navigate({ routeName: "Home" }),
+        NavigationActions.navigate({
+          routeName: "Profile",
+          params: {
+            guid: this.props.CreateProfileDataReducer.guid,
+            isDeviceUser: true
+          }
+        })
+      ]
+    });
+
+    const resetMatchingAction = StackActions.reset({
+      index: 1,
+      actions: [
+        NavigationActions.navigate({ routeName: "Home" }),
+        NavigationActions.navigate({
+          routeName: "Matching"
+        })
+      ]
+    });
+
+    const resetSettingAction = StackActions.reset({
+      index: 1,
+      actions: [
+        NavigationActions.navigate({ routeName: "Home" }),
+        NavigationActions.navigate({
+          routeName: "Setting"
+        })
+      ]
+    });
+
     return (
       <View
         style={{
-          flex: .1,
+          flex: 0.1,
           flexDirection: "column",
           justifyContent: "flex-end"
         }}
@@ -28,18 +62,15 @@ class Footer extends React.Component {
           >
             <Button
               title="Go to Profile"
-              onPress={() =>
-                this.props.navigation.navigate("Profile", {
-                  guid: this.props.CreateProfileDataReducer.guid,
-                  isDeviceUser: true
-                })
-              }
+              onPress={() => this.props.navigation.dispatch(resetProfileAction)}
             />
           </View>
           <View style={{ width: 100, height: 75, backgroundColor: "skyblue" }}>
             <Button
               title="Matching"
-              onPress={() => this.props.navigation.navigate("Matching")}
+              onPress={() =>
+                this.props.navigation.dispatch(resetMatchingAction)
+              }
             />
           </View>
           <View
@@ -51,7 +82,7 @@ class Footer extends React.Component {
           >
             <Button
               title="Go to Setting"
-              onPress={() => this.props.navigation.navigate("Setting")}
+              onPress={() => this.props.navigation.dispatch(resetSettingAction)}
             />
           </View>
         </View>

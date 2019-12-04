@@ -13,14 +13,13 @@ import {
 
 import { connect } from "react-redux";
 
-//1. any user edit, make the profile screen to hit the db
-//2. query all createAccount data in profile screen and store into localstorage
-
-import LoadingScreen from "../Profile_SharedComponents/LoadingScreen";
+import LoadingScreen from "../../../sharedComponents/LoadingScreen";
 
 import NotificationButton from "../../../sharedComponents/NotificationButton";
 
 import Footer from "../../../sharedComponents/Footer";
+
+import { localhost } from "../../../config/ipconfig";
 
 function _calculateAge(birthday) {
   birthday = new Date(birthday);
@@ -75,6 +74,7 @@ class ProfileScreen extends React.Component {
       userImage: "https://facebook.github.io/react-native/img/tiny_logo.png",
       likesArray: [],
       userBio: "",
+      zipCode: "",
       photosArray: [
         "https://facebook.github.io/react-native/img/tiny_logo.png",
         "https://facebook.github.io/react-native/img/tiny_logo.png",
@@ -83,6 +83,8 @@ class ProfileScreen extends React.Component {
         "https://facebook.github.io/react-native/img/tiny_logo.png",
         "https://facebook.github.io/react-native/img/tiny_logo.png"
       ],
+      addressLatitude: 0,
+      addressLongitude: 0,
       isSuccess: false,
       isEdited: false
     };
@@ -140,7 +142,7 @@ class ProfileScreen extends React.Component {
   }
 
   getDataFromDB = async () => {
-    await fetch("http://74.80.250.210:4000/api/profile/profile_query", {
+    await fetch(`http://${localhost}:4000/api/profile/profile_query`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -165,7 +167,10 @@ class ProfileScreen extends React.Component {
             state,
             city,
             userBio,
-            likesArray
+            zipCode,
+            likesArray,
+            addressLatitude,
+            addressLongitude
           } = object.result;
 
           //setState
@@ -177,31 +182,47 @@ class ProfileScreen extends React.Component {
             age: _calculateAge(birthDate),
             city: city,
             state: state,
+            zipCode: zipCode,
             likesArray: likesArray,
+            addressLatitude: addressLatitude,
+            addressLongitude: addressLongitude,
             isSuccess: true
           });
 
           //LocalStorage
           if (this.guid === this.props.CreateProfileDataReducer.guid) {
-            //Store to device_user_aboutYou
+            //Store to device_user_createAccount
             let insertSqlStatement =
-              "INSERT OR REPLACE into device_user_aboutYou(id, createAccount_id, firstName, birthDate, userBio, city, state) " +
-              "values(1, 1, ?, ?, ?, ?, ?);";
+              "INSERT OR REPLACE into device_user_createAccount(id, addressLatitude, addressLongitude) " +
+              "values(1, ?, ?);";
 
             let { success } = await insertDataIntoLocalStorage(
               insertSqlStatement,
+              "device_user_createAccount",
+              [this.state.addressLatitude, this.state.addressLongitude],
+              true
+            );
+
+            //Store to device_user_aboutYou
+            insertSqlStatement =
+              "INSERT OR REPLACE into device_user_aboutYou(id, createAccount_id, firstName, birthDate, userBio, city, state, zipCode) " +
+              "values(1, 1, ?, ?, ?, ?, ?, ?);";
+
+            success = await insertDataIntoLocalStorage(
+              insertSqlStatement,
               "device_user_aboutYou",
-              [firstName, birthDate, userBio, city, state],
+              [firstName, birthDate, userBio, city, state, zipCode],
               true
             );
 
             //Store to device_user_interests
-            let json_likesArray = JSON.stringify({
-              likesArray: likesArray
-            });
             insertSqlStatement =
               "INSERT OR REPLACE into device_user_interests(id, createAccount_id, likesArray) " +
               "values(1, 1, ?);";
+
+            let json_likesArray = JSON.stringify({
+              likesArray: likesArray
+            });
 
             success = await insertDataIntoLocalStorage(
               insertSqlStatement,
@@ -239,18 +260,32 @@ class ProfileScreen extends React.Component {
             "device_user_interests"
           );
 
-          if (aboutYouObject.success && interestsObject.success) {
+          let createAccountObject = await selectDataFromLocalStorage(
+            "device_user_createAccount"
+          );
+
+          if (
+            aboutYouObject.success &&
+            interestsObject.success &&
+            createAccountObject.success
+          ) {
             let {
               firstName,
               lastName,
               birthDate,
               state,
               city,
-              userBio
+              userBio,
+              zipCode
             } = aboutYouObject.result.rows._array[0];
 
             let { likesArray } = interestsObject.result.rows._array[0];
             likesArray = JSON.parse(likesArray).likesArray;
+
+            let {
+              addressLatitude,
+              addressLongitude
+            } = createAccountObject.result.rows._array[0];
 
             //setState
             this.setState({
@@ -261,20 +296,33 @@ class ProfileScreen extends React.Component {
               age: _calculateAge(birthDate),
               city: city,
               state: state,
+              zipCode: zipCode,
               likesArray: likesArray,
+              addressLatitude: addressLatitude,
+              addressLongitude: addressLongitude,
               isSuccess: true
             });
           } else {
-            //Get Matched User's Data from localStorage
-            //code coming soon
-            return;
+            //If error while getting data from localstorage,
+            //then direct user to erroscreen
+            this.setState({
+              isSuccess: false
+            });
           }
         } else {
-          //If error while fetching, direct user to failScreen
-          //setState
-          this.setState({
-            isSuccess: false
-          });
+          //Get Matched User's Data from localStorage
+          //code coming soon
+          let matched_user_querydata_success = false;
+
+          if (matched_user_querydata_success) {
+            console.log("getting data");
+          } else {
+            this.setState({
+              isSuccess: false
+            });
+          }
+
+          return;
         }
       });
   };
@@ -317,12 +365,26 @@ class ProfileScreen extends React.Component {
               />
             </View>
 
-            {/**User Name */}
             <View style={{ margin: 20 }}>
               <Text style={{ fontSize: 20, fontWeight: "500" }}>
+                {/**User Name */}
                 {this.state.firstName} {this.state.lastName}, {this.state.age}
               </Text>
               <Text />
+
+              {/*Map*/}
+              <Button
+                title={"Map"}
+                color={"black"}
+                onPress={() => {
+                  this.props.navigation.navigate("ProfileLocation", {
+                    addressLatitude: this.state.addressLatitude,
+                    addressLongitude: this.state.addressLongitude
+                  });
+                }}
+              />
+
+              {/*Address*/}
               <Text style={{ fontSize: 15, fontWeight: "400" }}>
                 {this.state.city}, {this.state.state}
               </Text>
@@ -427,7 +489,7 @@ class ProfileScreen extends React.Component {
   };
 
   loadingScreen = () => {
-    return <LoadingScreen />;
+    return <LoadingScreen navigation={this.props.navigation} />;
   };
 
   render() {

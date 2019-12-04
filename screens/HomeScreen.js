@@ -17,12 +17,15 @@ import { connect } from "react-redux";
 
 import io from "socket.io-client";
 
-import LoadingScreen from "./ChatFlow/components/LoadingScreen";
-import MatchedUserChat from "./ChatFlow/MatchedUserChat";
+import LoadingScreen from "../sharedComponents/LoadingScreen";
 
 import { localhost } from "../config/ipconfig";
 
 import Footer from "../sharedComponents/Footer";
+
+//1. make an error screen for no data for profile screen and edit screen
+//2. delay footer buttons
+//3. fix faill storing
 
 class HomeScreen extends React.Component {
   constructor(props) {
@@ -40,10 +43,9 @@ class HomeScreen extends React.Component {
         { matched_user_name: "Apple", chatroomID: "12345" },
         { matched_user_name: "Bay", chatroomID: "56789" }
       ],
-      isLoading: false
+      isSuccess: false
     };
-    this.guid = "";
-    this.user_firstName = "";
+
     //this.socket = io("http://74.80.250.210:3060");
     this.scrollY;
   }
@@ -58,7 +60,8 @@ class HomeScreen extends React.Component {
     console.log("USER GUID: ", this.guid);
     console.log("USER firstName: ", this.user_firstName);
 
-    fetch(`http://${localhost}:3003/api/chat/`, {
+    /*
+    await fetch(`http://${localhost}:3003/api/chat/`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -74,9 +77,9 @@ class HomeScreen extends React.Component {
         //here's what I will get the chatobject
         console.log(res.roomID[0].key); //1231231231.1231231232131
       });
-
+*/
     this.setState({
-      isLoading: true
+      isSuccess: true
     });
   }
 
@@ -85,7 +88,7 @@ class HomeScreen extends React.Component {
   }
 
   enterChatRoom = chatRoomData => {
-    this.props.navigation.navigate("MatchedUserChat");
+    this.props.navigation.navigate("ChatRoom");
   };
 
   handleScroll = ({ nativeEvent }) => {
@@ -138,11 +141,11 @@ class HomeScreen extends React.Component {
   };
 
   loadingScreen = () => {
-    return <LoadingScreen />;
+    return <LoadingScreen navigation={this.props.navigation} />;
   };
 
   render() {
-    return this.state.isLoading ? this.successScreen() : this.loadingScreen();
+    return this.state.isSuccess ? this.successScreen() : this.loadingScreen();
   }
 }
 

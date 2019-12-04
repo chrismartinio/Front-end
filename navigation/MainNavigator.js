@@ -5,38 +5,35 @@ import {
   createBottomTabNavigator
 } from "react-navigation";
 
-import TabBarIcon from "../components/TabBarIcon";
-import LoginScreen from "../screens/LoginScreen";
+//Setting Flow
 import SettingsScreen from "../screens/SettingsScreen";
+
+//Chat Flow
 import HomeScreen from "../screens/HomeScreen";
-import LinksScreen from "../screens/LinksScreen";
+import MinuteChatRoomScreen from "../screens/ChatFlow/MinuteChatRoomScreen";
+import PermanentChatRoomScreen from "../screens/ChatFlow/PermanentChatRoomScreen";
+
+//Match Flow
+import MatchingScreen from "../screens/MatchFlow/MatchingScreen";
+import MatchScreen from "../screens/MatchFlow/MatchScreen";
+
+//Profile Flow
 import ProfileScreen from "../screens/ProfileFlow/Profile/ProfileScreen";
 import EditScreen from "../screens/ProfileFlow/Profile/EditScreen";
+import ProfileLocationScreen from "../screens/ProfileFlow/Profile/ProfileLocationScreen";
+
+//Notification Components
 import NotificationButton from "../sharedComponents/NotificationButton";
 import NotificationScreen from "../sharedComponents/NotificationScreen";
-import MatchingScreen from "../screens/MatchFlow/MatchingScreen";
 
 const MainStack = createStackNavigator(
   {
+    //Profile Flow
     Profile: {
       screen: ProfileScreen,
       navigationOptions: ({ navigation }) => ({
         title: `Profile`
         //headerRight is set inside ProfileScreen.js
-      })
-    },
-    Home: {
-      screen: HomeScreen,
-      navigationOptions: ({ navigation }) => ({
-        title: `Home`,
-        headerRight: <NotificationButton navigation={navigation} />
-      })
-    },
-    Setting: {
-      screen: SettingsScreen,
-      navigationOptions: ({ navigation }) => ({
-        title: `Settings`,
-        headerRight: <NotificationButton navigation={navigation} />
       })
     },
     Edit: {
@@ -45,10 +42,57 @@ const MainStack = createStackNavigator(
         title: `Edit`
       })
     },
+    ProfileLocation: {
+      screen: ProfileLocationScreen,
+      navigationOptions: () => ({
+        title: `Location`
+      })
+    },
+
+    //Chat Flow
+    Home: {
+      screen: HomeScreen,
+      navigationOptions: ({ navigation }) => ({
+        title: `Home`,
+        headerRight: <NotificationButton navigation={navigation} />
+      })
+    },
+
+    MinuteChatRoom: {
+      screen: MinuteChatRoomScreen,
+      navigationOptions: () => ({
+        title: `ChatRoom`
+      })
+    },
+
+    PermanentChatRoom: {
+      screen: PermanentChatRoomScreen,
+      navigationOptions: () => ({
+        title: `ChatRoom`
+      })
+    },
+
+    //Match Flow
     Matching: {
       screen: MatchingScreen,
       navigationOptions: ({ navigation }) => ({
         title: `Matching`,
+        headerRight: <NotificationButton navigation={navigation} />
+      })
+    },
+    Match: {
+      screen: MatchScreen,
+      navigationOptions: ({ navigation }) => ({
+        title: `Matching`,
+        headerRight: <NotificationButton navigation={navigation} />
+      })
+    },
+
+    //Setting Flow
+    Setting: {
+      screen: SettingsScreen,
+      navigationOptions: ({ navigation }) => ({
+        title: `Settings`,
         headerRight: <NotificationButton navigation={navigation} />
       })
     }

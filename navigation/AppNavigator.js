@@ -41,12 +41,13 @@ import GotLucky from "../screens/ChatFlow/GotLuckyGoToChat";
 import InitialMatchChoice from "../screens/ChatFlow/InitialMatchChoice";
 import Selection from "../screens/ChatFlow/Selection";
 import GotGhosted from "../screens/ChatFlow/GotGhosted";
-
-import ChatUsersList from "../screens/ChatFlow/ChatUsersList";
-import MatchedUserChat from "../screens/ChatFlow/MatchedUserChat";
+import MinuteChatRoomScreen from "../screens/ChatFlow/MinuteChatRoomScreen";
+import PermanentChatRoomScreen from "../screens/ChatFlow/PermanentChatRoomScreen";
 
 //Profile Flow - Profile_Registration
 import ProfileScreen from "../screens/ProfileFlow/Profile/ProfileScreen";
+import EditScreen from "../screens/ProfileFlow/Profile/EditScreen";
+import ProfileLocationScreen from "../screens/ProfileFlow/Profile/ProfileLocationScreen";
 import Profile_Registration from "../screens/ProfileFlow/Profile_Registration/Profile_Registration";
 import RegistrationComplete from "../screens/ProfileFlow/Profile_Registration/RegistrationScreens/RegistrationComplete";
 
@@ -55,52 +56,53 @@ import LinksScreen from "../screens/LinksScreen";
 import LoginScreen from "../screens/LoginScreen";
 
 //register screens here for testing in linkscreen
-const TestStack = createStackNavigator({
-  Links: LinksScreen,
+const TestStack = createStackNavigator(
+  {
+    Links: LinksScreen,
 
-  //Location
-  TestLocationServices: LocationServices,
+    //Location
+    TestLocationServices: LocationServices,
 
-  //Match Flow
-  TestQuestionaries: CreateQuestionaire,
-  TestViewQuestionaire: ViewQuestionaire,
-  TestReplyQuestionaire: ReplyQuestionaire,
+    //Match Flow
+    TestQuestionaries: CreateQuestionaire,
+    TestViewQuestionaire: ViewQuestionaire,
+    TestReplyQuestionaire: ReplyQuestionaire,
+    TestMatches: MatchesPage,
 
-  //Old Sign Up flow
-  TestSignUp: SignupPage,
-  TestRegistration: RegistrationPage,
-  TestSelfie: SelfiePage,
-  TestAboutYou: AboutYou,
-  TestTellUsMore: TellUsMore,
-  TestWouldRather: WouldRather,
-  TestSpendWeekend: SpendWeekend,
-  TestImInterestedIn: ImInterestedIn,
-  TestChatUsersList: ChatUsersList,
-  TestMatchedUserChat: MatchedUserChat,
-  TestMatches: MatchesPage,
+    //Old Sign Up flow
+    TestSignUp: SignupPage,
+    TestRegistration: RegistrationPage,
+    TestSelfie: SelfiePage,
+    TestAboutYou: AboutYou,
+    TestTellUsMore: TellUsMore,
+    TestWouldRather: WouldRather,
+    TestSpendWeekend: SpendWeekend,
+    TestImInterestedIn: ImInterestedIn,
 
-  //Chat flow
-  TestChatPage: ChatPage,
-  TestChat: Chat,
-  TestPhotoReview: PhotoReview,
-  TestScreen: TestScreen,
+    //Chat flow
+    TestChatPage: ChatPage,
+    TestChat: Chat,
+    TestPhotoReview: PhotoReview,
+    TestScreen: TestScreen,
 
-  //Profile Flow
-  TestProfileScreen: ProfileScreen,
-  TestProfile_Registration: Profile_Registration,
-  TestRegistrationComplete: RegistrationComplete
-});
+    //Profile Flow
+    TestProfile: ProfileScreen,
+    TestProfile_Registration: Profile_Registration,
+    TestRegistrationComplete: RegistrationComplete,
+    TestProfileLocation: ProfileLocationScreen
+  },
+  {
+    initialRouteName: "Links"
+  }
+);
 
-//Sign Up
+//Auth Flow and Profile Flow
 const AuthStack = createStackNavigator({
   Login: LoginScreen, //Default Screen
   SignUp: Profile_Registration
-  //Registration: RegistrationPage,
-  //Selfie: SelfiePage,
-  //Profile: ProfilePage
 });
 
-//ChatRoom
+//Chat Flow
 const ChatStack = createStackNavigator({
   Main: {
     screen: MainNavigator,
@@ -109,21 +111,21 @@ const ChatStack = createStackNavigator({
       header: null
     })
   },
-  MatchedUserChat: {
-    screen: MatchedUserChat,
+  MinuteChatRoom: {
+    screen: MinuteChatRoomScreen,
+    navigationOptions: () => ({
+      title: `ChatRoom`
+    })
+  },
+  PermanentChatRoom: {
+    screen: PermanentChatRoomScreen,
     navigationOptions: () => ({
       title: `ChatRoom`
     })
   }
-
-  //ChatPage: ChatPage,
-  //InitialMatchChoice: InitialMatchChoice,
-  //GhostingOthers: GhostingOthersScreen,
-  //GotLucky: GotLucky,
-  //Selection: Selection,
-  //GotGhosted: GotGhosted
 });
 
+//Match Flow
 const MatchStack = createStackNavigator({
   Matching: {
     screen: MatchingScreen,
@@ -134,8 +136,7 @@ const MatchStack = createStackNavigator({
   Match: {
     screen: MatchScreen,
     navigationOptions: () => ({
-      title: `Match`,
-      header: null
+      title: `Match`
     })
   }
 });
@@ -160,6 +161,7 @@ export default createAppContainer(
       Main: MainNavigator, //Profile Home Settings
       Auth: AuthStack, //Stacks for LoginScreen <-> SignUp
       Chat: ChatStack, //Stacks for Homescreen <-> ChatRoom
+      RegistrationComplete: RegistrationComplete,
       Test: TestStack //Stacks for LinksScreen <-> test screens
       //Match: MatchStack,
     },
