@@ -13,8 +13,8 @@ export default class LocationServices extends Component {
 
   async componentDidMount() {
     const { navigation } = this.props;
-    let userLatitude = parseInt(navigation.getParam("userLatitude"));
-    let userLongitude = parseInt(navigation.getParam("userLongitude"));
+    let userLatitude = parseInt(navigation.getParam("addressLatitude"));
+    let userLongitude = parseInt(navigation.getParam("addressLongitude"));
 
     this.setState({
       userLatitude: userLatitude,

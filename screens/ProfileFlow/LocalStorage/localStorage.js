@@ -103,7 +103,9 @@ export function createTablesInToLocalStorage() {
     "phoneNumber TEXT DEFAULT NULL," +
     "deviceID TEXT DEFAULT NULL," +
     "deviceLatLong TEXT DEFAULT NULL," +
-    "deviceAltitude TEXT DEFAULT NULL" +
+    "deviceAltitude TEXT DEFAULT NULL," +
+    "addressLatitude TEXT DEFAULT NULL," +
+    "addressLongitude TEXT DEFAULT NULL" +
     " );";
 
   let aboutYouSqlStatement =

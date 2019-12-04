@@ -83,8 +83,8 @@ class ProfileScreen extends React.Component {
         "https://facebook.github.io/react-native/img/tiny_logo.png",
         "https://facebook.github.io/react-native/img/tiny_logo.png"
       ],
-      userLatitude: 0,
-      userLongitude: 0,
+      addressLatitude: 0,
+      addressLongitude: 0,
       isSuccess: false,
       isEdited: false
     };
@@ -169,19 +169,9 @@ class ProfileScreen extends React.Component {
             userBio,
             zipCode,
             likesArray,
-            userLatitude,
-            userLongitude
+            addressLatitude,
+            addressLongitude
           } = object.result;
-
-          //HANDLE EMPTY LAT and LONG
-          if (userLatitude === "" && userLongitude === "") {
-            //if there is not userLatitude and userLongitude
-            //go to error screen?
-            this.setState({
-              isSuccess: false
-            });
-            return;
-          }
 
           //setState
           this.setState({
@@ -194,8 +184,8 @@ class ProfileScreen extends React.Component {
             state: state,
             zipCode: zipCode,
             likesArray: likesArray,
-            userLatitude: userLatitude,
-            userLongitude: userLongitude,
+            addressLatitude: addressLatitude,
+            addressLongitude: addressLongitude,
             isSuccess: true
           });
 
@@ -203,17 +193,13 @@ class ProfileScreen extends React.Component {
           if (this.guid === this.props.CreateProfileDataReducer.guid) {
             //Store to device_user_createAccount
             let insertSqlStatement =
-              "INSERT OR REPLACE into device_user_createAccount(id, deviceLatLong) " +
-              "values(1, ?);";
-
-            let deviceLatLong = `${this.state.userLatitude}.${
-              this.state.userLongitude
-            }`;
+              "INSERT OR REPLACE into device_user_createAccount(id, addressLatitude, addressLongitude) " +
+              "values(1, ?, ?);";
 
             let { success } = await insertDataIntoLocalStorage(
               insertSqlStatement,
               "device_user_createAccount",
-              [deviceLatLong],
+              [this.state.addressLatitude, this.state.addressLongitude],
               true
             );
 
@@ -296,12 +282,6 @@ class ProfileScreen extends React.Component {
             let { likesArray } = interestsObject.result.rows._array[0];
             likesArray = JSON.parse(likesArray).likesArray;
 
-            let { deviceLatLong } = createAccountObject.result.rows._array[0];
-            let pos1 = deviceLatLong.indexOf(".");
-            let pos2 = deviceLatLong.indexOf(".", pos1 + 1);
-            let userLatitude = deviceLatLong.slice(0, pos2);
-            let userLongitude = deviceLatLong.slice(pos2 + 1);
-
             //setState
             this.setState({
               firstName: firstName,
@@ -313,8 +293,8 @@ class ProfileScreen extends React.Component {
               state: state,
               zipCode: zipCode,
               likesArray: likesArray,
-              userLatitude: userLatitude,
-              userLongitude: userLongitude,
+              addressLatitude: addressLatitude,
+              addressLongitude: addressLongitude,
               isSuccess: true
             });
           } else {
@@ -393,8 +373,8 @@ class ProfileScreen extends React.Component {
                 color={"black"}
                 onPress={() => {
                   this.props.navigation.navigate("ProfileLocation", {
-                    userLatitude: this.state.userLatitude,
-                    userLongitude: this.state.userLongitude
+                    addressLatitude: this.state.addressLatitude,
+                    addressLongitude: this.state.addressLongitude
                   });
                 }}
               />

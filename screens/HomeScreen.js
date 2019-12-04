@@ -45,8 +45,7 @@ class HomeScreen extends React.Component {
       ],
       isSuccess: false
     };
-    this.guid = "";
-    this.user_firstName = "";
+
     //this.socket = io("http://74.80.250.210:3060");
     this.scrollY;
   }

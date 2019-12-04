@@ -46,6 +46,8 @@ import PermanentChatRoomScreen from "../screens/ChatFlow/PermanentChatRoomScreen
 
 //Profile Flow - Profile_Registration
 import ProfileScreen from "../screens/ProfileFlow/Profile/ProfileScreen";
+import EditScreen from "../screens/ProfileFlow/Profile/EditScreen";
+import ProfileLocationScreen from "../screens/ProfileFlow/Profile/ProfileLocationScreen";
 import Profile_Registration from "../screens/ProfileFlow/Profile_Registration/Profile_Registration";
 import RegistrationComplete from "../screens/ProfileFlow/Profile_Registration/RegistrationScreens/RegistrationComplete";
 
@@ -54,39 +56,45 @@ import LinksScreen from "../screens/LinksScreen";
 import LoginScreen from "../screens/LoginScreen";
 
 //register screens here for testing in linkscreen
-const TestStack = createStackNavigator({
-  Links: LinksScreen,
+const TestStack = createStackNavigator(
+  {
+    Links: LinksScreen,
 
-  //Location
-  TestLocationServices: LocationServices,
+    //Location
+    TestLocationServices: LocationServices,
 
-  //Match Flow
-  TestQuestionaries: CreateQuestionaire,
-  TestViewQuestionaire: ViewQuestionaire,
-  TestReplyQuestionaire: ReplyQuestionaire,
-  TestMatches: MatchesPage,
+    //Match Flow
+    TestQuestionaries: CreateQuestionaire,
+    TestViewQuestionaire: ViewQuestionaire,
+    TestReplyQuestionaire: ReplyQuestionaire,
+    TestMatches: MatchesPage,
 
-  //Old Sign Up flow
-  TestSignUp: SignupPage,
-  TestRegistration: RegistrationPage,
-  TestSelfie: SelfiePage,
-  TestAboutYou: AboutYou,
-  TestTellUsMore: TellUsMore,
-  TestWouldRather: WouldRather,
-  TestSpendWeekend: SpendWeekend,
-  TestImInterestedIn: ImInterestedIn,
+    //Old Sign Up flow
+    TestSignUp: SignupPage,
+    TestRegistration: RegistrationPage,
+    TestSelfie: SelfiePage,
+    TestAboutYou: AboutYou,
+    TestTellUsMore: TellUsMore,
+    TestWouldRather: WouldRather,
+    TestSpendWeekend: SpendWeekend,
+    TestImInterestedIn: ImInterestedIn,
 
-  //Chat flow
-  TestChatPage: ChatPage,
-  TestChat: Chat,
-  TestPhotoReview: PhotoReview,
-  TestScreen: TestScreen,
+    //Chat flow
+    TestChatPage: ChatPage,
+    TestChat: Chat,
+    TestPhotoReview: PhotoReview,
+    TestScreen: TestScreen,
 
-  //Profile Flow
-  TestProfileScreen: ProfileScreen,
-  TestProfile_Registration: Profile_Registration,
-  TestRegistrationComplete: RegistrationComplete
-});
+    //Profile Flow
+    TestProfile: ProfileScreen,
+    TestProfile_Registration: Profile_Registration,
+    TestRegistrationComplete: RegistrationComplete,
+    TestProfileLocation: ProfileLocationScreen
+  },
+  {
+    initialRouteName: "Links"
+  }
+);
 
 //Auth Flow and Profile Flow
 const AuthStack = createStackNavigator({
