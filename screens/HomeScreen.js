@@ -361,39 +361,74 @@ class HomeScreen extends React.Component {
           <View style={styles.formContainer}>
             <Form type={User} ref={c => (this._form = c)} />
           </View>
-
-          <View style={styles.container}>
-            <Button
-              title="Sign in!"
+          <View style={styles.buttonStyle}>
+                <Button
+              title="Sign In"
               onPress={e => this.handleEmailAndPasswordSignin(e)}
-              color="blue"
+              color="white"
               key="100"
             />
-            <Text />
-          </View>
+              </View>
+              <View style={styles.buttonStyleOutline}>
+                <Button
+              title="Sign Up"
+              onPress={this.handleSignUp}
+              color="#18cdf6"
+              key="100"
+            />
+              </View>
 
-          <Button title="Sign Up!" onPress={this.handleSignUp} color="blue" />
-
+          {/* <Button title="Sign Up!" onPress={this.handleSignUp} color="blue" /> */}
+          <Text style={styles.centerText}>Sign in with</Text>
           <View
             style={{ flex: 1, flexDirection: "row", justifyContent: "center" }}
           >
-            <Button
+          
+          <TouchableOpacity onPress={this.checkFaceBookValidity}>
+          <Image
+              source={
+                __DEV__
+                  ? require("../assets/images/f_logo.png")
+                  : require("../assets/images/f_logo.png")
+              }
+              style={styles.iconImage}
+            />
+            </TouchableOpacity>
+            {/* <Button
               title="facebook"
               onPress={this.checkFaceBookValidity}
               color="blue"
+            /> */}
+<TouchableOpacity onPress={this.checkFaceBookValidity}>
+          <Image
+              source={
+                __DEV__
+                  ? require("../assets/images/google-plus.png")
+                  : require("../assets/images/google-plus.png")
+              }
+              style={styles.iconImage}
             />
-
-            <Button
+            </TouchableOpacity>
+            {/* <Button
               title="google"
               onPress={this.checkFaceBookValidity}
               color="blue"
+            /> */}
+<TouchableOpacity onPress={this.checkFaceBookValidity}>
+          <Image
+              source={
+                __DEV__
+                  ? require("../assets/images/twitter.png")
+                  : require("../assets/images/twitter.png")
+              }
+              style={styles.iconImage}
             />
-
-            <Button
+            </TouchableOpacity>
+            {/* <Button
               title="twitter"
               onPress={this.checkFaceBookValidity}
               color="blue"
-            />
+            /> */}
           </View>
         </ScrollView>
       </View>
@@ -462,6 +497,19 @@ const styles = StyleSheet.create({
     marginTop: 10,
     marginBottom: 10
   },
+  centerText:{
+    marginTop: 25,
+    textAlign: 'center', 
+    color:'grey'
+  },
+  iconImage: {
+    width: 40,
+    height: 40,
+    resizeMode: "contain",
+    marginTop: 15,
+    padding:10,
+    margin: 20
+  },
   welcomeImage: {
     width: 300,
     height: 200,
@@ -528,6 +576,25 @@ const styles = StyleSheet.create({
   helpLinkText: {
     fontSize: 14,
     color: "#2e78b7"
+  },
+  buttonStyle: {
+    borderRadius: 20,
+    color: "white",
+    backgroundColor: "#18cdf6",
+    width: 200,
+    alignSelf: "center",
+    marginBottom: 20,
+    fontStyle: "italic"
+  },
+  buttonStyleOutline: {
+    borderRadius: 20,
+    color: "#18cdf6",
+    borderWidth: 1,
+    borderColor: "#18cdf6",
+    width: 200,
+    alignSelf: "center",
+    marginBottom: 20,
+    fontStyle: "italic"
   }
 });
 const mapStateToProps = state => ({
