@@ -377,8 +377,7 @@ class HomeScreen extends React.Component {
               key="100"
             />
               </View>
-
-          {/* <Button title="Sign Up!" onPress={this.handleSignUp} color="blue" /> */}
+          <Button title="Forgot password!" /*onPress={this.handleSignUp}*/ color="#18cdf6" />
           <Text style={styles.centerText}>Sign in with</Text>
           <View
             style={{ flex: 1, flexDirection: "row", justifyContent: "center" }}
@@ -498,7 +497,7 @@ const styles = StyleSheet.create({
     marginBottom: 10
   },
   centerText:{
-    marginTop: 25,
+    marginTop: 15,
     textAlign: 'center', 
     color:'grey'
   },
@@ -593,7 +592,7 @@ const styles = StyleSheet.create({
     borderColor: "#18cdf6",
     width: 200,
     alignSelf: "center",
-    marginBottom: 20,
+    marginBottom: 5,
     fontStyle: "italic"
   }
 });
