@@ -77,9 +77,6 @@ export default class LinksScreen extends React.Component {
       CurrentScreen: ProfilePage
     };*/
     this.buttonAry = [
-      //MainNavigator
-      "Main",
-
       //Location Flow
       "TestLocationServices",
 

@@ -215,6 +215,13 @@ class MinuteChatRoomScreen extends React.Component {
     this.setState({ appState: nextAppState });
   };
 
+  timeStamp = () => {
+    var today = new Date();
+    var time =
+      today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+    return time;
+  };
+
   //add a new message into the allMessageArray
   addChatMessage = (type, message, username) => {
     let allMessages = this.state.allMessages;
@@ -222,7 +229,7 @@ class MinuteChatRoomScreen extends React.Component {
       type: type,
       message: message,
       userName: username,
-      timeStamp: new Date()
+      timeStamp: this.timeStamp()
     });
     this.setState({
       allMessages: allMessages
@@ -273,13 +280,16 @@ class MinuteChatRoomScreen extends React.Component {
         return (
           <View key={index} style={styles.deviceUserMessageView}>
             <View style={styles.textContainer}>
-              <Text style={styles.deviceUserMessageText}>
-                {`${messageItem.message}\n`}
+              <View style={styles.deviceUserMessageText}>
+                <Text>{`${messageItem.message}`}</Text>
                 <Text style={styles.dateTime}>{`${
                   messageItem.timeStamp
                 }`}</Text>
+              </View>
+              <Text style={styles.circle}>
+                {" "}
+                {messageItem.userName[0].toUpperCase()}
               </Text>
-              <Text style={styles.circle}> {messageItem.userName}</Text>
             </View>
           </View>
         );
@@ -288,13 +298,18 @@ class MinuteChatRoomScreen extends React.Component {
         return (
           <View key={index}>
             <View style={styles.textContainer}>
-              <Text style={styles.circlePurple}> {messageItem.userName}</Text>
-              <Text style={styles.targetMessageText}>
-                {`${messageItem.message}\n`}
-                <Text style={styles.dateTimeLeft}>{`${
+              <Text style={styles.circlePurple}>
+                {" "}
+                {messageItem.userName[0].toUpperCase()}
+              </Text>
+              <View style={styles.targetMessageText}><Text >
+                {`${messageItem.message}`}
+
+              </Text>
+              <Text style={styles.dateTimeLeft}>{`${
                   messageItem.timeStamp
                 }`}</Text>
-              </Text>
+                </View>
             </View>
           </View>
         );
@@ -361,7 +376,6 @@ class MinuteChatRoomScreen extends React.Component {
               {this.state.isTyping && (
                 <View style={styles.textContainer}>
                   <Text style={styles.circlePurple}>
-
                     {this.matched_user_firstName}
                   </Text>
                   <Text style={styles.targetMessageText}>is typing...</Text>
@@ -477,7 +491,8 @@ const styles = StyleSheet.create({
   deviceUserMessageText: {
     overflow: "hidden",
     borderRadius: 10,
-    width: 300,
+    minWidth: 50,
+    maxWidth: 300,
     borderColor: "#3399ff",
     backgroundColor: "#3399ff",
     color: "#fff",
@@ -486,7 +501,8 @@ const styles = StyleSheet.create({
   targetMessageText: {
     overflow: "hidden",
     borderRadius: 10,
-    width: 300,
+    minWidth: 50,
+    maxWidth: 300,
     borderColor: "#cccccc",
     backgroundColor: "#cccccc",
     color: "#000",

@@ -11,7 +11,8 @@ import {
   SafeAreaView,
   TouchableWithoutFeedback,
   Image,
-  Dimensions
+  Dimensions,
+  TouchableOpacity
 } from "react-native";
 
 //Redux
@@ -46,6 +47,13 @@ class EditScreen extends React.Component {
   }
 
   async componentDidMount() {
+
+    /*
+    All Screens will only use the Redux guid to update the db
+    */
+
+    //The purpose of set isContinueUser because code inside registration screens
+    //is set to query data on mount when the user isContinueUser
     this.props.SetIsContinueUserAction({
       isContinueUser: true,
       checklist: {
@@ -141,23 +149,26 @@ class EditScreen extends React.Component {
           <SafeAreaView style={styles.container}>
             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
               <View style={styles.inner}>
-                {/*Spaces*/}
-                <View
-                  style={{
-                    padding: "10%"
-                  }}
-                />
-
                 {/*Selfie*/}
-                <Button
-                  title={"selfie"}
-                  color={"black"}
-                  onPress={() => {
-                    this.props.navigation.navigate("SeflieEdit", {
-                      isEdit: true
-                    });
-                  }}
-                />
+                <View style={{ alignItems: "center", margin: 50 }}>
+                  <TouchableOpacity
+                    onPress={() => {
+                      this.props.navigation.navigate("SeflieEdit", {
+                        isEdit: true
+                      });
+                    }}
+                  >
+                    <Text
+                      style={{
+                        color: "rgb(67, 33, 140)",
+                        fontSize: Math.round(width / 17.625),
+                        fontWeight: "500"
+                      }}
+                    >
+                      Selfie
+                    </Text>
+                  </TouchableOpacity>
+                </View>
 
                 {/*About You*/}
                 <View>

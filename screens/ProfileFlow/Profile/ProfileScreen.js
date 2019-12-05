@@ -123,9 +123,18 @@ class ProfileScreen extends React.Component {
     //And inside the edit screen, it only use the redux guid (it would not use the navigation guid)
     //And redux guid would only be store or update by registration and login
 
+    /*
+    ProfileScreen will receive only two paramaters passed from footer and LinksScreen
+    footer : Redux guid and isDeviceUser = true
+    linkscreen : regular guid and isDeviceUser = false
+
+    Edit Screen
+    In the static header, use the isDeviceUser to make the Edit button only visible to Device's user
+    */
+
     const { navigation } = this.props;
-    //Retrieve the GUID passed from Homescreen
     this.guid = navigation.getParam("guid");
+
 
     console.log("ProfileScreen");
     console.log("USER GUID: ", this.guid);

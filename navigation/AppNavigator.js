@@ -64,20 +64,20 @@ import NotificationScreen from "../sharedComponents/NotificationScreen";
 
 //Test Matched User Profile Stack
 const LinkProfileStack = createStackNavigator({
-  Profile: {
+  LinkProfile: {
     screen: ProfileScreen,
     navigationOptions: ({ navigation }) => ({
       title: `Profile`
       //headerRight is set inside ProfileScreen.js
     })
   },
-  ProfileLocation: {
+  LinkProfileLocation: {
     screen: ProfileLocationScreen,
     navigationOptions: () => ({
       title: `Location`
     })
   },
-  Notification: {
+  LinkNotification: {
     screen: NotificationScreen,
     navigationOptions: () => ({
       header: null
@@ -99,16 +99,6 @@ const TestStack = createStackNavigator(
     TestReplyQuestionaire: ReplyQuestionaire,
     TestMatches: MatchesPage,
 
-    //Old Sign Up flow
-    TestSignUp: SignupPage,
-    TestRegistration: RegistrationPage,
-    TestOldSelfie: SelfiePage,
-    TestAboutYou: AboutYou,
-    TestTellUsMore: TellUsMore,
-    TestWouldRather: WouldRather,
-    TestSpendWeekend: SpendWeekend,
-    TestImInterestedIn: ImInterestedIn,
-
     //Chat flow
     TestChatPage: ChatPage,
     TestChat: Chat,
@@ -122,6 +112,7 @@ const TestStack = createStackNavigator(
     //Profile Registration Flow
     TestProfile_Registration: Profile_Registration,
     TestSelfie: SelfieScreen,
+    TestOldSelfie: SelfiePage,
     TestRegistrationComplete: RegistrationComplete
   },
   {
@@ -160,56 +151,26 @@ const SignUpStack = createStackNavigator({
   }
 });
 
-//Chat Flow
-const ChatStack = createStackNavigator({
-  Main: {
-    screen: MainNavigator,
-    navigationOptions: () => ({
-      title: `Home`,
-      header: null
-    })
-  },
-  MinuteChatRoom: {
-    screen: MinuteChatRoomScreen,
-    navigationOptions: () => ({
-      title: `MinuteChatRoom`
-    })
-  },
-  PermanentChatRoom: {
-    screen: PermanentChatRoomScreen,
-    navigationOptions: () => ({
-      title: `PermanentChatRoom`
-    })
-  }
-});
+/*
 
-//Match Flow
-const MatchStack = createStackNavigator({
-  Matching: {
-    screen: MatchingScreen,
-    navigationOptions: () => ({
-      title: `MatchLoading`
-    })
-  },
-  Match: {
-    screen: MatchScreen,
-    navigationOptions: () => ({
-      title: `Match`
-    })
-  }
-});
+Switch: no back buttons
+Bottom: there is a burger menu tab at the bottom of the screen
+Stack: every screens inside the stack can go back by back button
 
-//purpose of putting stacks inside createSwitchNavigator
-//because in order to navigate to some screens
-//need to put the screen inside createStackNavigator
-//then need to put the stack inside createSwitchNavigator
-//in order for "navigation" to navigate to that screen
-//that begin said, don't put stack inside createSwitchNavigator
-//that stack's screens cannot be navigate
+You can export a stacks (the stack's screen must have different name than other stacks's screen)
+When you export a stack, this stack will have a default header; you can set the header:null in navigationOptions
 
-//putting screen/stack in Switch doesn't have back button
-//if you want to have back button
-//navigate the screen/ that stack name
+Test Main Screen Flow and Login Main Screen Flow (User login),
+Both Screens has a footer menu, this footer menu will send a redux guid (always device's user) and a boolean isDeviceUser = true to ProfileScreen
+SO Both Flow simulate Device's user go to their Profile screen which will display their profile information
+
+Link Screen Flow
+In link screen, the buttons will send a string of guid and a boolean of isDeviceUser = false to Profile Screen
+SO Link Screen Flow simulate Device's user go to matched user Profile Screen which will display matched user Profile Screen
+
+Edit Screen would only visible by isDeviceUser = true, and only use the redux guid
+
+*/
 export default createAppContainer(
   createSwitchNavigator(
     {
@@ -218,9 +179,7 @@ export default createAppContainer(
       Login: LoginScreen, //Login
       Main: MainNavigator, //Profile Home Settings
       SignUp: SignUpStack, //Stacks for LoginScreen <-> SignUp
-      Chat: ChatStack, //Stacks for Homescreen <-> ChatRoom
-      Test: TestStack, //Stacks for LinksScreen <-> test screens
-      Match: MatchStack
+      Test: TestStack //Stacks for LinksScreen <-> test screens
     },
     {
       initialRouteName: "Login"
