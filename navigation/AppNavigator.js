@@ -61,6 +61,7 @@ import LoginScreen from "../screens/LoginScreen";
 //Notification Components
 import NotificationButton from "../sharedComponents/NotificationButton";
 import NotificationScreen from "../sharedComponents/NotificationScreen";
+import ErrorScreen from "../sharedComponents/ErrorScreen";
 
 //Test Matched User Profile Stack
 const LinkProfileStack = createStackNavigator({
@@ -113,7 +114,10 @@ const TestStack = createStackNavigator(
     TestProfile_Registration: Profile_Registration,
     TestSelfie: SelfieScreen,
     TestOldSelfie: SelfiePage,
-    TestRegistrationComplete: RegistrationComplete
+    TestRegistrationComplete: RegistrationComplete,
+
+    //sharedComponents
+    TestErrorScreen: ErrorScreen
   },
   {
     initialRouteName: "Links"
