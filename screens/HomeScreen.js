@@ -94,7 +94,6 @@ class HomeScreen extends React.Component {
 
   _handleAppStateChange = async nextAppState => {
    if (this.state.appState.match(/inactive|background/) && nextAppState === 'active') {
-     //Here should go some logic to to update the dB prob createAccount with appStatus: "foreground"
      console.log('User: ' + this.guid + ' has come to the foreground!');
       await fetch(`http://${localhost}:3020/api/pushNotification/appState`, {
        method: "POST",
@@ -105,8 +104,11 @@ class HomeScreen extends React.Component {
          data: { guid: this.guid, appState: "foreground" }
        })
      })
+     .then(() => console.log("success"))
+     .catch((error) => {
+        console.log(error);
+      });
    } else {
-     //Here should go some logic to to update the dB prob createAccount with appStatus: "background"
      console.log('User: ' + this.guid + ' has gone to the background!')
      await fetch(`http://${localhost}:3020/api/pushNotification/appState`, {
        method: "POST",
@@ -117,6 +119,10 @@ class HomeScreen extends React.Component {
          data: { guid: this.guid, appState: "background" }
        })
      })
+     .then(() => console.log("success"))
+     .catch((error) => {
+        console.log(error);
+      });
    }
    this.setState({ appState: nextAppState });
  };
