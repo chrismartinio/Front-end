@@ -29,9 +29,28 @@ import Constants from "expo-constants";
 import * as Permissions from "expo-permissions";
 
 const { manifest } = Constants;
+var _ = require('lodash');
+const stylesheet = _.cloneDeep(t.form.Form.stylesheet);
 
+stylesheet.textbox.normal.borderWidth = 0;
+stylesheet.textbox.error.borderWidth = 0;
+stylesheet.textbox.normal.marginBottom = 0;
+stylesheet.textbox.error.marginBottom = 0;
+
+stylesheet.textboxView.normal.borderWidth = 0;
+stylesheet.textboxView.error.borderWidth = 0;
+stylesheet.textboxView.normal.borderRadius = 0;
+stylesheet.textboxView.error.borderRadius = 0;
+stylesheet.textboxView.normal.borderBottomWidth = 1;
+stylesheet.textboxView.error.borderBottomWidth = 1;
+stylesheet.textboxView.normal.marginBottom = 5;
+stylesheet.textboxView.error.marginBottom = 5;
 const Form = t.form.Form;
-
+var options = {
+  stylesheet: stylesheet,
+  auto: 'placeholders',
+  
+};
 const User = t.struct({
   username: t.String,
   password: t.String
@@ -243,14 +262,18 @@ class LoginScreen extends React.Component {
             <Image
               source={
                 __DEV__
-                  ? require("../assets/images/blindly.jpg")
-                  : require("../assets/images/blindly.jpg")
+                  ? require("../assets/images/butterfly.png")
+                  : require("../assets/images/butterfly.png")
               }
               style={styles.welcomeImage}
             />
           </View>
           <View style={styles.formContainer}>
-            <Form type={User} ref={c => (this._form = c)} />
+            <Form 
+            options={options} 
+            autoCapitalize = 'none'
+            type={User} 
+            ref={c => (this._form = c)} />
           </View>
           <View style={styles.buttonStyle}>
                 <Button
@@ -440,9 +463,11 @@ const styles = StyleSheet.create({
   },
   formContainer: {
     justifyContent: "center",
+    width:'55%',
     marginTop: 50,
     padding: 10,
-    backgroundColor: "#ffffff"
+    backgroundColor: "#ffffff",
+    alignSelf: 'center'
   },
   developmentModeText: {
     marginBottom: 20,
@@ -463,7 +488,7 @@ const styles = StyleSheet.create({
     width: 300,
     height: 200,
     resizeMode: "contain",
-    marginTop: 3,
+    marginTop: '10%',
     marginLeft: -10
   },
   getStartedContainer: {
@@ -530,7 +555,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     color: "white",
     backgroundColor: "#18cdf6",
-    width: 200,
+    width: '75%',
     alignSelf: "center",
     marginBottom: 20,
     fontStyle: "italic"
@@ -540,7 +565,7 @@ const styles = StyleSheet.create({
     color: "#18cdf6",
     borderWidth: 1,
     borderColor: "#18cdf6",
-    width: 200,
+    width: '75%',
     alignSelf: "center",
     marginBottom: 5,
     fontStyle: "italic"
