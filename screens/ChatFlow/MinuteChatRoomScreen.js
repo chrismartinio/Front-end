@@ -264,7 +264,8 @@ class MinuteChatRoomScreen extends React.Component {
     //THIS WORK ONLY FROM CHATLIST TO CHATROOM
     //this.props.navigation.getParam.forceReRender;
     this.socket.emit("disconnect");
-    this.props.navigation.goBack();
+    //For MinuteChatRoom, direct user go back to home
+    this.props.navigation.navigate("Home");
   };
 
   exitChatPopUp = visible => {
