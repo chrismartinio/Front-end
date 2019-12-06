@@ -33,4 +33,4 @@ Installation reqs:
 
   **** WHEN FETCHING DATA: GO TO config/ipconfig.js, CHANGE TO YOUR PHYSICAL IP ADDRESS ****
 
-  **** ABOUT LOCALSTORAGE: IF LOCALSTORAGE STRUCTURE IS UPDATED, YOU WOULD HAVE TO DELETE AND RECREATE THE TABLES AGAIN. GO TO screens/LoginScreen.js, on line 101, uncomment the drop table and run the app. Next, after the app is run, comment the drop table then run the app again ****
+  **** ABOUT LOCALSTORAGE: IF LOCALSTORAGE STRUCTURE IS UPDATED, YOU WOULD HAVE TO DELETE AND RECREATE THE TABLES AGAIN. GO TO screens/LoginScreen.js, on line 101, uncomment the drop table code and run the app. Next, after the app is run, comment the drop table code then run the app again ****
