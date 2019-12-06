@@ -29,10 +29,7 @@ import { localhost } from "../../config/ipconfig";
 class PermanentChatRoomScreen extends React.Component {
   static navigationOptions = ({ navigation }) => {
     return {
-      headerTitle: "ChatRoom",
-      headerLeft: () => (
-        <Button title="Exit" onPress={navigation.getParam("exitChatPopUp")} />
-      )
+      headerTitle: "ChatRoom"
     };
   };
 
@@ -151,11 +148,6 @@ class PermanentChatRoomScreen extends React.Component {
     const { navigation } = this.props;
     console.log(navigation.getParam("matchedGuid"));
 
-    this.props.navigation.setParams({
-      exitChatPopUp: () => {
-        this.exitChatPopUp(true);
-      }
-    });
     /*
     this.guid = await this.props.CreateProfileDataReducer.guid;
 
@@ -218,6 +210,13 @@ class PermanentChatRoomScreen extends React.Component {
     this.setState({ appState: nextAppState });
   };
 
+  timeStamp = () => {
+    var today = new Date();
+    var time =
+      today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+    return time;
+  };
+
   //add a new message into the allMessageArray
   addChatMessage = (type, message, username) => {
     let allMessages = this.state.allMessages;
@@ -225,7 +224,7 @@ class PermanentChatRoomScreen extends React.Component {
       type: type,
       message: message,
       userName: username,
-      timeStamp: new Date()
+      timeStamp: this.timeStamp()
     });
     this.setState({
       allMessages: allMessages
@@ -276,13 +275,16 @@ class PermanentChatRoomScreen extends React.Component {
         return (
           <View key={index} style={styles.deviceUserMessageView}>
             <View style={styles.textContainer}>
-              <Text style={styles.deviceUserMessageText}>
-                {`${messageItem.message}\n`}
+              <View style={styles.deviceUserMessageText}>
+                <Text>{`${messageItem.message}`}</Text>
                 <Text style={styles.dateTime}>{`${
                   messageItem.timeStamp
                 }`}</Text>
+              </View>
+              <Text style={styles.circle}>
+                {" "}
+                {messageItem.userName[0].toUpperCase()}
               </Text>
-              <Text style={styles.circle}> {messageItem.userName}</Text>
             </View>
           </View>
         );
@@ -291,13 +293,16 @@ class PermanentChatRoomScreen extends React.Component {
         return (
           <View key={index}>
             <View style={styles.textContainer}>
-              <Text style={styles.circlePurple}> {messageItem.userName}</Text>
-              <Text style={styles.targetMessageText}>
-                {`${messageItem.message}\n`}
+              <Text style={styles.circlePurple}>
+                {" "}
+                {messageItem.userName[0].toUpperCase()}
+              </Text>
+              <View style={styles.targetMessageText}>
+                <Text>{`${messageItem.message}`}</Text>
                 <Text style={styles.dateTimeLeft}>{`${
                   messageItem.timeStamp
                 }`}</Text>
-              </Text>
+              </View>
             </View>
           </View>
         );
@@ -351,22 +356,6 @@ class PermanentChatRoomScreen extends React.Component {
                 />
               </TouchableOpacity>
             </View>
-            <Text>{this.state.timerSecond} seconds left</Text>
-            <Image
-              style={{
-                width: 90 * 2,
-                height: 10
-              }}
-              source={require("../../assets/Assets_V1/greybar.jpg")}
-            />
-            <Image
-              style={{
-                top: -10,
-                width: this.state.timerSecond * 2,
-                height: 10
-              }}
-              source={require("../../assets/Assets_V1/bluebar.jpg")}
-            />
 
             {/*Messages*/}
             <ScrollView
@@ -389,50 +378,6 @@ class PermanentChatRoomScreen extends React.Component {
                 </View>
               )}
             </ScrollView>
-
-            <Modal
-              animationType="slide"
-              transparent={true}
-              visible={this.state.modalVisible}
-            >
-              <View
-                style={{
-                  marginTop: 350,
-                  marginBottom: 350,
-                  marginLeft: 100,
-                  marginRight: 100,
-                  height: 100,
-                  width: 150,
-                  alignSelf: "center",
-                  backgroundColor: "green"
-                }}
-              >
-                <View>
-                  <Text>Do you want to exit the chat?</Text>
-
-                  {/*Yes Button*/}
-                  <View style={styles.buttonStyle}>
-                    <Button
-                      title="Yes"
-                      onPress={() => {
-                        this.exitChat();
-                        this.exitChatPopUp(!this.state.modalVisible);
-                      }}
-                    />
-                  </View>
-
-                  {/*No Button*/}
-                  <View style={styles.buttonStyle}>
-                    <Button
-                      title="No"
-                      onPress={() => {
-                        this.exitChatPopUp(!this.state.modalVisible);
-                      }}
-                    />
-                  </View>
-                </View>
-              </View>
-            </Modal>
 
             {/*Input*/}
             <View style={styles.messageInputBox}>
@@ -498,7 +443,8 @@ const styles = StyleSheet.create({
   deviceUserMessageText: {
     overflow: "hidden",
     borderRadius: 10,
-    width: 300,
+    minWidth: 50,
+    maxWidth: 300,
     borderColor: "#3399ff",
     backgroundColor: "#3399ff",
     color: "#fff",
@@ -507,7 +453,8 @@ const styles = StyleSheet.create({
   targetMessageText: {
     overflow: "hidden",
     borderRadius: 10,
-    width: 300,
+    minWidth: 50,
+    maxWidth: 300,
     borderColor: "#cccccc",
     backgroundColor: "#cccccc",
     color: "#000",

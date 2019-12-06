@@ -7,6 +7,7 @@ import {
   ScrollView,
   Button,
   TouchableOpacity,
+  ActivityIndicator,
   Dimensions,
   Image
 } from "react-native";
@@ -25,34 +26,57 @@ class MatchingScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      isSuccess: true
+      isSuccess: true,
+      foundaMatch: false
     };
+    //Set up a socket that after socket send they found a match
+    //then change the foundaMatch = true
+  }
+
+  componentDidMount() {
+    console.log("Matching");
+    this.props.navigation.setParams({ backFromMatch: this.backFromMatch });
+  }
+
+  backFromMatch = () => {
+    this.setState({
+      foundaMatch: false
+    });
+  };
+
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    if (prevState.foundaMatch !== this.state.foundaMatch) {
+      if (this.state.foundaMatch) {
+        //also send a private room id to match screen
+        this.props.navigation.navigate("Match", {
+          backFromMatch: () => {
+            this.props.navigation.state.params.backFromMatch();
+          }
+        });
+      }
+    }
   }
 
   successScreen = () => {
     return (
       <View style={styles.container}>
         <View style={{ flex: 0.9 }}>
-          {/*Room list */}
-          <ScrollView
-            ref={scrollView => {
-              this.scrollView = scrollView;
-            }}
-            onScroll={this.handleScroll}
-            scrollEventThrottle={16}
-          >
-            <Text>MatchScreen</Text>
-            <Text>MatchScreen</Text>
-            <Text>MatchScreen</Text>
-            <Text>MatchScreen</Text>
-            <Text>MatchScreen</Text>
-            <Text>MatchScreen</Text>
-            <Text>MatchScreen</Text>
-            <Text>MatchScreen</Text>
-            <Text>MatchScreen</Text>
-            <Text>MatchScreen</Text>
-            <Text>MatchScreen</Text>
-          </ScrollView>
+          <View style={{ flex: 1, justifyContent: "center" }}>
+            <ActivityIndicator size="large" color="black" />
+            <View style={{ alignItems: "center" }}>
+              <Text style={{ fontSize: 24 }}>Finding a match</Text>
+              {/*Testing Use*/}
+              <Button
+                title={"found a match"}
+                color={"black"}
+                onPress={() => {
+                  this.setState({
+                    foundaMatch: true
+                  });
+                }}
+              />
+            </View>
+          </View>
         </View>
         {/*Footer*/}
         <Footer navigation={this.props.navigation} />

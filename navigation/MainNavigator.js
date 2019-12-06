@@ -90,7 +90,7 @@ const MainStack = createStackNavigator(
     Match: {
       screen: MatchScreen,
       navigationOptions: ({ navigation }) => ({
-        title: `Matching`,
+        title: `Match`,
         headerRight: <NotificationButton navigation={navigation} />
       })
     },
