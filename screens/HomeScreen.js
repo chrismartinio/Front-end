@@ -261,6 +261,25 @@ const styles = StyleSheet.create({
   },
   titleText: {
     color: "#fff"
+  },
+  buttonStyle: {
+    borderRadius: 20,
+    color: "white",
+    backgroundColor: "#18cdf6",
+    width: 200,
+    alignSelf: "center",
+    marginBottom: 20,
+    fontStyle: "italic"
+  },
+  buttonStyleOutline: {
+    borderRadius: 20,
+    color: "#18cdf6",
+    borderWidth: 1,
+    borderColor: "#18cdf6",
+    width: 200,
+    alignSelf: "center",
+    marginBottom: 5,
+    fontStyle: "italic"
   }
 });
 
