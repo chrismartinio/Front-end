@@ -31,4 +31,6 @@ Installation reqs:
 
 8. Pick run in simulator or Pick run in Emulator
 
-  **** WHEN FETCHING DATA: GO TO config/ipconfig.js, CHANGE  TO YOUR PHYSICAL IP ADDRESS ****
+  **** WHEN FETCHING DATA: GO TO config/ipconfig.js, CHANGE TO YOUR PHYSICAL IP ADDRESS ****
+
+  **** ABOUT LOCALSTORAGE: IF LOCALSTORAGE STRUCTURE IS UPDATED, YOU WOULD HAVE TO DELETE AND RECREATE THE TABLES AGAIN. GO TO screens/LoginScreen.js, on line 101, uncomment the drop table and run the app. Next, after the app is run, comment the drop table then run the app again ****
