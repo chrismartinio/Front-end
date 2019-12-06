@@ -133,7 +133,10 @@ class Interests extends Component {
       })
       .catch(async err => {
         //HANDLE ANY CATCHED ERRORS
-        let object = await selectDataFromLocalStorage("device_user_interests");
+        let object = await selectDataFromLocalStorage(
+          "device_user_interests",
+          1
+        );
 
         if (object.success) {
           let { likesArray } = object.result.rows._array[0];

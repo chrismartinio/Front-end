@@ -125,7 +125,8 @@ class LocationDestinations extends Component {
         //HANDLE ANY CATCHED ERRORS
 
         let object = await selectDataFromLocalStorage(
-          "device_user_localDestination"
+          "device_user_localDestination",
+          1
         );
 
         if (object.success) {

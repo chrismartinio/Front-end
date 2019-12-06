@@ -42,7 +42,8 @@ import {
   createTablesInToLocalStorage,
   displayAllTablesFromLocalStorage,
   dropAllTablesInLocalStorage,
-  deleteDeviceUserData
+  deleteDeviceUserData,
+  createMatchedUserTablesInToLocalStorage
 } from "./ProfileFlow/LocalStorage/localStorage.js";
 
 //SQLite
@@ -97,11 +98,13 @@ class LoginScreen extends React.Component {
     //createTablesInToLocalStorage() won't create new table or update the table
     //so you would have to delete the old table (old columns)
     //then re-create a new table (new columns
-
     //dropAllTablesInLocalStorage();
 
-    //CREATE TABLES
+    //CREATE DEVICE'S USER TABLES
     createTablesInToLocalStorage();
+
+    //CREATE MATCHED'S USER TABLES
+    createMatchedUserTablesInToLocalStorage();
 
     //DISPLAY Tables
     //displayAllTablesFromLocalStorage();

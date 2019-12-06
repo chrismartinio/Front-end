@@ -28,24 +28,56 @@ import Footer from "../sharedComponents/Footer";
 //2. delay footer buttons
 //3. fix faill storing
 
-class HomeScreen extends React.Component {
+const testobj = [
+  {
+    matchedFirstName: "Aaa",
+    matchedGuid: "5de42a14b4dc5b1fba94e1d3",
+    matchedMinuteRoomID: "someRoomNumber",
+    matchedImage:
+      "https://media.gq.com/photos/56d4902a9acdcf20275ef34c/master/w_806,h_1173,c_limit/tom-hardy-lead-840.jpg"
+  },
+  {
+    matchedFirstName: "Kachi",
+    matchedGuid: "5de42b16b4dc5b1fba94e1d4",
+    matchedMinuteRoomID: "someRoomNumber",
+    matchedImage:
+      "https://www.guideposts.org/sites/guideposts.org/files/styles/hero_box_left_lg/public/story/dick_van_dyke_marquee.jpg"
+  },
+  {
+    matchedFirstName: "Demetus",
+    matchedGuid: "5de4b4ec6f3077a0d5252ddd",
+    matchedMinuteRoomID: "someRoomNumber",
+    matchedImage:
+      "http://shared.frenys.com/assets/1009731/6151100-Young-Harrison-Ford.jpg"
+  },
+  {
+    matchedFirstName: "Mike",
+    matchedGuid: "5de4b6a26f3077a0d5252dde",
+    matchedMinuteRoomID: "someRoomNumber",
+    matchedImage: "https://www.famousbirthdays.com/faces/efron-zac-image.jpg"
+  },
+  {
+    matchedFirstName: "Qiuwen",
+    matchedGuid: "5de6e7a326e5604c8552d774",
+    matchedMinuteRoomID: "someRoomNumber",
+    matchedImage:
+      "https://resizing.flixster.com/zYHoIjM-IBcqyt8S3ZJzudd9E24=/fit-in/1152x864/v1.cjszOTU0NDtqOzE4MDAwOzEyMDA7MzkyOzYwMA"
+  },
+  {
+    matchedFirstName: "Kevin",
+    matchedGuid: "5de7a9a888fab05ca501ae9a",
+    matchedMinuteRoomID: "someRoomNumber",
+    matchedImage:
+      "https://media.gq.com/photos/56d4902a9acdcf20275ef34c/master/w_806,h_1173,c_limit/tom-hardy-lead-840.jpg"
+  }
+];
 
+class HomeScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       appState: AppState.currentState,
-      matchedChatList: [
-        { matched_user_name: "Apple", chatroomID: "12345" },
-        { matched_user_name: "Bay", chatroomID: "56789" },
-        { matched_user_name: "Apple", chatroomID: "12345" },
-        { matched_user_name: "Bay", chatroomID: "56789" },
-        { matched_user_name: "Apple", chatroomID: "12345" },
-        { matched_user_name: "Bay", chatroomID: "56789" },
-        { matched_user_name: "Apple", chatroomID: "12345" },
-        { matched_user_name: "Bay", chatroomID: "56789" },
-        { matched_user_name: "Apple", chatroomID: "12345" },
-        { matched_user_name: "Bay", chatroomID: "56789" }
-      ],
+      matchedChatList: testobj,
       isSuccess: false
     };
 
@@ -54,7 +86,7 @@ class HomeScreen extends React.Component {
   }
 
   async componentDidMount() {
-    AppState.addEventListener('change', this._handleAppStateChange);
+    AppState.addEventListener("change", this._handleAppStateChange);
     this.guid = await this.props.CreateProfileDataReducer.guid;
 
     this.user_firstName = await this.props.CreateProfileDataReducer.aboutYouData
@@ -89,46 +121,49 @@ class HomeScreen extends React.Component {
 
   componentWillUnmount() {
     //this.socket.off();
-    AppState.removeEventListener('change', this._handleAppStateChange);
+    AppState.removeEventListener("change", this._handleAppStateChange);
   }
 
   _handleAppStateChange = async nextAppState => {
-   if (this.state.appState.match(/inactive|background/) && nextAppState === 'active') {
-     console.log('User: ' + this.guid + ' has come to the foreground!');
+    if (
+      this.state.appState.match(/inactive|background/) &&
+      nextAppState === "active"
+    ) {
+      console.log("User: " + this.guid + " has come to the foreground!");
       await fetch(`http://${localhost}:3020/api/pushNotification/appState`, {
-       method: "POST",
-       headers: {
-         "Content-Type": "application/json"
-       },
-       body: JSON.stringify({
-         data: { guid: this.guid, appState: "foreground" }
-       })
-     })
-     .then(() => console.log("success"))
-     .catch((error) => {
-        console.log(error);
-      });
-   } else {
-     console.log('User: ' + this.guid + ' has gone to the background!')
-     await fetch(`http://${localhost}:3020/api/pushNotification/appState`, {
-       method: "POST",
-       headers: {
-         "Content-Type": "application/json"
-       },
-       body: JSON.stringify({
-         data: { guid: this.guid, appState: "background" }
-       })
-     })
-     .then(() => console.log("success"))
-     .catch((error) => {
-        console.log(error);
-      });
-   }
-   this.setState({ appState: nextAppState });
- };
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          data: { guid: this.guid, appState: "foreground" }
+        })
+      })
+        .then(() => console.log("success"))
+        .catch(error => {
+          console.log(error);
+        });
+    } else {
+      console.log("User: " + this.guid + " has gone to the background!");
+      await fetch(`http://${localhost}:3020/api/pushNotification/appState`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          data: { guid: this.guid, appState: "background" }
+        })
+      })
+        .then(() => console.log("success"))
+        .catch(error => {
+          console.log(error);
+        });
+    }
+    this.setState({ appState: nextAppState });
+  };
 
   enterChatRoom = chatRoomData => {
-    this.props.navigation.navigate("MinuteChatRoom");
+    this.props.navigation.navigate("PermanentChatRoom", chatRoomData);
   };
 
   handleScroll = ({ nativeEvent }) => {
@@ -148,7 +183,7 @@ class HomeScreen extends React.Component {
                 this.enterChatRoom(chatRoomData);
               }}
             >
-              <Text>{chatRoomData.matched_user_name}</Text>
+              <Text>{chatRoomData.matchedFirstName}</Text>
             </TouchableHighlight>
           </View>
         );

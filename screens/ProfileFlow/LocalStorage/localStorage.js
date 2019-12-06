@@ -3,13 +3,13 @@ import * as SQLite from "expo-sqlite";
 const db = SQLite.openDatabase("that.db");
 
 //DISPLAY DEVICE'S USER PROFILE DATA (ONE TABLE)
-export function selectDataFromLocalStorage(tableName) {
+export function selectDataFromLocalStorage(tableName, id) {
   return new Promise((resolve, reject) => {
     db.transaction(
       //callback
       tx => {
         //DISPLAY DATA
-        let selectSqlStatement = `select * from ${tableName}`;
+        let selectSqlStatement = `select * from ${tableName} where id="${id}"`;
         tx.executeSql(
           selectSqlStatement,
           null,
@@ -25,6 +25,43 @@ export function selectDataFromLocalStorage(tableName) {
           },
           (tx, err) => {
             console.log(`\n### DISPLAY  Data from ${tableName} ### : Fail!\n`);
+            console.log(err);
+          }
+        );
+      },
+      //Transaction error
+      null,
+      //Transaction success
+      null
+    );
+  });
+}
+
+//DISPLAY MATCHED USER PROFILE DATA BY GUID(ONE TABLE)
+export function selectIdByGuidFromLocalStorage(tableName, guid) {
+  return new Promise((resolve, reject) => {
+    db.transaction(
+      //callback
+      tx => {
+        //DISPLAY DATA
+        let selectSqlStatement = `select id from ${tableName} where guid="${guid}"`;
+        tx.executeSql(
+          selectSqlStatement,
+          null,
+          (tx, result) => {
+            console.log(
+              `\n### DISPLAY ID from ${tableName} BY ${guid} ### : Success!\n`
+            );
+            if (result.rows.length <= 0) {
+              console.log("No data is in the localStorage");
+              resolve({ success: false });
+            }
+            resolve({ result: result, success: true });
+          },
+          (tx, err) => {
+            console.log(
+              `\n### DISPLAY ID from ${tableName} BY ${guid} ### : Fail!\n`
+            );
             console.log(err);
           }
         );
@@ -89,12 +126,55 @@ export function insertDataIntoLocalStorage(
     );
   });
 }
+//CREATE TABLES FOR MATCHED USER PROFILE
+export function createMatchedUserTablesInToLocalStorage() {
+  let matchedUserInfoSqlStatement =
+    "CREATE TABLE IF NOT EXISTS matched_user_info ( " +
+    "id INTEGER PRIMARY KEY," +
+    "guid TEXT DEFAULT NULL," +
+    "image TEXT DEFAULT NULL," +
+    "addressLatitude TEXT DEFAULT NULL," +
+    "addressLongitude TEXT DEFAULT NULL," +
+    "birthDate TEXT DEFAULT NULL," +
+    "firstName TEXT DEFAULT NULL," +
+    "lastName TEXT DEFAULT NULL," +
+    "zipCode TEXT DEFAULT NULL," +
+    "userBio TEXT DEFAULT NULL," +
+    "city TEXT DEFAULT NULL," +
+    "state TEXT DEFAULT NULL," +
+    "likesArray TEXT DEFAULT NULL" +
+    " );";
 
-//CREATE TABLES FOR PROFILE (MULTIPLE TABLES)
+  return new Promise((resolve, reject) => {
+    db.transaction(
+      //callback
+      tx => {
+        tx.executeSql(
+          matchedUserInfoSqlStatement,
+          null,
+          (tx, result) => {
+            console.log(`matched_user_info is created \n`);
+          },
+          (tx, err) => {
+            console.log(`Failed creating matched_user_info\n`);
+            console.log(err);
+          }
+        );
+      },
+      //Transaction error
+      null,
+      //Transaction success
+      null
+    );
+  });
+}
+
+//CREATE TABLES FOR DEVICE'S USER PROFILE (MULTIPLE TABLES)
 export function createTablesInToLocalStorage() {
   let createAccountSqlStatement =
     "CREATE TABLE IF NOT EXISTS device_user_createAccount ( " +
     "id INTEGER PRIMARY KEY," +
+    "image TEXT DEFAULT NULL," +
     "guid TEXT DEFAULT NULL," +
     "email TEXT DEFAULT NULL," +
     "password TEXT DEFAULT NULL," +
@@ -236,6 +316,10 @@ export function displayAllTablesFromLocalStorage() {
     {
       tableName: "device_user_localDestination",
       sqlStatement: "SELECT * FROM device_user_localDestination"
+    },
+    {
+      tableName: "matched_user_info",
+      sqlStatement: "SELECT * FROM matched_user_info"
     }
   ];
   return new Promise((resolve, reject) => {
@@ -313,6 +397,10 @@ export function dropAllTablesInLocalStorage() {
     {
       tableName: "device_user_localDestination",
       sqlStatement: "DROP TABLE device_user_localDestination"
+    },
+    {
+      tableName: "matched_user_info",
+      sqlStatement: "DROP TABLE matched_user_info"
     }
   ];
   return new Promise((resolve, reject) => {

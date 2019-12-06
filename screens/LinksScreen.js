@@ -92,7 +92,10 @@ export default class LinksScreen extends React.Component {
       //Match Flow
       "TestMatches",
       "MinuteChatRoom",
-      "PermanentChatRoom"
+      "PermanentChatRoom",
+
+      //sharedComponents
+      "TestErrorScreen"
 
       //"TestPhotoReview",
       //"TestQuestionaries",
@@ -186,7 +189,6 @@ export default class LinksScreen extends React.Component {
       }
 
       if (e === "TestSelfie") {
-        //must turn on profile server for matched user profile
         return (
           <Button
             key={index++}

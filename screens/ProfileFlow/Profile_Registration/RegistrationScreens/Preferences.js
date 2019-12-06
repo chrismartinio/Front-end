@@ -163,7 +163,8 @@ class Preferences extends Component {
         //HANDLE ANY CATCHED ERRORS
 
         let object = await selectDataFromLocalStorage(
-          "device_user_preferences"
+          "device_user_preferences",
+          1
         );
 
         if (object.success) {

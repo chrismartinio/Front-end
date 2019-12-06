@@ -148,6 +148,9 @@ class PermanentChatRoomScreen extends React.Component {
   }
 
   async componentDidMount() {
+    const { navigation } = this.props;
+    console.log(navigation.getParam("matchedGuid"));
+
     this.props.navigation.setParams({
       exitChatPopUp: () => {
         this.exitChatPopUp(true);
@@ -329,6 +332,25 @@ class PermanentChatRoomScreen extends React.Component {
             source={require("../../assets/Assets_V1/Butterfly_Background/butterflyBackground.png")}
             style={styles.backgroundImage}
           >
+            {/*Matched User Info*/}
+            <View style={{ alignItems: "center" }}>
+              <Text>{this.props.navigation.getParam("matchedFirstName")}</Text>
+              <TouchableOpacity
+                onPress={() => {
+                  this.props.navigation.navigate("Profile", {
+                    guid: this.props.navigation.getParam("matchedGuid"),
+                    isDeviceUser: false
+                  });
+                }}
+              >
+                <Image
+                  source={{
+                    uri: this.props.navigation.getParam("matchedImage")
+                  }}
+                  style={{ width: 75, height: 75, borderRadius: 30 }}
+                />
+              </TouchableOpacity>
+            </View>
             <Text>{this.state.timerSecond} seconds left</Text>
             <Image
               style={{
@@ -361,7 +383,6 @@ class PermanentChatRoomScreen extends React.Component {
               {this.state.isTyping && (
                 <View style={styles.textContainer}>
                   <Text style={styles.circlePurple}>
-
                     {this.matched_user_firstName}
                   </Text>
                   <Text style={styles.targetMessageText}>is typing...</Text>

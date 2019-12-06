@@ -194,7 +194,10 @@ class AboutYou extends Component {
       .catch(async err => {
         //HANDLE ANY CATCHED ERRORS
 
-        let object = await selectDataFromLocalStorage("device_user_aboutYou");
+        let object = await selectDataFromLocalStorage(
+          "device_user_aboutYou",
+          1
+        );
 
         if (object.success) {
           let {

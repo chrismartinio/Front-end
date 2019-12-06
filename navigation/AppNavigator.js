@@ -10,7 +10,6 @@ import {
 import MainNavigator from "./MainNavigator";
 
 //Signup flow Screens
-import MatchesPage from "../screens/OldScreens/SignUpFlow/Matches";
 import RegistrationPage from "../screens/OldScreens/SignUpFlow/RegistrationPage";
 import SelfiePage from "../screens/OldScreens/SignUpFlow/SelfiePage";
 import PhotoReview from "../screens/OldScreens/SignUpFlow/PhotoReview";
@@ -28,6 +27,7 @@ import ReplyQuestionaire from "../screens/MatchFlow/matchCreateReply";
 import ViewQuestionaire from "../screens/MatchFlow/matchViewReply";
 import MatchScreen from "../screens/MatchFlow/MatchScreen";
 import MatchingScreen from "../screens/MatchFlow/MatchingScreen";
+import Matches from "../screens/OldScreens/SignUpFlow/Matches";
 
 //LocationFlow
 import LocationServices from "../screens/LocationServices/LocationServices";
@@ -61,6 +61,7 @@ import LoginScreen from "../screens/LoginScreen";
 //Notification Components
 import NotificationButton from "../sharedComponents/NotificationButton";
 import NotificationScreen from "../sharedComponents/NotificationScreen";
+import ErrorScreen from "../sharedComponents/ErrorScreen";
 
 //Test Matched User Profile Stack
 const LinkProfileStack = createStackNavigator({
@@ -97,7 +98,7 @@ const TestStack = createStackNavigator(
     TestQuestionaries: CreateQuestionaire,
     TestViewQuestionaire: ViewQuestionaire,
     TestReplyQuestionaire: ReplyQuestionaire,
-    TestMatches: MatchesPage,
+    TestMatches: Matches,
 
     //Chat flow
     TestChatPage: ChatPage,
@@ -113,7 +114,10 @@ const TestStack = createStackNavigator(
     TestProfile_Registration: Profile_Registration,
     TestSelfie: SelfieScreen,
     TestOldSelfie: SelfiePage,
-    TestRegistrationComplete: RegistrationComplete
+    TestRegistrationComplete: RegistrationComplete,
+
+    //sharedComponents
+    TestErrorScreen: ErrorScreen
   },
   {
     initialRouteName: "Links"
