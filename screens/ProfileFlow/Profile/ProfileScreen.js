@@ -34,7 +34,8 @@ import * as SQLite from "expo-sqlite";
 const db = SQLite.openDatabase("that.db");
 import {
   insertDataIntoLocalStorage,
-  selectDataFromLocalStorage
+  selectDataFromLocalStorage,
+  selectIdByGuidFromLocalStorage
 } from "../LocalStorage/localStorage.js";
 
 class ProfileScreen extends React.Component {
@@ -135,7 +136,6 @@ class ProfileScreen extends React.Component {
     const { navigation } = this.props;
     this.guid = navigation.getParam("guid");
 
-
     console.log("ProfileScreen");
     console.log("USER GUID: ", this.guid);
 
@@ -208,7 +208,7 @@ class ProfileScreen extends React.Component {
             let { success } = await insertDataIntoLocalStorage(
               insertSqlStatement,
               "device_user_createAccount",
-              [this.state.addressLatitude, this.state.addressLongitude],
+              [addressLatitude, addressLongitude],
               true
             );
 
@@ -247,6 +247,49 @@ class ProfileScreen extends React.Component {
           } else {
             //here is store to matched's user tables
             //code coming soon
+            console.log("store matched profile info");
+            //Find id by GUID
+            let idObject = await selectIdByGuidFromLocalStorage(
+              "matched_user_info",
+              this.guid
+            );
+            let id;
+            let insertSqlStatement;
+            if (idObject.success) {
+              id = idObject.result.rows._array[0].id;
+              insertSqlStatement =
+                "INSERT OR REPLACE into matched_user_info(id, guid, addressLatitude, addressLongitude, birthDate, firstName, lastName, zipCode, userBio, city, state, likesArray) " +
+                `values(${id}, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`;
+            } else {
+              insertSqlStatement =
+                "INSERT OR REPLACE into matched_user_info(id, guid, addressLatitude, addressLongitude, birthDate, firstName, lastName, zipCode, userBio, city, state, likesArray) " +
+                `values(${null}, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`;
+            }
+
+            //Store to matched_user_info
+            let json_likesArray = JSON.stringify({
+              likesArray: likesArray
+            });
+
+            let { success } = await insertDataIntoLocalStorage(
+              insertSqlStatement,
+              "matched_user_info",
+              [
+                this.guid,
+                addressLatitude,
+                addressLongitude,
+                birthDate,
+                firstName,
+                lastName,
+                zipCode,
+                userBio,
+                city,
+                state,
+                json_likesArray
+              ],
+              true
+            );
+
             return;
           }
         } else {
@@ -262,15 +305,18 @@ class ProfileScreen extends React.Component {
         if (this.guid === this.props.CreateProfileDataReducer.guid) {
           //Get Device's User Data from localStorage device_user_aboutYou table
           let aboutYouObject = await selectDataFromLocalStorage(
-            "device_user_aboutYou"
+            "device_user_aboutYou",
+            1
           );
 
           let interestsObject = await selectDataFromLocalStorage(
-            "device_user_interests"
+            "device_user_interests",
+            1
           );
 
           let createAccountObject = await selectDataFromLocalStorage(
-            "device_user_createAccount"
+            "device_user_createAccount",
+            1
           );
 
           if (
@@ -320,18 +366,54 @@ class ProfileScreen extends React.Component {
           }
         } else {
           //Get Matched User's Data from localStorage
-          //code coming soon
-          let matched_user_querydata_success = false;
+          //Find id by GUID
+          let idObject = await selectIdByGuidFromLocalStorage(
+            "matched_user_info",
+            this.guid
+          );
 
-          if (matched_user_querydata_success) {
-            console.log("getting data");
+          if (idObject.success) {
+            let id = idObject.result.rows._array[0].id;
+            let matched_user_infoObject = await selectDataFromLocalStorage(
+              "matched_user_info",
+              id
+            );
+
+            let {
+              firstName,
+              lastName,
+              birthDate,
+              state,
+              city,
+              userBio,
+              zipCode,
+              likesArray,
+              addressLatitude,
+              addressLongitude
+            } = matched_user_infoObject.result.rows._array[0];
+            likesArray = JSON.parse(likesArray).likesArray;
+
+            //setState
+            this.setState({
+              firstName: firstName,
+              lastName: lastName,
+              birthDate: birthDate,
+              userBio: userBio,
+              age: _calculateAge(birthDate),
+              city: city,
+              state: state,
+              zipCode: zipCode,
+              likesArray: likesArray,
+              addressLatitude: addressLatitude,
+              addressLongitude: addressLongitude,
+              isSuccess: true
+            });
           } else {
+            //fail query data
             this.setState({
               isSuccess: false
             });
           }
-
-          return;
         }
       });
   };

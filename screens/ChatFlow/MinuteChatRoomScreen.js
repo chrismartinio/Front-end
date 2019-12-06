@@ -302,14 +302,12 @@ class MinuteChatRoomScreen extends React.Component {
                 {" "}
                 {messageItem.userName[0].toUpperCase()}
               </Text>
-              <View style={styles.targetMessageText}><Text >
-                {`${messageItem.message}`}
-
-              </Text>
-              <Text style={styles.dateTimeLeft}>{`${
+              <View style={styles.targetMessageText}>
+                <Text>{`${messageItem.message}`}</Text>
+                <Text style={styles.dateTimeLeft}>{`${
                   messageItem.timeStamp
                 }`}</Text>
-                </View>
+              </View>
             </View>
           </View>
         );
@@ -344,6 +342,13 @@ class MinuteChatRoomScreen extends React.Component {
             source={require("../../assets/Assets_V1/Butterfly_Background/butterflyBackground.png")}
             style={styles.backgroundImage}
           >
+            <Image
+              source={{
+                uri: "https://www.famousbirthdays.com/faces/efron-zac-image.jpg"
+              }}
+              style={{ width: 75, height: 75, borderRadius: 30 }}
+            />
+
             <Text>{this.state.timerSecond} seconds left</Text>
             <Image
               style={{

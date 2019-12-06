@@ -234,7 +234,8 @@ class CreateAccount extends Component {
         //HANDLE ANY CATCHED ERRORS
 
         let object = await selectDataFromLocalStorage(
-          "device_user_createAccount"
+          "device_user_createAccount",
+          1
         );
 
         if (object.success) {

@@ -142,7 +142,8 @@ class WouldYouRather extends Component {
         //HANDLE ANY CATCHED ERRORS
 
         let object = await selectDataFromLocalStorage(
-          "device_user_wouldYouRather"
+          "device_user_wouldYouRather",
+          1
         );
 
         if (object.success) {
