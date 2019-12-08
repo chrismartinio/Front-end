@@ -105,7 +105,7 @@ async function registerForLocationAsync() {
   console.log("getting location");
   let location = await Location.getCurrentPositionAsync({});
   global.currentLatLong =
-    location.coords.latitude + "." + location.coords.longitude;
+    location.coords.latitude + "," + location.coords.longitude;
   global.currentAltitude = location.coords.altitude;
   console.log("Heres your position", global.currentLatLong);
   console.log("Heres your altitude", global.currentAltitude);
