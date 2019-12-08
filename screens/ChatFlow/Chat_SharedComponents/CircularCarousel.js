@@ -11,27 +11,19 @@ import { degToRad } from "../Util/HomeScreenFunctions.js";
 
 const { height, width } = Dimensions.get("window");
 
+import CircularCarouselItem from "./CircularCarouselItem";
+
 export default class CircularCarousel extends React.Component {
   constructor(props) {
     super(props);
     this.state = { pageNumber: 0, displayItems: [] };
     this.circleSize = width * 1.7;
     this.itemSize = width * 0.2;
-
-    //MAY NEED TO FIX SOMETHING HERE
-    this.itemAnimations = [];
-    for (let i = 0; i < this.props.matchedUsersList.length; i++) {
-      this.itemAnimations.push({
-        value: new Animated.ValueXY(this.returnItemsXY(i)),
-        index: i
-      });
-    }
-    //MAY NEED TO FIX SOMETHING HERE
   }
 
-  setDisplayItems = () => {
+  setDisplayItems = (nextInitial, nextFinal) => {
     let temp = [];
-    for (let i = 0; i < 12; i++) {
+    for (let i = nextInitial; i < nextFinal; i++) {
       if (this.props.matchedUsersList[i] !== undefined) {
         temp.push(this.props.matchedUsersList[i]);
       }
@@ -41,9 +33,20 @@ export default class CircularCarousel extends React.Component {
     });
   };
 
+  setDisplayItemAnimations = (nextInitial, nextFinal) => {
+    this.itemAnimations = [];
+    for (let i = nextInitial; i < nextFinal; i++) {
+      this.itemAnimations.push({
+        value: new Animated.ValueXY(this.returnItemsXY(i)),
+        index: i
+      });
+    }
+  };
+
   componentDidMount() {
     //Setup first 12th items to display on the screen
-    this.setDisplayItems();
+    this.setDisplayItems(0, 12);
+    this.setDisplayItemAnimations(0, 12);
   }
 
   returnItemsXY = index => {
@@ -58,9 +61,31 @@ export default class CircularCarousel extends React.Component {
     return { x, y };
   };
 
+  nextMatchedList = () => {
+    let pageNumber = this.state.pageNumber + 1;
+    if (pageNumber > Math.round(this.props.matchedUsersList.length / 12) - 1) {
+      pageNumber = Math.round(this.props.matchedUsersList.length / 12) - 1;
+    }
+    this.setState({ pageNumber: pageNumber });
+    let nextInitial = pageNumber * 12;
+    let nextFinal = pageNumber * 12 + 12;
+    this.setDisplayItems(nextInitial, nextFinal);
+  };
+
+  previousMatchedList = () => {
+    let pageNumber = this.state.pageNumber - 1;
+    if (pageNumber < 0) {
+      pageNumber = 0;
+    }
+    this.setState({ pageNumber: pageNumber });
+    let nextInitial = pageNumber === 0 ? 0 : pageNumber * 12;
+    let nextFinal = pageNumber * 12 + 12;
+    this.setDisplayItems(nextInitial, nextFinal);
+  };
+
   goUp = () => {
     let temp = [];
-    for (let i = 0; i < this.props.matchedUsersList.length; i++) {
+    for (let i = 0; i < this.state.displayItems.length; i++) {
       let { x, y } = this.returnItemsXY(--this.itemAnimations[i].index);
       let animation = Animated.spring(this.itemAnimations[i].value, {
         toValue: { x, y }
@@ -72,7 +97,7 @@ export default class CircularCarousel extends React.Component {
 
   goDown = () => {
     let temp = [];
-    for (let i = 0; i < this.props.matchedUsersList.length; i++) {
+    for (let i = 0; i < this.state.displayItems.length; i++) {
       let { x, y } = this.returnItemsXY(++this.itemAnimations[i].index);
       let animation = Animated.spring(this.itemAnimations[i].value, {
         toValue: { x, y }
@@ -87,22 +112,15 @@ export default class CircularCarousel extends React.Component {
     for (let i = 0; i < this.state.displayItems.length; i++) {
       let itemAnimationsXY = this.itemAnimations[i].value.getLayout();
       object.push(
-        <Animated.View
+        <CircularCarouselItem
           key={i}
-          style={[
-            styles.item,
-            {
-              width: this.itemSize * 4,
-              height: this.itemSize,
-              borderRadius: this.itemSize / 2
-            },
-            itemAnimationsXY
-          ]}
-        >
-          <Text style={{ color: "black" }}>
-            {this.state.displayItems[i].matchedFirstName}
-          </Text>
-        </Animated.View>
+          width={this.itemSize * 4}
+          height={this.itemSize * 1.1}
+          borderRadius={this.itemSize / 2}
+          itemAnimationsXY={itemAnimationsXY}
+          itemData={this.state.displayItems[i]}
+          navigation={this.props.navigation}
+        />
       );
     }
     return object;
@@ -113,10 +131,20 @@ export default class CircularCarousel extends React.Component {
 
     return (
       <View>
-        <View style={{ position: "absolute", left: 0, top: 50 }}>
+        <Button
+          title={"NEXT LIST"}
+          color={"#fff"}
+          onPress={this.nextMatchedList}
+        />
+        <Button
+          title={"PREVIOUS LIST"}
+          color={"#fff"}
+          onPress={this.previousMatchedList}
+        />
+        <View style={{ position: "absolute", left: 0, top: width * 0.133 }}>
           <Button title={"UP"} color={"#fff"} onPress={this.goUp} />
         </View>
-        <View style={{ position: "absolute", left: 0, bottom: 50 }}>
+        <View style={{ position: "absolute", left: 0, bottom: width * 0.5 }}>
           <Button title={"DOWN"} color={"#fff"} onPress={this.goDown} />
         </View>
         <View
