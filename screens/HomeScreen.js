@@ -24,6 +24,8 @@ import { localhost } from "../config/ipconfig";
 
 import Footer from "../sharedComponents/Footer";
 
+import CircularCarousel from "./ChatFlow/Chat_SharedComponents/CircularCarousel";
+
 //1. make an error screen for no data for profile screen and edit screen
 //2. delay footer buttons
 //3. fix faill storing
@@ -77,7 +79,7 @@ class HomeScreen extends React.Component {
     super(props);
     this.state = {
       appState: AppState.currentState,
-      matchedChatList: testobj,
+      matchedUsersList: testobj,
       isSuccess: false
     };
 
@@ -172,7 +174,7 @@ class HomeScreen extends React.Component {
   };
 
   successScreen = () => {
-    let displayAllChatList = this.state.matchedChatList.map(
+    let displayAllChatList = this.state.matchedUsersList.map(
       (chatRoomData, index = 0) => {
         return (
           <View key={index}>
@@ -192,13 +194,9 @@ class HomeScreen extends React.Component {
 
     return (
       <View style={styles.container}>
-        <ImageBackground
-          source={require("../assets/Assets_V1/Butterfly_Background/butterflyBackground.png")}
-          style={styles.backgroundImage}
-        >
-          <View style={{ flex: 0.9 }}>
-            {/*Room list */}
-            <ScrollView
+        <View style={{ flex: 0.9 }}>
+          {/*Room list */}
+          {/*<ScrollView
               ref={scrollView => {
                 this.scrollView = scrollView;
               }}
@@ -206,11 +204,11 @@ class HomeScreen extends React.Component {
               scrollEventThrottle={16}
             >
               <View style={styles.chatRoomBoxWrap}>{displayAllChatList}</View>
-            </ScrollView>
-          </View>
-          {/*Footer*/}
-          <Footer navigation={this.props.navigation} />
-        </ImageBackground>
+            </ScrollView>*/}
+          <CircularCarousel matchedUsersList={this.state.matchedUsersList} />
+        </View>
+        {/*Footer*/}
+        <Footer navigation={this.props.navigation} />
       </View>
     );
   };
@@ -226,7 +224,8 @@ class HomeScreen extends React.Component {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1
+    flex: 1,
+    backgroundColor: "#4d88ff"
   },
   chatRoomBox: {
     padding: 20,
