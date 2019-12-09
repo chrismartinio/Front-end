@@ -202,7 +202,8 @@ const testobj = [
     matchedAge: "27",
     matchedLastMessage: "I like that restaurant too, let's...",
     matchedLastRepliedDate: "Some Date",
-    matchedImage: "https://resizing.flixster.com/zYHoIjM-IBcqyt8S3ZJzudd9E24=/fit-in/1152x864/v1.cjszOTU0NDtqOzE4MDAwOzEyMDA7MzkyOzYwMA"
+    matchedImage:
+      "https://resizing.flixster.com/zYHoIjM-IBcqyt8S3ZJzudd9E24=/fit-in/1152x864/v1.cjszOTU0NDtqOzE4MDAwOzEyMDA7MzkyOzYwMA"
   },
   {
     matchedFirstName: "ghjghj 17",
@@ -318,34 +319,7 @@ class HomeScreen extends React.Component {
     this.setState({ appState: nextAppState });
   };
 
-  enterChatRoom = chatRoomData => {
-    this.props.navigation.navigate("PermanentChatRoom", chatRoomData);
-  };
-
-  handleScroll = ({ nativeEvent }) => {
-    const { contentOffset } = nativeEvent;
-    this.scrollY = contentOffset.y;
-  };
-
   successScreen = () => {
-    let displayAllChatList = this.state.matchedUsersList.map(
-      (chatRoomData, index = 0) => {
-        return (
-          <View key={index}>
-            <TouchableHighlight
-              underlayColor="#f3f3f3"
-              style={styles.chatRoomBox}
-              onPress={() => {
-                this.enterChatRoom(chatRoomData);
-              }}
-            >
-              <Text>{chatRoomData.matchedFirstName}</Text>
-            </TouchableHighlight>
-          </View>
-        );
-      }
-    );
-
     return (
       <View style={styles.container}>
         <View style={{ flex: 0.9 }}>

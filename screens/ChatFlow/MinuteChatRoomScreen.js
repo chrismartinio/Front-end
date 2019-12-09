@@ -16,7 +16,8 @@ import {
   ImageBackground,
   Modal,
   TouchableHighlight,
-  AppState
+  AppState,
+  Dimensions
 } from "react-native";
 import { connect } from "react-redux";
 
@@ -25,6 +26,8 @@ import io from "socket.io-client";
 import LoadingScreen from "../../sharedComponents/LoadingScreen";
 
 import { localhost } from "../../config/ipconfig";
+
+const { height, width } = Dimensions.get("window");
 
 class MinuteChatRoomScreen extends React.Component {
   static navigationOptions = ({ navigation }) => {
@@ -389,6 +392,7 @@ class MinuteChatRoomScreen extends React.Component {
               )}
             </ScrollView>
 
+            {/*Exit Chat POP UP*/}
             <Modal
               animationType="slide"
               transparent={true}
@@ -396,20 +400,67 @@ class MinuteChatRoomScreen extends React.Component {
             >
               <View
                 style={{
-                  marginTop: 350,
-                  marginBottom: 350,
-                  marginLeft: 100,
-                  marginRight: 100,
-                  height: 100,
-                  width: 150,
+                  position: "absolute",
+                  height: width * 0.4,
+                  width: width * 0.53,
+                  top: "40%",
                   alignSelf: "center",
-                  backgroundColor: "green"
+                  backgroundColor: "#3399ff",
+                  borderRadius: 30
                 }}
               >
                 <View>
-                  <Text>Do you want to exit the chat?</Text>
+                  <View style={{ padding: "10%" }} />
+                  <View style={{ alignItems: "center" }}>
+                    <Text style={{ color: "#fff", fontSize: width * 0.032 }}>
+                      Do you want to exit the chat?
+                    </Text>
 
-                  {/*Yes Button*/}
+                    <View style={{ padding: "5%" }} />
+
+                    <View
+                      style={{
+                        flexDirection: "row"
+                      }}
+                    >
+                      <View
+                        style={{
+                          backgroundColor: "#fff",
+                          padding: "3%",
+                          borderRadius: 50
+                        }}
+                      >
+                        <TouchableOpacity
+                          onPress={() => {
+                            this.exitChat();
+                            this.exitChatPopUp(!this.state.modalVisible);
+                          }}
+                        >
+                          <Text style={{ color: "#3399ff" }}>Yes</Text>
+                        </TouchableOpacity>
+                      </View>
+
+                      <View style={{ padding: "5%" }} />
+
+                      <View
+                        style={{
+                          backgroundColor: "#fff",
+                          padding: "3%",
+                          borderRadius: 50
+                        }}
+                      >
+                        <TouchableOpacity
+                          onPress={() => {
+                            this.exitChatPopUp(!this.state.modalVisible);
+                          }}
+                        >
+                          <Text style={{ color: "#3399ff" }}>No</Text>
+                        </TouchableOpacity>
+                      </View>
+                    </View>
+                  </View>
+
+                  {/*
                   <View style={styles.buttonStyle}>
                     <Button
                       title="Yes"
@@ -420,7 +471,7 @@ class MinuteChatRoomScreen extends React.Component {
                     />
                   </View>
 
-                  {/*No Button*/}
+
                   <View style={styles.buttonStyle}>
                     <Button
                       title="No"
@@ -428,7 +479,7 @@ class MinuteChatRoomScreen extends React.Component {
                         this.exitChatPopUp(!this.state.modalVisible);
                       }}
                     />
-                  </View>
+                  </View> */}
                 </View>
               </View>
             </Modal>
