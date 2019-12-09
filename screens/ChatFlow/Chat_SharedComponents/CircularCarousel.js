@@ -5,7 +5,8 @@ import {
   StyleSheet,
   Animated,
   Button,
-  Dimensions
+  Dimensions,
+  TouchableOpacity
 } from "react-native";
 import { degToRad } from "../Util/HomeScreenFunctions.js";
 
@@ -131,22 +132,36 @@ export default class CircularCarousel extends React.Component {
 
     return (
       <View>
-        <Button
-          title={"NEXT LIST"}
-          color={"#fff"}
-          onPress={this.nextMatchedList}
-        />
-        <Button
-          title={"PREVIOUS LIST"}
-          color={"#fff"}
-          onPress={this.previousMatchedList}
-        />
-        <View style={{ position: "absolute", left: 0, top: width * 0.133 }}>
-          <Button title={"UP"} color={"#fff"} onPress={this.goUp} />
+        <View style={{ position: "absolute", left: 0, top: width * 0.0 }}>
+          <TouchableOpacity
+            style={{ margin: 5 }}
+            onPress={this.nextMatchedList}
+          >
+            <Text style={{ color: "#fff" }}>NEXT LIST</Text>
+          </TouchableOpacity>
         </View>
-        <View style={{ position: "absolute", left: 0, bottom: width * 0.5 }}>
-          <Button title={"DOWN"} color={"#fff"} onPress={this.goDown} />
+
+        <View style={{ position: "absolute", left: 0, top: width * 0.2 }}>
+          <TouchableOpacity
+            style={{ margin: 5 }}
+            onPress={this.previousMatchedList}
+          >
+            <Text style={{ color: "#fff" }}>PREVIOUS LIST</Text>
+          </TouchableOpacity>
         </View>
+
+        <View style={{ position: "absolute", left: 0, top: width * 0.4 }}>
+          <TouchableOpacity style={{ margin: 5 }} onPress={this.goUp}>
+            <Text style={{ color: "#fff" }}>GO UP</Text>
+          </TouchableOpacity>
+        </View>
+
+        <View style={{ position: "absolute", left: 0, top: width * 0.6 }}>
+          <TouchableOpacity style={{ margin: 5 }} onPress={this.goDown}>
+            <Text style={{ color: "#fff" }}>GO DOWN</Text>
+          </TouchableOpacity>
+        </View>
+
         <View
           style={[
             styles.circularCarousel,
