@@ -30,7 +30,7 @@ import MatchingScreen from "../screens/MatchFlow/MatchingScreen";
 import Matches from "../screens/OldScreens/SignUpFlow/Matches";
 
 //LocationFlow
-import LocationServices from "../screens/LocationServices/LocationServices";
+import LocationServices from "../screens/LocationFlow/LocationServices";
 
 //Chat Flow screens
 import ChatPage from "../screens/ChatFlow/chatMain";
