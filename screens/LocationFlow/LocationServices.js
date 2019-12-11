@@ -7,6 +7,8 @@ import flagPinkImg from "../../assets/images/blindlySmall.png";
 
 import { localhost } from "../../config/ipconfig";
 
+import LoadingScreen from "../../sharedComponents/LoadingScreen";
+
 import io from "socket.io-client";
 
 export default class LocationServices extends Component {
@@ -25,7 +27,8 @@ export default class LocationServices extends Component {
       OffsetY: Math.random() * 120 - 60,
       targetLat: 0,
       targetLong: 0,
-      targetNickName: "Brenda"
+      targetNickName: "Brenda",
+      isSuccess: true
     };
 
     this.getPlacesDebounced = _.debounce(this.setUserCoords, 1000);
@@ -74,7 +77,7 @@ export default class LocationServices extends Component {
               this.state.userLongitude + 0.00005
             );
             //Testing use
-            fetch(`http://${"74.80.250.210"}:4060/`, {
+            fetch(`http://${localhost}:4060/`, {
               method: "POST",
               headers: {
                 "Content-Type": "application/json"
@@ -113,6 +116,9 @@ export default class LocationServices extends Component {
                 }));
                 //console.log(latLng);
                 this.showMarkersOnMap(latLng);
+              })
+              .catch(err => {
+                this.setState({ isSuccess: false });
               });
           }
         );
@@ -129,7 +135,7 @@ export default class LocationServices extends Component {
     this.setState({ latLng: results });
   }
 
-  render() {
+  successScreen = () => {
     let marker = null;
 
     if (this.state.latLng.length > 0) {
@@ -170,6 +176,7 @@ export default class LocationServices extends Component {
         </Marker>
       ));
     }
+
     return (
       <View style={styles.container}>
         <MapView
@@ -214,6 +221,14 @@ export default class LocationServices extends Component {
         </MapView>
       </View>
     );
+  };
+
+  loadingScreen = () => {
+    return <LoadingScreen navigation={this.props.navigation} />;
+  };
+
+  render() {
+    return this.state.isSuccess ? this.successScreen() : this.loadingScreen();
   }
 }
 

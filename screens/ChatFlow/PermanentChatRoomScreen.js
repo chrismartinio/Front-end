@@ -16,7 +16,8 @@ import {
   ImageBackground,
   Modal,
   TouchableHighlight,
-  AppState
+  AppState,
+  Dimensions
 } from "react-native";
 import { connect } from "react-redux";
 
@@ -26,10 +27,14 @@ import LoadingScreen from "../../sharedComponents/LoadingScreen";
 
 import { localhost } from "../../config/ipconfig";
 
+const { height, width } = Dimensions.get("window");
+
 class PermanentChatRoomScreen extends React.Component {
   static navigationOptions = ({ navigation }) => {
     return {
-      headerTitle: "ChatRoom"
+      headerRight: (
+        <Button title="Menu" onPress={navigation.getParam("openMenu")} />
+      )
     };
   };
 
@@ -40,9 +45,9 @@ class PermanentChatRoomScreen extends React.Component {
       currentMessage: "",
       isSuccess: false,
       isTyping: false,
-      timerSecond: 90,
+
       appState: AppState.currentState,
-      counting: false,
+
       endTime: "",
       modalVisible: false
     };
@@ -77,31 +82,6 @@ class PermanentChatRoomScreen extends React.Component {
       if (this.scrollView != null) {
         this.scrollView.scrollToEnd({ animated: true });
       }
-    });
-
-    //handle timer
-    this.socket.on("timer", data => {
-      //when the socket detect 2 ppl in the room
-      //start the timer
-      //counting is to prevent one of the user disconnect
-      //the room number - 1
-      //and reconnect, room number + 1 which equal 2 and re-emitting the timer event again
-      //if re-emitting, time will get reset and also call the interval
-      //which will cause multiple interval and speed up the timer
-      if (!this.state.counting) {
-        this.interval = setInterval(this.countDown, 1000);
-        let currentTime = new Date();
-        this.setState({
-          endTime: currentTime.getTime() + 90 * 1000
-        });
-      }
-
-      this.setState({
-        counting: true
-      });
-
-      //A bug that when user dicconect/reconnect to the server
-      //the timer will speed up and not match
     });
 
     //handle user typingaddChatMessage
@@ -148,6 +128,12 @@ class PermanentChatRoomScreen extends React.Component {
     const { navigation } = this.props;
     console.log(navigation.getParam("matchedGuid"));
 
+    this.props.navigation.setParams({
+      openMenu: () => {
+        this.openMenu(true);
+      }
+    });
+
     /*
     this.guid = await this.props.CreateProfileDataReducer.guid;
 
@@ -170,6 +156,10 @@ class PermanentChatRoomScreen extends React.Component {
     });
   }
 
+  openMenu = visible => {
+    this.setState({ modalVisible: visible });
+  };
+
   componentDidUpdate(prevProps, prevState, snapshot) {
     if (this.state.currentMessage !== prevState.currentMessage) {
       if (this.state.currentMessage) {
@@ -180,29 +170,10 @@ class PermanentChatRoomScreen extends React.Component {
         this.socket.emit("stop typing");
       }
     }
-
-    if (this.state.appState !== prevState.appState) {
-      if (this.state.appState === "active") {
-        let currentTime = new Date();
-        //when app wakes up again
-        //check if currentTime exceed endTime we set earlier
-        if (currentTime.getTime() > this.state.endTime) {
-          this.exitChat();
-        } else {
-          //if not then do some calculation do calculate current time
-          this.setState({
-            timerSecond: Math.round(
-              (this.state.endTime - currentTime.getTime()) / 1000
-            )
-          });
-        }
-      }
-    }
   }
 
   componentWillUnmount() {
     AppState.removeEventListener("change", this._handleAppStateChange);
-    clearInterval(this.interval);
     this.socket.close();
   }
 
@@ -243,27 +214,6 @@ class PermanentChatRoomScreen extends React.Component {
       currentMessage: ""
     });
     this.scrollView.scrollToEnd({ animated: true });
-  };
-
-  countDown = () => {
-    this.setState({
-      timerSecond: --this.state.timerSecond
-    });
-    if (this.state.timerSecond <= 0) {
-      this.exitChat();
-    }
-  };
-
-  exitChat = () => {
-    clearInterval(this.interval);
-    //THIS WORK ONLY FROM CHATLIST TO CHATROOM
-    //this.props.navigation.getParam.forceReRender;
-    this.socket.emit("disconnect");
-    this.props.navigation.goBack();
-  };
-
-  exitChatPopUp = visible => {
-    this.setState({ modalVisible: visible });
   };
 
   messageType = (messageItem, index) => {
@@ -378,6 +328,76 @@ class PermanentChatRoomScreen extends React.Component {
                 </View>
               )}
             </ScrollView>
+
+            {/*Emnu POP UP*/}
+            <Modal
+              animationType="slide"
+              transparent={true}
+              visible={this.state.modalVisible}
+            >
+              <View
+                style={{
+                  position: "absolute",
+                  height: width * 1.0,
+                  width: width * 0.8,
+                  top: "20%",
+                  alignSelf: "center",
+                  backgroundColor: "#3399ff",
+                  borderRadius: 30
+                }}
+              >
+                <View>
+                  {/*X button*/}
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      justifyContent: "flex-end"
+                    }}
+                  >
+                    <View style={{ right: "100%", top: "5%" }}>
+                      <TouchableOpacity
+                        onPress={() => {
+                          this.openMenu(!this.state.modalVisible);
+                        }}
+                      >
+                        <Text style={{ color: "#fff" }}>X</Text>
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+
+                  <View style={{ padding: "5%" }} />
+
+                  {/*Content*/}
+                  <View style={{ alignItems: "center" }}>
+                    <Text style={{ color: "#fff" }}>Menu</Text>
+                  </View>
+
+                  <View>
+                    <View
+                      style={{
+                        justifyContent: "center"
+                      }}
+                    >
+                      <TouchableOpacity
+                        style={{
+                          margin: 10,
+                          padding: "5% 0% 5% 0%",
+                          backgroundColor: "#fff",
+                          borderRadius: 50,
+                          alignItems: "center"
+                        }}
+                        onPress={() => {
+                          this.openMenu(!this.state.modalVisible);
+                          this.props.navigation.navigate("LocationServices");
+                        }}
+                      >
+                        <Text style={{ color: "black" }}> Pick a place </Text>
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+                </View>
+              </View>
+            </Modal>
 
             {/*Input*/}
             <View style={styles.messageInputBox}>

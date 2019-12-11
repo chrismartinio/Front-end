@@ -32,7 +32,6 @@ const { height, width } = Dimensions.get("window");
 class MinuteChatRoomScreen extends React.Component {
   static navigationOptions = ({ navigation }) => {
     return {
-      headerTitle: "ChatRoom",
       headerLeft: () => (
         <Button title="Exit" onPress={navigation.getParam("exitChatPopUp")} />
       )
@@ -459,27 +458,6 @@ class MinuteChatRoomScreen extends React.Component {
                       </View>
                     </View>
                   </View>
-
-                  {/*
-                  <View style={styles.buttonStyle}>
-                    <Button
-                      title="Yes"
-                      onPress={() => {
-                        this.exitChat();
-                        this.exitChatPopUp(!this.state.modalVisible);
-                      }}
-                    />
-                  </View>
-
-
-                  <View style={styles.buttonStyle}>
-                    <Button
-                      title="No"
-                      onPress={() => {
-                        this.exitChatPopUp(!this.state.modalVisible);
-                      }}
-                    />
-                  </View> */}
                 </View>
               </View>
             </Modal>
