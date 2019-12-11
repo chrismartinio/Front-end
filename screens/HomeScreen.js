@@ -39,6 +39,7 @@ const testobj = [
     matchedAge: "27",
     matchedLastMessage: "I like that restaurant too, let's...",
     matchedLastRepliedDate: "Some Date",
+    matchedLikesArray: ["Pet", "Shopping", "Music"],
     matchedImage:
       "https://media.gq.com/photos/56d4902a9acdcf20275ef34c/master/w_806,h_1173,c_limit/tom-hardy-lead-840.jpg"
   },
@@ -50,6 +51,7 @@ const testobj = [
     matchedAge: "27",
     matchedLastMessage: "I like that restaurant too, let's...",
     matchedLastRepliedDate: "Some Date",
+    matchedLikesArray: ["Pet", "Shopping", "Music"],
     matchedImage:
       "https://www.guideposts.org/sites/guideposts.org/files/styles/hero_box_left_lg/public/story/dick_van_dyke_marquee.jpg"
   },
@@ -61,6 +63,7 @@ const testobj = [
     matchedAge: "27",
     matchedLastMessage: "I like that restaurant too, let's...",
     matchedLastRepliedDate: "Some Date",
+    matchedLikesArray: ["Pet", "Shopping", "Music"],
     matchedImage:
       "http://shared.frenys.com/assets/1009731/6151100-Young-Harrison-Ford.jpg"
   },
@@ -72,6 +75,7 @@ const testobj = [
     matchedAge: "27",
     matchedLastMessage: "I like that restaurant too, let's...",
     matchedLastRepliedDate: "Some Date",
+    matchedLikesArray: ["Pet", "Shopping", "Music"],
     matchedImage: "https://www.famousbirthdays.com/faces/efron-zac-image.jpg"
   },
   {
@@ -82,6 +86,7 @@ const testobj = [
     matchedAge: "27",
     matchedLastMessage: "I like that restaurant too, let's...",
     matchedLastRepliedDate: "Some Date",
+    matchedLikesArray: ["Pet", "Shopping", "Music"],
     matchedImage:
       "https://resizing.flixster.com/zYHoIjM-IBcqyt8S3ZJzudd9E24=/fit-in/1152x864/v1.cjszOTU0NDtqOzE4MDAwOzEyMDA7MzkyOzYwMA"
   },
@@ -93,6 +98,7 @@ const testobj = [
     matchedAge: "27",
     matchedLastMessage: "I like that restaurant too, let's...",
     matchedLastRepliedDate: "Some Date",
+    matchedLikesArray: ["Pet", "Shopping", "Music"],
     matchedImage:
       "https://media.gq.com/photos/56d4902a9acdcf20275ef34c/master/w_806,h_1173,c_limit/tom-hardy-lead-840.jpg"
   },
@@ -104,6 +110,7 @@ const testobj = [
     matchedAge: "27",
     matchedLastMessage: "I like that restaurant too, let's...",
     matchedLastRepliedDate: "Some Date",
+    matchedLikesArray: ["Pet", "Shopping", "Music"],
     matchedImage:
       "https://media.gq.com/photos/56d4902a9acdcf20275ef34c/master/w_806,h_1173,c_limit/tom-hardy-lead-840.jpg"
   },
@@ -115,6 +122,7 @@ const testobj = [
     matchedAge: "27",
     matchedLastMessage: "I like that restaurant too, let's...",
     matchedLastRepliedDate: "Some Date",
+    matchedLikesArray: ["Pet", "Shopping", "Music"],
     matchedImage:
       "https://www.guideposts.org/sites/guideposts.org/files/styles/hero_box_left_lg/public/story/dick_van_dyke_marquee.jpg"
   },
@@ -126,6 +134,7 @@ const testobj = [
     matchedAge: "27",
     matchedLastMessage: "I like that restaurant too, let's...",
     matchedLastRepliedDate: "Some Date",
+    matchedLikesArray: ["Pet", "Shopping", "Music"],
     matchedImage:
       "http://shared.frenys.com/assets/1009731/6151100-Young-Harrison-Ford.jpg"
   },
@@ -137,6 +146,7 @@ const testobj = [
     matchedAge: "27",
     matchedLastMessage: "I like that restaurant too, let's...",
     matchedLastRepliedDate: "Some Date",
+    matchedLikesArray: ["Pet", "Shopping", "Music"],
     matchedImage: "https://www.famousbirthdays.com/faces/efron-zac-image.jpg"
   },
   {
@@ -147,6 +157,7 @@ const testobj = [
     matchedAge: "27",
     matchedLastMessage: "I like that restaurant too, let's...",
     matchedLastRepliedDate: "Some Date",
+    matchedLikesArray: ["Pet", "Shopping", "Music"],
     matchedImage:
       "https://resizing.flixster.com/zYHoIjM-IBcqyt8S3ZJzudd9E24=/fit-in/1152x864/v1.cjszOTU0NDtqOzE4MDAwOzEyMDA7MzkyOzYwMA"
   },
@@ -158,6 +169,7 @@ const testobj = [
     matchedAge: "27",
     matchedLastMessage: "I like that restaurant too, let's...",
     matchedLastRepliedDate: "Some Date",
+    matchedLikesArray: ["Pet", "Shopping", "Music"],
     matchedImage:
       "https://media.gq.com/photos/56d4902a9acdcf20275ef34c/master/w_806,h_1173,c_limit/tom-hardy-lead-840.jpg"
   },
@@ -169,6 +181,7 @@ const testobj = [
     matchedAge: "27",
     matchedLastMessage: "I like that restaurant too, let's...",
     matchedLastRepliedDate: "Some Date",
+    matchedLikesArray: ["Pet", "Shopping", "Music"],
     matchedImage:
       "https://resizing.flixster.com/zYHoIjM-IBcqyt8S3ZJzudd9E24=/fit-in/1152x864/v1.cjszOTU0NDtqOzE4MDAwOzEyMDA7MzkyOzYwMA"
   },
@@ -180,6 +193,7 @@ const testobj = [
     matchedAge: "27",
     matchedLastMessage: "I like that restaurant too, let's...",
     matchedLastRepliedDate: "Some Date",
+    matchedLikesArray: ["Pet", "Shopping", "Music"],
     matchedImage:
       "https://resizing.flixster.com/zYHoIjM-IBcqyt8S3ZJzudd9E24=/fit-in/1152x864/v1.cjszOTU0NDtqOzE4MDAwOzEyMDA7MzkyOzYwMA"
   },
@@ -191,6 +205,7 @@ const testobj = [
     matchedAge: "27",
     matchedLastMessage: "I like that restaurant too, let's...",
     matchedLastRepliedDate: "Some Date",
+    matchedLikesArray: ["Pet", "Shopping", "Music"],
     matchedImage:
       "https://resizing.flixster.com/zYHoIjM-IBcqyt8S3ZJzudd9E24=/fit-in/1152x864/v1.cjszOTU0NDtqOzE4MDAwOzEyMDA7MzkyOzYwMA"
   },
@@ -202,7 +217,9 @@ const testobj = [
     matchedAge: "27",
     matchedLastMessage: "I like that restaurant too, let's...",
     matchedLastRepliedDate: "Some Date",
-    matchedImage: "https://resizing.flixster.com/zYHoIjM-IBcqyt8S3ZJzudd9E24=/fit-in/1152x864/v1.cjszOTU0NDtqOzE4MDAwOzEyMDA7MzkyOzYwMA"
+    matchedLikesArray: ["Pet", "Shopping", "Music"],
+    matchedImage:
+      "https://resizing.flixster.com/zYHoIjM-IBcqyt8S3ZJzudd9E24=/fit-in/1152x864/v1.cjszOTU0NDtqOzE4MDAwOzEyMDA7MzkyOzYwMA"
   },
   {
     matchedFirstName: "ghjghj 17",
@@ -212,6 +229,7 @@ const testobj = [
     matchedAge: "27",
     matchedLastMessage: "I like that restaurant too, let's...",
     matchedLastRepliedDate: "Some Date",
+    matchedLikesArray: ["Pet", "Shopping", "Music"],
     matchedImage:
       "https://resizing.flixster.com/zYHoIjM-IBcqyt8S3ZJzudd9E24=/fit-in/1152x864/v1.cjszOTU0NDtqOzE4MDAwOzEyMDA7MzkyOzYwMA"
   },
@@ -223,6 +241,7 @@ const testobj = [
     matchedAge: "27",
     matchedLastMessage: "I like that restaurant too, let's...",
     matchedLastRepliedDate: "Some Date",
+    matchedLikesArray: ["Pet", "Shopping", "Music"],
     matchedImage:
       "https://resizing.flixster.com/zYHoIjM-IBcqyt8S3ZJzudd9E24=/fit-in/1152x864/v1.cjszOTU0NDtqOzE4MDAwOzEyMDA7MzkyOzYwMA"
   }
@@ -318,34 +337,7 @@ class HomeScreen extends React.Component {
     this.setState({ appState: nextAppState });
   };
 
-  enterChatRoom = chatRoomData => {
-    this.props.navigation.navigate("PermanentChatRoom", chatRoomData);
-  };
-
-  handleScroll = ({ nativeEvent }) => {
-    const { contentOffset } = nativeEvent;
-    this.scrollY = contentOffset.y;
-  };
-
   successScreen = () => {
-    let displayAllChatList = this.state.matchedUsersList.map(
-      (chatRoomData, index = 0) => {
-        return (
-          <View key={index}>
-            <TouchableHighlight
-              underlayColor="#f3f3f3"
-              style={styles.chatRoomBox}
-              onPress={() => {
-                this.enterChatRoom(chatRoomData);
-              }}
-            >
-              <Text>{chatRoomData.matchedFirstName}</Text>
-            </TouchableHighlight>
-          </View>
-        );
-      }
-    );
-
     return (
       <View style={styles.container}>
         <View style={{ flex: 0.9 }}>

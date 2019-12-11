@@ -27,6 +27,9 @@ import SelfieScreen from "../screens/ProfileFlow/Profile_Registration/Registrati
 import NotificationButton from "../sharedComponents/NotificationButton";
 import NotificationScreen from "../sharedComponents/NotificationScreen";
 
+//LocationFlow
+import LocationServices from "../screens/LocationFlow/LocationServices";
+
 const MainStack = createStackNavigator(
   {
     //Profile Flow
@@ -68,14 +71,21 @@ const MainStack = createStackNavigator(
     MinuteChatRoom: {
       screen: MinuteChatRoomScreen,
       navigationOptions: () => ({
-        title: `ChatRoom`
+        title: `Minute`
       })
     },
 
     PermanentChatRoom: {
       screen: PermanentChatRoomScreen,
       navigationOptions: () => ({
-        title: `ChatRoom`
+        title: `Permanent`
+      })
+    },
+
+    LocationServices: {
+      screen: LocationServices,
+      navigationOptions: () => ({
+        title: `Pick a place`
       })
     },
 
