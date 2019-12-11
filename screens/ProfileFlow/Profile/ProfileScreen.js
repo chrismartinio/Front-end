@@ -214,13 +214,13 @@ class ProfileScreen extends React.Component {
 
             //Store to device_user_aboutYou
             insertSqlStatement =
-              "INSERT OR REPLACE into device_user_aboutYou(id, createAccount_id, firstName, birthDate, userBio, city, state, zipCode) " +
-              "values(1, 1, ?, ?, ?, ?, ?, ?);";
+              "INSERT OR REPLACE into device_user_aboutYou(id, createAccount_id, firstName, lastName, birthDate, userBio, city, state, zipCode) " +
+              "values(1, 1, ?, ?, ?, ?, ?, ?, ?);";
 
             success = await insertDataIntoLocalStorage(
               insertSqlStatement,
               "device_user_aboutYou",
-              [firstName, birthDate, userBio, city, state, zipCode],
+              [firstName, lastName, birthDate, userBio, city, state, zipCode],
               true
             );
 
