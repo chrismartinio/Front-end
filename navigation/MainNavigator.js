@@ -12,6 +12,7 @@ import SettingsScreen from "../screens/SettingsScreen";
 import HomeScreen from "../screens/HomeScreen";
 import MinuteChatRoomScreen from "../screens/ChatFlow/MinuteChatRoomScreen";
 import PermanentChatRoomScreen from "../screens/ChatFlow/PermanentChatRoomScreen";
+import ConversationsScreen from "../screens/ChatFlow/ConversationsScreen";
 
 //Match Flow
 import MatchingScreen from "../screens/MatchFlow/MatchingScreen";
@@ -22,6 +23,7 @@ import ProfileScreen from "../screens/ProfileFlow/Profile/ProfileScreen";
 import EditScreen from "../screens/ProfileFlow/Profile/EditScreen";
 import ProfileLocationScreen from "../screens/ProfileFlow/Profile/ProfileLocationScreen";
 import SelfieScreen from "../screens/ProfileFlow/Profile_Registration/RegistrationScreens/SelfieScreen";
+import ConnectionsScreen from "../screens/ProfileFlow/ConnectionsScreen";
 
 //Notification Components
 import NotificationButton from "../sharedComponents/NotificationButton";
@@ -32,6 +34,15 @@ import LocationServices from "../screens/LocationFlow/LocationServices";
 
 const MainStack = createStackNavigator(
   {
+    //Home (Landing Screen)
+    Home: {
+      screen: HomeScreen,
+      navigationOptions: ({ navigation }) => ({
+        title: `Home`,
+        headerRight: <NotificationButton navigation={navigation} />
+      })
+    },
+
     //Profile Flow
     Profile: {
       screen: ProfileScreen,
@@ -58,12 +69,18 @@ const MainStack = createStackNavigator(
         title: `Location`
       })
     },
+    Connections: {
+      screen: ConnectionsScreen,
+      navigationOptions: () => ({
+        title: `Connections`
+      })
+    },
 
     //Chat Flow
-    Home: {
-      screen: HomeScreen,
+    Conversations: {
+      screen: ConversationsScreen,
       navigationOptions: ({ navigation }) => ({
-        title: `Home`,
+        title: `Conversations`,
         headerRight: <NotificationButton navigation={navigation} />
       })
     },

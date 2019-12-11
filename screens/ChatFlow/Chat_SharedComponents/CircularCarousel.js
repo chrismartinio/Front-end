@@ -8,7 +8,7 @@ import {
   Dimensions,
   TouchableOpacity
 } from "react-native";
-import { degToRad } from "../Util/HomeScreenFunctions.js";
+import { degToRad } from "../Util/ConnectionsScreenFunctions.js";
 
 const { height, width } = Dimensions.get("window");
 

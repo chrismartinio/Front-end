@@ -49,7 +49,7 @@ const Form = t.form.Form;
 var options = {
   stylesheet: stylesheet,
   auto: 'placeholders',
-  
+
 };
 const User = t.struct({
   username: t.String,
@@ -117,7 +117,7 @@ class LoginScreen extends React.Component {
     //createTablesInToLocalStorage() won't create new table or update the table
     //so you would have to delete the old table (old columns)
     //then re-create a new table (new columns
-    //dropAllTablesInLocalStorage();
+    dropAllTablesInLocalStorage();
 
     //CREATE DEVICE'S USER TABLES
     createTablesInToLocalStorage();
@@ -269,10 +269,10 @@ class LoginScreen extends React.Component {
             />
           </View>
           <View style={styles.formContainer}>
-            <Form 
-            options={options} 
+            <Form
+            options={options}
             autoCapitalize = 'none'
-            type={User} 
+            type={User}
             ref={c => (this._form = c)} />
           </View>
           <View style={styles.buttonStyle}>
@@ -296,7 +296,7 @@ class LoginScreen extends React.Component {
           <View
             style={{ flex: 1, flexDirection: "row", justifyContent: "center" }}
           >
-          
+
           <TouchableOpacity onPress={this.checkFaceBookValidity}>
           <Image
               source={
@@ -344,7 +344,7 @@ class LoginScreen extends React.Component {
             /> */}
           </View>
 
-{/* 
+{/*
           <View style={styles.container}>
             <Button
               title="Sign in!"
@@ -572,7 +572,7 @@ const styles = StyleSheet.create({
   },
   centerText:{
     marginTop: 15,
-    textAlign: 'center', 
+    textAlign: 'center',
     color:'grey'
   },
   iconImage: {

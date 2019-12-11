@@ -24,6 +24,16 @@ class Footer extends React.Component {
       ]
     });
 
+    const resetConversationsAction = StackActions.reset({
+      index: 1,
+      actions: [
+        NavigationActions.navigate({ routeName: "Home" }),
+        NavigationActions.navigate({
+          routeName: "Conversations"
+        })
+      ]
+    });
+
     const resetMatchingAction = StackActions.reset({
       index: 1,
       actions: [
@@ -53,6 +63,7 @@ class Footer extends React.Component {
         }}
       >
         <View style={{ flexDirection: "row", justifyContent: "center" }}>
+          {/*User Profile*/}
           <View
             style={{
               width: 100,
@@ -65,14 +76,38 @@ class Footer extends React.Component {
               onPress={() => this.props.navigation.dispatch(resetProfileAction)}
             />
           </View>
-          <View style={{ width: 100, height: 75, backgroundColor: "skyblue" }}>
+
+          {/*Conversations*/}
+          <View
+            style={{ width: 100, height: 75, backgroundColor: "lightblue" }}
+          >
             <Button
-              title="Matching"
+              title="Conversations"
               onPress={() =>
-                this.props.navigation.dispatch(resetMatchingAction)
+                this.props.navigation.dispatch(resetConversationsAction)
               }
             />
           </View>
+
+          {/*Notification*/}
+          <View
+            style={{ width: 100, height: 75, backgroundColor: "lightyellow" }}
+          >
+            <Button
+              title="Notifications"
+              onPress={() => this.props.navigation.navigate("Notification")}
+            />
+          </View>
+
+          {/*Matching*/}
+          <View style={{ width: 100, height: 75, backgroundColor: "skyblue" }}>
+            <Button
+              title="Connections"
+              onPress={() => this.props.navigation.navigate("Connections")}
+            />
+          </View>
+
+          {/*Setting*/}
           <View
             style={{
               width: 100,
@@ -81,7 +116,7 @@ class Footer extends React.Component {
             }}
           >
             <Button
-              title="Go to Setting"
+              title="Setting"
               onPress={() => this.props.navigation.dispatch(resetSettingAction)}
             />
           </View>

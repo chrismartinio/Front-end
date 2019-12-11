@@ -18,13 +18,13 @@ import { connect } from "react-redux";
 
 import io from "socket.io-client";
 
-import LoadingScreen from "../sharedComponents/LoadingScreen";
+import LoadingScreen from "../../sharedComponents/LoadingScreen";
 
-import { localhost } from "../config/ipconfig";
+import { localhost } from "../../config/ipconfig";
 
-import Footer from "../sharedComponents/Footer";
+import Footer from "../../sharedComponents/Footer";
 
-import CircularCarousel from "./ChatFlow/Chat_SharedComponents/CircularCarousel";
+import CircularCarousel from "./Chat_SharedComponents/CircularCarousel";
 
 //1. make an error screen for no data for profile screen and edit screen
 //2. delay footer buttons
