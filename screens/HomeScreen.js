@@ -100,7 +100,7 @@ class HomeScreen extends React.Component {
       <View style={styles.container}>
         <View style={{ flex: 0.9 }}>
           <Button
-            color={"white"}
+            color={"#660066"}
             title={"matching"}
             onPress={() => {
               this.props.navigation.navigate("Matching");
@@ -126,7 +126,7 @@ class HomeScreen extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#4d88ff"
+    backgroundColor: "#fff"
   },
   chatRoomBox: {
     padding: 20,

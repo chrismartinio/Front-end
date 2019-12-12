@@ -26,6 +26,8 @@ import Footer from "../../sharedComponents/Footer";
 
 import CircularCarousel from "./Chat_SharedComponents/CircularCarousel";
 
+import { Chevron } from "react-native-shapes";
+
 //1. make an error screen for no data for profile screen and edit screen
 //2. delay footer buttons
 //3. fix faill storing

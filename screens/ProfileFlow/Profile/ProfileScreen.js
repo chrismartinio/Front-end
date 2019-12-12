@@ -42,6 +42,8 @@ import {
   selectIdByGuidFromLocalStorage
 } from "../LocalStorage/localStorage.js";
 
+import { Chevron } from "react-native-shapes";
+
 class ProfileScreen extends React.Component {
   //Header
   static navigationOptions = ({ navigation }) => ({
@@ -50,19 +52,26 @@ class ProfileScreen extends React.Component {
       <View style={{ flex: 1 }}>
         <View style={{ flexDirection: "row" }}>
           {navigation.getParam("isDeviceUser") && (
-            <Button
-              title={"Edit"}
-              color={"black"}
-              onPress={() => {
-                navigation.navigate("Edit", {
-                  dataIsEdited: () => {
-                    navigation.state.params.dataIsEdited();
-                  }
-                });
-              }}
-            />
+            <View style={{ bottom: "35%", right: "50%" }}>
+              <TouchableOpacity
+                onPress={() => {
+                  navigation.navigate("Edit", {
+                    dataIsEdited: () => {
+                      navigation.state.params.dataIsEdited();
+                    }
+                  });
+                }}
+              >
+                <Icon
+                  type="font-awesome"
+                  name="cog"
+                  size={25}
+                  color="#660066"
+                />
+              </TouchableOpacity>
+            </View>
           )}
-          <NotificationButton navigation={navigation} />
+          {/*<NotificationButton navigation={navigation} />*/}
         </View>
       </View>
     )
@@ -457,6 +466,7 @@ class ProfileScreen extends React.Component {
     return (
       <View style={styles.container}>
         <View style={{ flex: 0.9 }}>
+          <View style={{ padding: "1%" }} />
           <ScrollView>
             <View style={{ alignItems: "center" }}>
               {/**User Image */}
@@ -464,7 +474,11 @@ class ProfileScreen extends React.Component {
                 source={{
                   uri: this.state.userImage
                 }}
-                style={{ width: width * 0.93, height: width * 0.93, borderRadius: 15 }}
+                style={{
+                  width: width * 0.93,
+                  height: width * 0.93,
+                  borderRadius: 15
+                }}
               />
             </View>
 
@@ -475,16 +489,16 @@ class ProfileScreen extends React.Component {
               </Text>
               <Text />
 
-              <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
-                {/*Map*/}
-                <TouchableOpacity
-                  onPress={() => {
-                    this.props.navigation.navigate("ProfileLocation", {
-                      addressLatitude: this.state.addressLatitude,
-                      addressLongitude: this.state.addressLongitude
-                    });
-                  }}
-                >
+              {/*Map*/}
+              <TouchableOpacity
+                onPress={() => {
+                  this.props.navigation.navigate("ProfileLocation", {
+                    addressLatitude: this.state.addressLatitude,
+                    addressLongitude: this.state.addressLongitude
+                  });
+                }}
+              >
+                <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
                   <Icon
                     type="font-awesome"
                     name="map-marker"
@@ -492,15 +506,15 @@ class ProfileScreen extends React.Component {
                     color="rgb(67, 33, 140)"
                     iconStyle={{ bottom: 0 }}
                   />
-                </TouchableOpacity>
 
-                <View style={{ padding: "1%" }} />
+                  <View style={{ padding: "1%" }} />
 
-                {/*Address*/}
-                <Text style={{ fontSize: 15, fontWeight: "400" }}>
-                  {this.state.city}, {this.state.state}
-                </Text>
-              </View>
+                  {/*Address*/}
+                  <Text style={{ fontSize: 15, fontWeight: "400" }}>
+                    {this.state.city}, {this.state.state}
+                  </Text>
+                </View>
+              </TouchableOpacity>
             </View>
 
             {/**border line */}
