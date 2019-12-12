@@ -28,15 +28,56 @@ class MatchScreen extends React.Component {
     this.state = {
       isSuccess: true,
       isDeviceUserReady: false,
-      isMatchUserReady: false
+      isMatchUserReady: false,
+      matchedGuid: "",
+      matchedFirstName: "",
+      matchedLastName: "",
+      matchedLikesArray: [],
+      matchedImage: "",
+      matchedMiles: ""
     };
     //Socket
     //receive socket roomID
     //and set isMatchUserReady to true
   }
 
+  setMatchedUserInfo = successObj => {
+    this.setState({
+      matchedGuid: successObj.matchedGuid,
+      matchedFirstName: successObj.matchedFirstName,
+      matchedLastName: successObj.matchedLastName,
+      matchedLikesArray: successObj.matchedLikesArray,
+      matchedImage: successObj.matchedImage,
+      matchedMiles: successObj.matchedMiles,
+      matchedAge: successObj.matchedAge,
+      matchedLocation: successObj.matchedLocation,
+      matchedState: successObj.matchedState
+    });
+  };
+
   componentDidMount() {
     //reset the matchingScreen's foundaMatch = false
+    //fetch data
+    //and use guid to get interest, miles, firstName, lastName, image
+
+    const successObj = {
+      matchedFirstName: "Aaa 1",
+      matchedLastName: "BBB 1",
+      matchedGuid: "5de42a14b4dc5b1fba94e1d3",
+      matchedMinuteRoomID: "someRoomNumber",
+      matchedLocation: "Oakland",
+      matchedState: "CA",
+      matchedAge: "27",
+      matchedLastMessage: "I like that restaurant too, let's...",
+      matchedLastRepliedDate: "Some Date",
+      matchedLikesArray: ["Pet", "Shopping", "Music"],
+      matchedMiles: "4.26",
+      matchedImage:
+        "https://media.gq.com/photos/56d4902a9acdcf20275ef34c/master/w_806,h_1173,c_limit/tom-hardy-lead-840.jpg"
+    };
+
+    this.setMatchedUserInfo(successObj);
+
     this.props.navigation.state.params.backFromMatch();
   }
 
@@ -58,9 +99,17 @@ class MatchScreen extends React.Component {
       prevState.isDeviceUserReady !== this.state.isDeviceUserReady ||
       prevState.isMatchUserReady !== this.state.isMatchUserReady
     ) {
+      //Testing use
+      this.props.navigation.navigate("MinuteChatRoom", {
+        matchedInfo: this.state
+      });
+      //Testing use
+
       if (this.state.isDeviceUserReady && this.state.isMatchUserReady) {
         //also send a private room id to match screen
-        this.props.navigation.navigate("MinuteChatRoom");
+        this.props.navigation.navigate("MinuteChatRoom", {
+          matchedInfo: this.state
+        });
       }
     }
   }

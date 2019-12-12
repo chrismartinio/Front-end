@@ -48,7 +48,7 @@ class MatchingScreen extends React.Component {
     if (prevState.foundaMatch !== this.state.foundaMatch) {
       if (this.state.foundaMatch) {
         //also send a private room id to match screen
-        this.props.navigation.navigate("Match", {
+        this.props.navigation.navigate("FoundaMatch", {
           backFromMatch: () => {
             this.props.navigation.state.params.backFromMatch();
           }

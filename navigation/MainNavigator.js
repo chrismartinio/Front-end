@@ -16,7 +16,7 @@ import ConversationsScreen from "../screens/ChatFlow/ConversationsScreen";
 
 //Match Flow
 import MatchingScreen from "../screens/MatchFlow/MatchingScreen";
-import MatchScreen from "../screens/MatchFlow/MatchScreen";
+import FoundaMatchScreen from "../screens/MatchFlow/FoundaMatchScreen";
 
 //Profile Flow
 import ProfileScreen from "../screens/ProfileFlow/Profile/ProfileScreen";
@@ -142,21 +142,30 @@ const MainStack = createStackNavigator(
     MinuteChatRoom: {
       screen: MinuteChatRoomScreen,
       navigationOptions: () => ({
-        title: `Minute`,
+        title: `Blindy`,
         headerStyle: {
           backgroundColor: "#fff",
           borderBottomWidth: 0
-        }
+        },
+        headerTitleStyle: {
+          bottom: "3%",
+          color: "#660066"
+        },
+        gesturesEnabled: false
       })
     },
 
     PermanentChatRoom: {
       screen: PermanentChatRoomScreen,
       navigationOptions: () => ({
-        title: `Permanent`,
+        title: `Blindy`,
         headerStyle: {
           backgroundColor: "#fff",
           borderBottomWidth: 0
+        },
+        headerTitleStyle: {
+          bottom: "3%",
+          color: "#660066"
         }
       })
     },
@@ -176,10 +185,10 @@ const MainStack = createStackNavigator(
         //headerRight: <NotificationButton navigation={navigation} />
       })
     },
-    Match: {
-      screen: MatchScreen,
+    FoundaMatch: {
+      screen: FoundaMatchScreen,
       navigationOptions: ({ navigation }) => ({
-        title: `Match`
+        title: `Found a Match`
         //headerRight: <NotificationButton navigation={navigation} />
       })
     },
@@ -188,8 +197,19 @@ const MainStack = createStackNavigator(
     Setting: {
       screen: SettingsScreen,
       navigationOptions: ({ navigation }) => ({
-        title: `Settings`
+        title: `Settings`,
         //headerRight: <NotificationButton navigation={navigation} />
+        headerStyle: {
+          backgroundColor: "#fff",
+          borderBottomWidth: 0
+        },
+        headerTitleStyle: {
+          bottom: "3%",
+          color: "#660066"
+        },
+        headerLeft: (
+          <CustomBackButton buttonColor={"#660066"} navigation={navigation} />
+        )
       })
     }
   },

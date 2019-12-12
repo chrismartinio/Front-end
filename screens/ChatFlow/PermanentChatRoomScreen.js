@@ -283,140 +283,137 @@ class PermanentChatRoomScreen extends React.Component {
           behavior="padding"
           enabled
         >
-          <ImageBackground
-            source={require("../../assets/Assets_V1/Butterfly_Background/butterflyBackground.png")}
-            style={styles.backgroundImage}
-          >
-            {/*Matched User Info*/}
-            <View style={{ alignItems: "center" }}>
-              <Text>{this.props.navigation.getParam("matchedFirstName")}</Text>
-              <TouchableOpacity
-                onPress={() => {
-                  this.props.navigation.navigate("Profile", {
-                    guid: this.props.navigation.getParam("matchedGuid"),
-                    isDeviceUser: false
-                  });
-                }}
-              >
-                <Image
-                  source={{
-                    uri: this.props.navigation.getParam("matchedImage")
-                  }}
-                  style={{ width: 75, height: 75, borderRadius: 30 }}
-                />
-              </TouchableOpacity>
-            </View>
-
-            {/*Messages*/}
-            <ScrollView
-              ref={scrollView => {
-                this.scrollView = scrollView;
+          {/*Matched User Info*/}
+          <View style={{ alignItems: "center" }}>
+            <Text>{this.props.navigation.getParam("matchedFirstName")}</Text>
+            <TouchableOpacity
+              onPress={() => {
+                this.props.navigation.navigate("Profile", {
+                  guid: this.props.navigation.getParam("matchedGuid"),
+                  isDeviceUser: false
+                });
               }}
-              contentInset={{ top: 0, left: 0, bottom: 50, right: 0 }}
-              keyboardDismissMode={"on-drag"}
-              //contentContainerStyle={styles.contentContainer}
-              //paddingVertical= {-20}
             >
-              {displayAllChatMessage}
-
-              {this.state.isTyping && (
-                <View style={styles.textContainer}>
-                  <Text style={styles.circlePurple}>
-                    {this.matched_user_firstName}
-                  </Text>
-                  <Text style={styles.targetMessageText}>is typing...</Text>
-                </View>
-              )}
-            </ScrollView>
-
-            {/*Emnu POP UP*/}
-            <Modal
-              animationType="slide"
-              transparent={true}
-              visible={this.state.modalVisible}
-            >
-              <View
-                style={{
-                  position: "absolute",
-                  height: width * 1.0,
-                  width: width * 0.8,
-                  top: "20%",
-                  alignSelf: "center",
-                  backgroundColor: "#3399ff",
-                  borderRadius: 30
+              <Image
+                source={{
+                  uri: this.props.navigation.getParam("matchedImage")
                 }}
-              >
-                <View>
-                  {/*X button*/}
-                  <View
-                    style={{
-                      flexDirection: "row",
-                      justifyContent: "flex-end"
-                    }}
-                  >
-                    <View style={{ right: "100%", top: "5%" }}>
-                      <TouchableOpacity
-                        onPress={() => {
-                          this.openMenu(!this.state.modalVisible);
-                        }}
-                      >
-                        <Text style={{ color: "#fff" }}>X</Text>
-                      </TouchableOpacity>
-                    </View>
-                  </View>
+                style={{
+                  width: width * 0.2,
+                  height: width * 0.2,
+                  borderRadius: width * 0.098
+                }}
+              />
+            </TouchableOpacity>
+          </View>
 
-                  <View style={{ padding: "5%" }} />
+          {/*Messages*/}
+          <ScrollView
+            ref={scrollView => {
+              this.scrollView = scrollView;
+            }}
+            contentInset={{ top: 0, left: 0, bottom: 50, right: 0 }}
+            keyboardDismissMode={"on-drag"}
+            //contentContainerStyle={styles.contentContainer}
+            //paddingVertical= {-20}
+          >
+            {displayAllChatMessage}
 
-                  {/*Content*/}
-                  <View style={{ alignItems: "center" }}>
-                    <Text style={{ color: "#fff" }}>Menu</Text>
-                  </View>
+            {this.state.isTyping && (
+              <View style={styles.textContainer}>
+                <Text style={styles.circlePurple}>
+                  {this.matched_user_firstName}
+                </Text>
+                <Text style={styles.targetMessageText}>is typing...</Text>
+              </View>
+            )}
+          </ScrollView>
 
-                  <View>
-                    <View
-                      style={{
-                        justifyContent: "center"
+          {/*Emnu POP UP*/}
+          <Modal
+            animationType="slide"
+            transparent={true}
+            visible={this.state.modalVisible}
+          >
+            <View
+              style={{
+                position: "absolute",
+                height: width * 1.0,
+                width: width * 0.8,
+                top: "20%",
+                alignSelf: "center",
+                backgroundColor: "#3399ff",
+                borderRadius: 30
+              }}
+            >
+              <View>
+                {/*X button*/}
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "flex-end"
+                  }}
+                >
+                  <View style={{ right: "100%", top: "5%" }}>
+                    <TouchableOpacity
+                      onPress={() => {
+                        this.openMenu(!this.state.modalVisible);
                       }}
                     >
-                      <TouchableOpacity
-                        style={{
-                          margin: 10,
-                          padding: "5% 0% 5% 0%",
-                          backgroundColor: "#fff",
-                          borderRadius: 50,
-                          alignItems: "center"
-                        }}
-                        onPress={() => {
-                          this.openMenu(!this.state.modalVisible);
-                          this.props.navigation.navigate("LocationServices");
-                        }}
-                      >
-                        <Text style={{ color: "black" }}> Pick a place </Text>
-                      </TouchableOpacity>
-                    </View>
+                      <Text style={{ color: "#fff" }}>X</Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+
+                <View style={{ padding: "5%" }} />
+
+                {/*Content*/}
+                <View style={{ alignItems: "center" }}>
+                  <Text style={{ color: "#fff" }}>Menu</Text>
+                </View>
+
+                <View>
+                  <View
+                    style={{
+                      justifyContent: "center"
+                    }}
+                  >
+                    <TouchableOpacity
+                      style={{
+                        margin: 10,
+                        padding: "5% 0% 5% 0%",
+                        backgroundColor: "#fff",
+                        borderRadius: 50,
+                        alignItems: "center"
+                      }}
+                      onPress={() => {
+                        this.openMenu(!this.state.modalVisible);
+                        this.props.navigation.navigate("LocationServices");
+                      }}
+                    >
+                      <Text style={{ color: "black" }}> Pick a place </Text>
+                    </TouchableOpacity>
                   </View>
                 </View>
               </View>
-            </Modal>
-
-            {/*Input*/}
-            <View style={styles.messageInputBox}>
-              <TextInput
-                style={styles.messageInputStyle}
-                placeholder="Type in a Message!"
-                onChangeText={currentMessage =>
-                  this.setState({ currentMessage })
-                }
-                value={this.state.currentMessage}
-              />
-
-              {/*Send Button*/}
-              <View style={styles.buttonStyle}>
-                <Button title="Send" onPress={this.submitMessage} />
-              </View>
-              <View style={{ padding: "3%" }} />
             </View>
-          </ImageBackground>
+          </Modal>
+
+          {/*Input*/}
+          <View style={styles.messageInputBox}>
+            <TextInput
+              style={styles.messageInputStyle}
+              placeholder="Type in a Message!"
+              onChangeText={currentMessage => this.setState({ currentMessage })}
+              value={this.state.currentMessage}
+            />
+
+            {/*Send Button*/}
+            <View style={styles.buttonStyle}>
+              <Button title="Send" onPress={this.submitMessage} />
+            </View>
+            <View style={{ padding: "3%" }} />
+          </View>
         </KeyboardAvoidingView>
       </SafeAreaView>
     );

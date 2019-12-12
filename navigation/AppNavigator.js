@@ -25,7 +25,7 @@ import TellUsMore from "../screens/OldScreens/SignUpFlow/IndividualScreensTestin
 import CreateQuestionaire from "../screens/MatchFlow/matchCreateQuestionaire";
 import ReplyQuestionaire from "../screens/MatchFlow/matchCreateReply";
 import ViewQuestionaire from "../screens/MatchFlow/matchViewReply";
-import MatchScreen from "../screens/MatchFlow/MatchScreen";
+import FoundaMatchScreen from "../screens/MatchFlow/FoundaMatchScreen";
 import MatchingScreen from "../screens/MatchFlow/MatchingScreen";
 import Matches from "../screens/OldScreens/SignUpFlow/Matches";
 

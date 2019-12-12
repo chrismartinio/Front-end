@@ -33,7 +33,7 @@ class MinuteChatRoomScreen extends React.Component {
   static navigationOptions = ({ navigation }) => {
     return {
       headerLeft: () => (
-        <Button title="Exit" onPress={navigation.getParam("exitChatPopUp")} />
+        <Button title="Exit" onPress={navigation.getParam("openMenu")} />
       )
     };
   };
@@ -49,7 +49,16 @@ class MinuteChatRoomScreen extends React.Component {
       appState: AppState.currentState,
       counting: false,
       endTime: "",
-      modalVisible: false
+      modalVisible: false,
+      matchedGuid: "",
+      matchedFirstName: "",
+      matchedLastName: "",
+      matchedLikesArray: [],
+      matchedImage: "",
+      matchedMiles: "",
+      matchedAge: "",
+      matchedLocation: "",
+      matchedState: ""
     };
     this.guid = "";
     this.user_firstName = "";
@@ -104,9 +113,6 @@ class MinuteChatRoomScreen extends React.Component {
       this.setState({
         counting: true
       });
-
-      //A bug that when user dicconect/reconnect to the server
-      //the timer will speed up and not match
     });
 
     //handle user typingaddChatMessage
@@ -149,12 +155,44 @@ class MinuteChatRoomScreen extends React.Component {
     });
   }
 
+  setMatchedUserInfo = successObj => {
+    this.setState({
+      matchedGuid: successObj.matchedGuid,
+      matchedFirstName: successObj.matchedFirstName,
+      matchedLastName: successObj.matchedLastName,
+      matchedLikesArray: successObj.matchedLikesArray,
+      matchedImage: successObj.matchedImage,
+      matchedMiles: successObj.matchedMiles,
+      matchedAge: successObj.matchedAge,
+      matchedLocation: successObj.matchedLocation,
+      matchedState: successObj.matchedState
+    });
+  };
+
   async componentDidMount() {
     this.props.navigation.setParams({
-      exitChatPopUp: () => {
-        this.exitChatPopUp(true);
+      openMenu: () => {
+        this.openMenu(true);
       }
     });
+    const successObj = {
+      matchedFirstName: "Aaa 1",
+      matchedLastName: "BBB 1",
+      matchedGuid: "5de42a14b4dc5b1fba94e1d3",
+      matchedMinuteRoomID: "someRoomNumber",
+      matchedLocation: "Oakland",
+      matchedState: "CA",
+      matchedAge: "27",
+      matchedLastMessage: "I like that restaurant too, let's...",
+      matchedLastRepliedDate: "Some Date",
+      matchedLikesArray: ["Pet", "Shopping", "Music"],
+      matchedMiles: "4.26",
+      matchedImage:
+        "https://media.gq.com/photos/56d4902a9acdcf20275ef34c/master/w_806,h_1173,c_limit/tom-hardy-lead-840.jpg"
+    };
+    this.setMatchedUserInfo(successObj);
+    //this.setMatchedUserInfo(this.props.navigation.getParam("matchedInfo"));
+
     /*
     this.guid = await this.props.CreateProfileDataReducer.guid;
 
@@ -270,7 +308,7 @@ class MinuteChatRoomScreen extends React.Component {
     this.props.navigation.navigate("Home");
   };
 
-  exitChatPopUp = visible => {
+  openMenu = visible => {
     this.setState({ modalVisible: visible });
   };
 
@@ -334,6 +372,18 @@ class MinuteChatRoomScreen extends React.Component {
       }
     );
 
+    let displayMatchedLikesArray = this.state.matchedLikesArray.map(
+      (e, index = 0) => {
+        return (
+          <View key={index++}>
+            <TouchableOpacity style={styles.likeButtonWrap}>
+              <Text style={styles.likeButton}>#{e}</Text>
+            </TouchableOpacity>
+          </View>
+        );
+      }
+    );
+
     return (
       <SafeAreaView style={styles.container}>
         <KeyboardAvoidingView
@@ -341,145 +391,168 @@ class MinuteChatRoomScreen extends React.Component {
           behavior="padding"
           enabled
         >
-          <ImageBackground
-            source={require("../../assets/Assets_V1/Butterfly_Background/butterflyBackground.png")}
-            style={styles.backgroundImage}
-          >
-            <Image
-              source={{
-                uri: "https://www.famousbirthdays.com/faces/efron-zac-image.jpg"
-              }}
-              style={{ width: 75, height: 75, borderRadius: 30 }}
-            />
-
-            <Text>{this.state.timerSecond} seconds left</Text>
-            <Image
-              style={{
-                width: 90 * 2,
-                height: 10
-              }}
-              source={require("../../assets/Assets_V1/greybar.jpg")}
-            />
-            <Image
-              style={{
-                top: -10,
-                width: this.state.timerSecond * 2,
-                height: 10
-              }}
-              source={require("../../assets/Assets_V1/bluebar.jpg")}
-            />
-
-            {/*Messages*/}
-            <ScrollView
-              ref={scrollView => {
-                this.scrollView = scrollView;
-              }}
-              contentInset={{ top: 0, left: 0, bottom: 50, right: 0 }}
-              keyboardDismissMode={"on-drag"}
-              //contentContainerStyle={styles.contentContainer}
-              //paddingVertical= {-20}
-            >
-              {displayAllChatMessage}
-
-              {this.state.isTyping && (
-                <View style={styles.textContainer}>
-                  <Text style={styles.circlePurple}>
-                    {this.matched_user_firstName}
-                  </Text>
-                  <Text style={styles.targetMessageText}>is typing...</Text>
-                </View>
-              )}
-            </ScrollView>
-
-            {/*Exit Chat POP UP*/}
-            <Modal
-              animationType="slide"
-              transparent={true}
-              visible={this.state.modalVisible}
-            >
-              <View
-                style={{
-                  position: "absolute",
-                  height: width * 0.4,
-                  width: width * 0.53,
-                  top: "40%",
-                  alignSelf: "center",
-                  backgroundColor: "#3399ff",
-                  borderRadius: 30
+          <View style={{ backgroundColor: "#fff" }}>
+            {/*Matched Image*/}
+            <View style={{ alignItems: "center" }}>
+              <Image
+                source={{
+                  uri:
+                    "https://www.famousbirthdays.com/faces/efron-zac-image.jpg"
                 }}
-              >
-                <View>
-                  <View style={{ padding: "10%" }} />
-                  <View style={{ alignItems: "center" }}>
-                    <Text style={{ color: "#fff", fontSize: width * 0.032 }}>
-                      Do you want to exit the chat?
-                    </Text>
+                style={{
+                  width: width * 0.2,
+                  height: width * 0.2,
+                  borderRadius: width * 0.098
+                }}
+              />
+            </View>
+
+            {/*Matched Info*/}
+            <View style={{ alignItems: "center" }}>
+              <Text>
+                {this.state.matchedAge}, {this.state.matchedLocation}{" "}
+                {this.state.matchedState}
+              </Text>
+            </View>
+
+            {/*Matched LikesArray*/}
+            <View style={{ alignItems: "center" }}>
+              <View style={{ flexDirection: "row", margin: "3%" }}>
+                {displayMatchedLikesArray}
+              </View>
+            </View>
+
+            {/*<Text>{this.state.timerSecond} seconds left</Text>*/}
+            <View style={{ top: "3%" }}>
+              <Image
+                style={{
+                  width: width * 2,
+                  height: 5
+                }}
+                source={require("../../assets/Assets_V1/greybar.jpg")}
+              />
+              <Image
+                style={{
+                  top: -5,
+                  width: this.state.timerSecond * (width / 90),
+                  height: 5,
+                  //borderRadius: 5
+                }}
+                source={require("../../assets/Assets_V1/bluebar.jpg")}
+              />
+            </View>
+          </View>
+          {/*Messages*/}
+          <ScrollView
+            style={{ backgroundColor: "lightgray" }}
+            ref={scrollView => {
+              this.scrollView = scrollView;
+            }}
+            contentInset={{ top: 0, left: 0, bottom: 50, right: 0 }}
+            keyboardDismissMode={"on-drag"}
+            //contentContainerStyle={styles.contentContainer}
+            //paddingVertical= {-20}
+          >
+            {displayAllChatMessage}
+
+            {this.state.isTyping && (
+              <View style={styles.textContainer}>
+                <Text style={styles.circlePurple}>
+                  {this.matched_user_firstName}
+                </Text>
+                <Text style={styles.targetMessageText}>is typing...</Text>
+              </View>
+            )}
+          </ScrollView>
+
+          {/*Input*/}
+          <View style={styles.messageInputBox}>
+            <TextInput
+              style={styles.messageInputStyle}
+              placeholder="Type in a Message!"
+              onChangeText={currentMessage => this.setState({ currentMessage })}
+              value={this.state.currentMessage}
+            />
+
+            {/*Send Button*/}
+            <View style={styles.buttonStyle}>
+              <Button title="Send" onPress={this.submitMessage} />
+            </View>
+
+            {/*Space*/}
+            <View style={{ padding: "3%" }} />
+          </View>
+
+          {/*Exit Chat POP UP*/}
+          <Modal
+            animationType="slide"
+            transparent={true}
+            visible={this.state.modalVisible}
+          >
+            <View
+              style={{
+                position: "absolute",
+                height: width * 0.4,
+                width: width * 0.53,
+                top: "40%",
+                alignSelf: "center",
+                backgroundColor: "#3399ff",
+                borderRadius: 30
+              }}
+            >
+              <View>
+                <View style={{ padding: "10%" }} />
+                <View style={{ alignItems: "center" }}>
+                  <Text style={{ color: "#fff", fontSize: width * 0.032 }}>
+                    Do you want to exit the chat?
+                  </Text>
+
+                  <View style={{ padding: "5%" }} />
+
+                  <View
+                    style={{
+                      flexDirection: "row"
+                    }}
+                  >
+                    <View
+                      style={{
+                        backgroundColor: "#fff",
+                        padding: "3%",
+                        borderRadius: 50
+                      }}
+                    >
+                      <TouchableOpacity
+                        onPress={() => {
+                          this.exitChat();
+                          this.openMenu(!this.state.modalVisible);
+                        }}
+                      >
+                        <Text style={{ color: "#3399ff" }}>Yes</Text>
+                      </TouchableOpacity>
+                    </View>
 
                     <View style={{ padding: "5%" }} />
 
                     <View
                       style={{
-                        flexDirection: "row"
+                        backgroundColor: "#fff",
+                        padding: "3%",
+                        borderRadius: 50
                       }}
                     >
-                      <View
-                        style={{
-                          backgroundColor: "#fff",
-                          padding: "3%",
-                          borderRadius: 50
+                      <TouchableOpacity
+                        onPress={() => {
+                          this.openMenu(!this.state.modalVisible);
                         }}
                       >
-                        <TouchableOpacity
-                          onPress={() => {
-                            this.exitChat();
-                            this.exitChatPopUp(!this.state.modalVisible);
-                          }}
-                        >
-                          <Text style={{ color: "#3399ff" }}>Yes</Text>
-                        </TouchableOpacity>
-                      </View>
-
-                      <View style={{ padding: "5%" }} />
-
-                      <View
-                        style={{
-                          backgroundColor: "#fff",
-                          padding: "3%",
-                          borderRadius: 50
-                        }}
-                      >
-                        <TouchableOpacity
-                          onPress={() => {
-                            this.exitChatPopUp(!this.state.modalVisible);
-                          }}
-                        >
-                          <Text style={{ color: "#3399ff" }}>No</Text>
-                        </TouchableOpacity>
-                      </View>
+                        <Text style={{ color: "#3399ff" }}>No</Text>
+                      </TouchableOpacity>
                     </View>
                   </View>
                 </View>
               </View>
-            </Modal>
-
-            {/*Input*/}
-            <View style={styles.messageInputBox}>
-              <TextInput
-                style={styles.messageInputStyle}
-                placeholder="Type in a Message!"
-                onChangeText={currentMessage =>
-                  this.setState({ currentMessage })
-                }
-                value={this.state.currentMessage}
-              />
-
-              {/*Send Button*/}
-              <View style={styles.buttonStyle}>
-                <Button title="Send" onPress={this.submitMessage} />
-              </View>
-              <View style={{ padding: "3%" }} />
             </View>
-          </ImageBackground>
+          </Modal>
         </KeyboardAvoidingView>
       </SafeAreaView>
     );
@@ -497,7 +570,7 @@ class MinuteChatRoomScreen extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff"
+    backgroundColor: "lightgray"
     //alignItems: "flex-end",
   },
   textContainer: {
@@ -551,7 +624,7 @@ const styles = StyleSheet.create({
     color: "#000"
   },
   messageInputStyle: {
-    backgroundColor: "#cccccc",
+    backgroundColor: "#fff",
     padding: 10,
     borderRadius: 10,
     overflow: "hidden",
@@ -601,6 +674,22 @@ const styles = StyleSheet.create({
     height: "100%",
     width: "100%",
     flex: 1
+  },
+  likeButtonWrap: {
+    alignItems: "center",
+    paddingLeft: 10,
+    paddingRight: 10,
+    paddingTop: 7.5,
+    paddingBottom: 7.5,
+    width: "auto",
+    borderRadius: 40,
+    borderWidth: 2,
+    borderColor: "rgb(67, 33, 140)",
+    margin: 5
+  },
+  likeButton: {
+    color: "rgb(67, 33, 140)",
+    fontSize: 17
   }
 });
 
