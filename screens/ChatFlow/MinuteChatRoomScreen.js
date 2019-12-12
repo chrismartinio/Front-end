@@ -6,6 +6,7 @@ import {
   ScrollView,
   FlatList,
   StyleSheet,
+  Keyboard,
   Text,
   TouchableOpacity,
   View,
@@ -28,6 +29,8 @@ import LoadingScreen from "../../sharedComponents/LoadingScreen";
 import { localhost } from "../../config/ipconfig";
 
 const { height, width } = Dimensions.get("window");
+
+import { Icon } from "react-native-elements";
 
 class MinuteChatRoomScreen extends React.Component {
   static navigationOptions = ({ navigation }) => {
@@ -58,7 +61,8 @@ class MinuteChatRoomScreen extends React.Component {
       matchedMiles: "",
       matchedAge: "",
       matchedLocation: "",
-      matchedState: ""
+      matchedState: "",
+      keyBoardShown: false
     };
     this.guid = "";
     this.user_firstName = "";
@@ -170,6 +174,15 @@ class MinuteChatRoomScreen extends React.Component {
   };
 
   async componentDidMount() {
+    this.keyboardDidShowListener = Keyboard.addListener(
+      "keyboardDidShow",
+      this._keyboardDidShow
+    );
+    this.keyboardDidHideListener = Keyboard.addListener(
+      "keyboardDidHide",
+      this._keyboardDidHide
+    );
+
     this.props.navigation.setParams({
       openMenu: () => {
         this.openMenu(true);
@@ -245,7 +258,21 @@ class MinuteChatRoomScreen extends React.Component {
     }
   }
 
+  _keyboardDidShow = () => {
+    this.setState({
+      keyBoardShown: true
+    });
+  };
+
+  _keyboardDidHide = () => {
+    this.setState({
+      keyBoardShown: false
+    });
+  };
+
   componentWillUnmount() {
+    this.keyboardDidShowListener.remove();
+    this.keyboardDidHideListener.remove();
     AppState.removeEventListener("change", this._handleAppStateChange);
     clearInterval(this.interval);
     this.socket.close();
@@ -313,19 +340,21 @@ class MinuteChatRoomScreen extends React.Component {
   };
 
   messageType = (messageItem, index) => {
-    //1 - device user
-    //2 - matched user
-    //3 - regular message
+    //1 - device user message
+    //2 - matched user message
+    //3 - Status message
     switch (messageItem.type) {
       case 1:
         return (
           <View key={index} style={styles.deviceUserMessageView}>
             <View style={styles.textContainer}>
-              <View style={styles.deviceUserMessageText}>
-                <Text>{`${messageItem.message}`}</Text>
-                <Text style={styles.dateTime}>{`${
-                  messageItem.timeStamp
-                }`}</Text>
+              <View style={styles.deviceUserMessageTextWrap}>
+                <View style={styles.deviceUserMessageText}>
+                  <Text>{`${messageItem.message}`}</Text>
+                  <Text style={styles.dateTime}>{`${
+                    messageItem.timeStamp
+                  }`}</Text>
+                </View>
               </View>
               <Text style={styles.circle}>
                 {" "}
@@ -343,11 +372,13 @@ class MinuteChatRoomScreen extends React.Component {
                 {" "}
                 {messageItem.userName[0].toUpperCase()}
               </Text>
-              <View style={styles.targetMessageText}>
-                <Text>{`${messageItem.message}`}</Text>
-                <Text style={styles.dateTimeLeft}>{`${
-                  messageItem.timeStamp
-                }`}</Text>
+              <View style={styles.targetMessageTextWrap}>
+                <View style={styles.targetMessageText}>
+                  <Text>{`${messageItem.message}`}</Text>
+                  <Text style={styles.dateTimeLeft}>{`${
+                    messageItem.timeStamp
+                  }`}</Text>
+                </View>
               </View>
             </View>
           </View>
@@ -435,7 +466,7 @@ class MinuteChatRoomScreen extends React.Component {
                 style={{
                   top: -5,
                   width: this.state.timerSecond * (width / 90),
-                  height: 5,
+                  height: 5
                   //borderRadius: 5
                 }}
                 source={require("../../assets/Assets_V1/bluebar.jpg")}
@@ -444,7 +475,7 @@ class MinuteChatRoomScreen extends React.Component {
           </View>
           {/*Messages*/}
           <ScrollView
-            style={{ backgroundColor: "lightgray" }}
+            style={{ backgroundColor: "#d6f5f5" }}
             ref={scrollView => {
               this.scrollView = scrollView;
             }}
@@ -453,7 +484,7 @@ class MinuteChatRoomScreen extends React.Component {
             //contentContainerStyle={styles.contentContainer}
             //paddingVertical= {-20}
           >
-            {displayAllChatMessage}
+            <View style={{ margin: "3%" }}>{displayAllChatMessage}</View>
 
             {this.state.isTyping && (
               <View style={styles.textContainer}>
@@ -465,23 +496,64 @@ class MinuteChatRoomScreen extends React.Component {
             )}
           </ScrollView>
 
-          {/*Input*/}
-          <View style={styles.messageInputBox}>
-            <TextInput
-              style={styles.messageInputStyle}
-              placeholder="Type in a Message!"
-              onChangeText={currentMessage => this.setState({ currentMessage })}
-              value={this.state.currentMessage}
-            />
+          {/*InputBar*/}
+          <View>
+            <View
+              style={{
+                flexDirection: "row",
+                flexWrap: "wrap",
+                justifyContent: "space-between"
+              }}
+            >
+              {/*Attachements*/}
+              <TouchableOpacity>
+                <Icon
+                  type="font-awesome"
+                  name="plus"
+                  iconStyle={{ top: 10, left: 25 }}
+                  size={25}
+                  color="gray"
+                />
+              </TouchableOpacity>
 
-            {/*Send Button*/}
-            <View style={styles.buttonStyle}>
-              <Button title="Send" onPress={this.submitMessage} />
+              {/*Text Input*/}
+              <View style={styles.messageInputBox}>
+                <TextInput
+                  style={styles.messageInputStyle}
+                  onSubmitEditing={Keyboard.dismiss}
+                  placeholder="Write Something here..."
+                  onChangeText={currentMessage =>
+                    this.setState({ currentMessage })
+                  }
+                  keyboardShouldPersistTaps={'handled'}
+                  value={this.state.currentMessage}
+                />
+              </View>
+
+              {/*emoji*/}
+              <TouchableOpacity>
+                <Icon
+                  type="font-awesome"
+                  name="smile-o"
+                  iconStyle={{ top: 10, right: 25 }}
+                  size={25}
+                  color="gray"
+                />
+              </TouchableOpacity>
             </View>
 
-            {/*Space*/}
-            <View style={{ padding: "3%" }} />
+            <View style={{ flexDirection: "row", justifyContent: "flex-end" }}>
+              {/*Send Button*/}
+              <TouchableOpacity
+                style={styles.buttonStyle}
+                onPress={this.submitMessage}
+              >
+                <Text style={{ fontSize: width * 0.04 }}>Send</Text>
+              </TouchableOpacity>
+            </View>
           </View>
+
+          {this.state.keyBoardShown && <View style={{ padding: "13%" }} />}
 
           {/*Exit Chat POP UP*/}
           <Modal
@@ -570,15 +642,12 @@ class MinuteChatRoomScreen extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "lightgray"
+    backgroundColor: "#fff"
     //alignItems: "flex-end",
   },
   textContainer: {
     margin: 10,
-    overflow: "hidden",
-    //  borderRadius: 10,
-    //  borderWidth: 12,
-    //  borderColor: "#3399ff",
+    //overflow: "hidden",
     flexDirection: "row"
   },
   scrollViewStyle: {
@@ -598,23 +667,49 @@ const styles = StyleSheet.create({
   },
   deviceUserMessageText: {
     overflow: "hidden",
-    borderRadius: 10,
+    borderRadius: 5,
     minWidth: 50,
     maxWidth: 300,
     borderColor: "#3399ff",
-    backgroundColor: "#3399ff",
+    backgroundColor: "#fff",
     color: "#fff",
     padding: 5
   },
+  deviceUserMessageTextWrap: {
+    ...Platform.select({
+      ios: {
+        shadowColor: "#000",
+        shadowOffset: { width: -5, height: 5 },
+        shadowOpacity: 0.5,
+        shadowRadius: 5
+      },
+      android: {
+        elevation: 5
+      }
+    })
+  },
   targetMessageText: {
     overflow: "hidden",
-    borderRadius: 10,
+    borderRadius: 5,
     minWidth: 50,
     maxWidth: 300,
     borderColor: "#cccccc",
     backgroundColor: "#cccccc",
     color: "#000",
     padding: 5
+  },
+  targetMessageTextWrap: {
+    ...Platform.select({
+      ios: {
+        shadowColor: "#000",
+        shadowOffset: { width: 5, height: 5 },
+        shadowOpacity: 0.5,
+        shadowRadius: 5
+      },
+      android: {
+        elevation: 5
+      }
+    })
   },
   deviceUserName: {
     overflow: "hidden",
@@ -655,13 +750,13 @@ const styles = StyleSheet.create({
     alignItems: "flex-end"
   },
   buttonStyle: {
-    borderRadius: 10,
-    color: "white",
-    backgroundColor: "blue",
-    width: 200,
-    alignSelf: "center",
-    marginBottom: 20,
-    fontStyle: "italic"
+    color: "gray",
+    backgroundColor: "white",
+    borderWidth: 1,
+    borderColor: "gray",
+    width: width * 0.13,
+    height: 25,
+    alignItems: "center"
   },
   messageInputBox: {
     flexDirection: "column",
