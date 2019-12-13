@@ -6,6 +6,7 @@ import {
   ScrollView,
   FlatList,
   StyleSheet,
+  Keyboard,
   Text,
   TouchableOpacity,
   View,
@@ -17,13 +18,16 @@ import {
   Modal,
   TouchableHighlight,
   AppState,
-  Dimensions
+  Dimensions,
+  TouchableWithoutFeedback
 } from "react-native";
 import { connect } from "react-redux";
 
 import io from "socket.io-client";
 
 import LoadingScreen from "../../sharedComponents/LoadingScreen";
+
+import InputMenu from "./Chat_SharedComponents/InputMenu";
 
 import { localhost } from "../../config/ipconfig";
 
@@ -45,11 +49,19 @@ class PermanentChatRoomScreen extends React.Component {
       currentMessage: "",
       isSuccess: false,
       isTyping: false,
-
       appState: AppState.currentState,
-
       endTime: "",
-      modalVisible: false
+      modalVisible: false,
+      matchedGuid: "",
+      matchedFirstName: "",
+      matchedLastName: "",
+      matchedLikesArray: [],
+      matchedImage: "",
+      matchedMiles: "",
+      matchedAge: "",
+      matchedLocation: "",
+      matchedState: "",
+      keyBoardShown: false
     };
     this.guid = "";
     this.user_firstName = "";
@@ -124,9 +136,52 @@ class PermanentChatRoomScreen extends React.Component {
     });
   }
 
+  setMatchedUserInfo = successObj => {
+    this.setState({
+      matchedGuid: successObj.matchedGuid,
+      matchedFirstName: successObj.matchedFirstName,
+      matchedLastName: successObj.matchedLastName,
+      matchedLikesArray: successObj.matchedLikesArray,
+      matchedImage: successObj.matchedImage,
+      matchedMiles: successObj.matchedMiles,
+      matchedAge: successObj.matchedAge,
+      matchedLocation: successObj.matchedLocation,
+      matchedState: successObj.matchedState
+    });
+  };
+
   async componentDidMount() {
     const { navigation } = this.props;
     console.log(navigation.getParam("matchedGuid"));
+    //conversation screen will pass an guid
+    //PermanentChatRoom will use guid query all messages and images and stuff
+    //then setState
+
+    const successObj = {
+      matchedFirstName: "Aaa 1",
+      matchedLastName: "BBB 1",
+      matchedGuid: "5de42a14b4dc5b1fba94e1d3",
+      matchedMinuteRoomID: "someRoomNumber",
+      matchedLocation: "Oakland",
+      matchedState: "CA",
+      matchedAge: "27",
+      matchedLastMessage: "I like that restaurant too, let's...",
+      matchedLastRepliedDate: "Some Date",
+      matchedLikesArray: ["Pet", "Shopping", "Music"],
+      matchedMiles: "4.26",
+      matchedImage:
+        "https://media.gq.com/photos/56d4902a9acdcf20275ef34c/master/w_806,h_1173,c_limit/tom-hardy-lead-840.jpg"
+    };
+    this.setMatchedUserInfo(successObj);
+
+    this.keyboardDidShowListener = Keyboard.addListener(
+      "keyboardDidShow",
+      this._keyboardDidShow
+    );
+    this.keyboardDidHideListener = Keyboard.addListener(
+      "keyboardDidHide",
+      this._keyboardDidHide
+    );
 
     this.props.navigation.setParams({
       openMenu: () => {
@@ -156,6 +211,18 @@ class PermanentChatRoomScreen extends React.Component {
     });
   }
 
+  _keyboardDidShow = () => {
+    this.setState({
+      keyBoardShown: true
+    });
+  };
+
+  _keyboardDidHide = () => {
+    this.setState({
+      keyBoardShown: false
+    });
+  };
+
   openMenu = visible => {
     this.setState({ modalVisible: visible });
   };
@@ -170,9 +237,29 @@ class PermanentChatRoomScreen extends React.Component {
         this.socket.emit("stop typing");
       }
     }
+
+    if (this.state.appState !== prevState.appState) {
+      if (this.state.appState === "active") {
+        let currentTime = new Date();
+        //when app wakes up again
+        //check if currentTime exceed endTime we set earlier
+        if (currentTime.getTime() > this.state.endTime) {
+          this.exitChat();
+        } else {
+          //if not then do some calculation do calculate current time
+          this.setState({
+            timerSecond: Math.round(
+              (this.state.endTime - currentTime.getTime()) / 1000
+            )
+          });
+        }
+      }
+    }
   }
 
   componentWillUnmount() {
+    this.keyboardDidShowListener.remove();
+    this.keyboardDidHideListener.remove();
     AppState.removeEventListener("change", this._handleAppStateChange);
     this.socket.close();
   }
@@ -182,10 +269,15 @@ class PermanentChatRoomScreen extends React.Component {
   };
 
   timeStamp = () => {
-    var today = new Date();
-    var time =
-      today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
-    return time;
+    let date = new Date();
+    var hours = date.getHours();
+    var minutes = date.getMinutes();
+    var ampm = hours >= 12 ? "pm" : "am";
+    hours = hours % 12;
+    hours = hours ? hours : 12; // the hour '0' should be '12'
+    minutes = minutes < 10 ? "0" + minutes : minutes;
+    var strTime = hours + ":" + minutes + " " + ampm;
+    return strTime;
   };
 
   //add a new message into the allMessageArray
@@ -217,24 +309,23 @@ class PermanentChatRoomScreen extends React.Component {
   };
 
   messageType = (messageItem, index) => {
-    //1 - device user
-    //2 - matched user
-    //3 - regular message
+    //1 - device user message
+    //2 - matched user message
+    //3 - Status message
     switch (messageItem.type) {
       case 1:
         return (
           <View key={index} style={styles.deviceUserMessageView}>
             <View style={styles.textContainer}>
-              <View style={styles.deviceUserMessageText}>
-                <Text>{`${messageItem.message}`}</Text>
-                <Text style={styles.dateTime}>{`${
-                  messageItem.timeStamp
-                }`}</Text>
+              <View style={styles.deviceUserMessageTextWrap}>
+                <View style={styles.deviceUserMessageText}>
+                  <Text>{`${messageItem.message}`}</Text>
+                  <Text style={styles.dateTime}>{`${
+                    messageItem.timeStamp
+                  }`}</Text>
+                </View>
               </View>
-              <Text style={styles.circle}>
-                {" "}
-                {messageItem.userName[0].toUpperCase()}
-              </Text>
+              <Text style={styles.circle}>H</Text>
             </View>
           </View>
         );
@@ -243,15 +334,14 @@ class PermanentChatRoomScreen extends React.Component {
         return (
           <View key={index}>
             <View style={styles.textContainer}>
-              <Text style={styles.circlePurple}>
-                {" "}
-                {messageItem.userName[0].toUpperCase()}
-              </Text>
-              <View style={styles.targetMessageText}>
-                <Text>{`${messageItem.message}`}</Text>
-                <Text style={styles.dateTimeLeft}>{`${
-                  messageItem.timeStamp
-                }`}</Text>
+              <Text style={styles.circlePurple}>H</Text>
+              <View style={styles.targetMessageTextWrap}>
+                <View style={styles.targetMessageText}>
+                  <Text>{`${messageItem.message}`}</Text>
+                  <Text style={styles.dateTimeLeft}>{`${
+                    messageItem.timeStamp
+                  }`}</Text>
+                </View>
               </View>
             </View>
           </View>
@@ -269,6 +359,10 @@ class PermanentChatRoomScreen extends React.Component {
     }
   };
 
+  onChangeText = currentMessage => {
+    this.setState({ currentMessage });
+  };
+
   successScreen = () => {
     let displayAllChatMessage = this.state.allMessages.map(
       (messageItem, index = 0) => {
@@ -276,145 +370,175 @@ class PermanentChatRoomScreen extends React.Component {
       }
     );
 
-    return (
-      <SafeAreaView style={styles.container}>
-        <KeyboardAvoidingView
-          style={styles.container}
-          behavior="padding"
-          enabled
-        >
-          {/*Matched User Info*/}
-          <View style={{ alignItems: "center" }}>
-            <Text>{this.props.navigation.getParam("matchedFirstName")}</Text>
-            <TouchableOpacity
-              onPress={() => {
-                this.props.navigation.navigate("Profile", {
-                  guid: this.props.navigation.getParam("matchedGuid"),
-                  isDeviceUser: false
-                });
-              }}
-            >
-              <Image
-                source={{
-                  uri: this.props.navigation.getParam("matchedImage")
-                }}
-                style={{
-                  width: width * 0.2,
-                  height: width * 0.2,
-                  borderRadius: width * 0.098
-                }}
-              />
+    let displayMatchedLikesArray = this.state.matchedLikesArray.map(
+      (e, index = 0) => {
+        return (
+          <View key={index++}>
+            <TouchableOpacity style={styles.likeButtonWrap}>
+              <Text style={styles.likeButton}>#{e}</Text>
             </TouchableOpacity>
           </View>
+        );
+      }
+    );
 
-          {/*Messages*/}
-          <ScrollView
-            ref={scrollView => {
-              this.scrollView = scrollView;
-            }}
-            contentInset={{ top: 0, left: 0, bottom: 50, right: 0 }}
-            keyboardDismissMode={"on-drag"}
-            //contentContainerStyle={styles.contentContainer}
-            //paddingVertical= {-20}
+    return (
+      <SafeAreaView style={styles.container}>
+        <TouchableWithoutFeedback
+          onPress={() => {
+            Keyboard.dismiss();
+          }}
+        >
+          <KeyboardAvoidingView
+            style={styles.container}
+            behavior="padding"
+            enabled
           >
-            {displayAllChatMessage}
-
-            {this.state.isTyping && (
-              <View style={styles.textContainer}>
-                <Text style={styles.circlePurple}>
-                  {this.matched_user_firstName}
-                </Text>
-                <Text style={styles.targetMessageText}>is typing...</Text>
-              </View>
-            )}
-          </ScrollView>
-
-          {/*Emnu POP UP*/}
-          <Modal
-            animationType="slide"
-            transparent={true}
-            visible={this.state.modalVisible}
-          >
-            <View
-              style={{
-                position: "absolute",
-                height: width * 1.0,
-                width: width * 0.8,
-                top: "20%",
-                alignSelf: "center",
-                backgroundColor: "#3399ff",
-                borderRadius: 30
-              }}
-            >
-              <View>
-                {/*X button*/}
-                <View
-                  style={{
-                    flexDirection: "row",
-                    justifyContent: "flex-end"
+            <View style={{ backgroundColor: "#fff" }}>
+              {/*Matched Image*/}
+              <View style={{ alignItems: "center" }}>
+                <TouchableOpacity
+                  onPress={() => {
+                    this.props.navigation.navigate("Profile", {
+                      guid: this.props.navigation.getParam("matchedGuid"),
+                      isDeviceUser: false
+                    });
                   }}
                 >
-                  <View style={{ right: "100%", top: "5%" }}>
-                    <TouchableOpacity
-                      onPress={() => {
-                        this.openMenu(!this.state.modalVisible);
-                      }}
-                    >
-                      <Text style={{ color: "#fff" }}>X</Text>
-                    </TouchableOpacity>
-                  </View>
-                </View>
-
-                <View style={{ padding: "5%" }} />
-
-                {/*Content*/}
-                <View style={{ alignItems: "center" }}>
-                  <Text style={{ color: "#fff" }}>Menu</Text>
-                </View>
-
-                <View>
-                  <View
-                    style={{
-                      justifyContent: "center"
+                  <Image
+                    source={{
+                      uri:
+                        "https://www.famousbirthdays.com/faces/efron-zac-image.jpg"
                     }}
-                  >
-                    <TouchableOpacity
-                      style={{
-                        margin: 10,
-                        padding: "5% 0% 5% 0%",
-                        backgroundColor: "#fff",
-                        borderRadius: 50,
-                        alignItems: "center"
-                      }}
-                      onPress={() => {
-                        this.openMenu(!this.state.modalVisible);
-                        this.props.navigation.navigate("LocationServices");
-                      }}
-                    >
-                      <Text style={{ color: "black" }}> Pick a place </Text>
-                    </TouchableOpacity>
-                  </View>
+                    style={{
+                      width: width * 0.2,
+                      height: width * 0.2,
+                      borderRadius: width * 0.098
+                    }}
+                  />
+                </TouchableOpacity>
+              </View>
+
+              {/*Matched Info*/}
+              <View style={{ alignItems: "center" }}>
+                <Text>
+                  {this.state.matchedAge}, {this.state.matchedLocation}{" "}
+                  {this.state.matchedState}
+                </Text>
+              </View>
+
+              {/*Matched LikesArray*/}
+              <View style={{ alignItems: "center" }}>
+                <View style={{ flexDirection: "row", margin: "3%" }}>
+                  {displayMatchedLikesArray}
                 </View>
               </View>
             </View>
-          </Modal>
 
-          {/*Input*/}
-          <View style={styles.messageInputBox}>
-            <TextInput
-              style={styles.messageInputStyle}
-              placeholder="Type in a Message!"
-              onChangeText={currentMessage => this.setState({ currentMessage })}
-              value={this.state.currentMessage}
+            <View style={{ borderWidth: 2, borderColor: "purple" }} />
+
+            {/*Messages*/}
+            <ScrollView
+              style={{ backgroundColor: "#d6f5f5" }}
+              ref={scrollView => {
+                this.scrollView = scrollView;
+              }}
+              contentInset={{ top: 0, left: 0, bottom: 50, right: 0 }}
+              keyboardDismissMode={"on-drag"}
+              //contentContainerStyle={styles.contentContainer}
+              //paddingVertical= {-20}
+            >
+              <View style={{ margin: "3%" }}>{displayAllChatMessage}</View>
+
+              {this.state.isTyping && (
+                <View style={styles.textContainer}>
+                  <Text style={styles.circlePurple}>
+                    {this.matched_user_firstName}
+                  </Text>
+                  <Text style={styles.targetMessageText}>is typing...</Text>
+                </View>
+              )}
+            </ScrollView>
+
+            <InputMenu
+              currentMessage={this.state.currentMessage}
+              onChangeText={this.onChangeText}
+              submitMessage={this.submitMessage}
             />
 
-            {/*Send Button*/}
-            <View style={styles.buttonStyle}>
-              <Button title="Send" onPress={this.submitMessage} />
-            </View>
-            <View style={{ padding: "3%" }} />
-          </View>
-        </KeyboardAvoidingView>
+            {this.state.keyBoardShown && <View style={{ padding: "13%" }} />}
+
+            {/*Menu POP UP*/}
+            <Modal
+              animationType="slide"
+              transparent={true}
+              visible={this.state.modalVisible}
+            >
+              <View
+                style={{
+                  position: "absolute",
+                  height: width * 1.0,
+                  width: width * 0.8,
+                  top: "20%",
+                  alignSelf: "center",
+                  backgroundColor: "#3399ff",
+                  borderRadius: 30
+                }}
+              >
+                <View>
+                  {/*X button*/}
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      justifyContent: "flex-end"
+                    }}
+                  >
+                    <View style={{ right: "100%", top: "5%" }}>
+                      <TouchableOpacity
+                        onPress={() => {
+                          this.openMenu(!this.state.modalVisible);
+                        }}
+                      >
+                        <Text style={{ color: "#fff" }}>X</Text>
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+
+                  <View style={{ padding: "5%" }} />
+
+                  {/*Content*/}
+                  <View style={{ alignItems: "center" }}>
+                    <Text style={{ color: "#fff" }}>Menu</Text>
+                  </View>
+
+                  <View>
+                    <View
+                      style={{
+                        justifyContent: "center"
+                      }}
+                    >
+                      <TouchableOpacity
+                        style={{
+                          margin: 10,
+                          padding: "5% 0% 5% 0%",
+                          backgroundColor: "#fff",
+                          borderRadius: 50,
+                          alignItems: "center"
+                        }}
+                        onPress={() => {
+                          this.openMenu(!this.state.modalVisible);
+                          this.props.navigation.navigate("LocationServices");
+                        }}
+                      >
+                        <Text style={{ color: "black" }}> Pick a place </Text>
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+                </View>
+              </View>
+            </Modal>
+          </KeyboardAvoidingView>
+        </TouchableWithoutFeedback>
       </SafeAreaView>
     );
   };
@@ -436,10 +560,7 @@ const styles = StyleSheet.create({
   },
   textContainer: {
     margin: 10,
-    overflow: "hidden",
-    //  borderRadius: 10,
-    //  borderWidth: 12,
-    //  borderColor: "#3399ff",
+    //overflow: "hidden",
     flexDirection: "row"
   },
   scrollViewStyle: {
@@ -459,23 +580,49 @@ const styles = StyleSheet.create({
   },
   deviceUserMessageText: {
     overflow: "hidden",
-    borderRadius: 10,
+    borderRadius: 5,
     minWidth: 50,
     maxWidth: 300,
     borderColor: "#3399ff",
-    backgroundColor: "#3399ff",
+    backgroundColor: "#fff",
     color: "#fff",
     padding: 5
   },
+  deviceUserMessageTextWrap: {
+    ...Platform.select({
+      ios: {
+        shadowColor: "#000",
+        shadowOffset: { width: -5, height: 5 },
+        shadowOpacity: 0.5,
+        shadowRadius: 5
+      },
+      android: {
+        elevation: 5
+      }
+    })
+  },
   targetMessageText: {
     overflow: "hidden",
-    borderRadius: 10,
+    borderRadius: 5,
     minWidth: 50,
     maxWidth: 300,
     borderColor: "#cccccc",
     backgroundColor: "#cccccc",
     color: "#000",
     padding: 5
+  },
+  targetMessageTextWrap: {
+    ...Platform.select({
+      ios: {
+        shadowColor: "#000",
+        shadowOffset: { width: 5, height: 5 },
+        shadowOpacity: 0.5,
+        shadowRadius: 5
+      },
+      android: {
+        elevation: 5
+      }
+    })
   },
   deviceUserName: {
     overflow: "hidden",
@@ -485,7 +632,7 @@ const styles = StyleSheet.create({
     color: "#000"
   },
   messageInputStyle: {
-    backgroundColor: "#cccccc",
+    backgroundColor: "#fff",
     padding: 10,
     borderRadius: 10,
     overflow: "hidden",
@@ -515,19 +662,6 @@ const styles = StyleSheet.create({
   deviceUserMessageView: {
     alignItems: "flex-end"
   },
-  buttonStyle: {
-    borderRadius: 10,
-    color: "white",
-    backgroundColor: "blue",
-    width: 200,
-    alignSelf: "center",
-    marginBottom: 20,
-    fontStyle: "italic"
-  },
-  messageInputBox: {
-    flexDirection: "column",
-    justifyContent: "flex-end"
-  },
   typingIndicator: {
     fontStyle: "italic"
   },
@@ -535,6 +669,22 @@ const styles = StyleSheet.create({
     height: "100%",
     width: "100%",
     flex: 1
+  },
+  likeButtonWrap: {
+    alignItems: "center",
+    paddingLeft: 10,
+    paddingRight: 10,
+    paddingTop: 7.5,
+    paddingBottom: 7.5,
+    width: "auto",
+    borderRadius: 40,
+    borderWidth: 2,
+    borderColor: "rgb(67, 33, 140)",
+    margin: 5
+  },
+  likeButton: {
+    color: "rgb(67, 33, 140)",
+    fontSize: 17
   }
 });
 
