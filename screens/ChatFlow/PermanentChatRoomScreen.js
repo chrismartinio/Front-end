@@ -33,6 +33,8 @@ import { localhost } from "../../config/ipconfig";
 
 const { height, width } = Dimensions.get("window");
 
+import { Icon } from "react-native-elements";
+
 class PermanentChatRoomScreen extends React.Component {
   static navigationOptions = ({ navigation }) => {
     return {
@@ -61,7 +63,8 @@ class PermanentChatRoomScreen extends React.Component {
       matchedAge: "",
       matchedLocation: "",
       matchedState: "",
-      keyBoardShown: false
+      keyBoardShown: false,
+      matchedInfoToggle: true
     };
     this.guid = "";
     this.user_firstName = "";
@@ -382,6 +385,44 @@ class PermanentChatRoomScreen extends React.Component {
       }
     );
 
+    let matchedInfoToggle = (
+      <TouchableOpacity
+        style={{ alignItems: "center" }}
+        onPress={() => {
+          this.setState({
+            matchedInfoToggle: !this.state.matchedInfoToggle
+          });
+        }}
+      >
+        {
+          <Icon
+            type="font-awesome"
+            name={this.state.matchedInfoToggle ? "caret-down" : "caret-up"}
+            size={25}
+            color="gray"
+          />
+        }
+      </TouchableOpacity>
+    );
+
+    let matchedInfo = this.state.matchedInfoToggle && (
+      <View>
+        <View style={{ alignItems: "center" }}>
+          <Text>
+            {this.state.matchedAge}, {this.state.matchedLocation}{" "}
+            {this.state.matchedState}
+          </Text>
+        </View>
+
+        {/*Matched LikesArray*/}
+        <View style={{ alignItems: "center" }}>
+          <View style={{ flexDirection: "row", margin: "3%" }}>
+            {displayMatchedLikesArray}
+          </View>
+        </View>
+      </View>
+    );
+
     return (
       <SafeAreaView style={styles.container}>
         <TouchableWithoutFeedback
@@ -418,22 +459,12 @@ class PermanentChatRoomScreen extends React.Component {
                   />
                 </TouchableOpacity>
               </View>
-
-              {/*Matched Info*/}
-              <View style={{ alignItems: "center" }}>
-                <Text>
-                  {this.state.matchedAge}, {this.state.matchedLocation}{" "}
-                  {this.state.matchedState}
-                </Text>
-              </View>
-
-              {/*Matched LikesArray*/}
-              <View style={{ alignItems: "center" }}>
-                <View style={{ flexDirection: "row", margin: "3%" }}>
-                  {displayMatchedLikesArray}
-                </View>
-              </View>
             </View>
+
+            {/*Matched Info*/}
+            {matchedInfoToggle}
+
+            {matchedInfo}
 
             <View style={{ borderWidth: 2, borderColor: "purple" }} />
 
@@ -489,19 +520,17 @@ class PermanentChatRoomScreen extends React.Component {
                   {/*X button*/}
                   <View
                     style={{
-                      flexDirection: "row",
-                      justifyContent: "flex-end"
+                      alignItems: "center",
+                      top: "5%"
                     }}
                   >
-                    <View style={{ right: "100%", top: "5%" }}>
-                      <TouchableOpacity
-                        onPress={() => {
-                          this.openMenu(!this.state.modalVisible);
-                        }}
-                      >
-                        <Text style={{ color: "#fff" }}>X</Text>
-                      </TouchableOpacity>
-                    </View>
+                    <TouchableOpacity
+                      onPress={() => {
+                        this.openMenu(!this.state.modalVisible);
+                      }}
+                    >
+                      <Text style={{ color: "#fff" }}>Close</Text>
+                    </TouchableOpacity>
                   </View>
 
                   <View style={{ padding: "5%" }} />

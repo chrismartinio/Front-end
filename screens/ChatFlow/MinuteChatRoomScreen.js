@@ -65,7 +65,8 @@ class MinuteChatRoomScreen extends React.Component {
       matchedAge: "",
       matchedLocation: "",
       matchedState: "",
-      keyBoardShown: false
+      keyBoardShown: false,
+      matchedInfoToggle: true
     };
     this.guid = "";
     this.user_firstName = "";
@@ -421,6 +422,44 @@ class MinuteChatRoomScreen extends React.Component {
       }
     );
 
+    let matchedInfoToggle = (
+      <TouchableOpacity
+        style={{ alignItems: "center" }}
+        onPress={() => {
+          this.setState({
+            matchedInfoToggle: !this.state.matchedInfoToggle
+          });
+        }}
+      >
+        {
+          <Icon
+            type="font-awesome"
+            name={this.state.matchedInfoToggle ? "caret-down" : "caret-up"}
+            size={25}
+            color="gray"
+          />
+        }
+      </TouchableOpacity>
+    );
+
+    let matchedInfo = this.state.matchedInfoToggle && (
+      <View>
+        <View style={{ alignItems: "center" }}>
+          <Text>
+            {this.state.matchedAge}, {this.state.matchedLocation}{" "}
+            {this.state.matchedState}
+          </Text>
+        </View>
+
+        {/*Matched LikesArray*/}
+        <View style={{ alignItems: "center" }}>
+          <View style={{ flexDirection: "row", margin: "3%" }}>
+            {displayMatchedLikesArray}
+          </View>
+        </View>
+      </View>
+    );
+
     return (
       <SafeAreaView style={styles.container}>
         <TouchableWithoutFeedback
@@ -444,25 +483,16 @@ class MinuteChatRoomScreen extends React.Component {
                   style={{
                     width: width * 0.2,
                     height: width * 0.2,
-                    borderRadius: width * 0.098
+                    borderRadius: width * 0.098,
+                    margin: "3%"
                   }}
                 />
               </View>
 
               {/*Matched Info*/}
-              <View style={{ alignItems: "center" }}>
-                <Text>
-                  {this.state.matchedAge}, {this.state.matchedLocation}{" "}
-                  {this.state.matchedState}
-                </Text>
-              </View>
+              {matchedInfoToggle}
 
-              {/*Matched LikesArray*/}
-              <View style={{ alignItems: "center" }}>
-                <View style={{ flexDirection: "row", margin: "3%" }}>
-                  {displayMatchedLikesArray}
-                </View>
-              </View>
+              {matchedInfo}
 
               <View style={{ top: "3%" }}>
                 <View
