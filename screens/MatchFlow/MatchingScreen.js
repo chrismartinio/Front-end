@@ -16,8 +16,6 @@ import { connect } from "react-redux";
 
 import LoadingScreen from "../../sharedComponents/LoadingScreen";
 
-import NotificationButton from "../../sharedComponents/NotificationButton";
-
 import Footer from "../../sharedComponents/Footer";
 
 class MatchingScreen extends React.Component {

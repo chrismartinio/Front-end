@@ -15,7 +15,7 @@ import { connect } from "react-redux";
 
 import LoadingScreen from "../../../sharedComponents/LoadingScreen";
 
-import NotificationButton from "../../../sharedComponents/NotificationButton";
+import NotificationsButton from "../../../screens/NotificationsFlow/NotificationsButton";
 
 import Footer from "../../../sharedComponents/Footer";
 
@@ -71,7 +71,7 @@ class ProfileScreen extends React.Component {
               </TouchableOpacity>
             </View>
           )}
-          {/*<NotificationButton navigation={navigation} />*/}
+          {/*<NotificationsButton navigation={navigation} />*/}
         </View>
       </View>
     )

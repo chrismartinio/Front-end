@@ -59,8 +59,8 @@ import LinksScreen from "../screens/LinksScreen";
 import LoginScreen from "../screens/LoginScreen";
 
 //Notification Components
-import NotificationButton from "../sharedComponents/NotificationButton";
-import NotificationScreen from "../sharedComponents/NotificationScreen";
+import NotificationsButton from "../screens/NotificationsFlow/NotificationsButton";
+import NotificationsScreen from "../screens/NotificationsFlow/NotificationsScreen";
 import ErrorScreen from "../sharedComponents/ErrorScreen";
 
 //Test Matched User Profile Stack
@@ -78,8 +78,8 @@ const LinkProfileStack = createStackNavigator({
       title: `Location`
     })
   },
-  LinkNotification: {
-    screen: NotificationScreen,
+  LinkNotifications: {
+    screen: NotificationsScreen,
     navigationOptions: () => ({
       header: null
     })

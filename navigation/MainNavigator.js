@@ -26,8 +26,8 @@ import SelfieScreen from "../screens/ProfileFlow/Profile_Registration/Registrati
 import ConnectionsScreen from "../screens/ProfileFlow/ConnectionsScreen";
 
 //Custom Components
-import NotificationButton from "../sharedComponents/NotificationButton";
-import NotificationScreen from "../sharedComponents/NotificationScreen";
+import NotificationsButton from "../screens/NotificationsFlow/NotificationsButton";
+import NotificationsScreen from "../screens/NotificationsFlow/NotificationsScreen";
 import CustomBackButton from "../sharedComponents/CustomBackButton";
 
 //LocationFlow
@@ -40,7 +40,7 @@ const MainStack = createStackNavigator(
       screen: HomeScreen,
       navigationOptions: ({ navigation }) => ({
         title: `Blindly`,
-        //headerRight: <NotificationButton navigation={navigation} />,
+        //headerRight: <NotificationsButton navigation={navigation} />,
         headerStyle: {
           backgroundColor: "#fff",
           borderBottomWidth: 0
@@ -123,7 +123,7 @@ const MainStack = createStackNavigator(
       screen: ConversationsScreen,
       navigationOptions: ({ navigation }) => ({
         title: `Blindly`,
-        //headerRight: <NotificationButton navigation={navigation} />,
+        //headerRight: <NotificationsButton navigation={navigation} />,
         //HeaderLeft is set inside ConversationsScreen.js
         headerTitleStyle: {
           bottom: "3%",
@@ -182,14 +182,14 @@ const MainStack = createStackNavigator(
       screen: MatchingScreen,
       navigationOptions: ({ navigation }) => ({
         title: `Matching`
-        //headerRight: <NotificationButton navigation={navigation} />
+        //headerRight: <NotificationsButton navigation={navigation} />
       })
     },
     FoundaMatch: {
       screen: FoundaMatchScreen,
       navigationOptions: ({ navigation }) => ({
         title: `Found a Match`
-        //headerRight: <NotificationButton navigation={navigation} />
+        //headerRight: <NotificationsButton navigation={navigation} />
       })
     },
 
@@ -198,7 +198,7 @@ const MainStack = createStackNavigator(
       screen: SettingsScreen,
       navigationOptions: ({ navigation }) => ({
         title: `Settings`,
-        //headerRight: <NotificationButton navigation={navigation} />
+        //headerRight: <NotificationsButton navigation={navigation} />
         headerStyle: {
           backgroundColor: "#fff",
           borderBottomWidth: 0
@@ -227,8 +227,8 @@ export default createStackNavigator(
         header: null
       })
     },
-    Notification: {
-      screen: NotificationScreen,
+    Notifications: {
+      screen: NotificationsScreen,
       navigationOptions: () => ({
         header: null
       })

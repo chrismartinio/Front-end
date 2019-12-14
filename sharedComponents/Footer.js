@@ -95,7 +95,7 @@ class Footer extends React.Component {
           >
             <Button
               title="Notifications"
-              onPress={() => this.props.navigation.navigate("Notification")}
+              onPress={() => this.props.navigation.navigate("Notifications")}
             />
           </View>
 
