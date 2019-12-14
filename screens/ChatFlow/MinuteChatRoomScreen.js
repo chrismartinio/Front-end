@@ -61,7 +61,6 @@ class MinuteChatRoomScreen extends React.Component {
       matchedLastName: "",
       matchedLikesArray: [],
       matchedImage: "",
-      matchedMiles: "",
       matchedAge: "",
       matchedLocation: "",
       matchedState: "",
@@ -170,7 +169,6 @@ class MinuteChatRoomScreen extends React.Component {
       matchedLastName: successObj.matchedLastName,
       matchedLikesArray: successObj.matchedLikesArray,
       matchedImage: successObj.matchedImage,
-      matchedMiles: successObj.matchedMiles,
       matchedAge: successObj.matchedAge,
       matchedLocation: successObj.matchedLocation,
       matchedState: successObj.matchedState
@@ -200,10 +198,7 @@ class MinuteChatRoomScreen extends React.Component {
       matchedLocation: "Oakland",
       matchedState: "CA",
       matchedAge: "27",
-      matchedLastMessage: "I like that restaurant too, let's...",
-      matchedLastRepliedDate: "Some Date",
       matchedLikesArray: ["Pet", "Shopping", "Music"],
-      matchedMiles: "4.26",
       matchedImage:
         "https://media.gq.com/photos/56d4902a9acdcf20275ef34c/master/w_806,h_1173,c_limit/tom-hardy-lead-840.jpg"
     };

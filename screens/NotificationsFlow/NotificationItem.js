@@ -24,7 +24,12 @@ export default class NotificationItem extends React.Component {
     super(props);
   }
 
+  replyToMatchedUser = chatRoomData => {
+    this.props.navigation.navigate("PermanentChatRoom", chatRoomData);
+  };
+
   render() {
+    let { itemData } = this.props;
     return (
       <View style={{ paddingTop: "3%", paddingBottom: "3%" }}>
         {/*Messages Info*/}
@@ -32,17 +37,16 @@ export default class NotificationItem extends React.Component {
           <View style={styles.matchedUserInfoWrap}>
             <Image
               style={styles.image}
-              source={{ uri: this.props.matchedUserInfo.matchedImage }}
+              source={{ uri: itemData.matchedImage }}
             />
             <View style={{ padding: "2%" }} />
             <View style={{ flexWrap: "wrap" }}>
               <Text style={styles.messagesStatus}>
-                {this.props.matchedUserInfo.matchedFirstName} has left you{" "}
-                {this.props.matchedUserInfo.matchedTotalUnreadMessages} messages{" "}
-                {"\n"}
+                {itemData.matchedFirstName} has left you{" "}
+                {itemData.matchedTotalUnreadMessages} messages {"\n"}
               </Text>
               <Text style={styles.messagesTime}>
-                {this.props.matchedUserInfo.matchedLastRepliedTime}
+                {itemData.matchedLastRepliedTime}
               </Text>
             </View>
           </View>
@@ -54,7 +58,7 @@ export default class NotificationItem extends React.Component {
           <View style={styles.buttonWrap}>
             <TouchableOpacity
               onPress={() => {
-                console.log("REPLY");
+                this.replyToMatchedUser(itemData);
               }}
               style={[styles.buttonsStyles, { backgroundColor: "#4d0091" }]}
             >

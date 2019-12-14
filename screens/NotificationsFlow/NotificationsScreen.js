@@ -79,13 +79,22 @@ export default class NotificationScreen extends React.Component {
   }
 
   componetDidMount() {
-    //?
+    //No componentDidMouhnt
+    //use redux to store the notificationArray
+    //and also a socket that when there is user send data to device's user
+    //add to redux
   }
 
   render() {
     let displayNotificationArray = this.state.notificationMessageItemsArray.map(
       (e, i) => {
-        return <NotificationItem key={i} matchedUserInfo={e} />;
+        return (
+          <NotificationItem
+            key={i}
+            itemData={e}
+            navigation={this.props.navigation}
+          />
+        );
       }
     );
 
