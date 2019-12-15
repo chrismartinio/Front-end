@@ -151,7 +151,7 @@ const MainStack = createStackNavigator(
           bottom: "3%",
           color: "#660066"
         },
-        //gesturesEnabled: false
+        gesturesEnabled: false
       })
     },
 
@@ -181,14 +181,40 @@ const MainStack = createStackNavigator(
     Matching: {
       screen: MatchingScreen,
       navigationOptions: ({ navigation }) => ({
-        title: `Matching`
+        title: `Blindly`,
+        //headerRight: <NotificationsButton navigation={navigation} />,
+        //HeaderLeft is set inside ConversationsScreen.js
+        headerTitleStyle: {
+          bottom: "3%",
+          color: "#fff"
+        },
+        headerStyle: {
+          backgroundColor: "#4d88ff",
+          borderBottomWidth: 0
+        },
+        headerLeft: (
+          <CustomBackButton buttonColor={"#fff"} navigation={navigation} />
+        )
         //headerRight: <NotificationsButton navigation={navigation} />
       })
     },
     FoundaMatch: {
       screen: FoundaMatchScreen,
       navigationOptions: ({ navigation }) => ({
-        title: `Found a Match`
+        title: `Blindly`,
+        //headerRight: <NotificationsButton navigation={navigation} />,
+        //HeaderLeft is set inside ConversationsScreen.js
+        headerTitleStyle: {
+          bottom: "3%",
+          color: "#fff"
+        },
+        headerStyle: {
+          backgroundColor: "#4d88ff",
+          borderBottomWidth: 0
+        },
+        headerLeft: (
+          <CustomBackButton buttonColor={"#fff"} navigation={navigation} />
+        )
         //headerRight: <NotificationsButton navigation={navigation} />
       })
     },

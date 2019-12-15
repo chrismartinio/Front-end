@@ -91,6 +91,8 @@ export default class LinksScreen extends React.Component {
 
       //Match Flow
       "TestMatches",
+
+      //Chat Flow
       "MinuteChatRoom",
       "PermanentChatRoom",
 
