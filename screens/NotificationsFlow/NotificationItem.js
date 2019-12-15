@@ -31,7 +31,12 @@ export default class NotificationItem extends React.Component {
   render() {
     let { itemData } = this.props;
     return (
-      <View style={{ paddingTop: "3%", paddingBottom: "3%" }}>
+      <View
+        style={{
+          paddingTop: `${width * 0.008}%`,
+          paddingBottom: `${width * 0.008}%`
+        }}
+      >
         {/*Messages Info*/}
         <View style={styles.matchedUserInfoCenterWrap}>
           <View style={styles.matchedUserInfoWrap}>
@@ -39,7 +44,7 @@ export default class NotificationItem extends React.Component {
               style={styles.image}
               source={{ uri: itemData.matchedImage }}
             />
-            <View style={{ padding: "2%" }} />
+            <View style={{ padding: `${width * 0.005}%` }} />
             <View style={{ flexWrap: "wrap" }}>
               <Text style={styles.messagesStatus}>
                 {itemData.matchedFirstName} has left you{" "}
@@ -108,13 +113,13 @@ const styles = StyleSheet.create({
   buttonsWrap: {
     flexDirection: "row",
     justifyContent: "center",
-    marginTop: "5%",
-    marginBottom: "5%"
+    marginTop: `${width * 0.013}%`,
+    marginBottom: `${width * 0.013}%`
   },
 
   buttonWrap: {
-    marginLeft: "5%",
-    marginRight: "5%"
+    marginLeft: `${width * 0.013}%`,
+    marginRight: `${width * 0.013}%`
   },
 
   buttonsStyles: {

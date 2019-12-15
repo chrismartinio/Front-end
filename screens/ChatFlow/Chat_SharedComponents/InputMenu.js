@@ -25,7 +25,7 @@ export default class InputMenu extends React.Component {
 
   render() {
     return (
-      <View>
+      <View style={{ margin: "1%" }}>
         <View
           style={{
             flexDirection: "row",
@@ -34,42 +34,45 @@ export default class InputMenu extends React.Component {
           }}
         >
           {/*Attachements*/}
-          <TouchableOpacity>
-            <Icon
-              type="font-awesome"
-              name="plus"
-              iconStyle={{ top: 10, left: 25 }}
-              size={25}
-              color="gray"
-            />
-          </TouchableOpacity>
+          <View style={{ flexDirection: "row", paddingLeft: "5%" }}>
+            <View style={{ paddingRight: "5%" }}>
+              <TouchableOpacity
+                onPress={() => {
+                  console.log("ATTACHMENTS");
+                }}
+              >
+                <Icon type="font-awesome" name="plus" size={25} color="gray" />
+              </TouchableOpacity>
+            </View>
 
-          {/*Text Input*/}
-          <View style={styles.messageInputBox}>
-            <TextInput
-              style={styles.messageInputStyle}
-              onSubmitEditing={Keyboard.dismiss}
-              placeholder="Write Something here..."
-              onChangeText={this.props.onChangeText}
-              keyboardShouldPersistTaps={"handled"}
-              value={this.props.currentMessage}
-            />
+            {/*Text Input*/}
+            <View style={styles.messageInputBox}>
+              <TextInput
+                style={styles.messageInputStyle}
+                onSubmitEditing={Keyboard.dismiss}
+                placeholder="Write Something here..."
+                multiline={true}
+                numberOfLines={4}
+                onChangeText={this.props.onChangeText}
+                value={this.props.currentMessage}
+              />
+            </View>
           </View>
 
           {/*emoji*/}
-          <TouchableOpacity>
-            <Icon
-              type="font-awesome"
-              name="smile-o"
-              iconStyle={{ top: 10, right: 25 }}
-              size={25}
-              color="gray"
-            />
-          </TouchableOpacity>
+          <View style={{ paddingRight: "5%", paddingLeft: "5%" }}>
+            <TouchableOpacity
+              onPress={() => {
+                console.log("EMOJI");
+              }}
+            >
+              <Icon type="font-awesome" name="smile-o" size={25} color="gray" />
+            </TouchableOpacity>
+          </View>
         </View>
 
         {/*Space*/}
-        <View style={{ padding: "3%" }} />
+        <View style={{ padding: "1%" }} />
 
         <View style={{ flexDirection: "row", justifyContent: "flex-end" }}>
           {/*Send Button*/}
@@ -96,7 +99,6 @@ const styles = StyleSheet.create({
     alignItems: "center"
   },
   messageInputBox: {
-    flexDirection: "column",
-    justifyContent: "flex-end"
+    width: width * 0.65
   }
 });

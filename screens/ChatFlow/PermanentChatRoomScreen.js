@@ -167,7 +167,8 @@ class PermanentChatRoomScreen extends React.Component {
       matchedState: "CA", //db
       matchedAge: "27", //db
       matchedLikesArray: ["Pet", "Shopping", "Music"], //db
-      matchedImage: //db
+      //db
+      matchedImage:
         "https://media.gq.com/photos/56d4902a9acdcf20275ef34c/master/w_806,h_1173,c_limit/tom-hardy-lead-840.jpg"
     };
     this.setMatchedUserInfo(successObj);
@@ -420,149 +421,143 @@ class PermanentChatRoomScreen extends React.Component {
 
     return (
       <SafeAreaView style={styles.container}>
-        <TouchableWithoutFeedback
-          onPress={() => {
-            Keyboard.dismiss();
-          }}
+        <KeyboardAvoidingView
+          style={styles.container}
+          behavior="padding"
+          enabled
         >
-          <KeyboardAvoidingView
-            style={styles.container}
-            behavior="padding"
-            enabled
-          >
-            <View style={{ backgroundColor: "#fff" }}>
-              {/*Matched Image*/}
-              <View style={{ alignItems: "center" }}>
-                <TouchableOpacity
-                  onPress={() => {
-                    this.props.navigation.navigate("Profile", {
-                      guid: this.props.navigation.getParam("matchedGuid"),
-                      isDeviceUser: false
-                    });
-                  }}
-                >
-                  <Image
-                    source={{
-                      uri:
-                        "https://www.famousbirthdays.com/faces/efron-zac-image.jpg"
-                    }}
-                    style={{
-                      width: width * 0.2,
-                      height: width * 0.2,
-                      borderRadius: width * 0.098
-                    }}
-                  />
-                </TouchableOpacity>
-              </View>
-            </View>
-
-            {/*Matched Info*/}
-            {matchedInfoToggle}
-
-            {matchedInfo}
-
-            <View style={{ borderWidth: 2, borderColor: "purple" }} />
-
-            {/*Messages*/}
-            <ScrollView
-              style={{ backgroundColor: "#d6f5f5" }}
-              ref={scrollView => {
-                this.scrollView = scrollView;
-              }}
-              contentInset={{ top: 0, left: 0, bottom: 50, right: 0 }}
-              keyboardDismissMode={"on-drag"}
-              //contentContainerStyle={styles.contentContainer}
-              //paddingVertical= {-20}
-            >
-              <View style={{ margin: "3%" }}>{displayAllChatMessage}</View>
-
-              {this.state.isTyping && (
-                <View style={styles.textContainer}>
-                  <Text style={styles.circlePurple}>
-                    {this.matched_user_firstName}
-                  </Text>
-                  <Text style={styles.targetMessageText}>is typing...</Text>
-                </View>
-              )}
-            </ScrollView>
-
-            <InputMenu
-              currentMessage={this.state.currentMessage}
-              onChangeText={this.onChangeText}
-              submitMessage={this.submitMessage}
-            />
-
-            {this.state.keyBoardShown && <View style={{ padding: "13%" }} />}
-
-            {/*Menu POP UP*/}
-            <Modal
-              animationType="slide"
-              transparent={true}
-              visible={this.state.modalVisible}
-            >
-              <View
-                style={{
-                  position: "absolute",
-                  height: width * 1.0,
-                  width: width * 0.8,
-                  top: "20%",
-                  alignSelf: "center",
-                  backgroundColor: "#3399ff",
-                  borderRadius: 30
+          <View style={{ backgroundColor: "#fff" }}>
+            {/*Matched Image*/}
+            <View style={{ alignItems: "center" }}>
+              <TouchableOpacity
+                onPress={() => {
+                  this.props.navigation.navigate("Profile", {
+                    guid: this.props.navigation.getParam("matchedGuid"),
+                    isDeviceUser: false
+                  });
                 }}
               >
+                <Image
+                  source={{
+                    uri:
+                      "https://www.famousbirthdays.com/faces/efron-zac-image.jpg"
+                  }}
+                  style={{
+                    width: width * 0.2,
+                    height: width * 0.2,
+                    borderRadius: width * 0.098
+                  }}
+                />
+              </TouchableOpacity>
+            </View>
+          </View>
+
+          {/*Matched Info*/}
+          {matchedInfoToggle}
+
+          {matchedInfo}
+
+          <View style={{ borderWidth: 2, borderColor: "purple" }} />
+
+          {/*Messages*/}
+          <ScrollView
+            style={{ backgroundColor: "#d6f5f5" }}
+            ref={scrollView => {
+              this.scrollView = scrollView;
+            }}
+            //contentInset={{ top: 0, left: 0, bottom: 50, right: 0 }}
+            //keyboardDismissMode={"on-drag"}
+            //contentContainerStyle={styles.contentContainer}
+            //paddingVertical= {-20}
+          >
+            <View style={{ margin: "3%" }}>{displayAllChatMessage}</View>
+
+            {this.state.isTyping && (
+              <View style={styles.textContainer}>
+                <Text style={styles.circlePurple}>
+                  {this.matched_user_firstName}
+                </Text>
+                <Text style={styles.targetMessageText}>is typing...</Text>
+              </View>
+            )}
+          </ScrollView>
+
+          <InputMenu
+            currentMessage={this.state.currentMessage}
+            onChangeText={this.onChangeText}
+            submitMessage={this.submitMessage}
+          />
+
+          {this.state.keyBoardShown && <View style={{ padding: "13%" }} />}
+
+          {/*Menu POP UP*/}
+          <Modal
+            animationType="slide"
+            transparent={true}
+            visible={this.state.modalVisible}
+          >
+            <View
+              style={{
+                position: "absolute",
+                height: width * 1.0,
+                width: width * 0.8,
+                top: "20%",
+                alignSelf: "center",
+                backgroundColor: "#3399ff",
+                borderRadius: 30
+              }}
+            >
+              <View>
+                {/*X button*/}
+                <View
+                  style={{
+                    alignItems: "center",
+                    top: "5%"
+                  }}
+                >
+                  <TouchableOpacity
+                    onPress={() => {
+                      this.openMenu(!this.state.modalVisible);
+                    }}
+                  >
+                    <Text style={{ color: "#fff" }}>Close</Text>
+                  </TouchableOpacity>
+                </View>
+
+                <View style={{ padding: "5%" }} />
+
+                {/*Content*/}
+                <View style={{ alignItems: "center" }}>
+                  <Text style={{ color: "#fff" }}>Menu</Text>
+                </View>
+
                 <View>
-                  {/*X button*/}
                   <View
                     style={{
-                      alignItems: "center",
-                      top: "5%"
+                      justifyContent: "center"
                     }}
                   >
                     <TouchableOpacity
+                      style={{
+                        margin: 10,
+                        padding: "5% 0% 5% 0%",
+                        backgroundColor: "#fff",
+                        borderRadius: 50,
+                        alignItems: "center"
+                      }}
                       onPress={() => {
                         this.openMenu(!this.state.modalVisible);
+                        this.props.navigation.navigate("LocationServices");
                       }}
                     >
-                      <Text style={{ color: "#fff" }}>Close</Text>
+                      <Text style={{ color: "black" }}> Pick a place </Text>
                     </TouchableOpacity>
-                  </View>
-
-                  <View style={{ padding: "5%" }} />
-
-                  {/*Content*/}
-                  <View style={{ alignItems: "center" }}>
-                    <Text style={{ color: "#fff" }}>Menu</Text>
-                  </View>
-
-                  <View>
-                    <View
-                      style={{
-                        justifyContent: "center"
-                      }}
-                    >
-                      <TouchableOpacity
-                        style={{
-                          margin: 10,
-                          padding: "5% 0% 5% 0%",
-                          backgroundColor: "#fff",
-                          borderRadius: 50,
-                          alignItems: "center"
-                        }}
-                        onPress={() => {
-                          this.openMenu(!this.state.modalVisible);
-                          this.props.navigation.navigate("LocationServices");
-                        }}
-                      >
-                        <Text style={{ color: "black" }}> Pick a place </Text>
-                      </TouchableOpacity>
-                    </View>
                   </View>
                 </View>
               </View>
-            </Modal>
-          </KeyboardAvoidingView>
-        </TouchableWithoutFeedback>
+            </View>
+          </Modal>
+        </KeyboardAvoidingView>
       </SafeAreaView>
     );
   };

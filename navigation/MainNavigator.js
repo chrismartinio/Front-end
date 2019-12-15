@@ -151,7 +151,7 @@ const MainStack = createStackNavigator(
           bottom: "3%",
           color: "#660066"
         },
-        gesturesEnabled: false
+        //gesturesEnabled: false
       })
     },
 
