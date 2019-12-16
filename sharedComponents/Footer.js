@@ -1,12 +1,21 @@
 import React, { Component } from "react";
-import { Text, View, TouchableOpacity, Button } from "react-native";
+import { Text, View, TouchableOpacity, Button, StyleSheet } from "react-native";
 import { StackActions, NavigationActions } from "react-navigation";
 //Redux
 import { connect } from "react-redux";
 
+import { Icon } from "react-native-elements";
+
 class Footer extends React.Component {
   constructor(props) {
     super(props);
+    this.state = {
+      profileToggle: false,
+      ConversationsToggle: false,
+      NotificationsToggle: false,
+      ConnectionsToggle: false,
+      SettingsToggle: false
+    };
   }
 
   render() {
@@ -57,72 +66,71 @@ class Footer extends React.Component {
     return (
       <View
         style={{
-          flex: 0.1,
+          flex: 0.13,
           flexDirection: "column",
           justifyContent: "flex-end"
         }}
       >
-        <View style={{ flexDirection: "row", justifyContent: "center" }}>
-          {/*User Profile*/}
-          <View
-            style={{
-              width: 75,
-              height: 75,
-              backgroundColor: "powderblue"
-            }}
+        <View style={styles.footer}>
+          <TouchableOpacity
+            onPress={() => this.props.navigation.dispatch(resetProfileAction)}
           >
-            <Button
-              title="Go to Profile"
-              onPress={() => this.props.navigation.dispatch(resetProfileAction)}
-            />
-          </View>
-
-          {/*Conversations*/}
-          <View style={{ width: 75, height: 75, backgroundColor: "lightblue" }}>
-            <Button
-              title="Conversations"
-              onPress={() =>
-                this.props.navigation.dispatch(resetConversationsAction)
-              }
-            />
-          </View>
-
-          {/*Notification*/}
-          <View
-            style={{ width: 75, height: 75, backgroundColor: "lightyellow" }}
+            <Icon name="person" color="#46278c" />
+            <Text style={styles.footerText}>Profile</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() =>
+              this.props.navigation.dispatch(resetConversationsAction)
+            }
           >
-            <Button
-              title="Notifications"
-              onPress={() => this.props.navigation.navigate("Notifications")}
-            />
-          </View>
-
-          {/*Matching*/}
-          <View style={{ width: 75, height: 75, backgroundColor: "skyblue" }}>
-            <Button
-              title="Connections"
-              onPress={() => this.props.navigation.navigate("Connections")}
-            />
-          </View>
-
-          {/*Setting*/}
-          <View
-            style={{
-              width: 75,
-              height: 75,
-              backgroundColor: "powderblue"
-            }}
+            <Icon type="font-awesome" name="commenting-o" color="#46278c" />
+            <Text style={styles.footerText}>Conversations</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => this.props.navigation.navigate("Notifications")}
           >
-            <Button
-              title="Setting"
-              onPress={() => this.props.navigation.dispatch(resetSettingAction)}
-            />
-          </View>
+            <Icon type="font-awesome" name="bell-o" color="#46278c" />
+            <Text style={styles.footerText}>Notifications</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => this.props.navigation.navigate("Connections")}
+          >
+            <Icon name="people" color="#46278c" />
+            <Text style={styles.footerText}>Connections</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => this.props.navigation.dispatch(resetSettingAction)}
+          >
+            <View style={{ transform: [{ rotate: "180deg" }] }}>
+              <Icon type="font-awesome" name="sliders" color="#46278c" />
+            </View>
+            <Text style={styles.footerText}>Settings</Text>
+          </TouchableOpacity>
         </View>
       </View>
     );
   }
 }
+
+const styles = StyleSheet.create({
+  footer: {
+    backgroundColor: "white",
+    borderTopLeftRadius: 25,
+    borderTopRightRadius: 25,
+    flex: 1,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    paddingLeft: 20,
+    paddingRight: 20,
+    paddingTop: 10
+  },
+  footerText: {
+    color: "#46278c",
+    fontSize: 10,
+    textAlign: "center",
+    marginTop: 5
+  }
+});
 
 const mapStateToProps = state => {
   return { ...state };
