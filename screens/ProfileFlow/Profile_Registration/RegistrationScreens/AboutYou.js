@@ -90,11 +90,14 @@ class AboutYou extends Component {
     this.isContinueUserFetched = false;
   }
 
+  //QUERY DATA FROM DB
   getDataFromDB = async () => {
-    //if it is not ThirdPartiesServiceUser, it will check if it is continue user using checklist
+    //If the user is not a third party user
     if (!this.props.CreateProfileDataReducer.isThirdPartiesServiceUser) {
       //continue user
-      //if the checklist says this screen is not complete, return (do not query anything)
+      //aboutYou = false
+      //that means they havent finish the screen
+      //retur and give them a blinkScreen
       if (!this.props.CreateProfileDataReducer.checklist.aboutYou) {
         return;
       }
