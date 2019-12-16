@@ -15,11 +15,15 @@ import { connect } from "react-redux";
 
 import LoadingScreen from "../../../sharedComponents/LoadingScreen";
 
-import NotificationButton from "../../../sharedComponents/NotificationButton";
+import NotificationsButton from "../../../screens/NotificationsFlow/NotificationsButton";
 
 import Footer from "../../../sharedComponents/Footer";
 
 import { localhost } from "../../../config/ipconfig";
+
+import { Icon } from "react-native-elements";
+
+const { height, width } = Dimensions.get("window");
 
 function _calculateAge(birthday) {
   birthday = new Date(birthday);
@@ -38,6 +42,8 @@ import {
   selectIdByGuidFromLocalStorage
 } from "../LocalStorage/localStorage.js";
 
+import { Chevron } from "react-native-shapes";
+
 class ProfileScreen extends React.Component {
   //Header
   static navigationOptions = ({ navigation }) => ({
@@ -46,19 +52,26 @@ class ProfileScreen extends React.Component {
       <View style={{ flex: 1 }}>
         <View style={{ flexDirection: "row" }}>
           {navigation.getParam("isDeviceUser") && (
-            <Button
-              title={"Edit"}
-              color={"black"}
-              onPress={() => {
-                navigation.navigate("Edit", {
-                  dataIsEdited: () => {
-                    navigation.state.params.dataIsEdited();
-                  }
-                });
-              }}
-            />
+            <View style={{ bottom: "35%", right: "50%" }}>
+              <TouchableOpacity
+                onPress={() => {
+                  navigation.navigate("Edit", {
+                    dataIsEdited: () => {
+                      navigation.state.params.dataIsEdited();
+                    }
+                  });
+                }}
+              >
+                <Icon
+                  type="font-awesome"
+                  name="cog"
+                  size={25}
+                  color="#660066"
+                />
+              </TouchableOpacity>
+            </View>
           )}
-          <NotificationButton navigation={navigation} />
+          {/*<NotificationsButton navigation={navigation} />*/}
         </View>
       </View>
     )
@@ -72,7 +85,8 @@ class ProfileScreen extends React.Component {
       age: "",
       city: "",
       state: "",
-      userImage: "https://facebook.github.io/react-native/img/tiny_logo.png",
+      userImage:
+        "https://media.gq.com/photos/56d4902a9acdcf20275ef34c/master/w_806,h_1173,c_limit/tom-hardy-lead-840.jpg",
       likesArray: [],
       userBio: "",
       zipCode: "",
@@ -214,13 +228,13 @@ class ProfileScreen extends React.Component {
 
             //Store to device_user_aboutYou
             insertSqlStatement =
-              "INSERT OR REPLACE into device_user_aboutYou(id, createAccount_id, firstName, birthDate, userBio, city, state, zipCode) " +
-              "values(1, 1, ?, ?, ?, ?, ?, ?);";
+              "INSERT OR REPLACE into device_user_aboutYou(id, createAccount_id, firstName, lastName, birthDate, userBio, city, state, zipCode) " +
+              "values(1, 1, ?, ?, ?, ?, ?, ?, ?);";
 
             success = await insertDataIntoLocalStorage(
               insertSqlStatement,
               "device_user_aboutYou",
-              [firstName, birthDate, userBio, city, state, zipCode],
+              [firstName, lastName, birthDate, userBio, city, state, zipCode],
               true
             );
 
@@ -300,8 +314,10 @@ class ProfileScreen extends React.Component {
       .catch(async err => {
         //console.log(err);
         //HANDLE ANY CATCHED ERRORS
+        //AND WILL TRY TO GET DATA FROM LOCALSTORAGE
 
         //LocalStorage
+        //Check if localstorage guid === current device's user guid
         if (this.guid === this.props.CreateProfileDataReducer.guid) {
           //Get Device's User Data from localStorage device_user_aboutYou table
           let aboutYouObject = await selectDataFromLocalStorage(
@@ -436,7 +452,12 @@ class ProfileScreen extends React.Component {
             source={{
               uri: e
             }}
-            style={{ width: 100, height: 75, borderRadius: 15, margin: 3 }}
+            style={{
+              width: width * 0.267,
+              height: width * 0.2,
+              borderRadius: 15,
+              margin: 3
+            }}
           />
         </TouchableOpacity>
       );
@@ -445,6 +466,7 @@ class ProfileScreen extends React.Component {
     return (
       <View style={styles.container}>
         <View style={{ flex: 0.9 }}>
+          <View style={{ padding: "1%" }} />
           <ScrollView>
             <View style={{ alignItems: "center" }}>
               {/**User Image */}
@@ -452,7 +474,11 @@ class ProfileScreen extends React.Component {
                 source={{
                   uri: this.state.userImage
                 }}
-                style={{ width: 350, height: 350, borderRadius: 50 }}
+                style={{
+                  width: width * 0.93,
+                  height: width * 0.93,
+                  borderRadius: 15
+                }}
               />
             </View>
 
@@ -464,28 +490,40 @@ class ProfileScreen extends React.Component {
               <Text />
 
               {/*Map*/}
-              <Button
-                title={"Map"}
-                color={"black"}
+              <TouchableOpacity
                 onPress={() => {
                   this.props.navigation.navigate("ProfileLocation", {
                     addressLatitude: this.state.addressLatitude,
                     addressLongitude: this.state.addressLongitude
                   });
                 }}
-              />
+              >
+                <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
+                  <Icon
+                    type="font-awesome"
+                    name="map-marker"
+                    size={width * 0.04}
+                    color="rgb(67, 33, 140)"
+                    iconStyle={{ bottom: 0 }}
+                  />
 
-              {/*Address*/}
-              <Text style={{ fontSize: 15, fontWeight: "400" }}>
-                {this.state.city}, {this.state.state}
-              </Text>
+                  <View style={{ padding: "1%" }} />
+
+                  {/*Address*/}
+                  <Text style={{ fontSize: 15, fontWeight: "400" }}>
+                    {this.state.city}, {this.state.state}
+                  </Text>
+                </View>
+              </TouchableOpacity>
             </View>
 
             {/**border line */}
             <View
               style={{
                 borderWidth: 1,
-                borderColor: "#d6d7da"
+                borderColor: "#d6d7da",
+                marginLeft: "5%",
+                marginRight: "5%"
               }}
             />
 
@@ -500,8 +538,11 @@ class ProfileScreen extends React.Component {
             >
               <Text style={{ fontSize: 17, fontWeight: "500" }}>Interests</Text>
             </View>
+            {/*Likes*/}
             <View>
-              <View style={{ flexDirection: "row" }}>{displaylikesArray}</View>
+              <View style={{ flexDirection: "row", margin: "3%" }}>
+                {displaylikesArray}
+              </View>
             </View>
             <View style={{ padding: 7.5 }} />
 
@@ -509,7 +550,9 @@ class ProfileScreen extends React.Component {
             <View
               style={{
                 borderWidth: 1,
-                borderColor: "#d6d7da"
+                borderColor: "#d6d7da",
+                marginLeft: "5%",
+                marginRight: "5%"
               }}
             />
 
@@ -524,6 +567,7 @@ class ProfileScreen extends React.Component {
             >
               <Text style={{ fontSize: 17, fontWeight: "500" }}>About Me</Text>
             </View>
+            {/*Bio*/}
             <View style={{ margin: 15 }}>
               <Text
                 style={{
@@ -541,7 +585,9 @@ class ProfileScreen extends React.Component {
             <View
               style={{
                 borderWidth: 1,
-                borderColor: "#d6d7da"
+                borderColor: "#d6d7da",
+                marginLeft: "5%",
+                marginRight: "5%"
               }}
             />
 
@@ -558,7 +604,8 @@ class ProfileScreen extends React.Component {
             </View>
             <View
               style={{
-                margin: 20
+                margin: 20,
+                alignItems: "center"
               }}
             >
               <View
@@ -587,8 +634,6 @@ class ProfileScreen extends React.Component {
     return this.state.isSuccess ? this.successScreen() : this.loadingScreen();
   }
 }
-
-const { height, width } = Dimensions.get("window");
 
 const styles = StyleSheet.create({
   container: {

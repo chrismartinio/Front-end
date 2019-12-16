@@ -12,38 +12,80 @@ import SettingsScreen from "../screens/SettingsScreen";
 import HomeScreen from "../screens/HomeScreen";
 import MinuteChatRoomScreen from "../screens/ChatFlow/MinuteChatRoomScreen";
 import PermanentChatRoomScreen from "../screens/ChatFlow/PermanentChatRoomScreen";
+import ConversationsScreen from "../screens/ChatFlow/ConversationsScreen";
 
 //Match Flow
 import MatchingScreen from "../screens/MatchFlow/MatchingScreen";
-import MatchScreen from "../screens/MatchFlow/MatchScreen";
+import FoundaMatchScreen from "../screens/MatchFlow/FoundaMatchScreen";
 
 //Profile Flow
 import ProfileScreen from "../screens/ProfileFlow/Profile/ProfileScreen";
 import EditScreen from "../screens/ProfileFlow/Profile/EditScreen";
 import ProfileLocationScreen from "../screens/ProfileFlow/Profile/ProfileLocationScreen";
 import SelfieScreen from "../screens/ProfileFlow/Profile_Registration/RegistrationScreens/SelfieScreen";
+import ConnectionsScreen from "../screens/ProfileFlow/ConnectionsScreen";
 
-//Notification Components
-import NotificationButton from "../sharedComponents/NotificationButton";
-import NotificationScreen from "../sharedComponents/NotificationScreen";
+//Custom Components
+import NotificationsButton from "../screens/NotificationsFlow/NotificationsButton";
+import NotificationsScreen from "../screens/NotificationsFlow/NotificationsScreen";
+import CustomBackButton from "../sharedComponents/CustomBackButton";
 
 //LocationFlow
 import LocationServices from "../screens/LocationFlow/LocationServices";
 
 const MainStack = createStackNavigator(
   {
+    //Home (Landing Screen)
+    Home: {
+      screen: HomeScreen,
+      navigationOptions: ({ navigation }) => ({
+        title: `Blindly`,
+        //headerRight: <NotificationsButton navigation={navigation} />,
+        headerStyle: {
+          backgroundColor: "#fff",
+          borderBottomWidth: 0
+        },
+        headerTitleStyle: {
+          bottom: "3%",
+          color: "#660066"
+        }
+      })
+    },
+
     //Profile Flow
     Profile: {
       screen: ProfileScreen,
       navigationOptions: ({ navigation }) => ({
-        title: `Profile`
+        title: `Profile`,
+        headerStyle: {
+          backgroundColor: "#fff",
+          borderBottomWidth: 0
+        },
+        headerTitleStyle: {
+          bottom: "3%",
+          color: "#660066"
+        },
         //headerRight is set inside ProfileScreen.js
+        headerLeft: (
+          <CustomBackButton buttonColor={"#660066"} navigation={navigation} />
+        )
       })
     },
     Edit: {
       screen: EditScreen,
-      navigationOptions: () => ({
-        title: `Edit`
+      navigationOptions: ({ navigation }) => ({
+        title: `Edit`,
+        headerStyle: {
+          backgroundColor: "#fff",
+          borderBottomWidth: 0
+        },
+        headerTitleStyle: {
+          bottom: "3%",
+          color: "#660066"
+        },
+        headerLeft: (
+          <CustomBackButton buttonColor={"#660066"} navigation={navigation} />
+        )
       })
     },
     SeflieEdit: {
@@ -58,27 +100,73 @@ const MainStack = createStackNavigator(
         title: `Location`
       })
     },
+    Connections: {
+      screen: ConnectionsScreen,
+      navigationOptions: ({ navigation }) => ({
+        title: `Connections`,
+        headerStyle: {
+          backgroundColor: "#fff",
+          borderBottomWidth: 0
+        },
+        headerTitleStyle: {
+          bottom: "3%",
+          color: "#660066"
+        },
+        headerLeft: (
+          <CustomBackButton buttonColor={"#660066"} navigation={navigation} />
+        )
+      })
+    },
 
     //Chat Flow
-    Home: {
-      screen: HomeScreen,
+    Conversations: {
+      screen: ConversationsScreen,
       navigationOptions: ({ navigation }) => ({
-        title: `Home`,
-        headerRight: <NotificationButton navigation={navigation} />
+        title: `Blindly`,
+        //headerRight: <NotificationsButton navigation={navigation} />,
+        //HeaderLeft is set inside ConversationsScreen.js
+        headerTitleStyle: {
+          bottom: "3%",
+          color: "#fff"
+        },
+        headerStyle: {
+          backgroundColor: "#4d88ff",
+          borderBottomWidth: 0
+        },
+        headerLeft: (
+          <CustomBackButton buttonColor={"#fff"} navigation={navigation} />
+        )
       })
     },
 
     MinuteChatRoom: {
       screen: MinuteChatRoomScreen,
       navigationOptions: () => ({
-        title: `Minute`
+        title: `Blindy`,
+        headerStyle: {
+          backgroundColor: "#fff",
+          borderBottomWidth: 0
+        },
+        headerTitleStyle: {
+          bottom: "3%",
+          color: "#660066"
+        },
+        gesturesEnabled: false
       })
     },
 
     PermanentChatRoom: {
       screen: PermanentChatRoomScreen,
       navigationOptions: () => ({
-        title: `Permanent`
+        title: `Blindy`,
+        headerStyle: {
+          backgroundColor: "#fff",
+          borderBottomWidth: 0
+        },
+        headerTitleStyle: {
+          bottom: "3%",
+          color: "#660066"
+        }
       })
     },
 
@@ -93,15 +181,41 @@ const MainStack = createStackNavigator(
     Matching: {
       screen: MatchingScreen,
       navigationOptions: ({ navigation }) => ({
-        title: `Matching`,
-        headerRight: <NotificationButton navigation={navigation} />
+        title: `Blindly`,
+        //headerRight: <NotificationsButton navigation={navigation} />,
+        //HeaderLeft is set inside ConversationsScreen.js
+        headerTitleStyle: {
+          bottom: "3%",
+          color: "#fff"
+        },
+        headerStyle: {
+          backgroundColor: "#4d88ff",
+          borderBottomWidth: 0
+        },
+        headerLeft: (
+          <CustomBackButton buttonColor={"#fff"} navigation={navigation} />
+        )
+        //headerRight: <NotificationsButton navigation={navigation} />
       })
     },
-    Match: {
-      screen: MatchScreen,
+    FoundaMatch: {
+      screen: FoundaMatchScreen,
       navigationOptions: ({ navigation }) => ({
-        title: `Match`,
-        headerRight: <NotificationButton navigation={navigation} />
+        title: `Blindly`,
+        //headerRight: <NotificationsButton navigation={navigation} />,
+        //HeaderLeft is set inside ConversationsScreen.js
+        headerTitleStyle: {
+          bottom: "3%",
+          color: "#fff"
+        },
+        headerStyle: {
+          backgroundColor: "#4d88ff",
+          borderBottomWidth: 0
+        },
+        headerLeft: (
+          <CustomBackButton buttonColor={"#fff"} navigation={navigation} />
+        )
+        //headerRight: <NotificationsButton navigation={navigation} />
       })
     },
 
@@ -110,7 +224,18 @@ const MainStack = createStackNavigator(
       screen: SettingsScreen,
       navigationOptions: ({ navigation }) => ({
         title: `Settings`,
-        headerRight: <NotificationButton navigation={navigation} />
+        //headerRight: <NotificationsButton navigation={navigation} />
+        headerStyle: {
+          backgroundColor: "#fff",
+          borderBottomWidth: 0
+        },
+        headerTitleStyle: {
+          bottom: "3%",
+          color: "#660066"
+        },
+        headerLeft: (
+          <CustomBackButton buttonColor={"#660066"} navigation={navigation} />
+        )
       })
     }
   },
@@ -128,8 +253,8 @@ export default createStackNavigator(
         header: null
       })
     },
-    Notification: {
-      screen: NotificationScreen,
+    Notifications: {
+      screen: NotificationsScreen,
       navigationOptions: () => ({
         header: null
       })

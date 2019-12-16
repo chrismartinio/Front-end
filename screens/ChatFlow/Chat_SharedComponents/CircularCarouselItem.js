@@ -13,7 +13,7 @@ import {
 
 const { height, width } = Dimensions.get("window");
 
-import { shortTheMessage } from "../Util/HomeScreenFunctions.js";
+import { shortTheMessage } from "../Util/ConnectionsScreenFunctions.js";
 
 export default class CircularCarouselItem extends React.Component {
   constructor(props) {

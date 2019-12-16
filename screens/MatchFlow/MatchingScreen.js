@@ -16,8 +16,6 @@ import { connect } from "react-redux";
 
 import LoadingScreen from "../../sharedComponents/LoadingScreen";
 
-import NotificationButton from "../../sharedComponents/NotificationButton";
-
 import Footer from "../../sharedComponents/Footer";
 
 class MatchingScreen extends React.Component {
@@ -48,7 +46,7 @@ class MatchingScreen extends React.Component {
     if (prevState.foundaMatch !== this.state.foundaMatch) {
       if (this.state.foundaMatch) {
         //also send a private room id to match screen
-        this.props.navigation.navigate("Match", {
+        this.props.navigation.navigate("FoundaMatch", {
           backFromMatch: () => {
             this.props.navigation.state.params.backFromMatch();
           }
@@ -62,13 +60,15 @@ class MatchingScreen extends React.Component {
       <View style={styles.container}>
         <View style={{ flex: 0.9 }}>
           <View style={{ flex: 1, justifyContent: "center" }}>
-            <ActivityIndicator size="large" color="black" />
+            <ActivityIndicator size="large" color="#fff" />
             <View style={{ alignItems: "center" }}>
-              <Text style={{ fontSize: 24 }}>Finding a match</Text>
+              <Text style={{ fontSize: 24, color: "#fff" }}>
+                Finding a match
+              </Text>
               {/*Testing Use*/}
               <Button
                 title={"found a match"}
-                color={"black"}
+                color={"white"}
                 onPress={() => {
                   this.setState({
                     foundaMatch: true
@@ -97,7 +97,8 @@ const { height, width } = Dimensions.get("window");
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1
+    flex: 1,
+    backgroundColor: "#4d88ff"
   }
 });
 

@@ -162,6 +162,34 @@ class Preferences extends Component {
       .catch(async err => {
         //HANDLE ANY CATCHED ERRORS
 
+        let checkGuidObject = await selectDataFromLocalStorage(
+          "device_user_createAccount",
+          1
+        );
+        if (checkGuidObject.success) {
+          let { guid } = checkGuidObject.result.rows._array[0];
+
+          if (guid !== this.props.CreateProfileDataReducer.guid) {
+            this.setState(
+              {
+                isSuccess: false
+              },
+              () => {
+                return;
+              }
+            );
+          }
+        } else {
+          this.setState(
+            {
+              isSuccess: false
+            },
+            () => {
+              return;
+            }
+          );
+        }
+
         let object = await selectDataFromLocalStorage(
           "device_user_preferences",
           1

@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Text, View, TouchableOpacity, Button } from "react-native";
 
-export default class NotificationButton extends React.Component {
+export default class CustomBackButton extends React.Component {
   constructor(props) {
     super(props);
   }

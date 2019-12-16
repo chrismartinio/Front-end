@@ -25,7 +25,7 @@ import TellUsMore from "../screens/OldScreens/SignUpFlow/IndividualScreensTestin
 import CreateQuestionaire from "../screens/MatchFlow/matchCreateQuestionaire";
 import ReplyQuestionaire from "../screens/MatchFlow/matchCreateReply";
 import ViewQuestionaire from "../screens/MatchFlow/matchViewReply";
-import MatchScreen from "../screens/MatchFlow/MatchScreen";
+import FoundaMatchScreen from "../screens/MatchFlow/FoundaMatchScreen";
 import MatchingScreen from "../screens/MatchFlow/MatchingScreen";
 import Matches from "../screens/OldScreens/SignUpFlow/Matches";
 
@@ -59,8 +59,8 @@ import LinksScreen from "../screens/LinksScreen";
 import LoginScreen from "../screens/LoginScreen";
 
 //Notification Components
-import NotificationButton from "../sharedComponents/NotificationButton";
-import NotificationScreen from "../sharedComponents/NotificationScreen";
+import NotificationsButton from "../screens/NotificationsFlow/NotificationsButton";
+import NotificationsScreen from "../screens/NotificationsFlow/NotificationsScreen";
 import ErrorScreen from "../sharedComponents/ErrorScreen";
 
 //Test Matched User Profile Stack
@@ -78,8 +78,8 @@ const LinkProfileStack = createStackNavigator({
       title: `Location`
     })
   },
-  LinkNotification: {
-    screen: NotificationScreen,
+  LinkNotifications: {
+    screen: NotificationsScreen,
     navigationOptions: () => ({
       header: null
     })

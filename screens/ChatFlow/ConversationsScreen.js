@@ -18,13 +18,15 @@ import { connect } from "react-redux";
 
 import io from "socket.io-client";
 
-import LoadingScreen from "../sharedComponents/LoadingScreen";
+import LoadingScreen from "../../sharedComponents/LoadingScreen";
 
-import { localhost } from "../config/ipconfig";
+import { localhost } from "../../config/ipconfig";
 
-import Footer from "../sharedComponents/Footer";
+import Footer from "../../sharedComponents/Footer";
 
-import CircularCarousel from "./ChatFlow/Chat_SharedComponents/CircularCarousel";
+import CircularCarousel from "./Chat_SharedComponents/CircularCarousel";
+
+import { Chevron } from "react-native-shapes";
 
 //1. make an error screen for no data for profile screen and edit screen
 //2. delay footer buttons
@@ -34,7 +36,7 @@ const testobj = [
   {
     matchedFirstName: "Aaa 1",
     matchedGuid: "5de42a14b4dc5b1fba94e1d3",
-    matchedMinuteRoomID: "someRoomNumber",
+    matchedPermanentRoomID: "someRoomNumber",
     matchedLocation: "Oakland",
     matchedAge: "27",
     matchedLastMessage: "I like that restaurant too, let's...",
@@ -46,7 +48,7 @@ const testobj = [
   {
     matchedFirstName: "Kachi 2",
     matchedGuid: "5de42b16b4dc5b1fba94e1d4",
-    matchedMinuteRoomID: "someRoomNumber",
+    matchedPermanentRoomID: "someRoomNumber",
     matchedLocation: "Oakland",
     matchedAge: "27",
     matchedLastMessage: "I like that restaurant too, let's...",
@@ -58,7 +60,7 @@ const testobj = [
   {
     matchedFirstName: "Demetus 3",
     matchedGuid: "5de4b4ec6f3077a0d5252ddd",
-    matchedMinuteRoomID: "someRoomNumber",
+    matchedPermanentRoomID: "someRoomNumber",
     matchedLocation: "Oakland",
     matchedAge: "27",
     matchedLastMessage: "I like that restaurant too, let's...",
@@ -70,7 +72,7 @@ const testobj = [
   {
     matchedFirstName: "Mike 4",
     matchedGuid: "5de4b6a26f3077a0d5252dde",
-    matchedMinuteRoomID: "someRoomNumber",
+    matchedPermanentRoomID: "someRoomNumber",
     matchedLocation: "Oakland",
     matchedAge: "27",
     matchedLastMessage: "I like that restaurant too, let's...",
@@ -81,7 +83,7 @@ const testobj = [
   {
     matchedFirstName: "Qiuwen 5",
     matchedGuid: "5de6e7a326e5604c8552d774",
-    matchedMinuteRoomID: "someRoomNumber",
+    matchedPermanentRoomID: "someRoomNumber",
     matchedLocation: "Oakland",
     matchedAge: "27",
     matchedLastMessage: "I like that restaurant too, let's...",
@@ -93,7 +95,7 @@ const testobj = [
   {
     matchedFirstName: "Kevin 6",
     matchedGuid: "5de7a9a888fab05ca501ae9a",
-    matchedMinuteRoomID: "someRoomNumber",
+    matchedPermanentRoomID: "someRoomNumber",
     matchedLocation: "Oakland",
     matchedAge: "27",
     matchedLastMessage: "I like that restaurant too, let's...",
@@ -105,7 +107,7 @@ const testobj = [
   {
     matchedFirstName: "BBB 7",
     matchedGuid: "5de42a14b4dc5b1fba94e1d3",
-    matchedMinuteRoomID: "someRoomNumber",
+    matchedPermanentRoomID: "someRoomNumber",
     matchedLocation: "Oakland",
     matchedAge: "27",
     matchedLastMessage: "I like that restaurant too, let's...",
@@ -117,7 +119,7 @@ const testobj = [
   {
     matchedFirstName: "wewewe 8",
     matchedGuid: "5de42b16b4dc5b1fba94e1d4",
-    matchedMinuteRoomID: "someRoomNumber",
+    matchedPermanentRoomID: "someRoomNumber",
     matchedLocation: "Oakland",
     matchedAge: "27",
     matchedLastMessage: "I like that restaurant too, let's...",
@@ -129,7 +131,7 @@ const testobj = [
   {
     matchedFirstName: "awww 9",
     matchedGuid: "5de4b4ec6f3077a0d5252ddd",
-    matchedMinuteRoomID: "someRoomNumber",
+    matchedPermanentRoomID: "someRoomNumber",
     matchedLocation: "Oakland",
     matchedAge: "27",
     matchedLastMessage: "I like that restaurant too, let's...",
@@ -141,7 +143,7 @@ const testobj = [
   {
     matchedFirstName: "asdasd 10",
     matchedGuid: "5de4b6a26f3077a0d5252dde",
-    matchedMinuteRoomID: "someRoomNumber",
+    matchedPermanentRoomID: "someRoomNumber",
     matchedLocation: "Oakland",
     matchedAge: "27",
     matchedLastMessage: "I like that restaurant too, let's...",
@@ -152,7 +154,7 @@ const testobj = [
   {
     matchedFirstName: "zxczxc 11",
     matchedGuid: "5de6e7a326e5604c8552d774",
-    matchedMinuteRoomID: "someRoomNumber",
+    matchedPermanentRoomID: "someRoomNumber",
     matchedLocation: "Oakland",
     matchedAge: "27",
     matchedLastMessage: "I like that restaurant too, let's...",
@@ -164,7 +166,7 @@ const testobj = [
   {
     matchedFirstName: "gerge 12",
     matchedGuid: "5de7a9a888fab05ca501ae9a",
-    matchedMinuteRoomID: "someRoomNumber",
+    matchedPermanentRoomID: "someRoomNumber",
     matchedLocation: "Oakland",
     matchedAge: "27",
     matchedLastMessage: "I like that restaurant too, let's...",
@@ -176,7 +178,7 @@ const testobj = [
   {
     matchedFirstName: "nccb 13",
     matchedGuid: "5de42a14b4dc5b1fba94e1d3",
-    matchedMinuteRoomID: "someRoomNumber",
+    matchedPermanentRoomID: "someRoomNumber",
     matchedLocation: "Oakland",
     matchedAge: "27",
     matchedLastMessage: "I like that restaurant too, let's...",
@@ -188,7 +190,7 @@ const testobj = [
   {
     matchedFirstName: "cbdbfdd 14",
     matchedGuid: "5de42b16b4dc5b1fba94e1d4",
-    matchedMinuteRoomID: "someRoomNumber",
+    matchedPermanentRoomID: "someRoomNumber",
     matchedLocation: "Oakland",
     matchedAge: "27",
     matchedLastMessage: "I like that restaurant too, let's...",
@@ -200,7 +202,7 @@ const testobj = [
   {
     matchedFirstName: "mjgmhgm 15",
     matchedGuid: "5de4b4ec6f3077a0d5252ddd",
-    matchedMinuteRoomID: "someRoomNumber",
+    matchedPermanentRoomID: "someRoomNumber",
     matchedLocation: "Oakland",
     matchedAge: "27",
     matchedLastMessage: "I like that restaurant too, let's...",
@@ -212,7 +214,7 @@ const testobj = [
   {
     matchedFirstName: "jkjk,j 16",
     matchedGuid: "5de4b6a26f3077a0d5252dde",
-    matchedMinuteRoomID: "someRoomNumber",
+    matchedPermanentRoomID: "someRoomNumber",
     matchedLocation: "Oakland",
     matchedAge: "27",
     matchedLastMessage: "I like that restaurant too, let's...",
@@ -224,7 +226,7 @@ const testobj = [
   {
     matchedFirstName: "ghjghj 17",
     matchedGuid: "5de6e7a326e5604c8552d774",
-    matchedMinuteRoomID: "someRoomNumber",
+    matchedPermanentRoomID: "someRoomNumber",
     matchedLocation: "Oakland",
     matchedAge: "27",
     matchedLastMessage: "I like that restaurant too, let's...",
@@ -236,7 +238,7 @@ const testobj = [
   {
     matchedFirstName: "ytjty 18",
     matchedGuid: "5de7a9a888fab05ca501ae9a",
-    matchedMinuteRoomID: "someRoomNumber",
+    matchedPermanentRoomID: "someRoomNumber",
     matchedLocation: "Oakland",
     matchedAge: "27",
     matchedLastMessage: "I like that restaurant too, let's...",
