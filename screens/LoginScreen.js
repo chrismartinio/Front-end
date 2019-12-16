@@ -12,7 +12,7 @@ import {
 import Firebase from "../storage/Store";
 import { MonoText } from "../components/StyledText";
 import t from "tcomb-form-native";
-import { signInWithFacebook } from "../utils/auth.js";
+//import { signInWithFacebook } from "../utils/auth.js";
 
 //Redux
 import { connect } from "react-redux";
@@ -21,6 +21,7 @@ import SetJwtAction from "../storage/actions/DataReducerActions/SetJwtAction";
 import SetGUIDAction from "..//storage/actions/RegistrationActions/SetGUIDAction";
 import SetAboutYouDataAction from "../storage/actions/RegistrationActions/SetAboutYouDataAction";
 import SetIsContinueUserAction from "../storage/actions/RegistrationActions/SetIsContinueUserAction";
+import SetChecklistAction from "../storage/actions/RegistrationActions/SetChecklistAction";
 
 //import publicIP from "react-native-public-ip";
 import * as WebBrowser from "expo-web-browser";
@@ -29,7 +30,8 @@ import Constants from "expo-constants";
 import * as Permissions from "expo-permissions";
 
 const { manifest } = Constants;
-var _ = require('lodash');
+var _ = require("lodash");
+var jwtDecode = require("jwt-decode");
 const stylesheet = _.cloneDeep(t.form.Form.stylesheet);
 
 stylesheet.textbox.normal.borderWidth = 0;
@@ -48,11 +50,10 @@ stylesheet.textboxView.error.marginBottom = 5;
 const Form = t.form.Form;
 var options = {
   stylesheet: stylesheet,
-  auto: 'placeholders',
-
+  auto: "placeholders"
 };
 const User = t.struct({
-  username: t.String,
+  email: t.String,
   password: t.String
 });
 
@@ -134,36 +135,42 @@ class LoginScreen extends React.Component {
     //create tables for matched's user
   }
 
-  handleEmailAndPasswordSignin = async () => {
-    // needs to have json web token?
-    try {
-      const { username, password } = this._form.getValue();
+  localLogin = async () => {
+    const { email, password } = this._form.getValue();
 
-      let data = await fetch(`http://${localhost}:3002/api/auth/login`, {
-        method: "POST",
-        mode: "cors",
-        credentials: "same-origin",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          password: password,
-          username: username,
-          mode: 2,
-          authType: "email"
-        })
-      });
+    await fetch(`http://${localhost}:3002/api/auth/login`, {
+      method: "POST",
+      mode: "cors",
+      credentials: "same-origin",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        password: password,
+        email: email
+      })
+    })
+      .then(res => res.json())
+      .then(async res => {
+        var decoded = jwtDecode(res.jwt);
+        let { guid, firstName } = decoded;
+        //TESTING USE
+        //the checklist will be get from decoded
+        let checklist = {
+          createAccount: true,
+          aboutYou: false,
+          preferences: false,
+          interests: false,
+          wouldYouRather: false,
+          localDestination: false
+        };
+        //TESTING USE
 
-      let jsonData = await data.json();
-      if (jsonData.token) {
-        let { guid, firstName } = jsonData.data;
-        this.props.SetJwtAction(jsonData.token);
+        //store jwt to redux
+        this.props.SetJwtAction(res.jwt);
 
-        this.props.SetGUIDAction({
-          guid: guid
-        });
-
+        //store firstName to redux
         this.props.SetAboutYouDataAction({
           firstName: firstName,
           lastName: "",
@@ -172,83 +179,48 @@ class LoginScreen extends React.Component {
           country: "",
           zipCode: ""
         });
+
+        let isContinueUser = false;
+        //Any false inside the object values
+        //means the user has not finished one of the screen
+        //and mark them as continue user
+        Object.values(checklist).forEach(e => {
+          if (!e) {
+            isContinueUser = true;
+          }
+        });
+        //if the user is a continue user, send the user back to registration
+        if (isContinueUser) {
+          return this.props.navigation.navigate("Registration");
+        }
+
+        //store guid to redux
+        this.props.SetGUIDAction({
+          guid: guid
+        });
+
         this.props.navigation.navigate("Main");
-      } else {
-        alert(jsonData.error);
-      }
-    } catch (e) {
-      console.log(e);
-    }
+        console.log(decoded);
+      })
+      .catch(err => {
+        alert("Incorrect Email or Password");
+      });
   };
 
   handleSignUp = () => {
     this.props.navigation.navigate("Registration");
   };
 
-  DBCheck = async info => {
-    try {
-      console.log(info.uid);
-      let data = await fetch(`http://${localhost}:3070/api/auth/login`, {
-        method: "POST",
-        mode: "cors",
-        credentials: "same-origin",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          password: info.uid,
-          username: info.email
-        })
-      });
-
-      let jsonData = await data.json();
-      return jsonData;
-    } catch (e) {
-      console.log(e.error);
-    }
+  googleValidation = async signInData => {
+    console.log("googleValidation");
   };
 
-  checkFaceBookValidity = async signInData => {
-    try {
-      //const { username, password } = this._form.getValue();
-      var fbData = signInWithFacebook();
-      fbData
-        .then(data => {
-          return data;
-        })
-        .then(fbData => {
-          fetch(`http://${localhost}:3070/api/auth/login`, {
-            method: "POST",
-            mode: "cors",
-            credentials: "same-origin",
-            headers: {
-              Accept: "application/json",
-              "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-              mode: 2,
-              authType: "facebook",
-              data: fbData
-            })
-          })
-            .then(AuthData => {
-              return AuthData.json();
-            })
-            .then(data => {
-              this.props.SetJwtAction(data.token);
-              this.props.navigation.navigate("Chat");
-            })
-            .catch(e => {
-              console.log(e);
-            });
-        })
-        .catch(err => {
-          console.log(err);
-        });
-    } catch (e) {
-      console.log(e);
-    }
+  twitterValidation = async signInData => {
+    console.log("twitterValidation");
+  };
+
+  faceBookValidation = async signInData => {
+    console.log("faceBookValidation");
   };
 
   render() {
@@ -270,114 +242,69 @@ class LoginScreen extends React.Component {
           </View>
           <View style={styles.formContainer}>
             <Form
-            options={options}
-            autoCapitalize = 'none'
-            type={User}
-            ref={c => (this._form = c)} />
+              options={options}
+              autoCapitalize="none"
+              type={User}
+              ref={c => (this._form = c)}
+            />
           </View>
           <View style={styles.buttonStyle}>
-                <Button
+            <Button
               title="Sign In"
-              onPress={e => this.handleEmailAndPasswordSignin(e)}
+              onPress={e => this.localLogin(e)}
               color="white"
               key="100"
             />
-              </View>
-              <View style={styles.buttonStyleOutline}>
-                <Button
+          </View>
+          <View style={styles.buttonStyleOutline}>
+            <Button
               title="Sign Up"
               onPress={this.handleSignUp}
               color="#18cdf6"
               key="100"
             />
-              </View>
-          <Button title="Forgot password!" /*onPress={this.handleSignUp}*/ color="#18cdf6" />
+          </View>
+          <Button
+            title="Forgot password!"
+            /*onPress={this.handleSignUp}*/ color="#18cdf6"
+          />
           <Text style={styles.centerText}>Sign in with</Text>
           <View
             style={{ flex: 1, flexDirection: "row", justifyContent: "center" }}
           >
+            <TouchableOpacity onPress={this.faceBookValidation}>
+              <Image
+                source={
+                  __DEV__
+                    ? require("../assets/images/f_logo.png")
+                    : require("../assets/images/f_logo.png")
+                }
+                style={styles.iconImage}
+              />
+            </TouchableOpacity>
 
-          <TouchableOpacity onPress={this.checkFaceBookValidity}>
-          <Image
-              source={
-                __DEV__
-                  ? require("../assets/images/f_logo.png")
-                  : require("../assets/images/f_logo.png")
-              }
-              style={styles.iconImage}
-            />
+            <TouchableOpacity onPress={this.googleValidation}>
+              <Image
+                source={
+                  __DEV__
+                    ? require("../assets/images/google-plus.png")
+                    : require("../assets/images/google-plus.png")
+                }
+                style={styles.iconImage}
+              />
             </TouchableOpacity>
-            {/* <Button
-              title="facebook"
-              onPress={this.checkFaceBookValidity}
-              color="blue"
-            /> */}
-<TouchableOpacity onPress={this.checkFaceBookValidity}>
-          <Image
-              source={
-                __DEV__
-                  ? require("../assets/images/google-plus.png")
-                  : require("../assets/images/google-plus.png")
-              }
-              style={styles.iconImage}
-            />
+
+            <TouchableOpacity onPress={this.twitterValidation}>
+              <Image
+                source={
+                  __DEV__
+                    ? require("../assets/images/twitter.png")
+                    : require("../assets/images/twitter.png")
+                }
+                style={styles.iconImage}
+              />
             </TouchableOpacity>
-            {/* <Button
-              title="google"
-              onPress={this.checkFaceBookValidity}
-              color="blue"
-            /> */}
-<TouchableOpacity onPress={this.checkFaceBookValidity}>
-          <Image
-              source={
-                __DEV__
-                  ? require("../assets/images/twitter.png")
-                  : require("../assets/images/twitter.png")
-              }
-              style={styles.iconImage}
-            />
-            </TouchableOpacity>
-            {/* <Button
-              title="twitter"
-              onPress={this.checkFaceBookValidity}
-              color="blue"
-            /> */}
           </View>
-
-{/*
-          <View style={styles.container}>
-            <Button
-              title="Sign in!"
-              onPress={e => this.handleEmailAndPasswordSignin(e)}
-              color="blue"
-              key="100"
-            />
-            <Text />
-          </View>
-
-          <Button title="Sign Up!" onPress={this.handleSignUp} color="blue" /> */}
-
-          {/* <View
-            style={{ flex: 1, flexDirection: "row", justifyContent: "center" }}
-          >
-            <Button
-              title="facebook"
-              onPress={this.checkFaceBookValidity}
-              color="blue"
-            />
-
-            <Button
-              title="google"
-              onPress={this.checkFaceBookValidity}
-              color="blue"
-            />
-
-            <Button
-              title="twitter"
-              onPress={this.checkFaceBookValidity}
-              color="blue"
-            />
-          </View> */}
 
           {/*Testing USE*/}
           <Button
@@ -463,11 +390,11 @@ const styles = StyleSheet.create({
   },
   formContainer: {
     justifyContent: "center",
-    width:'55%',
+    width: "55%",
     marginTop: 50,
     padding: 10,
     backgroundColor: "#ffffff",
-    alignSelf: 'center'
+    alignSelf: "center"
   },
   developmentModeText: {
     marginBottom: 20,
@@ -488,7 +415,7 @@ const styles = StyleSheet.create({
     width: 300,
     height: 200,
     resizeMode: "contain",
-    marginTop: '10%',
+    marginTop: "10%",
     marginLeft: -10
   },
   getStartedContainer: {
@@ -555,7 +482,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     color: "white",
     backgroundColor: "#18cdf6",
-    width: '75%',
+    width: "75%",
     alignSelf: "center",
     marginBottom: 20,
     fontStyle: "italic"
@@ -565,22 +492,22 @@ const styles = StyleSheet.create({
     color: "#18cdf6",
     borderWidth: 1,
     borderColor: "#18cdf6",
-    width: '75%',
+    width: "75%",
     alignSelf: "center",
     marginBottom: 5,
     fontStyle: "italic"
   },
-  centerText:{
+  centerText: {
     marginTop: 15,
-    textAlign: 'center',
-    color:'grey'
+    textAlign: "center",
+    color: "grey"
   },
   iconImage: {
     width: 40,
     height: 40,
     resizeMode: "contain",
     marginTop: 15,
-    padding:10,
+    padding: 10,
     margin: 20
   }
 });
@@ -593,7 +520,9 @@ const mapDispatchToProps = dispatch => ({
   SetGUIDAction: payload => dispatch(SetGUIDAction(payload)),
   SetFbDataAction: payload => dispatch(SetFbDataAction(payload)),
   SetJwtAction: payload => dispatch(SetJwtAction(payload)),
-  SetIsContinueUserAction: payload => dispatch(SetIsContinueUserAction(payload))
+  SetIsContinueUserAction: payload =>
+    dispatch(SetIsContinueUserAction(payload)),
+  SetChecklistAction: payload => dispatch(SetChecklistAction(payload))
 });
 
 export default connect(
