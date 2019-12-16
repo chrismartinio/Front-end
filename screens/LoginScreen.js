@@ -14,6 +14,10 @@ import { MonoText } from "../components/StyledText";
 import t from "tcomb-form-native";
 //import { signInWithFacebook } from "../utils/auth.js";
 
+//1. make an error screen for no data for profile screen and edit screen
+//2. delay footer buttons
+//3. fix faill storing
+
 //Redux
 import { connect } from "react-redux";
 import SetFbDataAction from "../storage/actions/DataReducerActions/SetFbDataAction";

@@ -66,7 +66,7 @@ class Footer extends React.Component {
           {/*User Profile*/}
           <View
             style={{
-              width: 100,
+              width: 75,
               height: 75,
               backgroundColor: "powderblue"
             }}
@@ -78,9 +78,7 @@ class Footer extends React.Component {
           </View>
 
           {/*Conversations*/}
-          <View
-            style={{ width: 100, height: 75, backgroundColor: "lightblue" }}
-          >
+          <View style={{ width: 75, height: 75, backgroundColor: "lightblue" }}>
             <Button
               title="Conversations"
               onPress={() =>
@@ -91,7 +89,7 @@ class Footer extends React.Component {
 
           {/*Notification*/}
           <View
-            style={{ width: 100, height: 75, backgroundColor: "lightyellow" }}
+            style={{ width: 75, height: 75, backgroundColor: "lightyellow" }}
           >
             <Button
               title="Notifications"
@@ -100,7 +98,7 @@ class Footer extends React.Component {
           </View>
 
           {/*Matching*/}
-          <View style={{ width: 100, height: 75, backgroundColor: "skyblue" }}>
+          <View style={{ width: 75, height: 75, backgroundColor: "skyblue" }}>
             <Button
               title="Connections"
               onPress={() => this.props.navigation.navigate("Connections")}
@@ -110,7 +108,7 @@ class Footer extends React.Component {
           {/*Setting*/}
           <View
             style={{
-              width: 100,
+              width: 75,
               height: 75,
               backgroundColor: "powderblue"
             }}
