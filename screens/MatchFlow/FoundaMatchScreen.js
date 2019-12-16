@@ -20,6 +20,8 @@ import Footer from "../../sharedComponents/Footer";
 
 import { Card } from "react-native-paper";
 
+import { testobj } from "../../data/testObj";
+
 class MatchScreen extends React.Component {
   //Header
 
@@ -60,23 +62,7 @@ class MatchScreen extends React.Component {
     //fetch data
     //and use guid to get interest, miles, firstName, lastName, image
 
-    const successObj = {
-      matchedFirstName: "Aaa 1",
-      matchedLastName: "BBB 1",
-      matchedGuid: "5de42a14b4dc5b1fba94e1d3",
-      matchedMinuteRoomID: "someRoomNumber",
-      matchedLocation: "Oakland",
-      matchedState: "CA",
-      matchedAge: "27",
-      matchedLastMessage: "I like that restaurant too, let's...",
-      matchedLastRepliedDate: "Some Date",
-      matchedLikesArray: ["Pet", "Shopping", "Music"],
-      matchedMiles: "4.26",
-      matchedImage:
-        "https://media.gq.com/photos/56d4902a9acdcf20275ef34c/master/w_806,h_1173,c_limit/tom-hardy-lead-840.jpg"
-    };
-
-    this.setMatchedUserInfo(successObj);
+    this.setMatchedUserInfo(testobj[0]);
 
     this.props.navigation.state.params.backFromMatch();
   }
