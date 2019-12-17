@@ -1064,6 +1064,9 @@ const birthdatePickerCustom = {
     position: "absolute",
     left: "0%",
     paddingHorizontal: 9
+  },
+  datePicker: {
+    //backgroundColor: "black"
   }
 };
 

@@ -19,8 +19,9 @@
     "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
-      "supportedInterfaceStyles": ["light"],
-      "UIUserInterfaceStyle": ["light"]
+      "infoPlist": {
+        "UIUserInterfaceStyle": "Light"
+      }
     },
     "extra": {
       "firebase": {
