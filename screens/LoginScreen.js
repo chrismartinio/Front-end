@@ -140,7 +140,15 @@ class LoginScreen extends React.Component {
   }
 
   localLogin = async () => {
-    const { email, password } = this._form.getValue();
+    let email = "",
+      password = "";
+
+    try {
+      email = this._form.getValue().email;
+      password = this._form.getValue().password;
+    } catch (e) {
+      return alert("Empty Email or Password");
+    }
 
     await fetch(`http://${localhost}:3002/api/auth/login`, {
       method: "POST",
@@ -155,9 +163,18 @@ class LoginScreen extends React.Component {
         email: email
       })
     })
+      .then(res => {
+        if (res.status === 401) {
+          let err = new Error("Invalid Email and Password");
+          err.httpStatusCode = 401;
+          throw err;
+        }
+        return res;
+      })
       .then(res => res.json())
       .then(async res => {
         var decoded = jwtDecode(res.jwt);
+        console.log(decoded);
 
         let { guid, firstName, checklist } = decoded;
 
@@ -194,10 +211,13 @@ class LoginScreen extends React.Component {
         });
 
         this.props.navigation.navigate("Main");
-        console.log(decoded);
       })
       .catch(err => {
-        alert("Incorrect Email or Password");
+        if (err.httpStatusCode === 401) {
+          alert("Incorrect Email or Password");
+        } else {
+          alert("Request Failed.\nPlease Try Again.");
+        }
       });
   };
 
