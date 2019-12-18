@@ -1,10 +1,19 @@
 import React, { Component } from "react";
-import { Text, View, TouchableOpacity, Button, StyleSheet } from "react-native";
+import {
+  Text,
+  View,
+  TouchableOpacity,
+  Button,
+  StyleSheet,
+  Dimensions
+} from "react-native";
 import { StackActions, NavigationActions } from "react-navigation";
 //Redux
 import { connect } from "react-redux";
 
 import { Icon } from "react-native-elements";
+
+const { height, width } = Dimensions.get("window");
 
 class Footer extends React.Component {
   constructor(props) {
@@ -75,7 +84,7 @@ class Footer extends React.Component {
           <TouchableOpacity
             onPress={() => this.props.navigation.dispatch(resetProfileAction)}
           >
-            <Icon name="person" color="#46278c" />
+            <Icon name="person" size={width * 0.06} color="#46278c" />
             <Text style={styles.footerText}>Profile</Text>
           </TouchableOpacity>
           <TouchableOpacity
@@ -83,26 +92,41 @@ class Footer extends React.Component {
               this.props.navigation.dispatch(resetConversationsAction)
             }
           >
-            <Icon type="font-awesome" name="commenting-o" color="#46278c" />
+            <Icon
+              type="font-awesome"
+              size={width * 0.06}
+              name="commenting-o"
+              color="#46278c"
+            />
             <Text style={styles.footerText}>Conversations</Text>
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => this.props.navigation.navigate("Notifications")}
           >
-            <Icon type="font-awesome" name="bell-o" color="#46278c" />
+            <Icon
+              type="font-awesome"
+              size={width * 0.06}
+              name="bell-o"
+              color="#46278c"
+            />
             <Text style={styles.footerText}>Notifications</Text>
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => this.props.navigation.navigate("Connections")}
           >
-            <Icon name="people" color="#46278c" />
+            <Icon name="people" size={width * 0.06} color="#46278c" />
             <Text style={styles.footerText}>Connections</Text>
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => this.props.navigation.dispatch(resetSettingAction)}
           >
             <View style={{ transform: [{ rotate: "180deg" }] }}>
-              <Icon type="font-awesome" name="sliders" color="#46278c" />
+              <Icon
+                type="font-awesome"
+                size={width * 0.06}
+                name="sliders"
+                color="#46278c"
+              />
             </View>
             <Text style={styles.footerText}>Settings</Text>
           </TouchableOpacity>
@@ -126,7 +150,7 @@ const styles = StyleSheet.create({
   },
   footerText: {
     color: "#46278c",
-    fontSize: 10,
+    fontSize: width * 0.026,
     textAlign: "center",
     marginTop: 5
   }
