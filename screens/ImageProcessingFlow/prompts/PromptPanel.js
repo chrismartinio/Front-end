@@ -1,30 +1,24 @@
-import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import React from "react";
+import { View, StyleSheet } from "react-native";
 
-import PhotoPrompt from './PhotoPrompt.js';
+import PhotoPrompt from "./PhotoPrompt.js";
 
 const generatePrompts = props => {
-    var list = [];
-    
-    for (var i = 0; i < 5; i++) {
-        list.push (<PhotoPrompt  key={`photoPromptId${i}`} promptKey={i} />)
-    }
+  var list = [];
 
-    return list;
-}
+  for (var i = 0; i < 5; i++) {
+    list.push(<PhotoPrompt key={`photoPromptId${i}`} promptKey={i} />);
+  }
 
-const PromptPanel = props => (
-    <View>
-       {generatePrompts (props)}
-    </View>
-);
+  return list;
+};
 
-const styles = StyleSheet.create (
-    {
-        root: 
-            {
-                display: 'flex'
-            }
-    })
+const PromptPanel = props => <View>{generatePrompts(props)}</View>;
 
-export default PromptPanel
+const styles = StyleSheet.create({
+  root: {
+    display: "flex"
+  }
+});
+
+export default PromptPanel;

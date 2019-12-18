@@ -18,7 +18,7 @@ import {
 import { LinearGradient } from 'expo-linear-gradient'
 
 import { connect } from "react-redux";
-import SetUserDataAction from "../../../../storage/actions/SetUserDataAction";
+//import SetUserDataAction from "../../../../storage/actions/SetUserDataAction";
 import firebase from "../../../../utils/mainFire";
 import { Icon, Input } from "react-native-elements";
 import { Chevron } from "react-native-shapes";

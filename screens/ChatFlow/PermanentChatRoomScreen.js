@@ -33,6 +33,8 @@ import { localhost } from "../../config/ipconfig";
 
 const { height, width } = Dimensions.get("window");
 
+import { testobj } from "../../data/testObj";
+
 import { Icon } from "react-native-elements";
 
 class PermanentChatRoomScreen extends React.Component {
@@ -158,20 +160,7 @@ class PermanentChatRoomScreen extends React.Component {
     //PermanentChatRoom will use guid query all messages and images and stuff
     //then setState
 
-    const successObj = {
-      matchedFirstName: "Aaa 1", //db
-      matchedLastName: "BBB 1", //db
-      matchedGuid: "5de42a14b4dc5b1fba94e1d3", //match
-      matchedPermanentRoomID: "someRoomNumber", //match
-      matchedLocation: "Oakland", //db
-      matchedState: "CA", //db
-      matchedAge: "27", //db
-      matchedLikesArray: ["Pet", "Shopping", "Music"], //db
-      //db
-      matchedImage:
-        "https://media.gq.com/photos/56d4902a9acdcf20275ef34c/master/w_806,h_1173,c_limit/tom-hardy-lead-840.jpg"
-    };
-    this.setMatchedUserInfo(successObj);
+    this.setMatchedUserInfo(testobj[0]);
 
     this.keyboardDidShowListener = Keyboard.addListener(
       "keyboardDidShow",

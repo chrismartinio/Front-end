@@ -107,13 +107,13 @@ class Interests extends Component {
           });
           //Only insert or replace id = 1
           let insertSqlStatement =
-            "INSERT OR REPLACE into device_user_interests(id, createAccount_id, likesArray) " +
-            "values(1, 1, ?);";
+            "INSERT OR REPLACE into device_user_interests(id, createAccount_id, likesArray, guid) " +
+            "values(1, 1, ?, ?);";
 
           let { success } = await insertDataIntoLocalStorage(
             insertSqlStatement,
             "device_user_interests",
-            [json_likesArray],
+            [json_likesArray, this.props.CreateProfileDataReducer.guid],
             true
           );
 
@@ -133,42 +133,23 @@ class Interests extends Component {
       })
       .catch(async err => {
         //HANDLE ANY CATCHED ERRORS
-
-        let checkGuidObject = await selectDataFromLocalStorage(
-          "device_user_createAccount",
-          1
-        );
-        if (checkGuidObject.success) {
-          let { guid } = checkGuidObject.result.rows._array[0];
-
-          if (guid !== this.props.CreateProfileDataReducer.guid) {
-            this.setState(
-              {
-                isSuccess: false
-              },
-              () => {
-                return;
-              }
-            );
-          }
-        } else {
-          this.setState(
-            {
-              isSuccess: false
-            },
-            () => {
-              return;
-            }
-          );
-        }
-
         let object = await selectDataFromLocalStorage(
           "device_user_interests",
           1
         );
 
         if (object.success) {
-          let { likesArray } = object.result.rows._array[0];
+          let { likesArray, guid } = object.result.rows._array[0];
+
+          //if there is already a localstroage guid
+          //and if that guid doesn't match the guid that is inside redux guid
+          //then set the scree to false
+          if (guid !== this.props.CreateProfileDataReducer.guid) {
+            return this.setState({
+              isSuccess: false
+            });
+          }
+
           likesArray = JSON.parse(likesArray).likesArray;
 
           //setState
@@ -276,13 +257,13 @@ class Interests extends Component {
                 });
                 //Only insert or replace id = 1
                 let insertSqlStatement =
-                  "INSERT OR REPLACE into device_user_interests(id, createAccount_id, likesArray) " +
-                  "values(1, 1, ?);";
+                  "INSERT OR REPLACE into device_user_interests(id, createAccount_id, likesArray, guid) " +
+                  "values(1, 1, ?, ?);";
 
                 let { success } = await insertDataIntoLocalStorage(
                   insertSqlStatement,
                   "device_user_interests",
-                  [json_likesArray],
+                  [json_likesArray, this.props.CreateProfileDataReducer.guid],
                   true
                 );
 

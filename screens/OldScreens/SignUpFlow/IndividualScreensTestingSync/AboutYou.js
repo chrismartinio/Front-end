@@ -19,7 +19,7 @@ import { LinearGradient } from 'expo-linear-gradient'
 
 import { connect } from "react-redux";
 //import SetProfilePersonalAction from "../../storage/actions/SetProfilePersonalAction";
-import SetProfilePersonalAction from "../../../../storage/actions/SetProfilePersonalAction";
+//import SetProfilePersonalAction from "../../../../storage/actions/SetProfilePersonalAction";
 //import firebase from "../../../utils/mainFire";
 import firebase from "../../../../utils/mainFire";
 import DatePicker from "react-native-datepicker";

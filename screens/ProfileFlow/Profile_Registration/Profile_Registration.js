@@ -68,7 +68,7 @@ class Profile_Registration extends Component {
       interestsToggle: false,
       wouldYouRatherToggle: false,
       localDestinationToggle: false,
-      createAccountPassed: true,
+      createAccountPassed: false,
       aboutYouPassed: false,
       preferencesPassed: false,
       interestsPassed: false,
@@ -112,17 +112,9 @@ class Profile_Registration extends Component {
 
     //Decode JWT
     var decoded = jwtDecode(jwt);
-    let { guid, isThirdParty } = decoded;
-    //TESTING USE
-    //the checklist will be get from decoded
-    let checklist = {
-      createAccount: true,
-      aboutYou: false,
-      preferences: false,
-      interests: false,
-      wouldYouRather: false,
-      localDestination: false
-    };
+    console.log(decoded);
+    let { guid, isThirdParty, checklist } = decoded;
+
     let isThirdPartiesServiceUser = isThirdParty;
 
     return {

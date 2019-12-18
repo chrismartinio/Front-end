@@ -3,8 +3,8 @@ import { View, Text } from 'react-native';
 import { ActivityTag } from './ActivityTag';
 import { connect } from 'react-redux';
 
-import SetProfileLikesAction from '../../storage/actions/SetProfileLikesAction'
-import SetProfileFirstLike from '../../storage/actions/SetProfileFirstLike'
+//import SetProfileLikesAction from '../../storage/actions/SetProfileLikesAction'
+//import SetProfileFirstLike from '../../storage/actions/SetProfileFirstLike'
 
 
 class Category extends Component {

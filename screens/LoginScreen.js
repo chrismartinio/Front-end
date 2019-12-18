@@ -158,18 +158,8 @@ class LoginScreen extends React.Component {
       .then(res => res.json())
       .then(async res => {
         var decoded = jwtDecode(res.jwt);
-        let { guid, firstName } = decoded;
-        //TESTING USE
-        //the checklist will be get from decoded
-        let checklist = {
-          createAccount: true,
-          aboutYou: false,
-          preferences: false,
-          interests: false,
-          wouldYouRather: false,
-          localDestination: false
-        };
-        //TESTING USE
+
+        let { guid, firstName, checklist } = decoded;
 
         //store jwt to redux
         this.props.SetJwtAction(res.jwt);
