@@ -305,8 +305,11 @@ class LoginScreen extends React.Component {
             title="Testing - Go to Link Screen"
             //If Navigate to Profile, in side linkscreen has set a guid
             onPress={() => {
+              this.props.SetGUIDAction({
+                guid: "5de42b16b4dc5b1fba94e1d4"
+              });
               this.props.SetAboutYouDataAction({
-                firstName: "Device's user",
+                firstName: "KaChi",
                 lastName: "",
                 birthDate: "",
                 gender: "",
@@ -325,7 +328,7 @@ class LoginScreen extends React.Component {
                 guid: "5de42b16b4dc5b1fba94e1d4"
               });
               this.props.SetAboutYouDataAction({
-                firstName: "Device's user",
+                firstName: "KaChi",
                 lastName: "",
                 birthDate: "",
                 gender: "",

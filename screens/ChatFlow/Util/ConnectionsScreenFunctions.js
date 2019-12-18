@@ -3,5 +3,25 @@ export function degToRad(degree) {
 }
 
 export function shortTheMessage(message) {
-  return message.slice(0, 30) + "...";
+  if (message.length > 20) {
+    return message.slice(0, 20) + "...";
+  }
+  return message;
+}
+
+export function shortName(str) {
+  let length = str.length + 2;
+
+  if (length > 6) {
+    return 0.035;
+  }
+  return 0.047;
+}
+
+export function shortAgeAndAddressSTR(str) {
+  let length = str.length + 2;
+  if (length > 10) {
+    return 0.015;
+  }
+  return 0.038;
 }

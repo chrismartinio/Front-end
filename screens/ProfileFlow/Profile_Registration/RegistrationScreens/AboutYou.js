@@ -33,6 +33,15 @@ import { Chevron } from "react-native-shapes";
 import FailScreen from "../../Profile_SharedComponents/FailScreen";
 import NextButton from "../../Profile_SharedComponents/NextButton";
 
+import { Appearance } from 'react-native-appearance';
+const colorScheme = Appearance.getColorScheme();
+let bgColor;
+if(colorScheme === 'dark'){
+  bgColor = '#000';
+}else{
+  bgColor = '#fff';
+}
+
 //SQLite
 import * as SQLite from "expo-sqlite";
 const db = SQLite.openDatabase("that.db");
@@ -1050,7 +1059,7 @@ const birthdatePickerCustom = {
     paddingHorizontal: 9
   },
   datePicker: {
-    //backgroundColor: "black"
+    backgroundColor: bgColor
   }
 };
 
