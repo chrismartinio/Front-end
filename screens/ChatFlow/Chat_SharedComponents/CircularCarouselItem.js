@@ -13,7 +13,11 @@ import {
 
 const { height, width } = Dimensions.get("window");
 
-import { shortTheMessage } from "../Util/ConnectionsScreenFunctions.js";
+import {
+  shortTheMessage,
+  shortName,
+  shortAgeAndAddressSTR
+} from "../Util/ConnectionsScreenFunctions.js";
 
 export default class CircularCarouselItem extends React.Component {
   constructor(props) {
@@ -25,6 +29,11 @@ export default class CircularCarouselItem extends React.Component {
   };
 
   render() {
+    let nameFont = shortName(this.props.itemData.matchedFirstName);
+    let ageAddressFont = shortAgeAndAddressSTR(
+      this.props.itemData.matchedAge + this.props.itemData.matchedLocation
+    );
+    //Outer box
     return (
       <Animated.View
         style={[
@@ -37,60 +46,80 @@ export default class CircularCarouselItem extends React.Component {
           this.props.itemAnimationsXY
         ]}
       >
+        {/*Inner Box*/}
         <TouchableOpacity
           onPress={() => {
             this.goToPermanentChatRoom(this.props.itemData);
           }}
+          style={{
+            backgroundColor: "#ccccff",
+            width: this.props.width - 5,
+            height: this.props.height - 5,
+            borderRadius: this.props.borderRadius
+          }}
         >
-          {/*Box background*/}
-          <View
-            style={{
-              backgroundColor: "#ccccff",
-              width: this.props.width - width * 0.008,
-              margin: 3,
-              height: this.props.height - width * 0.021,
-              borderRadius: this.props.borderRadius
-            }}
-          >
-            {/*Box Contents*/}
-            <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
-              {/*Image*/}
-              <Image
-                source={{
-                  uri: this.props.itemData.matchedImage
-                }}
-                style={{
-                  width: width * 0.2,
-                  height: width * 0.2,
-                  borderRadius: 30
-                }}
-              />
+          <View style={{ flexDirection: "row", overflow: "hidden", flexWrap: "nowrap" }}>
+            {/*Image*/}
+            <Image
+              source={{
+                uri: this.props.itemData.matchedImage
+              }}
+              style={{
+                width: width * 0.22,
+                height: width * 0.22,
+                borderRadius: width * 0.108,
+                borderWidth: 3,
+                right: width * 0.012,
+                bottom: width * 0.007,
+                borderColor: "#fff"
+              }}
+            />
 
-              <View>
-                {/*Matched User Info*/}
-                <Text style={{ color: "black", fontSize: width * 0.0346 }}>
-                  {this.props.itemData.matchedFirstName}
-                  {"          "}
+            <View
+              style={{
+                flexDirection: "column",
+                overflow: "hidden",
+                margin: 5
+              }}
+            >
+              {/*First Row*/}
+              <View
+                style={{
+                  flexDirection: "row",
+                  overflow: "hidden",
+                  justifyContent: "space-between",
+                  width: this.props.width - width * 0.36
+                }}
+              >
+                {/*Name*/}
+                <Text
+                  style={{
+                    fontSize: width * nameFont
+                  }}
+                >
+                  {this.props.itemData.matchedFirstName}{" "}
+                  {this.props.itemData.matchedLastName[0]}
+                </Text>
+
+                {/*Age and Address*/}
+                <Text style={{ fontSize: width * 0.038 }}>
                   {this.props.itemData.matchedAge} ,
                   {this.props.itemData.matchedLocation}
                 </Text>
-
-                {/*spaces */}
-                <View style={{ padding: "2%" }} />
-
-                {/*Last Message*/}
-                <Text style={{ color: "black", opacity: 0.5, fontSize: 12 }}>
-                  {shortTheMessage(this.props.itemData.matchedLastMessage)}
-                </Text>
-
-                {/*spaces */}
-                <View style={{ padding: "2%" }} />
-
-                {/*Last Replied Date*/}
-                <Text style={{ color: "black", fontSize: 10 }}>
-                  Last Replied {this.props.itemData.matchedLastRepliedDate}
-                </Text>
               </View>
+
+              <View style={{ padding: 1 }} />
+
+              <Text style={{ fontSize: width * 0.028, opacity: 0.7 }}>
+                "{shortTheMessage(this.props.itemData.matchedLastMessage)}"
+              </Text>
+
+              <View style={{ padding: 2 }} />
+
+              {/*Last Replied Date*/}
+              <Text style={{ color: "black", fontSize: 10 }}>
+                Last Replied {this.props.itemData.matchedLastRepliedDate}
+              </Text>
             </View>
           </View>
         </TouchableOpacity>
@@ -101,7 +130,10 @@ export default class CircularCarouselItem extends React.Component {
 
 const styles = StyleSheet.create({
   item: {
+    flex: 1,
     backgroundColor: "#fff",
-    position: "absolute"
+    position: "absolute",
+    alignItems: "center",
+    justifyContent: "center"
   }
 });

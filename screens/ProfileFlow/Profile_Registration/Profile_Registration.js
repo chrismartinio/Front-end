@@ -68,7 +68,7 @@ class Profile_Registration extends Component {
       interestsToggle: false,
       wouldYouRatherToggle: false,
       localDestinationToggle: false,
-      createAccountPassed: false,
+      createAccountPassed: true,
       aboutYouPassed: false,
       preferencesPassed: false,
       interestsPassed: false,

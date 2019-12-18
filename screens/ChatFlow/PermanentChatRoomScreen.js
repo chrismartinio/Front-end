@@ -177,14 +177,10 @@ class PermanentChatRoomScreen extends React.Component {
       }
     });
 
-    /*
     this.guid = await this.props.CreateProfileDataReducer.guid;
 
     this.user_firstName = await this.props.CreateProfileDataReducer.aboutYouData
       .firstName;
-    */
-    this.guid = "";
-    this.user_firstName = "You";
 
     //emit an event to tell the socket the user has enter the room
     this.socket.emit("add user", {
@@ -313,7 +309,7 @@ class PermanentChatRoomScreen extends React.Component {
                   }`}</Text>
                 </View>
               </View>
-              <Text style={styles.circle}>H</Text>
+              <Text style={styles.circle}>{this.user_firstName[0]}</Text>
             </View>
           </View>
         );
@@ -322,7 +318,9 @@ class PermanentChatRoomScreen extends React.Component {
         return (
           <View key={index}>
             <View style={styles.textContainer}>
-              <Text style={styles.circlePurple}>H</Text>
+              <Text style={styles.circlePurple}>
+                {this.matched_user_firstName[0]}
+              </Text>
               <View style={styles.targetMessageTextWrap}>
                 <View style={styles.targetMessageText}>
                   <Text>{`${messageItem.message}`}</Text>
