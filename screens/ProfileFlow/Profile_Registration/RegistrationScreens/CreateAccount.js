@@ -232,7 +232,7 @@ class CreateAccount extends Component {
       })
       .catch(async err => {
         //HANDLE ANY CATCHED ERRORS
-        console.log(this.props.CreateProfileDataReducer.guid);
+        console.log(`login: ${this.props.CreateProfileDataReducer.guid}`);
 
         let object = await selectDataFromLocalStorage(
           "device_user_createAccount",
@@ -241,20 +241,17 @@ class CreateAccount extends Component {
 
         if (object.success) {
           let { email, guid } = object.result.rows._array[0];
+          console.log(`storage${guid}`);
 
           //if there is already a localstroage guid
           //and if that guid doesn't match the guid that is inside redux guid
           //then set the scree to false
           if (guid !== this.props.CreateProfileDataReducer.guid) {
-            this.setState(
-              {
-                isSuccess: false
-              },
-              () => {
-                return;
-              }
-            );
+            return this.setState({
+              isSuccess: false
+            });
           }
+
           //setState
           this.setState({
             email: email,

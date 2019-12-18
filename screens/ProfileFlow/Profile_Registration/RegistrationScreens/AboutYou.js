@@ -152,8 +152,8 @@ class AboutYou extends Component {
           //LocalStorage
           //Only insert or replace id = 1
           let insertSqlStatement =
-            "INSERT OR REPLACE into device_user_aboutYou(id, createAccount_id, firstName, lastName, birthDate, gender, country, zipCode, userBio, city, state) " +
-            "values(1, 1, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
+            "INSERT OR REPLACE into device_user_aboutYou(id, createAccount_id, firstName, lastName, birthDate, gender, country, zipCode, userBio, city, state, guid) " +
+            "values(1, 1, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
 
           let { success } = await insertDataIntoLocalStorage(
             insertSqlStatement,
@@ -167,7 +167,8 @@ class AboutYou extends Component {
               zipCode,
               userBio,
               city,
-              state
+              state,
+              this.props.CreateProfileDataReducer.guid
             ],
             true
           );
@@ -197,34 +198,6 @@ class AboutYou extends Component {
       .catch(async err => {
         //HANDLE ANY CATCHED ERRORS
 
-        let checkGuidObject = await selectDataFromLocalStorage(
-          "device_user_createAccount",
-          1
-        );
-        if (checkGuidObject.success) {
-          let { guid } = checkGuidObject.result.rows._array[0];
-
-          if (guid !== this.props.CreateProfileDataReducer.guid) {
-            this.setState(
-              {
-                isSuccess: false
-              },
-              () => {
-                return;
-              }
-            );
-          }
-        } else {
-          this.setState(
-            {
-              isSuccess: false
-            },
-            () => {
-              return;
-            }
-          );
-        }
-
         let object = await selectDataFromLocalStorage(
           "device_user_aboutYou",
           1
@@ -240,8 +213,18 @@ class AboutYou extends Component {
             zipCode,
             userBio,
             city,
-            state
+            state,
+            guid
           } = object.result.rows._array[0];
+
+          //if there is already a localstroage guid
+          //and if that guid doesn't match the guid that is inside redux guid
+          //then set the scree to false
+          if (guid !== this.props.CreateProfileDataReducer.guid) {
+            return this.setState({
+              isSuccess: false
+            });
+          }
 
           //setState
           this.setState({
@@ -514,8 +497,8 @@ class AboutYou extends Component {
                 let json_checklist = JSON.stringify(checklist);
                 //Only insert or replace id = 1
                 let insertSqlStatement =
-                  "INSERT OR REPLACE into device_user_aboutYou(id, createAccount_id, firstName, lastName, birthDate, gender, country, zipCode, userBio, city, state) " +
-                  "values(1, 1, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
+                  "INSERT OR REPLACE into device_user_aboutYou(id, createAccount_id, firstName, lastName, birthDate, gender, country, zipCode, userBio, city, state, guid) " +
+                  "values(1, 1, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
 
                 let { success } = await insertDataIntoLocalStorage(
                   insertSqlStatement,
@@ -529,7 +512,8 @@ class AboutYou extends Component {
                     this.state.zipCode,
                     this.state.userBio,
                     "",
-                    ""
+                    "",
+                    this.props.CreateProfileDataReducer.guid
                   ],
                   true
                 );

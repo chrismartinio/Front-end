@@ -33,6 +33,8 @@ import { localhost } from "../../config/ipconfig";
 
 const { height, width } = Dimensions.get("window");
 
+import { testobj } from "../../data/testObj";
+
 import { Icon } from "react-native-elements";
 
 class MinuteChatRoomScreen extends React.Component {
@@ -190,19 +192,8 @@ class MinuteChatRoomScreen extends React.Component {
         this.openMenu(true);
       }
     });
-    const successObj = {
-      matchedFirstName: "Aaa 1",
-      matchedLastName: "BBB 1",
-      matchedGuid: "5de42a14b4dc5b1fba94e1d3",
-      matchedMinuteRoomID: "someRoomNumber",
-      matchedLocation: "Oakland",
-      matchedState: "CA",
-      matchedAge: "27",
-      matchedLikesArray: ["Pet", "Shopping", "Music"],
-      matchedImage:
-        "https://media.gq.com/photos/56d4902a9acdcf20275ef34c/master/w_806,h_1173,c_limit/tom-hardy-lead-840.jpg"
-    };
-    this.setMatchedUserInfo(successObj);
+
+    this.setMatchedUserInfo(testobj[0]);
     //this.setMatchedUserInfo(this.props.navigation.getParam("matchedInfo"));
 
     /*

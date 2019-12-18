@@ -201,6 +201,7 @@ export function createTablesInToLocalStorage() {
     "city TEXT DEFAULT NULL," +
     "state TEXT DEFAULT NULL," +
     "createAccount_id INTEGER," +
+    "guid TEXT DEFAULT NULL," +
     "FOREIGN KEY (createAccount_id) REFERENCES device_user_createAccount (id)" +
     " );";
 
@@ -211,6 +212,7 @@ export function createTablesInToLocalStorage() {
     "ageRange TEXT DEFAULT NULL," +
     "distanceRange INTEGER DEFAULT NULL," +
     "createAccount_id INTEGER," +
+    "guid TEXT DEFAULT NULL," +
     "FOREIGN KEY (createAccount_id) REFERENCES device_user_createAccount (id)" +
     " );";
 
@@ -219,6 +221,7 @@ export function createTablesInToLocalStorage() {
     "id INTEGER PRIMARY KEY," +
     "likesArray TEXT DEFAULT NULL," +
     "createAccount_id INTEGER," +
+    "guid TEXT DEFAULT NULL," +
     "FOREIGN KEY (createAccount_id) REFERENCES device_user_createAccount (id)" +
     " );";
 
@@ -232,6 +235,7 @@ export function createTablesInToLocalStorage() {
     "s3r1 DECIMAL DEFAULT NULL," +
     "s3r2 DECIMAL DEFAULT NULL," +
     "createAccount_id INTEGER," +
+    "guid TEXT DEFAULT NULL," +
     "FOREIGN KEY (createAccount_id) REFERENCES device_user_createAccount (id)" +
     " );";
 
@@ -240,6 +244,7 @@ export function createTablesInToLocalStorage() {
     "id INTEGER PRIMARY KEY," +
     "localDestination TEXT DEFAULT NULL," +
     "createAccount_id INTEGER," +
+    "guid TEXT DEFAULT NULL," +
     "FOREIGN KEY (createAccount_id) REFERENCES device_user_createAccount (id)" +
     " );";
 
