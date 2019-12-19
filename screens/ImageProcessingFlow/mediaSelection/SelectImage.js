@@ -10,7 +10,7 @@ import {
 } from "react-native";
 
 import { connect } from "react-redux";
-import * as uploadImgActions from "../../../storage/actions/uploadMediaActions.js";
+import * as uploadImgActions from "../../../storage/actions/ImageProcessingActions/uploadMediaActions";
 
 import GalleryView from "./gallery/GalleryView.js";
 import CropPanel from "./photoCropping/CropPanel.js";
@@ -52,8 +52,8 @@ const UploadSection = props => {
 };
 
 const mapStateToProps = state => ({
-  gallerySelection: state.UploadImageReducer.gallerySelection,
-  cameraActive: state.UploadImageReducer.cameraActive
+  gallerySelection: state.uploadMediaReducer.gallerySelection,
+  cameraActive: state.uploadMediaReducer.cameraActive
 });
 
 const mapDispatchToProps = dispatch => ({

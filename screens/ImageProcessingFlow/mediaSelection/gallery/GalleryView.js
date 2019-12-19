@@ -8,7 +8,7 @@ import {
 } from "react-native";
 
 import { connect } from "react-redux";
-import * as uploadImgActions from "../../../../storage/actions/uploadMediaActions.js";
+import * as uploadImgActions  from "../../../../storage/actions/ImageProcessingActions/uploadMediaActions";
 
 import ImgTile from "./GalleryTile.js";
 
@@ -41,7 +41,7 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = state => ({
-  gallery: state.UploadImageReducer.gallery
+  gallery: state.uploadMediaReducer.gallery
 });
 
 const mapDispatchToProps = dispatch => ({

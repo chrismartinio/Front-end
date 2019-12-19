@@ -9,7 +9,7 @@ import {
 } from "react-native";
 
 import { connect } from "react-redux";
-import * as uploadImgActions from "../../../storage/actions/uploadMediaActions.js";
+import * as uploadImgActions from "../../../storage/actions/ImageProcessingActions/uploadMediaActions";
 
 import PromptPanel from "./PromptPanel.js";
 
@@ -59,7 +59,7 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = state => {
-  const reducer = state.UploadImageReducer;
+  const reducer = state.uploadMediaReducer;
 
   return {
     gallery: reducer.gallery,

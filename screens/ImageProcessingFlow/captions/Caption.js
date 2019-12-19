@@ -2,7 +2,7 @@ import React from "react";
 import { TouchableHighlight, Text, StyleSheet } from "react-native";
 
 import { connect } from "react-redux";
-import * as uploadImgActions from "../../../storage/actions/uploadMediaActions.js";
+import * as uploadImgActions from "../../../storage/actions/ImageProcessingActions/uploadMediaActions";
 
 const Caption = props => {
   updateCaptionsAndToggle = caption => {

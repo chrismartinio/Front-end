@@ -8,7 +8,7 @@ import {
 } from "react-native";
 
 import { connect } from "react-redux";
-import * as uploadImgActions from "../../../storage/actions/uploadMediaActions.js";
+import * as uploadImgActions from "../../../storage/actions/ImageProcessingActions/uploadMediaActions";
 
 const PhotoPrompt = props => {
   addIndexToggleSelection = (key, imageSelect = false) => {
@@ -83,8 +83,8 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = state => ({
-  selectedImages: state.UploadImageReducer.selectedImages,
-  captions: state.UploadImageReducer.captions
+  selectedImages: state.uploadMediaReducer.selectedImages,
+  captions: state.uploadMediaReducer.captions
 });
 
 const mapDispatchToProps = dispatch => ({

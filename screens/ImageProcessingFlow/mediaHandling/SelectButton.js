@@ -2,7 +2,7 @@ import React from "react";
 import { View, Button, Platform, StyleSheet } from "react-native";
 
 import { connect } from "react-redux";
-import * as uploadImgActions from "../../../storage/actions/uploadMediaActions.js";
+import * as uploadImgActions from "../../../storage/actions/ImageProcessingActions/uploadMediaActions";
 
 // helper functions
 import { encodeImage } from "./ImageProcessing.js";
@@ -29,7 +29,7 @@ const UploadButton = props => {
 };
 
 const mapStateToProps = state => ({
-  selectedImg: state.UploadImageReducer.selectedImage
+  selectedImg: state.uploadMediaReducer.selectedImage
 });
 
 const mapDispatchToProps = dispatch => ({

@@ -147,7 +147,7 @@ class LoginScreen extends React.Component {
       email = this._form.getValue().email;
       password = this._form.getValue().password;
     } catch (e) {
-      return alert("Empty Email or Password");
+      return alert("Please fill in Email or Password");
     }
 
     await fetch(`http://${localhost}:3002/api/auth/login`, {

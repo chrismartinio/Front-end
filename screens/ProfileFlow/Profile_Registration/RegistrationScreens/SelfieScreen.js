@@ -26,6 +26,8 @@ import { Icon, Input } from "react-native-elements";
 
 import NextButton from "../../Profile_SharedComponents/NextButton";
 
+import ImageProcessingScreen from "../../../ImageProcessingFlow/app";
+
 class SelfieScreen extends Component {
   constructor(props) {
     super(props);
@@ -61,6 +63,7 @@ class SelfieScreen extends Component {
           <View style={{ alignItems: "center" }}>
             <Text>Selfie Screen</Text>
           </View>
+          <ImageProcessingScreen />
           <NextButton
             passed={true}
             handleSubmit={this.handleSubmit}
