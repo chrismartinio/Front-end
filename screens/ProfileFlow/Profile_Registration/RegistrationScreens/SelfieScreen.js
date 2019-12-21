@@ -58,6 +58,7 @@ class SelfieScreen extends Component {
   }
 
   render() {
+    /*
     return (
       <View style={{ flex: 1 }}>
         <View
@@ -75,6 +76,8 @@ class SelfieScreen extends Component {
         </View>
       </View>
     );
+    */
+    return <ImageProcessingScreen />;
   }
 }
 
