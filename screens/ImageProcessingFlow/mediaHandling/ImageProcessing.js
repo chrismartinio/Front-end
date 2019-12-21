@@ -47,7 +47,7 @@ const createFormDataMulti = (images, operatingSystem, body) => {
 };
 
 exports.getImages = guid => {
-  fetch(`http://${localhost}:3001/api/getImages/${guid}`, {
+  fetch(`http://${localhost}:4040/api/getImages/${guid}`, {
     method: "GET"
   })
     .then(res => console.log("Upload success!"))
@@ -67,7 +67,7 @@ exports.getAllImages = () => {
 exports.sendImages = (images, platform, body) => {
   let data = createFormDataMulti(images, platform.OS, body);
 
-  fetch(`http://${localhost}:3001/api/uploadImages`, {
+  fetch(`http://${localhost}:4040/api/imageProcessing/upload`, {
     method: "POST",
     body: data
   })
