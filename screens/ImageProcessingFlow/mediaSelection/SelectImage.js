@@ -40,10 +40,10 @@ const UploadSection = props => {
 
       {props.gallerySelection && !props.cameraActive && (
         <View>
-          <CropPanel />
-          <GalleryView />
           <SelectButton />
           <Button title="Back" onPress={useGallery} />
+          <CropPanel />
+          <GalleryView />
         </View>
       )}
       {props.cameraActive && !props.gallerySelection && <Camera />}

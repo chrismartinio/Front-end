@@ -27,7 +27,6 @@ const uploadImages = (imgArr, captions, props, platform, guid) => {
 
 const PromptSection = props => (
   <ScrollView>
-    <Text style={styles.titleText}>Add Photos</Text>
     <PromptPanel />
 
     <TouchableOpacity
