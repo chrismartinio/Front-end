@@ -26,6 +26,9 @@ import { Icon, Input } from "react-native-elements";
 
 import NextButton from "../../Profile_SharedComponents/NextButton";
 
+import ImageProcessingScreen from "../../../ImageProcessingFlow/app";
+import ImgProcessing from "../../../ImageProcessingFlow/mediaHandling/ImageProcessing.js";
+
 class SelfieScreen extends Component {
   constructor(props) {
     super(props);
@@ -50,6 +53,8 @@ class SelfieScreen extends Component {
   componentDidMount() {
     const { navigation } = this.props;
     this.isEdit = navigation.getParam("isEdit");
+    //ImgProcessing.getAllImages();
+    //ImgProcessing.getImages("A1555");
   }
 
   render() {
@@ -61,6 +66,7 @@ class SelfieScreen extends Component {
           <View style={{ alignItems: "center" }}>
             <Text>Selfie Screen</Text>
           </View>
+          <ImageProcessingScreen />
           <NextButton
             passed={true}
             handleSubmit={this.handleSubmit}

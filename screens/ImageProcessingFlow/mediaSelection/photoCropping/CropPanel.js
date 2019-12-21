@@ -28,7 +28,7 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = state => ({
-  selectedImage: state.UploadImageReducer.selectedImage
+  selectedImage: state.uploadMediaReducer.selectedImage
 });
 
 export default connect(mapStateToProps)(CropPanel);

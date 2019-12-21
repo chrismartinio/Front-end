@@ -9,14 +9,17 @@ import {
 } from "react-native";
 
 import { connect } from "react-redux";
-import * as uploadImgActions from "../../../storage/actions/uploadMediaActions.js";
+import * as uploadImgActions from "../../../storage/actions/ImageProcessingActions/uploadMediaActions";
 
 import PromptPanel from "./PromptPanel.js";
 
 import ImgProcessing from "../mediaHandling/ImageProcessing.js";
 
-const uploadImages = (imgArr, captions, props, platform) => {
-  ImgProcessing.sendImages(imgArr, platform, { captions, guid: "A1555" });
+const uploadImages = (imgArr, captions, props, platform, guid) => {
+  ImgProcessing.sendImages(imgArr, platform, {
+    captions,
+    guid: guid
+  });
 
   props.clearImgSelection();
   props.clearCaptions();
@@ -30,7 +33,13 @@ const PromptSection = props => (
     <TouchableOpacity
       style={styles.uploadButton}
       onPress={() => {
-        uploadImages(props.selectedImages, props.captions, props, Platform);
+        uploadImages(
+          props.selectedImages,
+          props.captions,
+          props,
+          Platform,
+          props.guid
+        );
       }}
     >
       <Text>Upload Photo(s)</Text>
@@ -59,14 +68,16 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = state => {
-  const reducer = state.UploadImageReducer;
+  const reducer = state.uploadMediaReducer;
+  const profileReducer = state.CreateProfileDataReducer;
 
   return {
     gallery: reducer.gallery,
     imageSelection: reducer.imageSelection,
     captionSelection: reducer.captionSelection,
     selectedImages: reducer.selectedImages,
-    captions: reducer.captions
+    captions: reducer.captions,
+    guid: profileReducer.guid
   };
 };
 

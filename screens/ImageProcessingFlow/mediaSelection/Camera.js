@@ -8,10 +8,11 @@ import {
   Dimensions,
   StyleSheet
 } from "react-native";
-import { Camera, Permissions } from "expo";
+import * as Permissions from 'expo-permissions';
+import { Camera } from "expo-camera";
 
 import { connect } from "react-redux";
-import * as uploadImgActions from "../../../storage/actions/uploadMediaActions.js";
+import * as uploadImgActions from "../../../storage/actions/ImageProcessingActions/uploadMediaActions";
 
 import ActionBar from "./cameraComponents/ActionsBar.js";
 import Action from "./cameraComponents/Action.js";
@@ -123,8 +124,8 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = state => ({
-  selectedImages: state.UploadImageReducer.selectedImages,
-  captions: state.UploadImageReducer.captions
+  selectedImages: state.uploadMediaReducer.selectedImages,
+  captions: state.uploadMediaReducer.captions
 });
 
 const mapDispatchToProps = dispatch => ({

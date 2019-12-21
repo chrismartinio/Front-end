@@ -1,4 +1,8 @@
-import { updateObject } from "../utility/utility.js";
+const updateObject = (oldObject, updatedValues) => ({
+  ...oldObject,
+  ...updatedValues
+});
+
 const initalState = {
   gallery: [],
   selectedImages: [null, null, null, null, null],

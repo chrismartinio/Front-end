@@ -1,3 +1,5 @@
+import { localhost } from "../../../config/ipconfig";
+
 const createFormData = (photo, operatingSystem, body) => {
   const data = new FormData();
 
@@ -15,18 +17,6 @@ const createFormData = (photo, operatingSystem, body) => {
   });
 
   return data;
-};
-
-exports.sendImage = data => {
-  fetch("http://localhost:3000/api/testUpload/600/648", {
-    method: "POST",
-    body: data
-    // headers: {
-    //   'Content-Type': 'multipart/form-data'
-    // }
-  })
-    .then(res => console.log("Upload success!"))
-    .catch(err => console.log(err));
 };
 
 exports.encodeImage = (currentImage, Platform, metaData, cb) => {
@@ -56,10 +46,28 @@ const createFormDataMulti = (images, operatingSystem, body) => {
   return data;
 };
 
+exports.getImages = guid => {
+  fetch(`http://${localhost}:4040/api/getImages/${guid}`, {
+    method: "GET"
+  })
+    .then(res => console.log("Upload success!"))
+    .catch(err => console.log(err));
+};
+
+/*
+exports.getAllImages = () => {
+  fetch(`http://${localhost}:3001/api/getAllImages`, {
+    method: "GET"
+  })
+    .then(res => console.log(res))
+    .catch(err => console.log(err));
+};
+*/
+
 exports.sendImages = (images, platform, body) => {
   let data = createFormDataMulti(images, platform.OS, body);
 
-  fetch("http://localhost:3001/api/uploadImages", {
+  fetch(`http://${localhost}:4040/api/imageProcessing/upload`, {
     method: "POST",
     body: data
   })

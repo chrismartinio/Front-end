@@ -23,9 +23,11 @@ class App extends React.Component {
   };
 }
 
-const mapStateToProps = state => ({
-  imageSelection: state.UploadImageReducer.imageSelection,
-  captionSelection: state.UploadImageReducer.captionSelection
-});
+const mapStateToProps = state => {
+  return {
+    imageSelection: state.uploadMediaReducer.imageSelection,
+    captionSelection: state.uploadMediaReducer.captionSelection
+  };
+};
 
 export default connect(mapStateToProps)(App);

@@ -6,7 +6,7 @@ import PhotoPrompt from "./PhotoPrompt.js";
 const generatePrompts = props => {
   var list = [];
 
-  for (var i = 0; i < 5; i++) {
+  for (var i = 0; i < 1; i++) {
     list.push(<PhotoPrompt key={`photoPromptId${i}`} promptKey={i} />);
   }
 
