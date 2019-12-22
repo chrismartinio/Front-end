@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 
 import {
   Image,
@@ -12,26 +12,32 @@ import {
   ImageBackground,
   TouchableHighlight,
   AppState
-} from "react-native";
+} from 'react-native';
 
-import { connect } from "react-redux";
+import {
+  FlingGestureHandler,
+  Directions,
+  State
+} from 'react-native-gesture-handler';
 
-import io from "socket.io-client";
+import { connect } from 'react-redux';
 
-import LoadingScreen from "../../sharedComponents/LoadingScreen";
+import io from 'socket.io-client';
 
-import { localhost } from "../../config/ipconfig";
+import LoadingScreen from '../../sharedComponents/LoadingScreen';
 
-import Footer from "../../sharedComponents/Footer";
+import { localhost } from '../../config/ipconfig';
 
-import CircularCarousel from "./Chat_SharedComponents/CircularCarousel";
+import Footer from '../../sharedComponents/Footer';
 
-import { Chevron } from "react-native-shapes";
+import CircularCarousel from './Chat_SharedComponents/CircularCarousel';
+
+import { Chevron } from 'react-native-shapes';
 
 //1. make an error screen for no data for profile screen and edit screen
 //2. delay footer buttons
 //3. fix faill storing
-import { testobj } from "../../data/testObj";
+import { testobj } from '../../data/testObj';
 
 class ConversationsScreen extends React.Component {
   constructor(props) {
@@ -47,15 +53,15 @@ class ConversationsScreen extends React.Component {
   }
 
   async componentDidMount() {
-    AppState.addEventListener("change", this._handleAppStateChange);
+    AppState.addEventListener('change', this._handleAppStateChange);
     this.guid = await this.props.CreateProfileDataReducer.guid;
 
     this.user_firstName = await this.props.CreateProfileDataReducer.aboutYouData
       .firstName;
 
-    console.log("HomeScreen");
-    console.log("USER GUID: ", this.guid);
-    console.log("USER firstName: ", this.user_firstName);
+    console.log('HomeScreen');
+    console.log('USER GUID: ', this.guid);
+    console.log('USER firstName: ', this.user_firstName);
 
     /*
     await fetch(`http://${localhost}:3003/api/chat/`, {
@@ -82,40 +88,40 @@ class ConversationsScreen extends React.Component {
 
   componentWillUnmount() {
     //this.socket.off();
-    AppState.removeEventListener("change", this._handleAppStateChange);
+    AppState.removeEventListener('change', this._handleAppStateChange);
   }
 
   _handleAppStateChange = async nextAppState => {
     if (
       this.state.appState.match(/inactive|background/) &&
-      nextAppState === "active"
+      nextAppState === 'active'
     ) {
-      console.log("User: " + this.guid + " has come to the foreground!");
+      console.log('User: ' + this.guid + ' has come to the foreground!');
       await fetch(`http://${localhost}:3020/api/pushNotification/appState`, {
-        method: "POST",
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json"
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          data: { guid: this.guid, appState: "foreground" }
+          data: { guid: this.guid, appState: 'foreground' }
         })
       })
-        .then(() => console.log("success"))
+        .then(() => console.log('success'))
         .catch(error => {
           console.log(error);
         });
     } else {
-      console.log("User: " + this.guid + " has gone to the background!");
+      console.log('User: ' + this.guid + ' has gone to the background!');
       await fetch(`http://${localhost}:3020/api/pushNotification/appState`, {
-        method: "POST",
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json"
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          data: { guid: this.guid, appState: "background" }
+          data: { guid: this.guid, appState: 'background' }
         })
       })
-        .then(() => console.log("success"))
+        .then(() => console.log('success'))
         .catch(error => {
           console.log(error);
         });
@@ -152,17 +158,17 @@ class ConversationsScreen extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#4d88ff"
+    backgroundColor: '#4d88ff'
   },
   chatRoomBox: {
     padding: 20,
     borderWidth: 1,
-    borderColor: "#ccc",
-    backgroundColor: "white",
-    alignItems: "center",
+    borderColor: '#ccc',
+    backgroundColor: 'white',
+    alignItems: 'center',
     width: 350,
     margin: 5,
-    shadowColor: "#000",
+    shadowColor: '#000',
     shadowOffset: {
       width: 0,
       height: 2
@@ -172,40 +178,40 @@ const styles = StyleSheet.create({
     elevation: 5
   },
   chatRoomBoxWrap: {
-    alignItems: "center"
+    alignItems: 'center'
   },
   backgroundImage: {
-    height: "100%",
-    width: "100%"
+    height: '100%',
+    width: '100%'
   },
   titleBox: {
     padding: 15,
     borderBottomWidth: 2,
-    borderBottomColor: "#ccc",
-    alignItems: "center",
-    backgroundColor: "#BF446E"
+    borderBottomColor: '#ccc',
+    alignItems: 'center',
+    backgroundColor: '#BF446E'
   },
   titleText: {
-    color: "#fff"
+    color: '#fff'
   },
   buttonStyle: {
     borderRadius: 20,
-    color: "white",
-    backgroundColor: "#18cdf6",
+    color: 'white',
+    backgroundColor: '#18cdf6',
     width: 200,
-    alignSelf: "center",
+    alignSelf: 'center',
     marginBottom: 20,
-    fontStyle: "italic"
+    fontStyle: 'italic'
   },
   buttonStyleOutline: {
     borderRadius: 20,
-    color: "#18cdf6",
+    color: '#18cdf6',
     borderWidth: 1,
-    borderColor: "#18cdf6",
+    borderColor: '#18cdf6',
     width: 200,
-    alignSelf: "center",
+    alignSelf: 'center',
     marginBottom: 5,
-    fontStyle: "italic"
+    fontStyle: 'italic'
   }
 });
 
