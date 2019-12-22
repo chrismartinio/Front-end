@@ -27,8 +27,10 @@ const uploadImages = (imgArr, captions, props, platform, guid) => {
 
 const PromptSection = props => (
   <ScrollView>
+    {/*Gallery Camera Options*/}
     <PromptPanel />
 
+    {/*Upload Button*/}
     <TouchableOpacity
       style={styles.uploadButton}
       onPress={() => {
