@@ -1,4 +1,4 @@
-import * as React from "react";
+import * as React from 'react';
 import {
   Text,
   View,
@@ -7,12 +7,17 @@ import {
   Button,
   Dimensions,
   TouchableOpacity
-} from "react-native";
-import { degToRad } from "../Util/ConnectionsScreenFunctions.js";
+} from 'react-native';
+import { degToRad } from '../Util/ConnectionsScreenFunctions.js';
+import {
+  FlingGestureHandler,
+  Directions,
+  State
+} from 'react-native-gesture-handler';
 
-const { height, width } = Dimensions.get("window");
+const { height, width } = Dimensions.get('window');
 
-import CircularCarouselItem from "./CircularCarouselItem";
+import CircularCarouselItem from './CircularCarouselItem';
 
 export default class CircularCarousel extends React.Component {
   constructor(props) {
@@ -131,67 +136,54 @@ export default class CircularCarousel extends React.Component {
     let displayItems = this.createCircularItems();
 
     return (
-      <View>
-        <View style={{ position: "absolute", left: 0, top: width * 0.0 }}>
-          <TouchableOpacity
-            style={{ margin: 5 }}
-            onPress={this.nextMatchedList}
-          >
-            <Text style={{ color: "#fff" }}>NEXT LIST</Text>
-          </TouchableOpacity>
-        </View>
-
-        <View style={{ position: "absolute", left: 0, top: width * 0.2 }}>
-          <TouchableOpacity
-            style={{ margin: 5 }}
-            onPress={this.previousMatchedList}
-          >
-            <Text style={{ color: "#fff" }}>PREVIOUS LIST</Text>
-          </TouchableOpacity>
-        </View>
-
-        <View style={{ position: "absolute", left: 0, top: width * 0.4 }}>
-          <TouchableOpacity style={{ margin: 5 }} onPress={this.goUp}>
-            <Text style={{ color: "#fff" }}>GO UP</Text>
-          </TouchableOpacity>
-        </View>
-
-        <View style={{ position: "absolute", left: 0, top: width * 0.6 }}>
-          <TouchableOpacity style={{ margin: 5 }} onPress={this.goDown}>
-            <Text style={{ color: "#fff" }}>GO DOWN</Text>
-          </TouchableOpacity>
-        </View>
-
-        <View
-          style={[
-            styles.circularCarousel,
-            {
-              width: this.circleSize,
-              height: this.circleSize,
-              borderRadius: this.circleSize / 2
+      <FlingGestureHandler
+        direction={Directions.UP}
+        numberOfPointers={1}
+        onHandlerStateChange={({ nativeEvent }) => {
+          if (nativeEvent.state === State.ACTIVE) {
+            this.goUp();
+          }
+        }}>
+        <FlingGestureHandler
+          direction={Directions.DOWN}
+          numberOfPointers={1}
+          onHandlerStateChange={({ nativeEvent }) => {
+            if (nativeEvent.state === State.ACTIVE) {
+              this.goDown();
             }
-          ]}
-        >
-          {displayItems}
-        </View>
-      </View>
+          }}>
+          <View>
+            <View
+              style={[
+                styles.circularCarousel,
+                {
+                  width: this.circleSize,
+                  height: this.circleSize,
+                  borderRadius: this.circleSize / 2
+                }
+              ]}>
+              {displayItems}
+            </View>
+          </View>
+        </FlingGestureHandler>
+      </FlingGestureHandler>
     );
   }
 }
 
 const styles = StyleSheet.create({
   circularCarousel: {
-    backgroundColor: "transparent",
-    alignItems: "center",
-    justifyContent: "center",
+    backgroundColor: 'transparent',
+    alignItems: 'center',
+    justifyContent: 'center',
     borderWidth: 3,
     borderRadius: 500,
-    borderStyle: "dotted",
-    borderColor: "#fff",
-    left: "20%"
+    borderStyle: 'dotted',
+    borderColor: '#fff',
+    left: '20%'
   },
   item: {
-    backgroundColor: "#fff",
-    position: "absolute"
+    backgroundColor: '#fff',
+    position: 'absolute'
   }
 });
