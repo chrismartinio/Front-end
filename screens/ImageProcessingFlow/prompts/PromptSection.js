@@ -32,6 +32,9 @@ const PromptSection = props => (
     <TouchableOpacity
       style={styles.uploadButton}
       onPress={() => {
+        if (props.selectedImages[0] === null) {
+          return alert("Please take a picture");
+        }
         uploadImages(
           props.selectedImages,
           props.captions,
