@@ -8,7 +8,8 @@ const CreateProfileDataReducer = (
       preferences: false,
       interests: false,
       wouldYouRather: false,
-      localDestination: false
+      localDestination: false,
+      imageProcessing: false
     },
     guid: null,
     createAccountData: null,

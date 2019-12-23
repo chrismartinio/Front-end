@@ -101,7 +101,8 @@ class LoginScreen extends React.Component {
         preferences: false,
         interests: false,
         wouldYouRather: false,
-        localDestination: false
+        localDestination: false,
+        imageProcessing: false
       }
     });
 
@@ -194,23 +195,42 @@ class LoginScreen extends React.Component {
         });
 
         let isContinueUser = false;
+        let isContinueUserForImage = false;
         //Any false inside the object values
         //means the user has not finished one of the screen
         //and mark them as continue user
-        Object.values(checklist).forEach(e => {
-          if (!e) {
-            isContinueUser = true;
+        console.log(checklist);
+        Object.entries(checklist).forEach(e => {
+          let key = e[0],
+            value = e[1];
+          if (key !== "imageProcessing") {
+            //Registration Screen
+            if (!value) {
+              isContinueUser = true;
+            }
+          } else {
+            //Selfie Screen
+            if (!value) {
+              isContinueUserForImage = true;
+            }
           }
         });
-        //if the user is a continue user, send the user back to registration
-        if (isContinueUser) {
-          return this.props.navigation.navigate("Registration");
-        }
 
         //store guid to redux
         this.props.SetGUIDAction({
           guid: guid
         });
+
+        //if the user is a continue user and have not finish the image,
+        //send them to registration selfie screen
+        if (isContinueUserForImage) {
+          return this.props.navigation.navigate("Selfie", { isEdit: false });
+        }
+
+        //if the user is a continue user, send the user back to registration
+        if (isContinueUser) {
+          return this.props.navigation.navigate("Registration");
+        }
 
         this.props.navigation.navigate("Main");
       })
