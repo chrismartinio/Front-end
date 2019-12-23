@@ -29,9 +29,10 @@ const UploadSection = props => {
   };
 
   return (
-    <View>
+    <View style={{ flex: 1 }}>
       {!props.gallerySelection && !props.cameraActive && (
         <View>
+          <View style={{ padding: "50%" }} />
           {/*<Button title="Gallery" onPress={useGallery} />*/}
           <Button title="Camera" onPress={props.toggleCamera} />
           <Button title="Back" onPress={props.toggleImages} />

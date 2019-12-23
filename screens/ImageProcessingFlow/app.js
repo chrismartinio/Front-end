@@ -12,9 +12,13 @@ class App extends React.Component {
     super(props);
   }
 
+  componentDidMount() {
+    //this.props.handleisUploaded();
+  }
+
   render = () => {
     if (!this.props.captionSelection && !this.props.imageSelection) {
-      return <PromptSection />;
+      return <PromptSection handleisUploaded={this.props.handleisUploaded} />;
     } else if (this.props.captionSelection && !this.props.imageSelection) {
       return <CaptionList />;
     } else if (!this.props.captionSelection && this.props.imageSelection) {
