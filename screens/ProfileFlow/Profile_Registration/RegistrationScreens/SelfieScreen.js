@@ -67,25 +67,6 @@ class SelfieScreen extends Component {
   }
 
   render() {
-    /*
-    return (
-      <View style={{ flex: 1 }}>
-        <View
-          style={{ flex: 1, flexDirection: "column", justifyContent: "center" }}
-        >
-          <View style={{ alignItems: "center" }}>
-            <Text>Selfie Screen</Text>
-          </View>
-          <ImageProcessingScreen />
-          <NextButton
-            passed={true}
-            handleSubmit={this.handleSubmit}
-            isDelaying={false}
-          />
-        </View>
-      </View>
-    );
-    */
     return <ImageProcessingScreen handleisUploaded={this.handleisUploaded} />;
   }
 }
