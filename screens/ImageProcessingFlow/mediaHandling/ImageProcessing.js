@@ -64,13 +64,22 @@ exports.getAllImages = () => {
 };
 */
 
-exports.sendImages = (images, platform, body) => {
+exports.sendImages = async (images, platform, body) => {
   let data = createFormDataMulti(images, platform.OS, body);
 
-  fetch(`http://${localhost}:4040/api/imageProcessing/upload`, {
+  await fetch(`http://${localhost}:4040/api/imageProcessing/upload`, {
     method: "POST",
     body: data
   })
-    .then(res => console.log("Upload success!"))
-    .catch(err => console.log(err));
+    .then(res => res.json())
+    .then(res => {
+      console.log("Upload success!");
+      if (!res.success) {
+        return alert("Failed Upload. Please try again!");
+      }
+    })
+    .catch(err => {
+      console.log(err);
+      return alert("Failed Upload. Please try again!");
+    });
 };

@@ -32,29 +32,38 @@ import ImgProcessing from "../../../ImageProcessingFlow/mediaHandling/ImageProce
 class SelfieScreen extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      isUploaded: false
+    };
   }
 
-  handleSubmit = () => {
+  handleisUploaded = () => {
+    this.setState({
+      isUploaded: true
+    });
+  };
+
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    if (this.state.isUploaded !== prevState.isUploaded) {
+      if (this.state.isUploaded) {
+        this.gotoNextScreen();
+      }
+    }
+  }
+
+  gotoNextScreen = () => {
     if (this.isEdit) {
       //Edit
-      //Call db or update db
-
-      return;
+      this.props.navigation.goBack();
     } else {
       //Registration
-      //Call db or update db
-
-      //then go to complete screen
-      this.props.navigation.navigate("RegistrationComplete");
+      return this.props.navigation.navigate("RegistrationComplete");
     }
   };
 
   componentDidMount() {
     const { navigation } = this.props;
     this.isEdit = navigation.getParam("isEdit");
-    //ImgProcessing.getAllImages();
-    //ImgProcessing.getImages("A1555");
   }
 
   render() {
@@ -77,7 +86,7 @@ class SelfieScreen extends Component {
       </View>
     );
     */
-    return <ImageProcessingScreen />;
+    return <ImageProcessingScreen handleisUploaded={this.handleisUploaded} />;
   }
 }
 

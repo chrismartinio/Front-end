@@ -20,18 +20,22 @@ const uploadImages = (imgArr, captions, props, platform, guid) => {
     captions,
     guid: guid
   });
-
   props.clearImgSelection();
   props.clearCaptions();
 };
 
 const PromptSection = props => (
   <ScrollView>
+    {/*Gallery Camera Options*/}
     <PromptPanel />
 
+    {/*Upload Button*/}
     <TouchableOpacity
       style={styles.uploadButton}
       onPress={() => {
+        if (props.selectedImages[0] === null) {
+          return alert("Please take a picture");
+        }
         uploadImages(
           props.selectedImages,
           props.captions,
@@ -39,6 +43,7 @@ const PromptSection = props => (
           Platform,
           props.guid
         );
+        props.handleisUploaded()
       }}
     >
       <Text>Upload Photo(s)</Text>
@@ -66,7 +71,7 @@ const styles = StyleSheet.create({
   }
 });
 
-const mapStateToProps = state => {
+const mapStateToProps = (state, ownProps) => {
   const reducer = state.uploadMediaReducer;
   const profileReducer = state.CreateProfileDataReducer;
 
@@ -80,14 +85,23 @@ const mapStateToProps = state => {
   };
 };
 
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (dispatch, ownProps) => ({
   clearImgSelection: () => dispatch(uploadImgActions.clearImgSelection()),
   clearCaptions: () => dispatch(uploadImgActions.clearCaptions())
 });
 
+const mergeProps = (stateProps, dispatchProps, ownProps) => {
+  return {
+    ...ownProps,
+    ...stateProps,
+    ...dispatchProps
+  };
+};
+
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
+  mergeProps
 )(PromptSection);
 
 // arr.filter (el => el === null)
