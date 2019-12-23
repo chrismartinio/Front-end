@@ -20,9 +20,11 @@ import SetGUIDAction from "..//storage/actions/RegistrationActions/SetGUIDAction
 import SetAboutYouDataAction from "../storage/actions/RegistrationActions/SetAboutYouDataAction";
 //import publicIP from "react-native-public-ip";
 import * as WebBrowser from "expo-web-browser";
+import { Linking } from 'expo';
 import * as Location from "expo-location";
 import Constants from "expo-constants";
 import * as Permissions from "expo-permissions";
+import jwtDecode from 'jwt-decode';
 
 const { manifest } = Constants;
 
@@ -47,12 +49,13 @@ const db = SQLite.openDatabase("that.db");
 
 class LoginScreen extends React.Component {
   static navigationOptions = {
-    header: null
+    header: null,
   };
 
   state = {
     location: null,
-    errorMessage: null
+    errorMessage: null,
+    redirectionData: null
   };
 
   //Profile Services uses
@@ -113,27 +116,28 @@ class LoginScreen extends React.Component {
       });
 
       let jsonData = await data.json();
-      if (jsonData.token) {
-        let { guid, firstName } = jsonData.data;
-        this.props.SetJwtAction(jsonData.token);
-
+      if (jsonData.jwt) {
+        const decodedToken = jwtDecode(jsonData.jwt)
+        console.log('User token', decodedToken);
         this.props.SetGUIDAction({
-          guid: guid
+          guid: decodedToken.guid
         });
 
         this.props.SetAboutYouDataAction({
-          firstName: firstName,
+          firstName: decodedToken.firstName,
           lastName: "",
           birthDate: "",
           gender: "",
           country: "",
           zipCode: ""
         });
+
         this.props.navigation.navigate("Main");
       } else {
-        alert(jsonData.error);
+        alert('User token is missing');
       }
     } catch (e) {
+      alert('Login failed, please try again later');
       console.log(e);
     }
   };
@@ -166,47 +170,58 @@ class LoginScreen extends React.Component {
     }
   };
 
-  checkFaceBookValidity = async signInData => {
+  openBrowser = async (provider, hostname) => {
     try {
-      //const { username, password } = this._form.getValue();
-      var fbData = signInWithFacebook();
-      fbData
-        .then(data => {
-          return data;
-        })
-        .then(fbData => {
-          fetch(`http://${localhost}:3070/api/auth/login`, {
-            method: "POST",
-            mode: "cors",
-            credentials: "same-origin",
-            headers: {
-              Accept: "application/json",
-              "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-              mode: 2,
-              authType: "facebook",
-              data: fbData
-            })
-          })
-            .then(AuthData => {
-              return AuthData.json();
-            })
-            .then(data => {
-              this.props.SetJwtAction(data.token);
-              this.props.navigation.navigate("Chat");
-            })
-            .catch(e => {
-              console.log(e);
-            });
-        })
-        .catch(err => {
-          console.log(err);
+      let result = await WebBrowser.openAuthSessionAsync(
+        `http://${ hostname }:3002/api/auth/${ provider }?deepLink=${ Linking.makeUrl('/?') }`
+      );
+  
+      console.log(`Result from ${ provider }`, result);
+
+      if(result.type = 'success') {
+
+        let redirectionData = result.url ? Linking.parse(result.url) : null;
+
+        console.log(redirectionData);
+
+        if(!redirectionData || !redirectionData.queryParams.jwt) throw new Error('Url is invalid, might not contain jwt');
+
+        const decodedToken = jwtDecode(redirectionData.queryParams.jwt);
+        console.log('User token', decodedToken);
+        this.props.SetGUIDAction({
+          guid: decodedToken.guid
         });
-    } catch (e) {
-      console.log(e);
+
+        this.props.SetAboutYouDataAction({
+          firstName: decodedToken.firstName,
+          lastName: "",
+          birthDate: "",
+          gender: "",
+          country: "",
+          zipCode: ""
+        });
+
+        this.props.navigation.navigate("Main");
+    
+        this.setState({ redirectionData });
+      } else throw new Error('Redirection failed');
+    } catch(e) {
+      alert(`${ provider } login failed`);
+      console.log(`${ provider } login failed`, e);
     }
+  }
+
+  checkFaceBookValidity = async () => {
+    this.openBrowser('facebook', localhost);
   };
+
+  checkGoogleValidity = () => {
+    this.openBrowser('google', localhost)
+  }
+
+  checkTwitterValidity = () => {
+    this.openBrowser('twitter', '127.0.0.1');
+  }
 
   render() {
     return (
@@ -252,13 +267,13 @@ class LoginScreen extends React.Component {
 
             <Button
               title="google"
-              onPress={this.checkFaceBookValidity}
+              onPress={this.checkGoogleValidity}
               color="blue"
             />
 
             <Button
               title="twitter"
-              onPress={this.checkFaceBookValidity}
+              onPress={this.checkTwitterValidity}
               color="blue"
             />
           </View>
