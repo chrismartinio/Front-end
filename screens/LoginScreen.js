@@ -29,9 +29,11 @@ import SetChecklistAction from "../storage/actions/RegistrationActions/SetCheckl
 
 //import publicIP from "react-native-public-ip";
 import * as WebBrowser from "expo-web-browser";
+import { Linking } from 'expo';
 import * as Location from "expo-location";
 import Constants from "expo-constants";
 import * as Permissions from "expo-permissions";
+import jwtDecode from 'jwt-decode';
 
 const { manifest } = Constants;
 var _ = require("lodash");
@@ -76,12 +78,13 @@ const db = SQLite.openDatabase("that.db");
 
 class LoginScreen extends React.Component {
   static navigationOptions = {
-    header: null
+    header: null,
   };
 
   state = {
     location: null,
-    errorMessage: null
+    errorMessage: null,
+    redirectionData: null
   };
 
   //Profile Services uses
@@ -142,7 +145,6 @@ class LoginScreen extends React.Component {
   localLogin = async () => {
     let email = "",
       password = "";
-
     try {
       email = this._form.getValue().email;
       password = this._form.getValue().password;
@@ -150,75 +152,73 @@ class LoginScreen extends React.Component {
       return alert("Please fill in Email or Password");
     }
 
-    await fetch(`http://${localhost}:3002/api/auth/login`, {
-      method: "POST",
-      mode: "cors",
-      credentials: "same-origin",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        password: password,
-        email: email
+    try {
+      let res = await fetch(`http://${localhost}:3002/api/auth/login`, {
+        method: "POST",
+        mode: "cors",
+        credentials: "same-origin",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          password: password,
+          email: email
+        })
       })
-    })
-      .then(res => {
-        if (res.status === 401) {
+
+      if (res.status === 401) {
           let err = new Error("Invalid Email and Password");
           err.httpStatusCode = 401;
           throw err;
-        }
-        return res;
-      })
-      .then(res => res.json())
-      .then(async res => {
-        var decoded = jwtDecode(res.jwt);
-        console.log(decoded);
+      }
 
-        let { guid, firstName, checklist } = decoded;
+      let resJson = await res.json();
 
-        //store jwt to redux
-        this.props.SetJwtAction(res.jwt);
+      if(!resJson.jwt) throw new Error('Jwt is missing');
 
-        //store firstName to redux
-        this.props.SetAboutYouDataAction({
-          firstName: firstName,
-          lastName: "",
-          birthDate: "",
-          gender: "",
-          country: "",
-          zipCode: ""
-        });
+      var decoded = jwtDecode(resJson.jwt);
+      console.log(decoded);
 
-        let isContinueUser = false;
-        //Any false inside the object values
-        //means the user has not finished one of the screen
-        //and mark them as continue user
-        Object.values(checklist).forEach(e => {
-          if (!e) {
-            isContinueUser = true;
-          }
-        });
-        //if the user is a continue user, send the user back to registration
-        if (isContinueUser) {
-          return this.props.navigation.navigate("Registration");
-        }
+      let { guid, firstName, checklist } = decoded;
 
-        //store guid to redux
-        this.props.SetGUIDAction({
-          guid: guid
-        });
+      //store jwt to redux
+      this.props.SetJwtAction(resJson.jwt);
 
-        this.props.navigation.navigate("Main");
-      })
-      .catch(err => {
-        if (err.httpStatusCode === 401) {
-          alert("Incorrect Email or Password");
-        } else {
-          alert("Request Failed.\nPlease Try Again.");
+      let isContinueUser = false;
+      //Any false inside the object values
+      //means the user has not finished one of the screen
+      //and mark them as continue user
+      Object.values(checklist).forEach(e => {
+        if (!e) {
+          isContinueUser = true;
         }
       });
+      //if the user is a continue user, send the user back to registration
+      if (isContinueUser) {
+        return this.props.navigation.navigate("Registration");
+      }
+
+      //store guid to redux
+      this.props.SetGUIDAction({
+        guid: guid
+      });
+
+      //store firstName to redux
+      this.props.SetAboutYouDataAction({
+        firstName: decoded.firstName,
+        lastName: "",
+        birthDate: "",
+        gender: "",
+        country: "",
+        zipCode: ""
+      });
+
+      this.props.navigation.navigate("Main");
+    } catch (e) {
+      alert('Login failed, please try again later');
+      console.log(e);
+    }
   };
 
   handleSignUp = () => {
@@ -233,9 +233,58 @@ class LoginScreen extends React.Component {
     console.log("twitterValidation");
   };
 
-  faceBookValidation = async signInData => {
-    console.log("faceBookValidation");
+  openBrowser = async (provider, hostname) => {
+    try {
+      let result = await WebBrowser.openAuthSessionAsync(
+        `http://${ hostname }:3002/api/auth/${ provider }?deepLink=${ Linking.makeUrl('/?') }`
+      );
+  
+      console.log(`Result from ${ provider }`, result);
+
+      if(result.type = 'success') {
+
+        let redirectionData = result.url ? Linking.parse(result.url) : null;
+
+        console.log(redirectionData);
+
+        if(!redirectionData || !redirectionData.queryParams.jwt) throw new Error('Url is invalid, might not contain jwt');
+
+        const decodedToken = jwtDecode(redirectionData.queryParams.jwt);
+        console.log('User token', decodedToken);
+        this.props.SetGUIDAction({
+          guid: decodedToken.guid
+        });
+
+        this.props.SetAboutYouDataAction({
+          firstName: decodedToken.firstName,
+          lastName: "",
+          birthDate: "",
+          gender: "",
+          country: "",
+          zipCode: ""
+        });
+
+        this.props.navigation.navigate("Main");
+    
+        this.setState({ redirectionData });
+      } else throw new Error('Redirection failed');
+    } catch(e) {
+      alert(`${ provider } login failed`);
+      console.log(`${ provider } login failed`, e);
+    }
+  }
+
+  checkFaceBookValidity = async () => {
+    this.openBrowser('facebook', localhost);
   };
+
+  checkGoogleValidity = () => {
+    this.openBrowser('google', localhost)
+  }
+
+  checkTwitterValidity = () => {
+    this.openBrowser('twitter', '127.0.0.1');
+  }
 
   render() {
     return (
@@ -286,7 +335,7 @@ class LoginScreen extends React.Component {
           <View
             style={{ flex: 1, flexDirection: "row", justifyContent: "center" }}
           >
-            <TouchableOpacity onPress={this.faceBookValidation}>
+            <TouchableOpacity onPress={this.checkFaceBookValidity}>
               <Image
                 source={
                   __DEV__
@@ -297,7 +346,7 @@ class LoginScreen extends React.Component {
               />
             </TouchableOpacity>
 
-            <TouchableOpacity onPress={this.googleValidation}>
+            <TouchableOpacity onPress={this.checkGoogleValidity}>
               <Image
                 source={
                   __DEV__
@@ -308,7 +357,7 @@ class LoginScreen extends React.Component {
               />
             </TouchableOpacity>
 
-            <TouchableOpacity onPress={this.twitterValidation}>
+            <TouchableOpacity onPress={this.checkTwitterValidity}>
               <Image
                 source={
                   __DEV__

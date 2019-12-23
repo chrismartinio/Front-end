@@ -44,7 +44,7 @@ const db = SQLite.openDatabase("that.db");
 //OAuth send JWT which contains gui="" and checklist="default checklist" -> Profile decrypt jwt ->
 //Profile retrieve guid and checklist -> user register
 
-//Flow of New Third Party Service Providers User:
+//Flow of New Third Party Service Providers User: 
 //OAuth assign JWT ->
 //User uses Third -> OAuth creates profile on createAccount and aboutYou
 //OAuth send JWT which contains gui="some gui", checklist = "some checklist", and isThirdPartiesServiceUser = true
