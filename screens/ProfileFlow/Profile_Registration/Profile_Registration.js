@@ -17,7 +17,10 @@ import { LinearGradient } from "expo-linear-gradient";
 
 //Collapsible Components
 import CollapsibleScreenTab from "../Profile_SharedComponents/CollapsibleScreenTab";
-import LoadingScreen from "../Profile_SharedComponents/LoadingScreen";
+
+import LoadingScreen from "../../../sharedComponents/LoadingScreen";
+
+var jwtDecode = require("jwt-decode");
 
 //Icons
 import { Chevron } from "react-native-shapes";
@@ -30,6 +33,7 @@ import SetIsContinueUserAction from "../../../storage/actions/RegistrationAction
 import SetUserAllDataAction from "../../../storage/actions/RegistrationActions/SetUserAllDataAction";
 import SetGUIDAction from "../../../storage/actions/RegistrationActions/SetGUIDAction";
 import SetIsThirdPartyServicesUserAction from "../../../storage/actions/RegistrationActions/SetIsThirdPartyServicesUserAction";
+import SetAboutYouDataAction from "../../../storage/actions/RegistrationActions/SetAboutYouDataAction";
 
 //SQLite
 import * as SQLite from "expo-sqlite";
@@ -54,35 +58,17 @@ const db = SQLite.openDatabase("that.db");
 //Profile decrypt jwt ->
 //Profile retrieve guid and checklist -> user continue register
 
-class CollapisbleRegistration extends Component {
-  //LinksScreen Test Tool
-  /*
-  static navigationOptions = {
-    title: "Welcomes!",
-    headerStyle: {
-      backgroundColor: "#18cdf6"
-    },
-    footerStyle: {
-      backgroundColor: "#fff"
-    },
-    headerTintColor: "#fff",
-    headerTitleStyle: {
-      fontWeight: "bold",
-      fontSize: 24
-    }
-  };
-  */
-
+class Profile_Registration extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      createAccountToggle: true, //true or false
+      createAccountToggle: true, //always open when go to this screen
       aboutYouToggle: false,
       preferencesToggle: false,
       interestsToggle: false,
       wouldYouRatherToggle: false,
       localDestinationToggle: false,
-      createAccountPassed: false, //true or false MODIFIED
+      createAccountPassed: true,
       aboutYouPassed: false,
       preferencesPassed: false,
       interestsPassed: false,
@@ -94,7 +80,7 @@ class CollapisbleRegistration extends Component {
       interestsStatus: "empty",
       wouldYouRatherStatus: "empty",
       localDestinationStatus: "empty",
-      isLoading: false, //use to make sure if there data inside redux before rendering
+      isSuccess: false, //use to make sure if there data inside redux before rendering
       scrollY: 0
     };
   }
@@ -108,17 +94,8 @@ class CollapisbleRegistration extends Component {
   };
 
   decryptJWT = jwt => {
-    //console.log('jwt', jwt)
-
-    //For demo use only
-    //make the jwt has something to prevent jwt === ""
-    //jwt = true;
-    jwt = "";
-    //For demo use only
-
-    //If some cases that the jwt is empty, then return as a new User
-    //New user
-    if (jwt === "") {
+    //If JWT is "", null, undefined, that user should be new user
+    if (jwt === "" || jwt === null || jwt === undefined) {
       return {
         guid: "",
         checklist: {
@@ -133,38 +110,12 @@ class CollapisbleRegistration extends Component {
       };
     }
 
-    //assume we decrypted the jwt and retrieve the guid and checklist
-    //New User
-    let guid = "";
-    let checklist = {
-      createAccount: false,
-      aboutYou: false,
-      preferences: false,
-      interests: false,
-      wouldYouRather: false,
-      localDestination: false
-    };
-    let isThirdPartiesServiceUser = false;
+    //Decode JWT
+    var decoded = jwtDecode(jwt);
+    console.log(decoded);
+    let { guid, isThirdParty, checklist } = decoded;
 
-    //Continue User or Third Parties Services User
-    //For Third Parties Services User - since onAuth would store those user to db
-    //when onAuth pass the user (guid) to profile, they are similar with Continue User
-    guid = "5de08600e434a2aa6ca98ae3";
-    checklist = {
-      createAccount: true,
-      aboutYou: true,
-      preferences: true,
-      interests: true,
-      wouldYouRather: false,
-      localDestination: true
-    };
-    isThirdPartiesServiceUser = false; //set true if third parties user
-
-    //third party services user (goal: query from db )
-    //checklist (true) and isThirdPartiesServiceUser (true), it would query from db
-    //checklist (false) and isThirdPartiesServiceUser (true), it would query from db as a ThirdPartiesServiceUser
-    //checklist (true) and isThirdPartiesServiceUser (false), it would query from db as a continue user (screen filled before)
-    //checklist (false) and isThirdPartiesServiceUser (false), it would not query from db as a continue user (screen not filled before)
+    let isThirdPartiesServiceUser = isThirdParty;
 
     return {
       guid: guid,
@@ -173,7 +124,7 @@ class CollapisbleRegistration extends Component {
     };
   };
 
-  //Set the User is Continue User
+  //For Continue User Only
   setUserStatus = jwtObject => {
     //Set Redux checklist
     this.props.SetIsContinueUserAction({
@@ -213,36 +164,16 @@ class CollapisbleRegistration extends Component {
   };
 
   async componentDidMount() {
-    //a warning that if checklist is [true, true, true, true, true, true]
-    //Since Auth will handle if the checklist is a continue user or new user
-    //continue user : [true, false, false, true, true, true]
-    //new user : [true, false, false, false, false, false]
-    //third parties user / continue user : [true, true, false, false, false, false]
-    //If [true, true, true, true, true, true], Auth will pass user to profile instead of registration
-
     //get the guid and checklist from decrypted jwt
     let jwtObject = this.decryptJWT(this.getJWT());
 
     //check if the user is a continue user.
     //if there has a guid then the user is a continue user
     //if no guid then it is not a continue user
+    //when user get to this screen, they must be a new usser or continue user
+    //At the beginning of the Registration, if the user already has a guid
+    //the user must be a continue user
     let isContinueUser = jwtObject.guid ? true : false;
-    //Note
-    //if new user sumbitted createAccount, they become a continue user?
-    //yes,
-    //won't the rest of the screen say because it is a continue user, then query the data?
-    //no, the rest of the screen won't query data because
-    //we only assign the user is continue User after the user get in to registration screen
-    //instead of after the user submitted createAccount screen
-    //For example, continue user
-    //CollaspibleRegistration.js get guid = "something", checklist = [true, false, false, false, false, false]
-    //it will mark isContinueUser = true, the rest of the screen will query data
-
-    //For example, new user
-    //CollaspibleRegistration.js get guid = "", checklist = [true, false, false, false, false, false]
-    //it will mark isContinueUser = false, the rest of the screen will not query data
-    //createAccount.js get the isContinueUser === false, so it won't query data
-    //aboutYou.js get the isContinueUser === false, so it won't query data
 
     //if the user is a continue user, set isContinueUser is true in Redux
     if (isContinueUser) {
@@ -251,7 +182,7 @@ class CollapisbleRegistration extends Component {
 
     //Trigger render() again after guid and checklist are store into redux
     this.setState({
-      isLoading: true
+      isSuccess: true
     });
   }
 
@@ -283,10 +214,12 @@ class CollapisbleRegistration extends Component {
       this.state.wouldYouRatherPassed &&
       this.state.localDestinationPassed
     ) {
+      /*
       this.props.ResetReduxDataAction({
         reset: true
       });
-      this.props.navigation.navigate("TestRegistrationComplete");
+      */
+      this.props.navigation.navigate("Selfie", { isEdit: false });
       //Close the db?
       //db._db.close();
     }
@@ -492,11 +425,11 @@ class CollapisbleRegistration extends Component {
 
   loadingScreen = () => {
     //display fetching data
-    return <LoadingScreen />;
+    return <LoadingScreen navigation={this.props.navigation} />;
   };
 
   render() {
-    return this.state.isLoading ? this.successScreen() : this.loadingScreen();
+    return this.state.isSuccess ? this.successScreen() : this.loadingScreen();
   }
 }
 
@@ -541,11 +474,12 @@ const mapDispatchToProps = dispatch => {
     SetUserAllDataAction: payload => dispatch(SetUserAllDataAction(payload)),
     SetGUIDAction: payload => dispatch(SetGUIDAction(payload)),
     SetIsThirdPartyServicesUserAction: payload =>
-      dispatch(SetIsThirdPartyServicesUserAction(payload))
+      dispatch(SetIsThirdPartyServicesUserAction(payload)),
+    SetAboutYouDataAction: payload => dispatch(SetAboutYouDataAction(payload))
   };
 };
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(CollapisbleRegistration);
+)(Profile_Registration);

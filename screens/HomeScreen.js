@@ -10,183 +10,123 @@ import {
   View,
   Button,
   ImageBackground,
-  TouchableHighlight
+  TouchableHighlight,
+  AppState
 } from "react-native";
 
 import { connect } from "react-redux";
 
 import io from "socket.io-client";
 
-import LoadingScreen from "./ChatFlow/components/LoadingScreen";
-import MatchedUserChat from "./ChatFlow/MatchedUserChat";
+import LoadingScreen from "../sharedComponents/LoadingScreen";
 
 import { localhost } from "../config/ipconfig";
 
+import Footer from "../sharedComponents/Footer";
+
 class HomeScreen extends React.Component {
-  static navigationOptions = {
-    title: "Home"
-  };
   constructor(props) {
     super(props);
     this.state = {
-      matchedChatList: [
-        { matched_user_name: "Apple", chatroomID: "12345" },
-        { matched_user_name: "Bay", chatroomID: "56789" }
-      ],
-      isLoading: false
+      appState: AppState.currentState,
+
+      isSuccess: false
     };
-    this.guid = "";
-    this.user_firstName = "";
+
     //this.socket = io("http://74.80.250.210:3060");
-    this.scrollY;
   }
 
   async componentDidMount() {
-    /*
+    AppState.addEventListener("change", this._handleAppStateChange);
     this.guid = await this.props.CreateProfileDataReducer.guid;
 
     this.user_firstName = await this.props.CreateProfileDataReducer.aboutYouData
       .firstName;
-      */
-    this.guid = "";
-    this.user_firstName = "You";
-    /*
-    fetch("http://10.0.0.246:3003/api/chat/", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        data: { guid: this.guid, user_firstName: this.user_firstName }
-      })
-    })
-      .then(res => {
-        return res.json();
-      })
-      .then(res => {
-        //here's what I will get the chatobject
-        console.log(res.roomID[0].key); //1231231231.1231231232131
-      });
-*/
-    console.log(this.guid);
-    console.log(this.user_firstName);
+
+    console.log("HomeScreen");
+    console.log("USER GUID: ", this.guid);
+    console.log("USER firstName: ", this.user_firstName);
+
     this.setState({
-      isLoading: true
+      isSuccess: true
     });
   }
 
   componentWillUnmount() {
     //this.socket.off();
+    AppState.removeEventListener("change", this._handleAppStateChange);
   }
 
-  enterChatRoom = chatRoomData => {
-    this.props.navigation.navigate("MatchedUserChat", {
-      forceRender: this.forceRender()
-    });
-  };
-
-  handleScroll = ({ nativeEvent }) => {
-    const { contentOffset } = nativeEvent;
-    this.scrollY = contentOffset.y;
-  };
-
-  forceRender = () => {
-    // Force a render with a simulated state change
-    this.setState({ state: this.state });
+  _handleAppStateChange = async nextAppState => {
+    if (
+      this.state.appState.match(/inactive|background/) &&
+      nextAppState === "active"
+    ) {
+      console.log("User: " + this.guid + " has come to the foreground!");
+      await fetch(`http://${localhost}:3020/api/pushNotification/appState`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          data: { guid: this.guid, appState: "foreground" }
+        })
+      })
+        .then(() => console.log("success"))
+        .catch(error => {
+          console.log(error);
+        });
+    } else {
+      console.log("User: " + this.guid + " has gone to the background!");
+      await fetch(`http://${localhost}:3020/api/pushNotification/appState`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          data: { guid: this.guid, appState: "background" }
+        })
+      })
+        .then(() => console.log("success"))
+        .catch(error => {
+          console.log(error);
+        });
+    }
+    this.setState({ appState: nextAppState });
   };
 
   successScreen = () => {
-    let displayAllChatList = this.state.matchedChatList.map(
-      (chatRoomData, index = 0) => {
-        return (
-          <View key={index}>
-            <TouchableHighlight
-              underlayColor="#f3f3f3"
-              style={styles.chatRoomBox}
-              onPress={() => {
-                this.enterChatRoom(chatRoomData);
-              }}
-            >
-              <Text>{chatRoomData.matched_user_name}</Text>
-            </TouchableHighlight>
-          </View>
-        );
-      }
-    );
-
     return (
       <View style={styles.container}>
-        <ImageBackground
-          source={require("../assets/Assets_V1/Butterfly_Background/butterflyBackground.png")}
-          style={styles.backgroundImage}
-        >
-          <View style={styles.titleBox}>
-            <Text style={styles.titleText}>Chat Rooms</Text>
-          </View>
-          <ScrollView
-            ref={scrollView => {
-              this.scrollView = scrollView;
+        <View style={{ flex: 0.9 }}>
+          <Button
+            color={"#660066"}
+            title={"matching"}
+            onPress={() => {
+              this.props.navigation.navigate("Matching");
             }}
-            onScroll={this.handleScroll}
-            scrollEventThrottle={16}
-          >
-            <View style={styles.chatRoomBoxWrap}>{displayAllChatList}</View>
-          </ScrollView>
-          <View
-            style={{
-              flex: 1,
-              flexDirection: "column",
-              justifyContent: "flex-end"
-            }}
-          >
-            <View style={{ flexDirection: "row", justifyContent: "center" }}>
-              <View
-                style={{
-                  width: 100,
-                  height: 75,
-                  backgroundColor: "powderblue"
-                }}
-              >
-                <Button
-                  title="Go to Profile"
-                  onPress={() => this.props.navigation.navigate("Profile")}
-                />
-              </View>
-              <View
-                style={{ width: 100, height: 75, backgroundColor: "skyblue" }}
-              >
-                <Button
-                  title="Go to Match"
-                  onPress={() => this.props.navigation.navigate("Match")}
-                />
-              </View>
-              <View
-                style={{ width: 100, height: 75, backgroundColor: "powderblue" }}
-              >
-                <Button
-                  title="Go to Setting"
-                  onPress={() => this.props.navigation.navigate("Setting")}
-                />
-              </View>
-            </View>
-          </View>
-        </ImageBackground>
+          />
+        </View>
+
+        {/*Footer*/}
+        <Footer navigation={this.props.navigation} />
       </View>
     );
   };
 
   loadingScreen = () => {
-    return <LoadingScreen />;
+    return <LoadingScreen navigation={this.props.navigation} />;
   };
 
   render() {
-    return this.state.isLoading ? this.successScreen() : this.loadingScreen();
+    return this.state.isSuccess ? this.successScreen() : this.loadingScreen();
   }
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1
+    flex: 1,
+    backgroundColor: "#fff"
   },
   chatRoomBox: {
     padding: 20,
@@ -210,8 +150,7 @@ const styles = StyleSheet.create({
   },
   backgroundImage: {
     height: "100%",
-    width: "100%",
-    flex: 1
+    width: "100%"
   },
   titleBox: {
     padding: 15,
@@ -222,6 +161,25 @@ const styles = StyleSheet.create({
   },
   titleText: {
     color: "#fff"
+  },
+  buttonStyle: {
+    borderRadius: 20,
+    color: "white",
+    backgroundColor: "#18cdf6",
+    width: 200,
+    alignSelf: "center",
+    marginBottom: 20,
+    fontStyle: "italic"
+  },
+  buttonStyleOutline: {
+    borderRadius: 20,
+    color: "#18cdf6",
+    borderWidth: 1,
+    borderColor: "#18cdf6",
+    width: 200,
+    alignSelf: "center",
+    marginBottom: 5,
+    fontStyle: "italic"
   }
 });
 

@@ -105,7 +105,7 @@ async function registerForLocationAsync() {
   console.log("getting location");
   let location = await Location.getCurrentPositionAsync({});
   global.currentLatLong =
-    location.coords.latitude + "." + location.coords.longitude;
+    location.coords.latitude + "," + location.coords.longitude;
   global.currentAltitude = location.coords.altitude;
   console.log("Heres your position", global.currentLatLong);
   console.log("Heres your altitude", global.currentAltitude);
@@ -232,13 +232,26 @@ class CreateAccount extends Component {
       })
       .catch(async err => {
         //HANDLE ANY CATCHED ERRORS
+        console.log(`login: ${this.props.CreateProfileDataReducer.guid}`);
 
         let object = await selectDataFromLocalStorage(
-          "device_user_createAccount"
+          "device_user_createAccount",
+          1
         );
 
         if (object.success) {
-          let { email } = object.result.rows._array[0];
+          let { email, guid } = object.result.rows._array[0];
+          console.log(`storage${guid}`);
+
+          //if there is already a localstroage guid
+          //and if that guid doesn't match the guid that is inside redux guid
+          //then set the scree to false
+          if (guid !== this.props.CreateProfileDataReducer.guid) {
+            return this.setState({
+              isSuccess: false
+            });
+          }
+
           //setState
           this.setState({
             email: email,

@@ -129,8 +129,8 @@ class Preferences extends Component {
           });
           //Only insert or replace id = 1
           let insertSqlStatement =
-            "INSERT OR REPLACE into device_user_preferences(id, createAccount_id, interestedGender, ageRange, distanceRange) " +
-            "values(1, 1, ?, ?, ?);";
+            "INSERT OR REPLACE into device_user_preferences(id, createAccount_id, interestedGender, ageRange, distanceRange, guid) " +
+            "values(1, 1, ?, ?, ?, ?);";
 
           let { success } = await insertDataIntoLocalStorage(
             insertSqlStatement,
@@ -138,7 +138,8 @@ class Preferences extends Component {
             [
               object.result.interestedGender,
               json_ageRange,
-              object.result.distanceRange
+              object.result.distanceRange,
+              this.props.CreateProfileDataReducer.guid
             ],
             true
           );
@@ -161,17 +162,27 @@ class Preferences extends Component {
       })
       .catch(async err => {
         //HANDLE ANY CATCHED ERRORS
-
         let object = await selectDataFromLocalStorage(
-          "device_user_preferences"
+          "device_user_preferences",
+          1
         );
 
         if (object.success) {
           let {
             interestedGender,
             ageRange,
-            distanceRange
+            distanceRange,
+            guid
           } = object.result.rows._array[0];
+
+          //if there is already a localstroage guid
+          //and if that guid doesn't match the guid that is inside redux guid
+          //then set the scree to false
+          if (guid !== this.props.CreateProfileDataReducer.guid) {
+            return this.setState({
+              isSuccess: false
+            });
+          }
 
           ageRange = JSON.parse(ageRange).ageRange;
 
@@ -377,13 +388,18 @@ class Preferences extends Component {
                 });
                 //Only insert or replace id = 1
                 let insertSqlStatement =
-                  "INSERT OR REPLACE into device_user_preferences(id, createAccount_id, interestedGender, ageRange, distanceRange) " +
-                  "values(1, 1, ?, ?, ?);";
+                  "INSERT OR REPLACE into device_user_preferences(id, createAccount_id, interestedGender, ageRange, distanceRange, guid) " +
+                  "values(1, 1, ?, ?, ?, ?);";
 
                 let { success } = await insertDataIntoLocalStorage(
                   insertSqlStatement,
                   "device_user_preferences",
-                  [interestedGender, json_ageRange, this.state.distanceRange],
+                  [
+                    interestedGender,
+                    json_ageRange,
+                    this.state.distanceRange,
+                    this.props.CreateProfileDataReducer.guid
+                  ],
                   true
                 );
 

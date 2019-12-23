@@ -13,33 +13,83 @@ import {
 
 import { connect } from "react-redux";
 
-//1. any user edit, make the profile screen to hit the db
-//3. make the edit button only visible to device's user
-//4. make the profile edit screen
-//5. make all the db call into one files
+import LoadingScreen from "../../../sharedComponents/LoadingScreen";
 
-import LoadingScreen from "../Profile_SharedComponents/LoadingScreen";
+import NotificationsButton from "../../../screens/NotificationsFlow/NotificationsButton";
+
+import Footer from "../../../sharedComponents/Footer";
+
+import { localhost } from "../../../config/ipconfig";
+
+import { Icon } from "react-native-elements";
+
+const { height, width } = Dimensions.get("window");
+
+function _calculateAge(birthday) {
+  birthday = new Date(birthday);
+  // birthday is a date
+  var ageDifMs = Date.now() - birthday.getTime();
+  var ageDate = new Date(ageDifMs); // miliseconds from epoch
+  return Math.abs(ageDate.getUTCFullYear() - 1970);
+}
 
 //SQLite
 import * as SQLite from "expo-sqlite";
 const db = SQLite.openDatabase("that.db");
+import {
+  insertDataIntoLocalStorage,
+  selectDataFromLocalStorage,
+  selectIdByGuidFromLocalStorage
+} from "../LocalStorage/localStorage.js";
 
-class Profile extends React.Component {
-  static navigationOptions = {
-    title: "My Profile"
-  };
+import { Chevron } from "react-native-shapes";
+
+class ProfileScreen extends React.Component {
+  //Header
+  static navigationOptions = ({ navigation }) => ({
+    title: "My Profile",
+    headerRight: (
+      <View style={{ flex: 1 }}>
+        <View style={{ flexDirection: "row" }}>
+          {navigation.getParam("isDeviceUser") && (
+            <View style={{ bottom: "35%", right: "50%" }}>
+              <TouchableOpacity
+                onPress={() => {
+                  navigation.navigate("Edit", {
+                    dataIsEdited: () => {
+                      navigation.state.params.dataIsEdited();
+                    }
+                  });
+                }}
+              >
+                <Icon
+                  type="font-awesome"
+                  name="cog"
+                  size={25}
+                  color="#660066"
+                />
+              </TouchableOpacity>
+            </View>
+          )}
+          {/*<NotificationsButton navigation={navigation} />*/}
+        </View>
+      </View>
+    )
+  });
+
   constructor(props) {
     super(props);
     this.state = {
-      firstName: "Alex",
-      lastName: "Wagner",
-      age: "27",
-      city: "San Francsico",
-      state: "CA",
-      userImage: "https://facebook.github.io/react-native/img/tiny_logo.png",
-      likesArray: ["cycling", "film", "photography"],
-      userBio:
-        "Grew up in Portland, Oregion area. Survived middle school by becoming a skatar kid (still havne't grown out of it) Now I'm trying to pay my rent, play my msuic and maek my way. I'm into photography. so I like to snap pictures with either my phone or my camera whenever I find inspiration.",
+      firstName: "",
+      lastName: "",
+      age: "",
+      city: "",
+      state: "",
+      userImage:
+        "https://media.gq.com/photos/56d4902a9acdcf20275ef34c/master/w_806,h_1173,c_limit/tom-hardy-lead-840.jpg",
+      likesArray: [],
+      userBio: "",
+      zipCode: "",
       photosArray: [
         "https://facebook.github.io/react-native/img/tiny_logo.png",
         "https://facebook.github.io/react-native/img/tiny_logo.png",
@@ -48,21 +98,66 @@ class Profile extends React.Component {
         "https://facebook.github.io/react-native/img/tiny_logo.png",
         "https://facebook.github.io/react-native/img/tiny_logo.png"
       ],
-      isSuccess: false
+      addressLatitude: 0,
+      addressLongitude: 0,
+      isSuccess: false,
+      isEdited: false
     };
-    this.isFetched = false;
   }
 
-  async componentDidMount() {
-    //this.guid = await this.props.CreateProfileDataReducer.guid;
-
-    this.guid = "5dddd2d8d302b94d37ade030";
-
-    //on editing, siwtch isFetched = false
-    if (!this.isFetched) {
+  //detect if there is data edit in editscreen
+  //if yes, fetch the new changed data from db
+  //then reset the state to false
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    if (this.state.isEdited !== prevState.isEdited) {
       this.getDataFromDB();
-      this.isFetched = true;
+      this.setState({
+        isEdited: false
+      });
     }
+  }
+
+  //This function will be pass into edit screen
+  //everytime if data is edited,
+  //set the isEdited to true
+  //and componentDidUpdate will detect the state changes
+  dataIsEdited = () => {
+    this.setState({
+      isEdited: true
+    });
+  };
+
+  async componentDidMount() {
+    //LOGIC
+    //ProfileScreen would also accept the guid pass from navigation
+    //Home - > Profile (pass redux guid through navigation)
+    //Chat - > Profile (pass other user guid through navigation)
+    //so either device's user or matched's user can use this screen
+    //edit button would only display when user login and go to profile screen
+
+    //And inside the edit screen, it only use the redux guid (it would not use the navigation guid)
+    //And redux guid would only be store or update by registration and login
+
+    /*
+    ProfileScreen will receive only two paramaters passed from footer and LinksScreen
+    footer : Redux guid and isDeviceUser = true
+    linkscreen : regular guid and isDeviceUser = false
+
+    Edit Screen
+    In the static header, use the isDeviceUser to make the Edit button only visible to Device's user
+    */
+
+    const { navigation } = this.props;
+    this.guid = navigation.getParam("guid");
+
+    console.log("ProfileScreen");
+    console.log("USER GUID: ", this.guid);
+
+    //Set Params for Navigation so EditScreen can use ProfileScreen function
+    this.props.navigation.setParams({ dataIsEdited: this.dataIsEdited });
+
+    //Query Data
+    this.getDataFromDB();
 
     this.setState({
       isSuccess: true
@@ -70,7 +165,7 @@ class Profile extends React.Component {
   }
 
   getDataFromDB = async () => {
-    await fetch("http://74.80.250.210:4000/api/profile/query", {
+    await fetch(`http://${localhost}:4000/api/profile/profile_query`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -82,7 +177,7 @@ class Profile extends React.Component {
       })
     })
       .then(res => res.json())
-      .then(res => {
+      .then(async res => {
         let object = JSON.parse(JSON.stringify(res));
         //console.log(object);
         //SUCCESS ON QUERYING DATA
@@ -92,12 +187,13 @@ class Profile extends React.Component {
             firstName,
             lastName,
             birthDate,
-            gender,
-            country,
-            zipCode,
-            userBio,
+            state,
             city,
-            state
+            userBio,
+            zipCode,
+            likesArray,
+            addressLatitude,
+            addressLongitude
           } = object.result;
 
           //setState
@@ -105,138 +201,237 @@ class Profile extends React.Component {
             firstName: firstName,
             lastName: lastName,
             birthDate: birthDate,
-            zipCode: zipCode,
             userBio: userBio,
+            age: _calculateAge(birthDate),
             city: city,
             state: state,
+            zipCode: zipCode,
+            likesArray: likesArray,
+            addressLatitude: addressLatitude,
+            addressLongitude: addressLongitude,
             isSuccess: true
           });
 
           //LocalStorage
-          //Only insert or replace id = 1
-          let insertSqlStatement =
-            "INSERT OR REPLACE into device_user_aboutYou(id, createAccount_id, firstName, lastName, birthDate, gender, country, zipCode, userBio, city, state) " +
-            "values(1, 1, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
+          if (this.guid === this.props.CreateProfileDataReducer.guid) {
+            //Store to device_user_createAccount
+            let insertSqlStatement =
+              "INSERT OR REPLACE into device_user_createAccount(id, addressLatitude, addressLongitude) " +
+              "values(1, ?, ?);";
 
-          db.transaction(
-            tx => {
-              //INSERT DATA
-              tx.executeSql(
-                insertSqlStatement,
-                [
-                  firstName,
-                  lastName,
-                  birthDate,
-                  gender,
-                  country,
-                  zipCode,
-                  userBio,
-                  city,
-                  state
-                ],
-                (tx, result) => {
-                  console.log("inner success");
-                },
-                (tx, err) => {
-                  console.log("inner error: ", err);
-                }
-              );
+            let { success } = await insertDataIntoLocalStorage(
+              insertSqlStatement,
+              "device_user_createAccount",
+              [addressLatitude, addressLongitude],
+              true
+            );
 
-              //DISPLAY DATA
-              tx.executeSql(
-                "select * from device_user_aboutYou",
-                null,
-                (tx, result) => {
-                  console.log(result);
-                },
-                (tx, err) => {
-                  console.log("inner error: ", err);
-                }
-              );
-            },
-            (tx, err) => {
-              console.log(err);
-            },
-            () => {
-              console.log("outer success");
+            //Store to device_user_aboutYou
+            insertSqlStatement =
+              "INSERT OR REPLACE into device_user_aboutYou(id, createAccount_id, firstName, lastName, birthDate, userBio, city, state, zipCode) " +
+              "values(1, 1, ?, ?, ?, ?, ?, ?, ?);";
+
+            success = await insertDataIntoLocalStorage(
+              insertSqlStatement,
+              "device_user_aboutYou",
+              [firstName, lastName, birthDate, userBio, city, state, zipCode],
+              true
+            );
+
+            //Store to device_user_interests
+            insertSqlStatement =
+              "INSERT OR REPLACE into device_user_interests(id, createAccount_id, likesArray) " +
+              "values(1, 1, ?);";
+
+            let json_likesArray = JSON.stringify({
+              likesArray: likesArray
+            });
+
+            success = await insertDataIntoLocalStorage(
+              insertSqlStatement,
+              "device_user_interests",
+              [json_likesArray],
+              true
+            );
+
+            if (!success) {
+              console.log("failed storing data into localStorage");
+              //handle error on inserting data into localStorage
             }
-          );
+          } else {
+            //here is store to matched's user tables
+            //code coming soon
+            console.log("store matched profile info");
+            //Find id by GUID
+            let idObject = await selectIdByGuidFromLocalStorage(
+              "matched_user_info",
+              this.guid
+            );
+            let id;
+            let insertSqlStatement;
+            if (idObject.success) {
+              id = idObject.result.rows._array[0].id;
+              insertSqlStatement =
+                "INSERT OR REPLACE into matched_user_info(id, guid, addressLatitude, addressLongitude, birthDate, firstName, lastName, zipCode, userBio, city, state, likesArray) " +
+                `values(${id}, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`;
+            } else {
+              insertSqlStatement =
+                "INSERT OR REPLACE into matched_user_info(id, guid, addressLatitude, addressLongitude, birthDate, firstName, lastName, zipCode, userBio, city, state, likesArray) " +
+                `values(${null}, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`;
+            }
 
-          //Redux
-          this.props.SetAboutYouDataAction({
-            firstName: firstName,
-            lastName: lastName,
-            birthDate: birthDate,
-            gender: gender,
-            country: country,
-            zipCode: zipCode,
-            userBio: userBio,
-            city: city,
-            state: state
-          });
+            //Store to matched_user_info
+            let json_likesArray = JSON.stringify({
+              likesArray: likesArray
+            });
+
+            let { success } = await insertDataIntoLocalStorage(
+              insertSqlStatement,
+              "matched_user_info",
+              [
+                this.guid,
+                addressLatitude,
+                addressLongitude,
+                birthDate,
+                firstName,
+                lastName,
+                zipCode,
+                userBio,
+                city,
+                state,
+                json_likesArray
+              ],
+              true
+            );
+
+            return;
+          }
         } else {
           //INTERNAL ERROR
           throw new Error("internal Error");
         }
       })
-      .catch(err => {
+      .catch(async err => {
+        //console.log(err);
         //HANDLE ANY CATCHED ERRORS
-        this.getDataFromLocalStorage()
-          .then(result => {
+        //AND WILL TRY TO GET DATA FROM LOCALSTORAGE
+
+        //LocalStorage
+        //Check if localstorage guid === current device's user guid
+        if (this.guid === this.props.CreateProfileDataReducer.guid) {
+          //Get Device's User Data from localStorage device_user_aboutYou table
+          let aboutYouObject = await selectDataFromLocalStorage(
+            "device_user_aboutYou",
+            1
+          );
+
+          let interestsObject = await selectDataFromLocalStorage(
+            "device_user_interests",
+            1
+          );
+
+          let createAccountObject = await selectDataFromLocalStorage(
+            "device_user_createAccount",
+            1
+          );
+
+          if (
+            aboutYouObject.success &&
+            interestsObject.success &&
+            createAccountObject.success
+          ) {
             let {
               firstName,
               lastName,
-              zipCode,
-              userBio,
+              birthDate,
+              state,
               city,
-              state
-            } = result.rows._array[0];
+              userBio,
+              zipCode
+            } = aboutYouObject.result.rows._array[0];
+
+            let { likesArray } = interestsObject.result.rows._array[0];
+            likesArray = JSON.parse(likesArray).likesArray;
+
+            let {
+              addressLatitude,
+              addressLongitude
+            } = createAccountObject.result.rows._array[0];
+
             //setState
             this.setState({
               firstName: firstName,
               lastName: lastName,
-              zipCode: zipCode,
+              birthDate: birthDate,
               userBio: userBio,
+              age: _calculateAge(birthDate),
               city: city,
               state: state,
+              zipCode: zipCode,
+              likesArray: likesArray,
+              addressLatitude: addressLatitude,
+              addressLongitude: addressLongitude,
               isSuccess: true
             });
-          })
-          .catch(err => {
-            //If error while fetching, direct user to failScreen
-            //setState
+          } else {
+            //If error while getting data from localstorage,
+            //then direct user to erroscreen
             this.setState({
               isSuccess: false
             });
-          });
-      });
-  };
-
-  getDataFromLocalStorage = () => {
-    return new Promise((resolve, reject) => {
-      db.transaction(
-        tx => {
-          //DISPLAY DATA
-          tx.executeSql(
-            "select * from device_user_aboutYou",
-            null,
-            (tx, result) => {
-              if (result.rows.length <= 0) reject(new Error("Internal Error"));
-              resolve(result);
-            },
-            (tx, err) => {
-              reject(err);
-            }
+          }
+        } else {
+          //Get Matched User's Data from localStorage
+          //Find id by GUID
+          let idObject = await selectIdByGuidFromLocalStorage(
+            "matched_user_info",
+            this.guid
           );
-        },
-        (tx, err) => {
-          reject(err);
-        },
-        () => {
-          console.log("outer success");
+
+          if (idObject.success) {
+            let id = idObject.result.rows._array[0].id;
+            let matched_user_infoObject = await selectDataFromLocalStorage(
+              "matched_user_info",
+              id
+            );
+
+            let {
+              firstName,
+              lastName,
+              birthDate,
+              state,
+              city,
+              userBio,
+              zipCode,
+              likesArray,
+              addressLatitude,
+              addressLongitude
+            } = matched_user_infoObject.result.rows._array[0];
+            likesArray = JSON.parse(likesArray).likesArray;
+
+            //setState
+            this.setState({
+              firstName: firstName,
+              lastName: lastName,
+              birthDate: birthDate,
+              userBio: userBio,
+              age: _calculateAge(birthDate),
+              city: city,
+              state: state,
+              zipCode: zipCode,
+              likesArray: likesArray,
+              addressLatitude: addressLatitude,
+              addressLongitude: addressLongitude,
+              isSuccess: true
+            });
+          } else {
+            //fail query data
+            this.setState({
+              isSuccess: false
+            });
+          }
         }
-      );
-    });
+      });
   };
 
   successScreen = () => {
@@ -257,7 +452,12 @@ class Profile extends React.Component {
             source={{
               uri: e
             }}
-            style={{ width: 100, height: 75, borderRadius: 15, margin: 3 }}
+            style={{
+              width: width * 0.267,
+              height: width * 0.2,
+              borderRadius: 15,
+              margin: 3
+            }}
           />
         </TouchableOpacity>
       );
@@ -265,154 +465,175 @@ class Profile extends React.Component {
 
     return (
       <View style={styles.container}>
-        <ScrollView>
-          <View style={{ alignItems: "center" }}>
-            {/**User Image */}
-            <ImageBackground
-              source={{
-                uri: this.state.userImage
-              }}
-              style={{ width: 350, height: 350, borderRadius: 50 }}
-            >
-              {/*Make this edit button only visible (also lock) to device user */}
-              <View style={{ alignItems: "flex-end" }}>
-                <TouchableOpacity
-                  style={{
-                    paddingLeft: 50,
-                    paddingRight: 50,
-                    paddingTop: 10,
-                    paddingBottom: 10,
-                    backgroundColor: "purple",
-                    borderRadius: 50
-                  }}
-                  onPress={() => {
-                    this.isFetched = false;
-                    //this.props.navigation.navigate("EditScreen");
-                    //when user do any updates on edit screen, trigger isFetched = false
-                    //so the only time of update the profile screen would be editing any data or from login to profile screen
-                  }}
-                >
-                  <Text style={{ color: "white" }}>Edit</Text>
-                </TouchableOpacity>
-              </View>
-            </ImageBackground>
-          </View>
+        <View style={{ flex: 0.9 }}>
+          <View style={{ padding: "1%" }} />
+          <ScrollView>
+            <View style={{ alignItems: "center" }}>
+              {/**User Image */}
+              <Image
+                source={{
+                  uri: this.state.userImage
+                }}
+                style={{
+                  width: width * 0.93,
+                  height: width * 0.93,
+                  borderRadius: 15
+                }}
+              />
+            </View>
 
-          {/**User Name */}
-          <View style={{ margin: 20 }}>
-            <Text style={{ fontSize: 20, fontWeight: "500" }}>
-              {this.state.firstName} {this.state.lastName}, {this.state.age}
-            </Text>
-            <Text />
-            <Text style={{ fontSize: 15, fontWeight: "400" }}>
-              {this.state.city}, {this.state.state}
-            </Text>
-          </View>
+            <View style={{ margin: 20 }}>
+              <Text style={{ fontSize: 20, fontWeight: "500" }}>
+                {/**User Name */}
+                {this.state.firstName} {this.state.lastName}, {this.state.age}
+              </Text>
+              <Text />
 
-          {/**border line */}
-          <View
-            style={{
-              borderWidth: 1,
-              borderColor: "#d6d7da"
-            }}
-          />
+              {/*Map*/}
+              <TouchableOpacity
+                onPress={() => {
+                  this.props.navigation.navigate("ProfileLocation", {
+                    addressLatitude: this.state.addressLatitude,
+                    addressLongitude: this.state.addressLongitude
+                  });
+                }}
+              >
+                <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
+                  <Icon
+                    type="font-awesome"
+                    name="map-marker"
+                    size={width * 0.04}
+                    color="rgb(67, 33, 140)"
+                    iconStyle={{ bottom: 0 }}
+                  />
 
-          {/**Interest */}
-          <View
-            style={{
-              marginLeft: 15,
-              marginRight: 15,
-              marginTop: 20,
-              marginBottom: 3
-            }}
-          >
-            <Text style={{ fontSize: 17, fontWeight: "500" }}>Interests</Text>
-          </View>
-          <View>
-            <View style={{ flexDirection: "row" }}>{displaylikesArray}</View>
-          </View>
-          <View style={{ padding: 7.5 }} />
+                  <View style={{ padding: "1%" }} />
 
-          {/**border line */}
-          <View
-            style={{
-              borderWidth: 1,
-              borderColor: "#d6d7da"
-            }}
-          />
+                  {/*Address*/}
+                  <Text style={{ fontSize: 15, fontWeight: "400" }}>
+                    {this.state.city}, {this.state.state}
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            </View>
 
-          {/**About Me */}
-          <View
-            style={{
-              marginLeft: 15,
-              marginRight: 15,
-              marginTop: 20,
-              marginBottom: 3
-            }}
-          >
-            <Text style={{ fontSize: 17, fontWeight: "500" }}>About Me</Text>
-          </View>
-          <View style={{ margin: 15 }}>
-            <Text
-              style={{
-                fontSize: 17,
-                fontWeight: "100",
-                textAlign: "left",
-                lineHeight: 30
-              }}
-            >
-              {this.state.userBio}
-            </Text>
-          </View>
-
-          {/**border line */}
-          <View
-            style={{
-              borderWidth: 1,
-              borderColor: "#d6d7da"
-            }}
-          />
-
-          {/**Photo */}
-          <View
-            style={{
-              marginLeft: 15,
-              marginRight: 15,
-              marginTop: 20,
-              marginBottom: 3
-            }}
-          >
-            <Text style={{ fontSize: 17, fontWeight: "500" }}>Photo</Text>
-          </View>
-          <View
-            style={{
-              margin: 20
-            }}
-          >
+            {/**border line */}
             <View
               style={{
-                flexDirection: "row",
-                flexWrap: "wrap"
+                borderWidth: 1,
+                borderColor: "#d6d7da",
+                marginLeft: "5%",
+                marginRight: "5%"
+              }}
+            />
+
+            {/**Interest */}
+            <View
+              style={{
+                marginLeft: 15,
+                marginRight: 15,
+                marginTop: 20,
+                marginBottom: 3
               }}
             >
-              {displayphotosArray}
+              <Text style={{ fontSize: 17, fontWeight: "500" }}>Interests</Text>
             </View>
-          </View>
-        </ScrollView>
+            {/*Likes*/}
+            <View>
+              <View style={{ flexDirection: "row", margin: "3%" }}>
+                {displaylikesArray}
+              </View>
+            </View>
+            <View style={{ padding: 7.5 }} />
+
+            {/**border line */}
+            <View
+              style={{
+                borderWidth: 1,
+                borderColor: "#d6d7da",
+                marginLeft: "5%",
+                marginRight: "5%"
+              }}
+            />
+
+            {/**About Me */}
+            <View
+              style={{
+                marginLeft: 15,
+                marginRight: 15,
+                marginTop: 20,
+                marginBottom: 3
+              }}
+            >
+              <Text style={{ fontSize: 17, fontWeight: "500" }}>About Me</Text>
+            </View>
+            {/*Bio*/}
+            <View style={{ margin: 15 }}>
+              <Text
+                style={{
+                  fontSize: 17,
+                  fontWeight: "100",
+                  textAlign: "left",
+                  lineHeight: 30
+                }}
+              >
+                {this.state.userBio}
+              </Text>
+            </View>
+
+            {/**border line */}
+            <View
+              style={{
+                borderWidth: 1,
+                borderColor: "#d6d7da",
+                marginLeft: "5%",
+                marginRight: "5%"
+              }}
+            />
+
+            {/**Photo */}
+            <View
+              style={{
+                marginLeft: 15,
+                marginRight: 15,
+                marginTop: 20,
+                marginBottom: 3
+              }}
+            >
+              <Text style={{ fontSize: 17, fontWeight: "500" }}>Photo</Text>
+            </View>
+            <View
+              style={{
+                margin: 20,
+                alignItems: "center"
+              }}
+            >
+              <View
+                style={{
+                  flexDirection: "row",
+                  flexWrap: "wrap"
+                }}
+              >
+                {displayphotosArray}
+              </View>
+            </View>
+          </ScrollView>
+        </View>
+
+        {/*Footer*/}
+        <Footer navigation={this.props.navigation} />
       </View>
     );
   };
 
   loadingScreen = () => {
-    return <LoadingScreen />;
+    return <LoadingScreen navigation={this.props.navigation} />;
   };
 
   render() {
     return this.state.isSuccess ? this.successScreen() : this.loadingScreen();
   }
 }
-
-const { height, width } = Dimensions.get("window");
 
 const styles = StyleSheet.create({
   container: {
@@ -449,4 +670,4 @@ const mapDispatchToProps = dispatch => {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(Profile);
+)(ProfileScreen);

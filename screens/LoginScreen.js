@@ -12,12 +12,21 @@ import {
 import Firebase from "../storage/Store";
 import { MonoText } from "../components/StyledText";
 import t from "tcomb-form-native";
-import { signInWithFacebook } from "../utils/auth.js";
+//import { signInWithFacebook } from "../utils/auth.js";
+
+//1. make an error screen for no data for profile screen and edit screen
+//2. delay footer buttons
+//3. fix faill storing
+
+//Redux
 import { connect } from "react-redux";
 import SetFbDataAction from "../storage/actions/DataReducerActions/SetFbDataAction";
 import SetJwtAction from "../storage/actions/DataReducerActions/SetJwtAction";
 import SetGUIDAction from "..//storage/actions/RegistrationActions/SetGUIDAction";
 import SetAboutYouDataAction from "../storage/actions/RegistrationActions/SetAboutYouDataAction";
+import SetIsContinueUserAction from "../storage/actions/RegistrationActions/SetIsContinueUserAction";
+import SetChecklistAction from "../storage/actions/RegistrationActions/SetChecklistAction";
+
 //import publicIP from "react-native-public-ip";
 import * as WebBrowser from "expo-web-browser";
 import { Linking } from 'expo';
@@ -27,11 +36,30 @@ import * as Permissions from "expo-permissions";
 import jwtDecode from 'jwt-decode';
 
 const { manifest } = Constants;
+var _ = require("lodash");
+var jwtDecode = require("jwt-decode");
+const stylesheet = _.cloneDeep(t.form.Form.stylesheet);
 
+stylesheet.textbox.normal.borderWidth = 0;
+stylesheet.textbox.error.borderWidth = 0;
+stylesheet.textbox.normal.marginBottom = 0;
+stylesheet.textbox.error.marginBottom = 0;
+
+stylesheet.textboxView.normal.borderWidth = 0;
+stylesheet.textboxView.error.borderWidth = 0;
+stylesheet.textboxView.normal.borderRadius = 0;
+stylesheet.textboxView.error.borderRadius = 0;
+stylesheet.textboxView.normal.borderBottomWidth = 1;
+stylesheet.textboxView.error.borderBottomWidth = 1;
+stylesheet.textboxView.normal.marginBottom = 5;
+stylesheet.textboxView.error.marginBottom = 5;
 const Form = t.form.Form;
-
+var options = {
+  stylesheet: stylesheet,
+  auto: "placeholders"
+};
 const User = t.struct({
-  username: t.String,
+  email: t.String,
   password: t.String
 });
 
@@ -40,7 +68,8 @@ import {
   createTablesInToLocalStorage,
   displayAllTablesFromLocalStorage,
   dropAllTablesInLocalStorage,
-  deleteDeviceUserData
+  deleteDeviceUserData,
+  createMatchedUserTablesInToLocalStorage
 } from "./ProfileFlow/LocalStorage/localStorage.js";
 
 //SQLite
@@ -60,6 +89,23 @@ class LoginScreen extends React.Component {
 
   //Profile Services uses
   async componentDidMount() {
+    //Set to all false so if there is a way user can come back to login
+    //and go to registration as new user
+    //the checklist would be all false
+    //but inside profile_registration, there is some code to set the checklist to false
+    //this is just for in case
+    this.props.SetIsContinueUserAction({
+      isContinueUser: false,
+      checklist: {
+        createAccount: false,
+        aboutYou: false,
+        preferences: false,
+        interests: false,
+        wouldYouRather: false,
+        localDestination: false
+      }
+    });
+
     console.log("Inside HomeScreen.js creating table");
     //console.log(Platform.OS === "android");
     //console.log(Platform.OS === "ios");
@@ -79,11 +125,13 @@ class LoginScreen extends React.Component {
     //createTablesInToLocalStorage() won't create new table or update the table
     //so you would have to delete the old table (old columns)
     //then re-create a new table (new columns
-
     //dropAllTablesInLocalStorage();
 
-    //CREATE TABLES
+    //CREATE DEVICE'S USER TABLES
     createTablesInToLocalStorage();
+
+    //CREATE MATCHED'S USER TABLES
+    createMatchedUserTablesInToLocalStorage();
 
     //DISPLAY Tables
     //displayAllTablesFromLocalStorage();
@@ -94,12 +142,18 @@ class LoginScreen extends React.Component {
     //create tables for matched's user
   }
 
-  handleEmailAndPasswordSignin = async () => {
-    // needs to have json web token?
+  localLogin = async () => {
+    let email = "",
+      password = "";
     try {
-      const { username, password } = this._form.getValue();
+      email = this._form.getValue().email;
+      password = this._form.getValue().password;
+    } catch (e) {
+      return alert("Please fill in Email or Password");
+    }
 
-      let data = await fetch(`http://${localhost}:3002/api/auth/login`, {
+    try {
+      let res = await fetch(`http://${localhost}:3002/api/auth/login`, {
         method: "POST",
         mode: "cors",
         credentials: "same-origin",
@@ -109,33 +163,58 @@ class LoginScreen extends React.Component {
         },
         body: JSON.stringify({
           password: password,
-          username: username,
-          mode: 2,
-          authType: "email"
+          email: email
         })
+      })
+
+      if (res.status === 401) {
+          let err = new Error("Invalid Email and Password");
+          err.httpStatusCode = 401;
+          throw err;
+      }
+
+      let resJson = await res.json();
+
+      if(!resJson.jwt) throw new Error('Jwt is missing');
+
+      var decoded = jwtDecode(resJson.jwt);
+      console.log(decoded);
+
+      let { guid, firstName, checklist } = decoded;
+
+      //store jwt to redux
+      this.props.SetJwtAction(resJson.jwt);
+
+      let isContinueUser = false;
+      //Any false inside the object values
+      //means the user has not finished one of the screen
+      //and mark them as continue user
+      Object.values(checklist).forEach(e => {
+        if (!e) {
+          isContinueUser = true;
+        }
+      });
+      //if the user is a continue user, send the user back to registration
+      if (isContinueUser) {
+        return this.props.navigation.navigate("Registration");
+      }
+
+      //store guid to redux
+      this.props.SetGUIDAction({
+        guid: guid
       });
 
-      let jsonData = await data.json();
-      if (jsonData.jwt) {
-        const decodedToken = jwtDecode(jsonData.jwt)
-        console.log('User token', decodedToken);
-        this.props.SetGUIDAction({
-          guid: decodedToken.guid
-        });
+      //store firstName to redux
+      this.props.SetAboutYouDataAction({
+        firstName: decoded.firstName,
+        lastName: "",
+        birthDate: "",
+        gender: "",
+        country: "",
+        zipCode: ""
+      });
 
-        this.props.SetAboutYouDataAction({
-          firstName: decodedToken.firstName,
-          lastName: "",
-          birthDate: "",
-          gender: "",
-          country: "",
-          zipCode: ""
-        });
-
-        this.props.navigation.navigate("Main");
-      } else {
-        alert('User token is missing');
-      }
+      this.props.navigation.navigate("Main");
     } catch (e) {
       alert('Login failed, please try again later');
       console.log(e);
@@ -143,31 +222,15 @@ class LoginScreen extends React.Component {
   };
 
   handleSignUp = () => {
-    this.props.navigation.navigate("SignUp");
+    this.props.navigation.navigate("Registration");
   };
 
-  DBCheck = async info => {
-    try {
-      console.log(info.uid);
-      let data = await fetch(`http://${localhost}:3070/api/auth/login`, {
-        method: "POST",
-        mode: "cors",
-        credentials: "same-origin",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          password: info.uid,
-          username: info.email
-        })
-      });
+  googleValidation = async signInData => {
+    console.log("googleValidation");
+  };
 
-      let jsonData = await data.json();
-      return jsonData;
-    } catch (e) {
-      console.log(e.error);
-    }
+  twitterValidation = async signInData => {
+    console.log("twitterValidation");
   };
 
   openBrowser = async (provider, hostname) => {
@@ -234,58 +297,116 @@ class LoginScreen extends React.Component {
             <Image
               source={
                 __DEV__
-                  ? require("../assets/images/blindly.jpg")
-                  : require("../assets/images/blindly.jpg")
+                  ? require("../assets/images/butterfly.png")
+                  : require("../assets/images/butterfly.png")
               }
               style={styles.welcomeImage}
             />
           </View>
           <View style={styles.formContainer}>
-            <Form type={User} ref={c => (this._form = c)} />
+            <Form
+              options={options}
+              autoCapitalize="none"
+              type={User}
+              ref={c => (this._form = c)}
+            />
           </View>
-
-          <View style={styles.container}>
+          <View style={styles.buttonStyle}>
             <Button
-              title="Sign in!"
-              onPress={e => this.handleEmailAndPasswordSignin(e)}
-              color="blue"
+              title="Sign In"
+              onPress={e => this.localLogin(e)}
+              color="white"
               key="100"
             />
-            <Text />
           </View>
-
-          <Button title="Sign Up!" onPress={this.handleSignUp} color="blue" />
-
+          <View style={styles.buttonStyleOutline}>
+            <Button
+              title="Sign Up"
+              onPress={this.handleSignUp}
+              color="#18cdf6"
+              key="100"
+            />
+          </View>
+          <Button
+            title="Forgot password!"
+            /*onPress={this.handleSignUp}*/ color="#18cdf6"
+          />
+          <Text style={styles.centerText}>Sign in with</Text>
           <View
             style={{ flex: 1, flexDirection: "row", justifyContent: "center" }}
           >
-            <Button
-              title="facebook"
-              onPress={this.checkFaceBookValidity}
-              color="blue"
-            />
+            <TouchableOpacity onPress={this.checkFaceBookValidity}>
+              <Image
+                source={
+                  __DEV__
+                    ? require("../assets/images/f_logo.png")
+                    : require("../assets/images/f_logo.png")
+                }
+                style={styles.iconImage}
+              />
+            </TouchableOpacity>
 
-            <Button
-              title="google"
-              onPress={this.checkGoogleValidity}
-              color="blue"
-            />
+            <TouchableOpacity onPress={this.checkGoogleValidity}>
+              <Image
+                source={
+                  __DEV__
+                    ? require("../assets/images/google-plus.png")
+                    : require("../assets/images/google-plus.png")
+                }
+                style={styles.iconImage}
+              />
+            </TouchableOpacity>
 
-            <Button
-              title="twitter"
-              onPress={this.checkTwitterValidity}
-              color="blue"
-            />
+            <TouchableOpacity onPress={this.checkTwitterValidity}>
+              <Image
+                source={
+                  __DEV__
+                    ? require("../assets/images/twitter.png")
+                    : require("../assets/images/twitter.png")
+                }
+                style={styles.iconImage}
+              />
+            </TouchableOpacity>
           </View>
 
           {/*Testing USE*/}
           <Button
             title="Testing - Go to Link Screen"
-            onPress={() => this.props.navigation.navigate("Links")}
+            //If Navigate to Profile, in side linkscreen has set a guid
+            onPress={() => {
+              this.props.SetGUIDAction({
+                guid: "5de42b16b4dc5b1fba94e1d4"
+              });
+              this.props.SetAboutYouDataAction({
+                firstName: "KaChi",
+                lastName: "",
+                birthDate: "",
+                gender: "",
+                country: "",
+                zipCode: ""
+              });
+              this.props.navigation.navigate("Links");
+            }}
           />
           <Button
             title="Testing - Go to Main Screen"
-            onPress={() => this.props.navigation.navigate("Main")}
+            onPress={() => {
+              //TESTING USE (TEMP)
+              //Set Device user GUID
+              this.props.SetGUIDAction({
+                guid: "5de42b16b4dc5b1fba94e1d4"
+              });
+              this.props.SetAboutYouDataAction({
+                firstName: "KaChi",
+                lastName: "",
+                birthDate: "",
+                gender: "",
+                country: "",
+                zipCode: ""
+              });
+              //TESTING USE
+              this.props.navigation.navigate("Main");
+            }}
           />
         </ScrollView>
       </View>
@@ -335,9 +456,11 @@ const styles = StyleSheet.create({
   },
   formContainer: {
     justifyContent: "center",
+    width: "55%",
     marginTop: 50,
     padding: 10,
-    backgroundColor: "#ffffff"
+    backgroundColor: "#ffffff",
+    alignSelf: "center"
   },
   developmentModeText: {
     marginBottom: 20,
@@ -358,7 +481,7 @@ const styles = StyleSheet.create({
     width: 300,
     height: 200,
     resizeMode: "contain",
-    marginTop: 3,
+    marginTop: "10%",
     marginLeft: -10
   },
   getStartedContainer: {
@@ -420,6 +543,38 @@ const styles = StyleSheet.create({
   helpLinkText: {
     fontSize: 14,
     color: "#2e78b7"
+  },
+  buttonStyle: {
+    borderRadius: 20,
+    color: "white",
+    backgroundColor: "#18cdf6",
+    width: "75%",
+    alignSelf: "center",
+    marginBottom: 20,
+    fontStyle: "italic"
+  },
+  buttonStyleOutline: {
+    borderRadius: 20,
+    color: "#18cdf6",
+    borderWidth: 1,
+    borderColor: "#18cdf6",
+    width: "75%",
+    alignSelf: "center",
+    marginBottom: 5,
+    fontStyle: "italic"
+  },
+  centerText: {
+    marginTop: 15,
+    textAlign: "center",
+    color: "grey"
+  },
+  iconImage: {
+    width: 40,
+    height: 40,
+    resizeMode: "contain",
+    marginTop: 15,
+    padding: 10,
+    margin: 20
   }
 });
 const mapStateToProps = state => ({
@@ -430,7 +585,10 @@ const mapDispatchToProps = dispatch => ({
   SetAboutYouDataAction: payload => dispatch(SetAboutYouDataAction(payload)),
   SetGUIDAction: payload => dispatch(SetGUIDAction(payload)),
   SetFbDataAction: payload => dispatch(SetFbDataAction(payload)),
-  SetJwtAction: payload => dispatch(SetJwtAction(payload))
+  SetJwtAction: payload => dispatch(SetJwtAction(payload)),
+  SetIsContinueUserAction: payload =>
+    dispatch(SetIsContinueUserAction(payload)),
+  SetChecklistAction: payload => dispatch(SetChecklistAction(payload))
 });
 
 export default connect(

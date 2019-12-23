@@ -19,7 +19,10 @@
     },
     "assetBundlePatterns": ["**/*"],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "UIUserInterfaceStyle": "Light"
+      }
     },
     "extra": {
       "firebase": {
@@ -30,6 +33,7 @@
         "storageBucket": "blindlychat.appspot.com",
         "messagingSenderId": "361575972774"
       }
-    }
+    },
+    "description": ""
   }
 }

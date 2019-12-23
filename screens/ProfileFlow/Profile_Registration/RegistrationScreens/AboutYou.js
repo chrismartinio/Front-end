@@ -33,6 +33,15 @@ import { Chevron } from "react-native-shapes";
 import FailScreen from "../../Profile_SharedComponents/FailScreen";
 import NextButton from "../../Profile_SharedComponents/NextButton";
 
+import { Appearance } from 'react-native-appearance';
+const colorScheme = Appearance.getColorScheme();
+let bgColor;
+if(colorScheme === 'dark'){
+  bgColor = '#000';
+}else{
+  bgColor = '#fff';
+}
+
 //SQLite
 import * as SQLite from "expo-sqlite";
 const db = SQLite.openDatabase("that.db");
@@ -90,11 +99,14 @@ class AboutYou extends Component {
     this.isContinueUserFetched = false;
   }
 
+  //QUERY DATA FROM DB
   getDataFromDB = async () => {
-    //if it is not ThirdPartiesServiceUser, it will check if it is continue user using checklist
+    //If the user is not a third party user
     if (!this.props.CreateProfileDataReducer.isThirdPartiesServiceUser) {
       //continue user
-      //if the checklist says this screen is not complete, return (do not query anything)
+      //aboutYou = false
+      //that means they havent finish the screen
+      //retur and give them a blinkScreen
       if (!this.props.CreateProfileDataReducer.checklist.aboutYou) {
         return;
       }
@@ -149,8 +161,8 @@ class AboutYou extends Component {
           //LocalStorage
           //Only insert or replace id = 1
           let insertSqlStatement =
-            "INSERT OR REPLACE into device_user_aboutYou(id, createAccount_id, firstName, lastName, birthDate, gender, country, zipCode, userBio, city, state) " +
-            "values(1, 1, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
+            "INSERT OR REPLACE into device_user_aboutYou(id, createAccount_id, firstName, lastName, birthDate, gender, country, zipCode, userBio, city, state, guid) " +
+            "values(1, 1, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
 
           let { success } = await insertDataIntoLocalStorage(
             insertSqlStatement,
@@ -164,7 +176,8 @@ class AboutYou extends Component {
               zipCode,
               userBio,
               city,
-              state
+              state,
+              this.props.CreateProfileDataReducer.guid
             ],
             true
           );
@@ -194,7 +207,10 @@ class AboutYou extends Component {
       .catch(async err => {
         //HANDLE ANY CATCHED ERRORS
 
-        let object = await selectDataFromLocalStorage("device_user_aboutYou");
+        let object = await selectDataFromLocalStorage(
+          "device_user_aboutYou",
+          1
+        );
 
         if (object.success) {
           let {
@@ -206,8 +222,18 @@ class AboutYou extends Component {
             zipCode,
             userBio,
             city,
-            state
+            state,
+            guid
           } = object.result.rows._array[0];
+
+          //if there is already a localstroage guid
+          //and if that guid doesn't match the guid that is inside redux guid
+          //then set the scree to false
+          if (guid !== this.props.CreateProfileDataReducer.guid) {
+            return this.setState({
+              isSuccess: false
+            });
+          }
 
           //setState
           this.setState({
@@ -480,8 +506,8 @@ class AboutYou extends Component {
                 let json_checklist = JSON.stringify(checklist);
                 //Only insert or replace id = 1
                 let insertSqlStatement =
-                  "INSERT OR REPLACE into device_user_aboutYou(id, createAccount_id, firstName, lastName, birthDate, gender, country, zipCode, userBio, city, state) " +
-                  "values(1, 1, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
+                  "INSERT OR REPLACE into device_user_aboutYou(id, createAccount_id, firstName, lastName, birthDate, gender, country, zipCode, userBio, city, state, guid) " +
+                  "values(1, 1, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
 
                 let { success } = await insertDataIntoLocalStorage(
                   insertSqlStatement,
@@ -495,7 +521,8 @@ class AboutYou extends Component {
                     this.state.zipCode,
                     this.state.userBio,
                     "",
-                    ""
+                    "",
+                    this.props.CreateProfileDataReducer.guid
                   ],
                   true
                 );
@@ -1030,6 +1057,9 @@ const birthdatePickerCustom = {
     position: "absolute",
     left: "0%",
     paddingHorizontal: 9
+  },
+  datePicker: {
+    backgroundColor: bgColor
   }
 };
 

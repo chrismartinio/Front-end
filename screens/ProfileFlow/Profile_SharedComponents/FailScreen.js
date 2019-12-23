@@ -40,11 +40,11 @@ export default function FailScreen(props) {
             padding: "7%"
           }}
         />
-        {props.reset && (
+        {/*props.reset && (
           <TouchableOpacity onPress={props.reset}>
             <Text style={{ color: "rgb(67, 33, 140)", fontSize: 15 }}>Reset data</Text>
           </TouchableOpacity>
-        )}
+        )*/}
       </View>
       {/*Spaces*/}
       <View

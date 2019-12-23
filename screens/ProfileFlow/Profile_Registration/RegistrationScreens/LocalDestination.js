@@ -97,13 +97,16 @@ class LocationDestinations extends Component {
           //LocalStorage
           //Only insert or replace id = 1
           let insertSqlStatement =
-            "INSERT OR REPLACE into device_user_localDestination(id, createAccount_id, localDestination) " +
-            "values(1, 1, ?);";
+            "INSERT OR REPLACE into device_user_localDestination(id, createAccount_id, localDestination, guid) " +
+            "values(1, 1, ?, ?);";
 
           let { success } = await insertDataIntoLocalStorage(
             insertSqlStatement,
             "device_user_localDestination",
-            [object.result.localDestination],
+            [
+              object.result.localDestination,
+              this.props.CreateProfileDataReducer.guid
+            ],
             true
           );
 
@@ -123,13 +126,22 @@ class LocationDestinations extends Component {
       })
       .catch(async err => {
         //HANDLE ANY CATCHED ERRORS
-
         let object = await selectDataFromLocalStorage(
-          "device_user_localDestination"
+          "device_user_localDestination",
+          1
         );
 
         if (object.success) {
-          let { localDestination } = object.result.rows._array[0];
+          let { localDestination, guid } = object.result.rows._array[0];
+          //if there is already a localstroage guid
+          //and if that guid doesn't match the guid that is inside redux guid
+          //then set the scree to false
+          if (guid !== this.props.CreateProfileDataReducer.guid) {
+            return this.setState({
+              isSuccess: false
+            });
+          }
+
           //setState
           this.setState({
             localDestination: localDestination,
@@ -264,13 +276,16 @@ class LocationDestinations extends Component {
                 let json_checklist = JSON.stringify(checklist);
                 //Only insert or replace id = 1
                 let insertSqlStatement =
-                  "INSERT OR REPLACE into device_user_localDestination(id, createAccount_id, localDestination) " +
-                  "values(1, 1, ?);";
+                  "INSERT OR REPLACE into device_user_localDestination(id, createAccount_id, localDestination, guid) " +
+                  "values(1, 1, ?, ?);";
 
                 let { success } = await insertDataIntoLocalStorage(
                   insertSqlStatement,
                   "device_user_localDestination",
-                  [this.state.localDestination],
+                  [
+                    this.state.localDestination,
+                    this.props.CreateProfileDataReducer.guid
+                  ],
                   true
                 );
 

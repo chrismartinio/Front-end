@@ -102,8 +102,8 @@ class WouldYouRather extends Component {
           //LocalStorage
           //Only insert or replace id = 1
           let insertSqlStatement =
-            "INSERT OR REPLACE into device_user_wouldYouRather(id, createAccount_id, s1r1, s1r2, s2r1, s2r2, s3r1, s3r2) " +
-            "values(1, 1, ?, ?, ?, ?, ?, ?);";
+            "INSERT OR REPLACE into device_user_wouldYouRather(id, createAccount_id, s1r1, s1r2, s2r1, s2r2, s3r1, s3r2, guid) " +
+            "values(1, 1, ?, ?, ?, ?, ?, ?, ?);";
 
           let { success } = await insertDataIntoLocalStorage(
             insertSqlStatement,
@@ -114,7 +114,8 @@ class WouldYouRather extends Component {
               object.result.s2r1,
               object.result.s2r2,
               object.result.s3r1,
-              object.result.s3r2
+              object.result.s3r2,
+              this.props.CreateProfileDataReducer.guid
             ],
             true
           );
@@ -140,9 +141,9 @@ class WouldYouRather extends Component {
       })
       .catch(async err => {
         //HANDLE ANY CATCHED ERRORS
-
         let object = await selectDataFromLocalStorage(
-          "device_user_wouldYouRather"
+          "device_user_wouldYouRather",
+          1
         );
 
         if (object.success) {
@@ -152,8 +153,18 @@ class WouldYouRather extends Component {
             s2r1,
             s2r2,
             s3r1,
-            s3r2
+            s3r2,
+            guid
           } = object.result.rows._array[0];
+          //if there is already a localstroage guid
+          //and if that guid doesn't match the guid that is inside redux guid
+          //then set the scree to false
+          if (guid !== this.props.CreateProfileDataReducer.guid) {
+            return this.setState({
+              isSuccess: false
+            });
+          }
+
           //set this
           this.s1r1 = s1r1;
           this.s1r2 = s1r2;
@@ -258,8 +269,8 @@ class WouldYouRather extends Component {
                 let json_checklist = JSON.stringify(checklist);
                 //Only insert or replace id = 1
                 let insertSqlStatement =
-                  "INSERT OR REPLACE into device_user_wouldYouRather(id, createAccount_id, s1r1, s1r2, s2r1, s2r2, s3r1, s3r2) " +
-                  "values(1, 1, ?, ?, ?, ?, ?, ?);";
+                  "INSERT OR REPLACE into device_user_wouldYouRather(id, createAccount_id, s1r1, s1r2, s2r1, s2r2, s3r1, s3r2, guid) " +
+                  "values(1, 1, ?, ?, ?, ?, ?, ?, ?);";
 
                 let { success } = await insertDataIntoLocalStorage(
                   insertSqlStatement,
@@ -270,7 +281,8 @@ class WouldYouRather extends Component {
                     this.s2r1,
                     this.s2r2,
                     this.s3r1,
-                    this.s3r2
+                    this.s3r2,
+                    this.props.CreateProfileDataReducer.guid
                   ],
                   true
                 );
