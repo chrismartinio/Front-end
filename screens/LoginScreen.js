@@ -29,11 +29,10 @@ import SetChecklistAction from "../storage/actions/RegistrationActions/SetCheckl
 
 //import publicIP from "react-native-public-ip";
 import * as WebBrowser from "expo-web-browser";
-import { Linking } from 'expo';
+import { Linking } from "expo";
 import * as Location from "expo-location";
 import Constants from "expo-constants";
 import * as Permissions from "expo-permissions";
-import jwtDecode from 'jwt-decode';
 
 const { manifest } = Constants;
 var _ = require("lodash");
@@ -78,7 +77,7 @@ const db = SQLite.openDatabase("that.db");
 
 class LoginScreen extends React.Component {
   static navigationOptions = {
-    header: null,
+    header: null
   };
 
   state = {
@@ -152,73 +151,76 @@ class LoginScreen extends React.Component {
       return alert("Please fill in Email or Password");
     }
 
-    try {
-      let res = await fetch(`http://${localhost}:3002/api/auth/login`, {
-        method: "POST",
-        mode: "cors",
-        credentials: "same-origin",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          password: password,
-          email: email
-        })
+    await fetch(`http://${localhost}:3002/api/auth/login`, {
+      method: "POST",
+      mode: "cors",
+      credentials: "same-origin",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        password: password,
+        email: email
       })
-
-      if (res.status === 401) {
+    })
+      .then(res => {
+        if (res.status === 401) {
           let err = new Error("Invalid Email and Password");
           err.httpStatusCode = 401;
           throw err;
-      }
+        }
+        return res;
+      })
+      .then(res => res.json())
+      .then(async res => {
+        if (!res.jwt) throw new Error("Jwt is missing");
+        var decoded = jwtDecode(res.jwt);
+        console.log(decoded);
 
-      let resJson = await res.json();
+        let { guid, firstName, checklist } = decoded;
 
-      if(!resJson.jwt) throw new Error('Jwt is missing');
+        //store jwt to redux
+        this.props.SetJwtAction(res.jwt);
 
-      var decoded = jwtDecode(resJson.jwt);
-      console.log(decoded);
+        //store firstName to redux
+        this.props.SetAboutYouDataAction({
+          firstName: firstName,
+          lastName: "",
+          birthDate: "",
+          gender: "",
+          country: "",
+          zipCode: ""
+        });
 
-      let { guid, firstName, checklist } = decoded;
+        let isContinueUser = false;
+        //Any false inside the object values
+        //means the user has not finished one of the screen
+        //and mark them as continue user
+        Object.values(checklist).forEach(e => {
+          if (!e) {
+            isContinueUser = true;
+          }
+        });
+        //if the user is a continue user, send the user back to registration
+        if (isContinueUser) {
+          return this.props.navigation.navigate("Registration");
+        }
 
-      //store jwt to redux
-      this.props.SetJwtAction(resJson.jwt);
+        //store guid to redux
+        this.props.SetGUIDAction({
+          guid: guid
+        });
 
-      let isContinueUser = false;
-      //Any false inside the object values
-      //means the user has not finished one of the screen
-      //and mark them as continue user
-      Object.values(checklist).forEach(e => {
-        if (!e) {
-          isContinueUser = true;
+        this.props.navigation.navigate("Main");
+      })
+      .catch(err => {
+        if (err.httpStatusCode === 401) {
+          alert("Incorrect Email or Password");
+        } else {
+          alert("Request Failed.\nPlease Try Again.");
         }
       });
-      //if the user is a continue user, send the user back to registration
-      if (isContinueUser) {
-        return this.props.navigation.navigate("Registration");
-      }
-
-      //store guid to redux
-      this.props.SetGUIDAction({
-        guid: guid
-      });
-
-      //store firstName to redux
-      this.props.SetAboutYouDataAction({
-        firstName: decoded.firstName,
-        lastName: "",
-        birthDate: "",
-        gender: "",
-        country: "",
-        zipCode: ""
-      });
-
-      this.props.navigation.navigate("Main");
-    } catch (e) {
-      alert('Login failed, please try again later');
-      console.log(e);
-    }
   };
 
   handleSignUp = () => {
@@ -236,21 +238,23 @@ class LoginScreen extends React.Component {
   openBrowser = async (provider, hostname) => {
     try {
       let result = await WebBrowser.openAuthSessionAsync(
-        `http://${ hostname }:3002/api/auth/${ provider }?deepLink=${ Linking.makeUrl('/?') }`
+        `http://${hostname}:3002/api/auth/${provider}?deepLink=${Linking.makeUrl(
+          "/?"
+        )}`
       );
-  
-      console.log(`Result from ${ provider }`, result);
 
-      if(result.type = 'success') {
+      console.log(`Result from ${provider}`, result);
 
+      if ((result.type = "success")) {
         let redirectionData = result.url ? Linking.parse(result.url) : null;
 
         console.log(redirectionData);
 
-        if(!redirectionData || !redirectionData.queryParams.jwt) throw new Error('Url is invalid, might not contain jwt');
+        if (!redirectionData || !redirectionData.queryParams.jwt)
+          throw new Error("Url is invalid, might not contain jwt");
 
         const decodedToken = jwtDecode(redirectionData.queryParams.jwt);
-        console.log('User token', decodedToken);
+        console.log("User token", decodedToken);
         this.props.SetGUIDAction({
           guid: decodedToken.guid
         });
@@ -265,26 +269,26 @@ class LoginScreen extends React.Component {
         });
 
         this.props.navigation.navigate("Main");
-    
+
         this.setState({ redirectionData });
-      } else throw new Error('Redirection failed');
-    } catch(e) {
-      alert(`${ provider } login failed`);
-      console.log(`${ provider } login failed`, e);
+      } else throw new Error("Redirection failed");
+    } catch (e) {
+      alert(`${provider} login failed`);
+      console.log(`${provider} login failed`, e);
     }
-  }
+  };
 
   checkFaceBookValidity = async () => {
-    this.openBrowser('facebook', localhost);
+    this.openBrowser("facebook", localhost);
   };
 
   checkGoogleValidity = () => {
-    this.openBrowser('google', localhost)
-  }
+    this.openBrowser("google", localhost);
+  };
 
   checkTwitterValidity = () => {
-    this.openBrowser('twitter', '127.0.0.1');
-  }
+    this.openBrowser("twitter", "127.0.0.1");
+  };
 
   render() {
     return (
