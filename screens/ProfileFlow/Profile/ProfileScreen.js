@@ -256,13 +256,24 @@ class ProfileScreen extends React.Component {
               true
             );
 
+            //Store to device_user_imageProcessing
+            insertSqlStatement =
+              "INSERT OR REPLACE into device_user_imageProcessing(id, createAccount_id, imageUrl) " +
+              "values(1, 1, ?);";
+
+            success = await insertDataIntoLocalStorage(
+              insertSqlStatement,
+              "device_user_imageProcessing",
+              [imageUrl],
+              true
+            );
+
             if (!success) {
               console.log("failed storing data into localStorage");
               //handle error on inserting data into localStorage
             }
           } else {
             //here is store to matched's user tables
-            //code coming soon
             console.log("store matched profile info");
             //Find id by GUID
             let idObject = await selectIdByGuidFromLocalStorage(
@@ -274,12 +285,12 @@ class ProfileScreen extends React.Component {
             if (idObject.success) {
               id = idObject.result.rows._array[0].id;
               insertSqlStatement =
-                "INSERT OR REPLACE into matched_user_info(id, guid, addressLatitude, addressLongitude, birthDate, firstName, lastName, zipCode, userBio, city, state, likesArray) " +
-                `values(${id}, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`;
+                "INSERT OR REPLACE into matched_user_info(id, guid, addressLatitude, addressLongitude, birthDate, firstName, lastName, zipCode, userBio, city, state, likesArray, imageUrl) " +
+                `values(${id}, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`;
             } else {
               insertSqlStatement =
-                "INSERT OR REPLACE into matched_user_info(id, guid, addressLatitude, addressLongitude, birthDate, firstName, lastName, zipCode, userBio, city, state, likesArray) " +
-                `values(${null}, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`;
+                "INSERT OR REPLACE into matched_user_info(id, guid, addressLatitude, addressLongitude, birthDate, firstName, lastName, zipCode, userBio, city, state, likesArray, imageUrl) " +
+                `values(${null}, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`;
             }
 
             //Store to matched_user_info
@@ -301,7 +312,8 @@ class ProfileScreen extends React.Component {
                 userBio,
                 city,
                 state,
-                json_likesArray
+                json_likesArray,
+                imageUrl
               ],
               true
             );
@@ -337,10 +349,16 @@ class ProfileScreen extends React.Component {
             1
           );
 
+          let imageProcessingObject = await selectDataFromLocalStorage(
+            "device_user_imageProcessing",
+            1
+          );
+
           if (
             aboutYouObject.success &&
             interestsObject.success &&
-            createAccountObject.success
+            createAccountObject.success &&
+            imageProcessingObject.success
           ) {
             let {
               firstName,
@@ -360,6 +378,8 @@ class ProfileScreen extends React.Component {
               addressLongitude
             } = createAccountObject.result.rows._array[0];
 
+            let { imageUrl } = imageProcessingObject.result.rows._array[0];
+
             //setState
             this.setState({
               firstName: firstName,
@@ -373,6 +393,7 @@ class ProfileScreen extends React.Component {
               likesArray: likesArray,
               addressLatitude: addressLatitude,
               addressLongitude: addressLongitude,
+              imageUrl: imageUrl,
               isSuccess: true
             });
           } else {
@@ -407,7 +428,8 @@ class ProfileScreen extends React.Component {
               zipCode,
               likesArray,
               addressLatitude,
-              addressLongitude
+              addressLongitude,
+              imageUrl
             } = matched_user_infoObject.result.rows._array[0];
             likesArray = JSON.parse(likesArray).likesArray;
 
@@ -424,6 +446,7 @@ class ProfileScreen extends React.Component {
               likesArray: likesArray,
               addressLatitude: addressLatitude,
               addressLongitude: addressLongitude,
+              imageUrl: imageUrl,
               isSuccess: true
             });
           } else {
