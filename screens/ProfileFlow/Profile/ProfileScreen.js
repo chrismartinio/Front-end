@@ -85,8 +85,8 @@ class ProfileScreen extends React.Component {
       age: "",
       city: "",
       state: "",
-      userImage:
-        "https://media.gq.com/photos/56d4902a9acdcf20275ef34c/master/w_806,h_1173,c_limit/tom-hardy-lead-840.jpg",
+      imageUrl:
+        "https://cdn.pixabay.com/photo/2016/03/31/15/33/contact-1293388_960_720.png",
       likesArray: [],
       userBio: "",
       zipCode: "",
@@ -193,7 +193,8 @@ class ProfileScreen extends React.Component {
             zipCode,
             likesArray,
             addressLatitude,
-            addressLongitude
+            addressLongitude,
+            imageUrl
           } = object.result;
 
           //setState
@@ -209,6 +210,7 @@ class ProfileScreen extends React.Component {
             likesArray: likesArray,
             addressLatitude: addressLatitude,
             addressLongitude: addressLongitude,
+            imageUrl: imageUrl,
             isSuccess: true
           });
 
@@ -472,7 +474,7 @@ class ProfileScreen extends React.Component {
               {/**User Image */}
               <Image
                 source={{
-                  uri: this.state.userImage
+                  uri: this.state.imageUrl
                 }}
                 style={{
                   width: width * 0.93,
