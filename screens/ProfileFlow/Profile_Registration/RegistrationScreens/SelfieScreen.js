@@ -21,6 +21,8 @@ import {
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 
+import { connect } from "react-redux";
+
 import { Chevron } from "react-native-shapes";
 import { Icon, Input } from "react-native-elements";
 
@@ -28,6 +30,8 @@ import NextButton from "../../Profile_SharedComponents/NextButton";
 
 import ImageProcessingScreen from "../../../ImageProcessingFlow/app";
 import ImgProcessing from "../../../ImageProcessingFlow/mediaHandling/ImageProcessing.js";
+
+import { StackActions, NavigationActions } from "react-navigation";
 
 class SelfieScreen extends Component {
   constructor(props) {
@@ -54,7 +58,20 @@ class SelfieScreen extends Component {
   gotoNextScreen = () => {
     if (this.isEdit) {
       //Edit
-      this.props.navigation.goBack();
+      const resetProfileAction = StackActions.reset({
+        index: 1,
+        actions: [
+          NavigationActions.navigate({ routeName: "Home" }),
+          NavigationActions.navigate({
+            routeName: "Profile",
+            params: {
+              guid: this.props.CreateProfileDataReducer.guid,
+              isDeviceUser: true
+            }
+          })
+        ]
+      });
+      this.props.navigation.dispatch(resetProfileAction);
     } else {
       //Registration
       return this.props.navigation.navigate("RegistrationComplete");
@@ -87,4 +104,15 @@ const styles = StyleSheet.create({
   }
 });
 
-export default SelfieScreen;
+const mapStateToProps = state => {
+  return { ...state };
+};
+
+const mapDispatchToProps = dispatch => {
+  return {};
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(SelfieScreen);

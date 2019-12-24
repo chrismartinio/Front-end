@@ -23,6 +23,8 @@ import LoadingScreen from "../../../sharedComponents/LoadingScreen";
 
 import CollapsibleScreenTab from "../Profile_SharedComponents/CollapsibleScreenTab";
 
+import { StackActions, NavigationActions } from "react-navigation";
+
 class EditScreen extends React.Component {
   constructor(props) {
     super(props);
@@ -73,7 +75,22 @@ class EditScreen extends React.Component {
 
   //Handle the status of screen
   handlePassed = (componentName, passed) => {
-    this.props.navigation.state.params.dataIsEdited();
+    //this.props.navigation.state.params.dataIsEdited();
+    const resetProfileAction = StackActions.reset({
+      index: 1,
+      actions: [
+        NavigationActions.navigate({ routeName: "Home" }),
+        NavigationActions.navigate({
+          routeName: "Profile",
+          params: {
+            guid: this.props.CreateProfileDataReducer.guid,
+            isDeviceUser: true
+          }
+        })
+      ]
+    });
+    this.props.navigation.dispatch(resetProfileAction);
+
     let toggleName = componentName + "Toggle";
     let statusName = componentName + "Status";
     //1 means screen is passed
