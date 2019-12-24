@@ -85,8 +85,8 @@ class ProfileScreen extends React.Component {
       age: "",
       city: "",
       state: "",
-      userImage:
-        "https://media.gq.com/photos/56d4902a9acdcf20275ef34c/master/w_806,h_1173,c_limit/tom-hardy-lead-840.jpg",
+      imageUrl:
+        "https://cdn.pixabay.com/photo/2016/03/31/15/33/contact-1293388_960_720.png",
       likesArray: [],
       userBio: "",
       zipCode: "",
@@ -193,7 +193,8 @@ class ProfileScreen extends React.Component {
             zipCode,
             likesArray,
             addressLatitude,
-            addressLongitude
+            addressLongitude,
+            imageUrl
           } = object.result;
 
           //setState
@@ -209,6 +210,7 @@ class ProfileScreen extends React.Component {
             likesArray: likesArray,
             addressLatitude: addressLatitude,
             addressLongitude: addressLongitude,
+            imageUrl: imageUrl,
             isSuccess: true
           });
 
@@ -254,13 +256,24 @@ class ProfileScreen extends React.Component {
               true
             );
 
+            //Store to device_user_imageProcessing
+            insertSqlStatement =
+              "INSERT OR REPLACE into device_user_imageProcessing(id, createAccount_id, imageUrl) " +
+              "values(1, 1, ?);";
+
+            success = await insertDataIntoLocalStorage(
+              insertSqlStatement,
+              "device_user_imageProcessing",
+              [imageUrl],
+              true
+            );
+
             if (!success) {
               console.log("failed storing data into localStorage");
               //handle error on inserting data into localStorage
             }
           } else {
             //here is store to matched's user tables
-            //code coming soon
             console.log("store matched profile info");
             //Find id by GUID
             let idObject = await selectIdByGuidFromLocalStorage(
@@ -272,12 +285,12 @@ class ProfileScreen extends React.Component {
             if (idObject.success) {
               id = idObject.result.rows._array[0].id;
               insertSqlStatement =
-                "INSERT OR REPLACE into matched_user_info(id, guid, addressLatitude, addressLongitude, birthDate, firstName, lastName, zipCode, userBio, city, state, likesArray) " +
-                `values(${id}, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`;
+                "INSERT OR REPLACE into matched_user_info(id, guid, addressLatitude, addressLongitude, birthDate, firstName, lastName, zipCode, userBio, city, state, likesArray, imageUrl) " +
+                `values(${id}, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`;
             } else {
               insertSqlStatement =
-                "INSERT OR REPLACE into matched_user_info(id, guid, addressLatitude, addressLongitude, birthDate, firstName, lastName, zipCode, userBio, city, state, likesArray) " +
-                `values(${null}, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`;
+                "INSERT OR REPLACE into matched_user_info(id, guid, addressLatitude, addressLongitude, birthDate, firstName, lastName, zipCode, userBio, city, state, likesArray, imageUrl) " +
+                `values(${null}, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`;
             }
 
             //Store to matched_user_info
@@ -299,7 +312,8 @@ class ProfileScreen extends React.Component {
                 userBio,
                 city,
                 state,
-                json_likesArray
+                json_likesArray,
+                imageUrl
               ],
               true
             );
@@ -335,10 +349,16 @@ class ProfileScreen extends React.Component {
             1
           );
 
+          let imageProcessingObject = await selectDataFromLocalStorage(
+            "device_user_imageProcessing",
+            1
+          );
+
           if (
             aboutYouObject.success &&
             interestsObject.success &&
-            createAccountObject.success
+            createAccountObject.success &&
+            imageProcessingObject.success
           ) {
             let {
               firstName,
@@ -358,6 +378,8 @@ class ProfileScreen extends React.Component {
               addressLongitude
             } = createAccountObject.result.rows._array[0];
 
+            let { imageUrl } = imageProcessingObject.result.rows._array[0];
+
             //setState
             this.setState({
               firstName: firstName,
@@ -371,6 +393,7 @@ class ProfileScreen extends React.Component {
               likesArray: likesArray,
               addressLatitude: addressLatitude,
               addressLongitude: addressLongitude,
+              imageUrl: imageUrl,
               isSuccess: true
             });
           } else {
@@ -405,7 +428,8 @@ class ProfileScreen extends React.Component {
               zipCode,
               likesArray,
               addressLatitude,
-              addressLongitude
+              addressLongitude,
+              imageUrl
             } = matched_user_infoObject.result.rows._array[0];
             likesArray = JSON.parse(likesArray).likesArray;
 
@@ -422,6 +446,7 @@ class ProfileScreen extends React.Component {
               likesArray: likesArray,
               addressLatitude: addressLatitude,
               addressLongitude: addressLongitude,
+              imageUrl: imageUrl,
               isSuccess: true
             });
           } else {
@@ -472,7 +497,7 @@ class ProfileScreen extends React.Component {
               {/**User Image */}
               <Image
                 source={{
-                  uri: this.state.userImage
+                  uri: this.state.imageUrl
                 }}
                 style={{
                   width: width * 0.93,

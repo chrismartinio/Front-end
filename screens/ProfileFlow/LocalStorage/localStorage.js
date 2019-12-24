@@ -142,7 +142,8 @@ export function createMatchedUserTablesInToLocalStorage() {
     "userBio TEXT DEFAULT NULL," +
     "city TEXT DEFAULT NULL," +
     "state TEXT DEFAULT NULL," +
-    "likesArray TEXT DEFAULT NULL" +
+    "likesArray TEXT DEFAULT NULL," +
+    "imageUrl TEXT DEFAULT NULL" +
     " );";
 
   return new Promise((resolve, reject) => {
@@ -248,6 +249,16 @@ export function createTablesInToLocalStorage() {
     "FOREIGN KEY (createAccount_id) REFERENCES device_user_createAccount (id)" +
     " );";
 
+  let imageProcessingSqlStatement =
+    "CREATE TABLE IF NOT EXISTS device_user_imageProcessing ( " +
+    "id INTEGER PRIMARY KEY," +
+    "imageUrlsArray TEXT DEFAULT NULL," +
+    "imageUrl TEXT DEFAULT NULL," +
+    "createAccount_id INTEGER," +
+    "guid TEXT DEFAULT NULL," +
+    "FOREIGN KEY (createAccount_id) REFERENCES device_user_createAccount (id)" +
+    " );";
+
   let createTable_SqlStatementsArray = [
     {
       tableName: "device_user_createAccount",
@@ -266,6 +277,10 @@ export function createTablesInToLocalStorage() {
     {
       tableName: "device_user_localDestination",
       sqlStatement: localDestinationSqlStatement
+    },
+    {
+      tableName: "device_user_imageProcessing",
+      sqlStatement: imageProcessingSqlStatement
     }
   ];
   return new Promise((resolve, reject) => {
@@ -321,6 +336,10 @@ export function displayAllTablesFromLocalStorage() {
     {
       tableName: "device_user_localDestination",
       sqlStatement: "SELECT * FROM device_user_localDestination"
+    },
+    {
+      tableName: "device_user_imageProcessing",
+      sqlStatement: "SELECT * FROM device_user_imageProcessing"
     },
     {
       tableName: "matched_user_info",
@@ -404,6 +423,10 @@ export function dropAllTablesInLocalStorage() {
       sqlStatement: "DROP TABLE device_user_localDestination"
     },
     {
+      tableName: "device_user_imageProcessing",
+      sqlStatement: "DROP TABLE device_user_imageProcessing"
+    },
+    {
       tableName: "matched_user_info",
       sqlStatement: "DROP TABLE matched_user_info"
     }
@@ -460,6 +483,10 @@ export function deleteDeviceUserData() {
     {
       tableName: "device_user_localDestination",
       sqlStatement: "DELETE FROM device_user_localDestination WHERE id = 1;"
+    },
+    {
+      tableName: "device_user_imageProcessing",
+      sqlStatement: "DELETE FROM device_user_imageProcessing WHERE id = 1;"
     }
   ];
   return new Promise((resolve, reject) => {
