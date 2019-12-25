@@ -71,7 +71,10 @@ class SelfieScreen extends Component {
           })
         ]
       });
-      this.props.navigation.dispatch(resetProfileAction);
+      let { navigation } = this.props;
+      setTimeout(function() {
+        navigation.dispatch(resetProfileAction);
+      }, 1000);
     } else {
       //Registration
       return this.props.navigation.navigate("RegistrationComplete");
