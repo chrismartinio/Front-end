@@ -17,7 +17,8 @@ const CreateProfileDataReducer = (
     preferencesData: null,
     interestsData: null,
     wouldYouRatherData: null,
-    localDestinationData: null
+    localDestinationData: null,
+    headPhotoImageUrl: null
   },
   action
 ) => {
@@ -47,6 +48,8 @@ const CreateProfileDataReducer = (
       return { ...state, wouldYouRatherData: action.PAYLOAD };
     case "ADD_LOCALDESTINATION_DATA":
       return { ...state, localDestinationData: action.PAYLOAD };
+    case "SET_HEAD_PHOTO_IMAGE_URL":
+      return { ...state, headPhotoImageUrl: action.PAYLOAD.imageUrl };
     case "RESET_REDUX_DATA":
       return {
         ...state,

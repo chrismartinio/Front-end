@@ -3,12 +3,15 @@ import {
   View,
   Text,
   TouchableHighlight,
+  TouchableOpacity,
   Image,
-  StyleSheet
+  StyleSheet,
+  Dimensions
 } from "react-native";
 
 import { connect } from "react-redux";
 import * as uploadImgActions from "../../../storage/actions/ImageProcessingActions/uploadMediaActions";
+const { height, width } = Dimensions.get("window");
 
 const PhotoPrompt = props => {
   addIndexToggleSelection = (key, imageSelect = false) => {
@@ -21,7 +24,7 @@ const PhotoPrompt = props => {
   var imageUri = props.selectedImages[key]
     ? props.selectedImages[key].node.image.uri
     : null;
-  console.log(props.selectedImages);
+  //console.log(props.selectedImages);
 
   var added = imageUri ? (
     <Image style={styles.imagePreview} source={{ uri: imageUri }} />
@@ -34,39 +37,45 @@ const PhotoPrompt = props => {
 
   return (
     <View style={styles.container}>
-      <TouchableHighlight
+      <TouchableOpacity
+        style={styles.addBox}
         onPress={() => {
           addIndexToggleSelection(key, true);
         }}
       >
-        <View style={styles.addBox}>{added}</View>
-      </TouchableHighlight>
+        {added}
+      </TouchableOpacity>
 
-      <TouchableHighlight
+      {/*<TouchableHighlight
         onPress={() => {
           addIndexToggleSelection(key);
         }}
       >
         <Text style={styles.captionText}>{props.captions[key]}</Text>
-      </TouchableHighlight>
+      </TouchableHighlight>*/}
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    display: "flex",
-    flexDirection: "row"
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center"
   },
   addBox: {
-    width: 100,
-    height: 100,
+    width: width * 0.93,
+    height: width * 0.93,
     borderRadius: 5,
-    margin: 10,
+    borderColor: "black",
+    borderWidth: 3,
+    borderStyle: 'dotted',
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 2,
-    shadowRadius: 2
+    shadowRadius: 2,
+    justifyContent: "center",
+    alignItems: "center"
   },
   addText: {
     justifyContent: "center",
@@ -77,8 +86,8 @@ const styles = StyleSheet.create({
     top: "44%"
   },
   imagePreview: {
-    width: 75,
-    height: 75
+    width: width * 0.93,
+    height: width * 0.93,
   }
 });
 
