@@ -46,7 +46,7 @@ const PromptSection = props => (
         props.handleisUploaded()
       }}
     >
-      <Text>Upload Photo(s)</Text>
+      <Text style={{color: "#fff"}}>Upload Photo</Text>
     </TouchableOpacity>
   </ScrollView>
 );

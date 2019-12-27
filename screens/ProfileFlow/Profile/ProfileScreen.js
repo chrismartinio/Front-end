@@ -17,6 +17,8 @@ import LoadingScreen from "../../../sharedComponents/LoadingScreen";
 
 import NotificationsButton from "../../../screens/NotificationsFlow/NotificationsButton";
 
+import SetHeadPhotoImageURL from "../../../storage/actions/RegistrationActions/SetHeadPhotoImageURL";
+
 import Footer from "../../../sharedComponents/Footer";
 
 import { localhost } from "../../../config/ipconfig";
@@ -268,6 +270,11 @@ class ProfileScreen extends React.Component {
               true
             );
 
+            //store image url to redux
+            this.props.SetHeadPhotoImageURL({
+              imageUrl: imageUrl
+            });
+
             if (!success) {
               console.log("failed storing data into localStorage");
               //handle error on inserting data into localStorage
@@ -379,6 +386,11 @@ class ProfileScreen extends React.Component {
             } = createAccountObject.result.rows._array[0];
 
             let { imageUrl } = imageProcessingObject.result.rows._array[0];
+
+            //store image url to redux
+            this.props.SetHeadPhotoImageURL({
+              imageUrl: imageUrl
+            });
 
             //setState
             this.setState({
@@ -689,7 +701,9 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => {
-  return {};
+  return {
+    SetHeadPhotoImageURL: payload => dispatch(SetHeadPhotoImageURL(payload))
+  };
 };
 
 export default connect(

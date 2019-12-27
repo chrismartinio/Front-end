@@ -49,7 +49,6 @@ class EditScreen extends React.Component {
   }
 
   async componentDidMount() {
-
     /*
     All Screens will only use the Redux guid to update the db
     */
@@ -169,6 +168,12 @@ class EditScreen extends React.Component {
                 {/*Selfie*/}
                 <View style={{ alignItems: "center", margin: 50 }}>
                   <TouchableOpacity
+                    style={{
+                      borderWidth: 1,
+                      borderColor: "purple",
+                      borderRadius: 25,
+                      padding: 25
+                    }}
                     onPress={() => {
                       this.props.navigation.navigate("SeflieEdit", {
                         isEdit: true
@@ -182,7 +187,7 @@ class EditScreen extends React.Component {
                         fontWeight: "500"
                       }}
                     >
-                      Selfie
+                      Edit Photo
                     </Text>
                   </TouchableOpacity>
                 </View>

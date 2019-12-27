@@ -11,12 +11,16 @@ import {
   Button,
   ImageBackground,
   TouchableHighlight,
-  AppState
+  AppState,
+  Dimensions
 } from "react-native";
 
 import { connect } from "react-redux";
 
 import io from "socket.io-client";
+
+import { Icon } from "react-native-elements";
+import AntIcon from "react-native-vector-icons/AntDesign";
 
 import LoadingScreen from "../sharedComponents/LoadingScreen";
 
@@ -24,12 +28,15 @@ import { localhost } from "../config/ipconfig";
 
 import Footer from "../sharedComponents/Footer";
 
+const { height, width } = Dimensions.get("window");
+
 class HomeScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       appState: AppState.currentState,
-
+      connections: 250,
+      online: 13,
       isSuccess: false
     };
 
@@ -98,14 +105,155 @@ class HomeScreen extends React.Component {
   successScreen = () => {
     return (
       <View style={styles.container}>
-        <View style={{ flex: 0.9 }}>
-          <Button
-            color={"#660066"}
-            title={"matching"}
+        <View style={{ flex: 0.9, alignItems: "center" }}>
+          {/*Space*/}
+          <View style={{ padding: "5%" }} />
+
+          {/*Start Text*/}
+          <Text
+            style={{
+              fontSize: 20,
+              color: "#7443aa"
+            }}
+          >
+            START
+          </Text>
+
+          {/*Butterfly Button*/}
+          <TouchableOpacity
             onPress={() => {
               this.props.navigation.navigate("Matching");
             }}
-          />
+          >
+            <View>
+              <Image
+                source={require("../assets/images/butterfly.png")}
+                style={{
+                  width: 100,
+                  height: 100,
+                  margin: 25,
+                  transform: [{ rotate: "300deg" }]
+                }}
+              />
+            </View>
+          </TouchableOpacity>
+
+          {/*New Chat Text*/}
+          <Text
+            style={{
+              fontSize: 20,
+              color: "#7443aa"
+            }}
+          >
+            NEW CHAT
+          </Text>
+
+          {/*Space*/}
+          <View style={{ padding: "10%" }} />
+
+          {/*No More Swiping Text*/}
+          <Text
+            style={{
+              fontSize: 14,
+              fontWeight: "bold",
+              color: "#7443aa"
+            }}
+          >
+            No More Swiping.
+          </Text>
+
+          {/*Space*/}
+          <View style={{ padding: "2%" }} />
+
+          {/*Long Text #1 Text*/}
+          <View style={{ width: 300 }}>
+            <Text
+              style={{
+                fontSize: 10,
+                textAlign: "center",
+                color: "#7443aa"
+              }}
+            >
+              We want you to make a deeper and more significant connection by
+              talking to a real person.
+            </Text>
+          </View>
+
+          {/*Space*/}
+          <View style={{ padding: "2%" }} />
+
+          {/*Long Text #2 Text*/}
+          <View style={{ width: 300 }}>
+            <Text
+              style={{
+                fontSize: 10,
+                textAlign: "center",
+                color: "#7443aa"
+              }}
+            >
+              Blindly will only show you what the other person looks like until
+              you made a connection with them.
+            </Text>
+          </View>
+
+          {/*Space*/}
+          <View style={{ padding: "10%" }} />
+
+          {/*Connection and Online*/}
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-around",
+              width: width * 0.65
+            }}
+          >
+            {/*Connections Text*/}
+            <View
+              style={{
+                flexDirection: "column",
+                alignItems: "center"
+              }}
+            >
+              <Icon
+                type="font-awesome"
+                size={width * 0.06}
+                name="group"
+                color="#46278c"
+              />
+              <View style={{ padding: "5%" }} />
+              <Text style={{ color: "#7443aa", fontWeight: "bold" }}>
+                {this.state.connections}
+              </Text>
+              <View style={{ padding: "3%" }} />
+              <Text style={{ color: "#7443aa" }}>Connections</Text>
+            </View>
+
+            <View
+              style={{
+                borderWidth: 0.5,
+                borderColor: "#7443aa",
+                height: 100,
+                alignSelf: "center"
+              }}
+            />
+
+            {/*Online Text*/}
+            <View
+              style={{
+                flexDirection: "column",
+                alignItems: "center"
+              }}
+            >
+              <AntIcon name="earth" color="#46278c" size={width * 0.06} />
+
+              <View style={{ padding: "10%" }} />
+              <Text style={{ color: "#7443aa", fontWeight: "bold" }}>
+                {this.state.online}
+              </Text>
+              <View style={{ padding: "5%" }} />
+              <Text style={{ color: "#7443aa" }}>Online</Text>
+            </View>
+          </View>
         </View>
 
         {/*Footer*/}
