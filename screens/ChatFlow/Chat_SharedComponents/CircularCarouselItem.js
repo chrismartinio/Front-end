@@ -29,7 +29,7 @@ export default class CircularCarouselItem extends React.Component {
   };
 
   render() {
-    let nameFont = shortName(this.props.itemData.matchedFirstName);
+    let nameFont = shortName(this.props.itemData.matchedUserName);
     let ageAddressFont = shortAgeAndAddressSTR(
       this.props.itemData.matchedAge + this.props.itemData.matchedLocation
     );
@@ -58,7 +58,13 @@ export default class CircularCarouselItem extends React.Component {
             borderRadius: this.props.borderRadius
           }}
         >
-          <View style={{ flexDirection: "row", overflow: "hidden", flexWrap: "nowrap" }}>
+          <View
+            style={{
+              flexDirection: "row",
+              overflow: "hidden",
+              flexWrap: "nowrap"
+            }}
+          >
             {/*Image*/}
             <Image
               source={{
@@ -97,28 +103,28 @@ export default class CircularCarouselItem extends React.Component {
                     fontSize: width * nameFont
                   }}
                 >
-                  {this.props.itemData.matchedFirstName}{" "}
-                  {this.props.itemData.matchedLastName[0]}
+                  {this.props.itemData.matchedUserName}
+                  {/*this.props.itemData.matchedLastName[0]*/}
                 </Text>
 
                 {/*Age and Address*/}
                 <Text style={{ fontSize: width * 0.038 }}>
-                  {this.props.itemData.matchedAge} ,
-                  {this.props.itemData.matchedLocation}
+                  {this.props.itemData.matchedUserAge} ,
+                  {this.props.itemData.matchedUserCity}
                 </Text>
               </View>
 
               <View style={{ padding: 1 }} />
 
               <Text style={{ fontSize: width * 0.028, opacity: 0.7 }}>
-                "{shortTheMessage(this.props.itemData.matchedLastMessage)}"
+                "{shortTheMessage(this.props.itemData.roomLastMessage)}"
               </Text>
 
               <View style={{ padding: 2 }} />
 
               {/*Last Replied Date*/}
               <Text style={{ color: "black", fontSize: 10 }}>
-                Last Replied {this.props.itemData.matchedLastRepliedDate}
+                Last Replied {this.props.itemData.lastMessageDate}
               </Text>
             </View>
           </View>
