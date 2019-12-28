@@ -16,7 +16,8 @@ const { height, width } = Dimensions.get("window");
 import {
   shortTheMessage,
   shortName,
-  shortAgeAndAddressSTR
+  shortAgeAndAddressSTR,
+  calculateLastMessageDate
 } from "../Util/ConnectionsScreenFunctions.js";
 
 export default class CircularCarouselItem extends React.Component {
@@ -124,7 +125,7 @@ export default class CircularCarouselItem extends React.Component {
 
               {/*Last Replied Date*/}
               <Text style={{ color: "black", fontSize: 10 }}>
-                Last Replied {this.props.matchedUserData.lastMessageDate}
+                Last Replied {calculateLastMessageDate(this.props.matchedUserData.lastMessageDate)}
               </Text>
             </View>
           </View>

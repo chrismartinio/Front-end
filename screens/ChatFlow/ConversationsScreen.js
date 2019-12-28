@@ -116,6 +116,9 @@ class ConversationsScreen extends React.Component {
 
     //Get All matched User Status
     let matchedUsersList = await this.getMatchedUsersStatusFromDB(this.guid);
+    if (matchedUsersList === undefined) {
+      matchedUsersList = [];
+    }
 
     //Inert all matched Users Profile Info
     await this.getMatchedUsersProfileFromDB(matchedUsersList);
