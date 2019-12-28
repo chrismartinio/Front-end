@@ -52,13 +52,48 @@ class ConversationsScreen extends React.Component {
     this.scrollY;
   }
 
-  getMatchedUsersProfileFromDB = array => {
-    //throw a array to profile server
-    //server find all info and return the array
-  }
+  mergeArrayObjects = (arr1, arr2) => {
+    return arr1.map((item, i) => {
+      if (item.matchedUserGuid === arr2[i].matchedUserGuid) {
+        //merging two objects
+        return Object.assign({}, item, arr2[i]);
+      }
+    });
+  };
+
+  getMatchedUsersProfileFromDB = async matchedUsersList => {
+    let matchedUserGuidArray = [];
+    matchedUsersList.map(e => {
+      matchedUserGuidArray.push(e.matchedUserGuid);
+    });
+    let arr1 = matchedUsersList;
+    let arr2 = await fetch(`http://${localhost}:4000/api/profile/chat_query`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        matchedUserGuidArray: matchedUserGuidArray
+      })
+    })
+      .then(res => res.json())
+      .then(async res => {
+        return res.result;
+        let arr2 = await matchedUsersList;
+      })
+      .catch(err => {
+        console.log(err);
+      });
+
+    let arr3 = this.mergeArrayObjects(arr1, arr2);
+
+    this.setState({
+      matchedUsersList: arr3
+    });
+  };
 
   getMatchedUsersStatusFromDB = async guid => {
-    await fetch(`http://${localhost}:3060/api/chat/chatRooms`, {
+    return await fetch(`http://${localhost}:3060/api/chat/chatRooms`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -68,11 +103,6 @@ class ConversationsScreen extends React.Component {
       })
     })
       .then(res => res.json())
-      .then(async res => {
-        this.setState({
-          matchedUsersList: res
-        });
-      })
       .catch(err => {
         console.log(err);
       });
@@ -83,29 +113,13 @@ class ConversationsScreen extends React.Component {
     this.guid = await this.props.CreateProfileDataReducer.guid;
     this.user_firstName = await this.props.CreateProfileDataReducer.aboutYouData
       .firstName;
-    await this.getMatchedUsersStatusFromDB(this.guid);
-    console.log("HomeScreen");
-    console.log("USER GUID: ", this.guid);
-    console.log("USER firstName: ", this.user_firstName);
 
-    /*
-    await fetch(`http://${localhost}:3003/api/chat/`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        data: { guid: this.guid, user_firstName: this.user_firstName }
-      })
-    })
-      .then(res => {
-        return res.json();
-      })
-      .then(res => {
-        //here's what I will get the chatobject
-        console.log(res.roomID[0].key); //1231231231.1231231232131
-      });
-*/
+    //Get All matched User Status
+    let matchedUsersList = await this.getMatchedUsersStatusFromDB(this.guid);
+
+    //Inert all matched Users Profile Info
+    await this.getMatchedUsersProfileFromDB(matchedUsersList);
+
     this.setState({
       isSuccess: true
     });

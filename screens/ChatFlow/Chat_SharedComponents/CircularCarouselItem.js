@@ -24,14 +24,14 @@ export default class CircularCarouselItem extends React.Component {
     super(props);
   }
 
-  goToPermanentChatRoom = chatRoomData => {
-    this.props.navigation.navigate("PermanentChatRoom", chatRoomData);
+  goToPermanentChatRoom = matchedUserData => {
+    this.props.navigation.navigate("PermanentChatRoom", matchedUserData);
   };
 
   render() {
-    let nameFont = shortName(this.props.itemData.matchedUserName);
+    let nameFont = shortName(this.props.matchedUserData.matchedUserName);
     let ageAddressFont = shortAgeAndAddressSTR(
-      this.props.itemData.matchedAge + this.props.itemData.matchedLocation
+      this.props.matchedUserData.matchedAge + this.props.matchedUserData.matchedLocation
     );
     //Outer box
     return (
@@ -49,7 +49,7 @@ export default class CircularCarouselItem extends React.Component {
         {/*Inner Box*/}
         <TouchableOpacity
           onPress={() => {
-            this.goToPermanentChatRoom(this.props.itemData);
+            this.goToPermanentChatRoom(this.props.matchedUserData);
           }}
           style={{
             backgroundColor: "#ccccff",
@@ -68,7 +68,7 @@ export default class CircularCarouselItem extends React.Component {
             {/*Image*/}
             <Image
               source={{
-                uri: this.props.itemData.matchedImage
+                uri: this.props.matchedUserData.imageUrl
               }}
               style={{
                 width: width * 0.22,
@@ -103,28 +103,28 @@ export default class CircularCarouselItem extends React.Component {
                     fontSize: width * nameFont
                   }}
                 >
-                  {this.props.itemData.matchedUserName}
-                  {/*this.props.itemData.matchedLastName[0]*/}
+                  {this.props.matchedUserData.matchedUserName}
+                  {/*this.props.matchedUserData.matchedLastName[0]*/}
                 </Text>
 
                 {/*Age and Address*/}
                 <Text style={{ fontSize: width * 0.038 }}>
-                  {this.props.itemData.matchedUserAge} ,
-                  {this.props.itemData.matchedUserCity}
+                  {this.props.matchedUserData.matchedUserAge} ,
+                  {this.props.matchedUserData.matchedUserCity}
                 </Text>
               </View>
 
               <View style={{ padding: 1 }} />
 
               <Text style={{ fontSize: width * 0.028, opacity: 0.7 }}>
-                "{shortTheMessage(this.props.itemData.roomLastMessage)}"
+                "{shortTheMessage(this.props.matchedUserData.roomLastMessage)}"
               </Text>
 
               <View style={{ padding: 2 }} />
 
               {/*Last Replied Date*/}
               <Text style={{ color: "black", fontSize: 10 }}>
-                Last Replied {this.props.itemData.lastMessageDate}
+                Last Replied {this.props.matchedUserData.lastMessageDate}
               </Text>
             </View>
           </View>

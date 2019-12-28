@@ -56,21 +56,32 @@ class PermanentChatRoomScreen extends React.Component {
       appState: AppState.currentState,
       endTime: "",
       modalVisible: false,
-      matchedGuid: "",
+      matchedUserGuid: "",
       matchedFirstName: "",
-      matchedLastName: "",
       matchedLikesArray: [],
-      matchedImage: "",
       matchedAge: "",
       matchedLocation: "",
       matchedState: "",
       keyBoardShown: false,
-      matchedInfoToggle: true
+      matchedInfoToggle: true,
+      matchedUserImageUrl:
+        "https://cdn.pixabay.com/photo/2016/03/31/15/33/contact-1293388_960_720.png"
     };
-    this.guid = "";
-    this.user_firstName = "";
-    this.matched_user_firstName = "";
-    this.socket = io(`http://${localhost}:3060`);
+    this.roomGuid = this.props.navigation.state.params.roomGuid;
+    this.token = "";
+    this.socket = io(`http://${localhost}:3060 + '/' + ${this.roomGuid}`, {
+      forceNew: true,
+      transportOptions: {
+        polling: {
+          extraHeaders: {
+            authorization: "Bearer " + this.token // if you have token for auth
+          }
+        }
+      },
+      query: {
+        namespace: this.roomGuid
+      }
+    });
 
     //handle new message
     this.socket.on("new message", data => {
@@ -140,28 +151,51 @@ class PermanentChatRoomScreen extends React.Component {
     });
   }
 
-  setMatchedUserInfo = successObj => {
+  setMatchedUserInfo = matchedObj => {
     this.setState({
-      matchedGuid: successObj.matchedGuid,
-      matchedFirstName: successObj.matchedFirstName,
-      matchedLastName: successObj.matchedLastName,
-      matchedLikesArray: successObj.matchedLikesArray,
-      matchedImage: successObj.matchedImage,
-      matchedAge: successObj.matchedAge,
-      matchedLocation: successObj.matchedLocation,
-      matchedState: successObj.matchedState
+      matchedUserGuid: matchedObj.matchedUserGuid,
+      matchedFirstName: matchedObj.matchedFirstName,
+      matchedLikesArray: matchedObj.matchedLikesArray,
+      matchedAge: matchedObj.matchedAge,
+      matchedLocation: matchedObj.matchedLocation,
+      matchedState: matchedObj.matchedState,
+      matchedUserImageUrl: matchedObj.matchedUserImageUrl
     });
   };
 
   async componentDidMount() {
-    const { navigation } = this.props;
-    console.log(navigation.getParam("matchedGuid"));
-    //conversation screen will pass an guid
-    //PermanentChatRoom will use guid query all messages and images and stuff
-    //then setState
+    //Matched Info
+    let {
+      matchedUserAge,
+      matchedUserName,
+      matchedUserCity,
+      matchedUserGuid,
+      likesArray,
+      state,
+      imageUrl
+    } = this.props.navigation.state.params;
+    let matchedObj = {
+      matchedUserGuid: matchedUserGuid,
+      matchedFirstName: matchedUserName,
+      matchedLikesArray: likesArray,
+      matchedAge: matchedUserAge,
+      matchedLocation: matchedUserCity,
+      matchedState: state,
+      matchedUserImageUrl: imageUrl
+    };
+    this.setMatchedUserInfo(matchedObj);
 
-    this.setMatchedUserInfo(testobj[0]);
+    //call old messages
 
+    //Device's user Info
+    this.userGuid = await this.props.CreateProfileDataReducer.guid;
+    this.user_firstName = await this.props.CreateProfileDataReducer.aboutYouData
+      .firstName;
+
+    this.roomGuid = this.props.navigation.state.params.roomGuid;
+    console.log(this.roomGuid);
+
+    //Keyboard
     this.keyboardDidShowListener = Keyboard.addListener(
       "keyboardDidShow",
       this._keyboardDidShow
@@ -170,25 +204,20 @@ class PermanentChatRoomScreen extends React.Component {
       "keyboardDidHide",
       this._keyboardDidHide
     );
+    AppState.addEventListener("change", this._handleAppStateChange);
 
+    //open menu
     this.props.navigation.setParams({
       openMenu: () => {
         this.openMenu(true);
       }
     });
 
-    this.guid = await this.props.CreateProfileDataReducer.guid;
-
-    this.user_firstName = await this.props.CreateProfileDataReducer.aboutYouData
-      .firstName;
-
     //emit an event to tell the socket the user has enter the room
     this.socket.emit("add user", {
-      guid: this.guid,
+      userGuid: this.userGuid,
       user_firstName: this.user_firstName
     });
-
-    AppState.addEventListener("change", this._handleAppStateChange);
 
     this.setState({
       isSuccess: true
@@ -283,8 +312,11 @@ class PermanentChatRoomScreen extends React.Component {
     let str = `${this.state.currentMessage}`;
     this.addChatMessage(1, str, this.user_firstName);
     this.socket.emit("new message", {
-      guid: this.guid,
-      message: this.state.currentMessage
+      userGuid: this.userGuid,
+      userName: this.user_firstName,
+      matchedUserGuid: this.state.matchedUserGuid,
+      message: this.state.currentMessage,
+      roomGuid: this.roomGuid
     });
     this.setState({
       currentMessage: ""
@@ -419,15 +451,14 @@ class PermanentChatRoomScreen extends React.Component {
               <TouchableOpacity
                 onPress={() => {
                   this.props.navigation.navigate("Profile", {
-                    guid: this.props.navigation.getParam("matchedGuid"),
+                    guid: this.state.matchedUserGuid,
                     isDeviceUser: false
                   });
                 }}
               >
                 <Image
                   source={{
-                    uri:
-                      "https://www.famousbirthdays.com/faces/efron-zac-image.jpg"
+                    uri: this.state.matchedUserImageUrl
                   }}
                   style={{
                     width: width * 0.2,
