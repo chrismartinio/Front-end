@@ -26,7 +26,7 @@ import io from "socket.io-client";
 
 import LoadingScreen from "../../sharedComponents/LoadingScreen";
 
-import { localhost } from "../../config/ipconfig";
+import { localhost, miniServer } from "../../config/ipconfig";
 
 import Footer from "../../sharedComponents/Footer";
 
@@ -82,7 +82,7 @@ class ConversationsScreen extends React.Component {
         let arr2 = await matchedUsersList;
       })
       .catch(err => {
-        console.log(err);
+        console.log('Conversations screen: Error at getMatchedUsersProfileFromDB ', err);
       });
 
     let arr3 = this.mergeArrayObjects(arr1, arr2);
@@ -104,13 +104,14 @@ class ConversationsScreen extends React.Component {
     })
       .then(res => res.json())
       .catch(err => {
-        console.log(err);
+        console.log('Conversations screen: Error at getMatchedUsersStatusFromDB ', err);
       });
   };
 
   async componentDidMount() {
     AppState.addEventListener("change", this._handleAppStateChange);
     this.guid = await this.props.CreateProfileDataReducer.guid;
+    console.log('User guid', this.guid);
     this.user_firstName = await this.props.CreateProfileDataReducer.aboutYouData
       .firstName;
 
@@ -139,7 +140,7 @@ class ConversationsScreen extends React.Component {
       nextAppState === "active"
     ) {
       console.log("User: " + this.guid + " has come to the foreground!");
-      await fetch(`http://${localhost}:3020/api/pushNotification/appState`, {
+      await fetch(`http://${miniServer}:3020/api/pushNotification/appState`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -154,7 +155,7 @@ class ConversationsScreen extends React.Component {
         });
     } else {
       console.log("User: " + this.guid + " has gone to the background!");
-      await fetch(`http://${localhost}:3020/api/pushNotification/appState`, {
+      await fetch(`http://${miniServer}:3020/api/pushNotification/appState`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"

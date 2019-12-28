@@ -68,8 +68,9 @@ class PermanentChatRoomScreen extends React.Component {
         "https://cdn.pixabay.com/photo/2016/03/31/15/33/contact-1293388_960_720.png"
     };
     this.roomGuid = this.props.navigation.state.params.roomGuid;
+    console.log('Room guid ', this.roomGuid);
     this.token = "";
-    this.socket = io(`http://${localhost}:3060 + '/' + ${this.roomGuid}`, {
+    this.socket = io(`http://${localhost}:3060/${this.roomGuid}`, {
       forceNew: true,
       transportOptions: {
         polling: {
