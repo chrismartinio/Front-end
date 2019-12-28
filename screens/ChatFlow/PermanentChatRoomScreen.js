@@ -69,7 +69,7 @@ class PermanentChatRoomScreen extends React.Component {
     };
     this.roomGuid = this.props.navigation.state.params.roomGuid;
     this.token = "";
-    this.socket = io(`http://${localhost}:3060 + '/' + ${this.roomGuid}`, {
+    this.socket = io(`http://${localhost}:3060/${this.roomGuid}`, {
       forceNew: true,
       transportOptions: {
         polling: {
@@ -341,7 +341,7 @@ class PermanentChatRoomScreen extends React.Component {
                   }`}</Text>
                 </View>
               </View>
-              <Text style={styles.circle}>{this.user_firstName[0]}</Text>
+              <Text style={styles.circle}>{this.user_firstName}</Text>
             </View>
           </View>
         );
@@ -351,7 +351,7 @@ class PermanentChatRoomScreen extends React.Component {
           <View key={index}>
             <View style={styles.textContainer}>
               <Text style={styles.circlePurple}>
-                {this.matched_user_firstName[0]}
+                {this.matched_user_firstName}
               </Text>
               <View style={styles.targetMessageTextWrap}>
                 <View style={styles.targetMessageText}>
