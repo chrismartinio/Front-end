@@ -81,7 +81,6 @@ class MatchScreen extends React.Component {
     //reset the matchingScreen's foundaMatch = false
     //fetch data
     //and use guid to get interest, miles, firstName, lastName, image
-    this.props.navigation.state.params.backFromMatch();
     axios
       .post(
         `http://${miniServer}:4000/api/profile/profile_query`,
