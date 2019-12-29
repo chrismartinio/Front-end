@@ -77,13 +77,14 @@ class ConversationsScreen extends React.Component {
       })
     })
       .then(res => res.json())
-      .then(async res => {
-        return res.result;
-        let arr2 = await matchedUsersList;
-      })
+      .then(res => res.result)
       .catch(err => {
         console.log(err);
       });
+
+    if (arr2 === undefined) {
+      return;
+    }
 
     let arr3 = this.mergeArrayObjects(arr1, arr2);
 
