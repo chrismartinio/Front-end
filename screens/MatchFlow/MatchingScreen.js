@@ -48,12 +48,15 @@ class MatchingScreen extends React.Component {
   };
 
   componentDidMount() {
-    this.props.navigation.setParams({ backFromMatch: this.backFromMatch });
+    this.initializeComponent();
+  }
+
+  initializeComponent = () => {
     axios
       .post(
         `http://${miniServer}:5000/api/match`,
         {
-          _id: '5df0426e1c9d44000040a446'
+          _id: this.props.navigation.state.params.id
         },
         { headers: { 'Content-Type': 'application/json' } }
       )
@@ -63,22 +66,23 @@ class MatchingScreen extends React.Component {
       .catch(error => {
         return this.props.navigation.navigate('Home');
       });
-  }
-
-  backFromMatch = () => {
-    this.setState({
-      foundaMatch: false
-    });
   };
+
+  didFocusSubscription = this.props.navigation.addListener(
+    'didFocus',
+    payload => {
+      if (this.state.foundaMatch === true) {
+        this.props.navigation.navigate('Home');
+        this.didFocusSubscription.remove();
+      }
+    }
+  );
 
   componentDidUpdate(prevProps, prevState, snapshot) {
     if (prevState.foundaMatch !== this.state.foundaMatch) {
       if (this.state.foundaMatch) {
         //also send a private room id to match screen
         this.props.navigation.navigate('FoundaMatch', {
-          backFromMatch: () => {
-            this.props.navigation.state.params.backFromMatch();
-          },
           match: this.state.match,
           userGuid: this.state.userGuid
         });
