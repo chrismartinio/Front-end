@@ -1,15 +1,15 @@
-import React, { Component } from "react";
-import { Text, StyleSheet, View, TextInput, Dimensions } from "react-native";
-import MapView, { Marker, Callout } from "react-native-maps";
-import _ from "lodash";
-import flagBlueImg from "../../assets/images/blindlySmall.png";
-import flagPinkImg from "../../assets/images/blindlySmall.png";
+import React, { Component } from 'react';
+import { Text, StyleSheet, View, TextInput, Dimensions } from 'react-native';
+import MapView, { Marker, Callout } from 'react-native-maps';
+import _ from 'lodash';
+import flagBlueImg from '../../assets/images/blindlySmall.png';
+import flagPinkImg from '../../assets/images/blindlySmall.png';
 
-import { localhost } from "../../config/ipconfig";
+import { miniServer } from '../../config/ipconfig';
 
-import LoadingScreen from "../../sharedComponents/LoadingScreen";
+import LoadingScreen from '../../sharedComponents/LoadingScreen';
 
-import io from "socket.io-client";
+import io from 'socket.io-client';
 
 export default class LocationServices extends Component {
   constructor(props) {
@@ -27,7 +27,7 @@ export default class LocationServices extends Component {
       OffsetY: Math.random() * 120 - 60,
       targetLat: 0,
       targetLong: 0,
-      targetNickName: "Brenda",
+      targetNickName: 'Brenda',
       isSuccess: true
     };
 
@@ -62,7 +62,7 @@ export default class LocationServices extends Component {
     ///to see the markers properly, set your simulator location to 37.78825, -122.4324,
     navigator.geolocation.getCurrentPosition(
       position => {
-        console.log("----------");
+        console.log('----------');
         //console.log(position);
         this.setState(
           {
@@ -77,15 +77,13 @@ export default class LocationServices extends Component {
               this.state.userLongitude + 0.00005
             );
             //Testing use
-            fetch(`http://${localhost}:4060/`, {
-              method: "POST",
+            fetch(`http://${miniServer}:4060/`, {
+              method: 'POST',
               headers: {
-                "Content-Type": "application/json"
+                'Content-Type': 'application/json'
               },
               body: JSON.stringify({
-                deviceLatLong: `${this.state.userLatitude},${
-                  this.state.userLatitude
-                }`,
+                deviceLatLong: `${this.state.userLatitude},${this.state.userLatitude}`,
                 deviceRadiusPref: `${this.state.distance * 1609.344}`,
                 deviceLat: `${this.state.userLatitude}`,
                 deviceLong: `${this.state.userLongitude}`
@@ -145,16 +143,15 @@ export default class LocationServices extends Component {
           coordinate={marker}
           title={
             marker.title +
-            "\n" +
+            '\n' +
             marker.businessAddress +
-            "\n" +
+            '\n' +
             marker.businessCity +
-            ", " +
+            ', ' +
             marker.businessState +
-            " " +
+            ' ' +
             marker.businessZip
-          }
-        >
+          }>
           <Callout
             style={styles.customView}
             //tooltip={true}
@@ -162,13 +159,13 @@ export default class LocationServices extends Component {
             <View>
               <Text>
                 {marker.title +
-                  "\n" +
+                  '\n' +
                   marker.businessAddress +
-                  "\n" +
+                  '\n' +
                   marker.businessCity +
-                  ", " +
+                  ', ' +
                   marker.businessState +
-                  " " +
+                  ' ' +
                   marker.businessZip}
               </Text>
             </View>
@@ -189,8 +186,7 @@ export default class LocationServices extends Component {
             longitude: this.state.userLongitude,
             latitudeDelta: 0.025,
             longitudeDelta: 0.025
-          }}
-        >
+          }}>
           <View>
             <TextInput
               value={this.state.destinationInput}
@@ -232,14 +228,14 @@ export default class LocationServices extends Component {
   }
 }
 
-const { height, width } = Dimensions.get("window");
+const { height, width } = Dimensions.get('window');
 const styles = StyleSheet.create({
   container: {
     ...StyleSheet.absoluteFillObject,
     height: height,
     width: width,
-    justifyContent: "flex-end",
-    alignItems: "center"
+    justifyContent: 'flex-end',
+    alignItems: 'center'
   },
   map: {
     ...StyleSheet.absoluteFillObject
@@ -248,7 +244,7 @@ const styles = StyleSheet.create({
     height: 40,
     marginTop: 10,
     padding: 5,
-    backgroundColor: "white"
+    backgroundColor: 'white'
   },
   customView: {
     width: 160
