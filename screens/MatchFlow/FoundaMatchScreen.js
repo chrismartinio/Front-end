@@ -185,8 +185,7 @@ class MatchScreen extends React.Component {
                 <Image
                   blurRadius={10}
                   source={{
-                    uri:
-                      'https://media.gq.com/photos/56d4902a9acdcf20275ef34c/master/w_806,h_1173,c_limit/tom-hardy-lead-840.jpg'
+                    uri: this.state.matchedImage
                   }}
                   style={styles.image}
                 />
