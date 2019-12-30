@@ -15,13 +15,25 @@ import PromptPanel from "./PromptPanel.js";
 
 import ImgProcessing from "../mediaHandling/ImageProcessing.js";
 
-const uploadImages = (imgArr, captions, props, platform, guid) => {
-  ImgProcessing.sendImages(imgArr, platform, {
+const uploadImages = async (
+  imgArr,
+  captions,
+  props,
+  platform,
+  guid,
+  handleisUploaded
+) => {
+  let success = await ImgProcessing.sendImages(imgArr, platform, {
     captions,
     guid: guid
   });
-  props.clearImgSelection();
-  props.clearCaptions();
+  if (success) {
+    handleisUploaded();
+    props.clearImgSelection();
+    props.clearCaptions();
+  } else {
+    alert("Failed Upload. Please try again!");
+  }
 };
 
 const PromptSection = props => (
@@ -36,17 +48,18 @@ const PromptSection = props => (
         if (props.selectedImages[0] === null) {
           return alert("Please take a picture");
         }
+
         uploadImages(
           props.selectedImages,
           props.captions,
           props,
           Platform,
-          props.guid
+          props.guid,
+          props.handleisUploaded
         );
-        props.handleisUploaded()
       }}
     >
-      <Text style={{color: "#fff"}}>Upload Photo</Text>
+      <Text style={{ color: "#fff" }}>Upload Photo</Text>
     </TouchableOpacity>
   </ScrollView>
 );

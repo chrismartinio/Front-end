@@ -67,19 +67,24 @@ exports.getAllImages = () => {
 exports.sendImages = async (images, platform, body) => {
   let data = createFormDataMulti(images, platform.OS, body);
 
-  await fetch(`http://${localhost}:4040/api/imageProcessing/upload`, {
-    method: "POST",
-    body: data
-  })
+  let success = await fetch(
+    `http://${localhost}:4040/api/imageProcessing/upload`,
+    {
+      method: "POST",
+      body: data
+    }
+  )
     .then(res => res.json())
     .then(res => {
       console.log("Upload success!");
       if (!res.success) {
-        return alert("Failed Upload. Please try again!");
+        throw new Error("Duplicate Email");
       }
+      return true;
     })
     .catch(err => {
       console.log(err);
-      return alert("Failed Upload. Please try again!");
+      return false;
     });
+  return success;
 };
