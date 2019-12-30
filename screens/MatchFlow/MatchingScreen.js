@@ -1,4 +1,4 @@
-import * as React from 'react';
+import * as React from "react";
 import {
   Text,
   View,
@@ -10,12 +10,12 @@ import {
   ActivityIndicator,
   Dimensions,
   Image
-} from 'react-native';
-import { connect } from 'react-redux';
-import { miniServer } from '../../config/ipconfig';
-import LoadingScreen from '../../sharedComponents/LoadingScreen';
-import Footer from '../../sharedComponents/Footer';
-import axios from 'axios';
+} from "react-native";
+import { connect } from "react-redux";
+import { miniServer } from "../../config/ipconfig";
+import LoadingScreen from "../../sharedComponents/LoadingScreen";
+import Footer from "../../sharedComponents/Footer";
+import axios from "axios";
 
 class MatchingScreen extends React.Component {
   //Header
@@ -25,8 +25,8 @@ class MatchingScreen extends React.Component {
     this.state = {
       isSuccess: true,
       foundaMatch: false,
-      match: '',
-      user: ''
+      matchingUserGuid: "",
+      matchingRoomGuid: ""
     };
     //Set up a socket that after socket send they found a match
     //then change the foundaMatch = true
@@ -38,12 +38,13 @@ class MatchingScreen extends React.Component {
         ? [...response.data.matchData.matchedUsers]
         : null;
     if (matchedUsers === null) {
-      return this.props.navigation.navigate('Home');
+      return this.props.navigation.navigate("Home");
     }
+
     this.setState({
       foundaMatch: true,
-      match: matchedUsers[0],
-      user: response.data.userGuid
+      matchingUserGuid: matchedUsers[0],
+      matchingRoomGuid: "something"
     });
   };
 
@@ -58,21 +59,21 @@ class MatchingScreen extends React.Component {
         {
           _id: this.props.navigation.state.params.id
         },
-        { headers: { 'Content-Type': 'application/json' } }
+        { headers: { "Content-Type": "application/json" } }
       )
       .then(response => {
         this.handleMatchResponse(response);
       })
       .catch(error => {
-        return this.props.navigation.navigate('Home');
+        return this.props.navigation.navigate("Home");
       });
   };
 
   didFocusSubscription = this.props.navigation.addListener(
-    'didFocus',
+    "didFocus",
     payload => {
       if (this.state.foundaMatch === true) {
-        this.props.navigation.navigate('Home');
+        this.props.navigation.navigate("Home");
         this.didFocusSubscription.remove();
       }
     }
@@ -82,9 +83,9 @@ class MatchingScreen extends React.Component {
     if (prevState.foundaMatch !== this.state.foundaMatch) {
       if (this.state.foundaMatch) {
         //also send a private room id to match screen
-        this.props.navigation.navigate('FoundaMatch', {
-          match: this.state.match,
-          userGuid: this.state.userGuid
+        this.props.navigation.navigate("FoundaMatch", {
+          matchingUserGuid: this.state.matchingUserGuid,
+          matchingRoomGuid: this.state.matchingRoomGuid
         });
       }
     }
@@ -94,10 +95,10 @@ class MatchingScreen extends React.Component {
     return (
       <View style={styles.container}>
         <View style={{ flex: 0.9 }}>
-          <View style={{ flex: 1, justifyContent: 'center' }}>
+          <View style={{ flex: 1, justifyContent: "center" }}>
             <ActivityIndicator size="large" color="#fff" />
-            <View style={{ alignItems: 'center' }}>
-              <Text style={{ fontSize: 24, color: '#fff' }}>
+            <View style={{ alignItems: "center" }}>
+              <Text style={{ fontSize: 24, color: "#fff" }}>
                 Finding a match
               </Text>
             </View>
@@ -118,12 +119,12 @@ class MatchingScreen extends React.Component {
   }
 }
 
-const { height, width } = Dimensions.get('window');
+const { height, width } = Dimensions.get("window");
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#4d88ff'
+    backgroundColor: "#4d88ff"
   }
 });
 
@@ -135,4 +136,7 @@ const mapDispatchToProps = dispatch => {
   return {};
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(MatchingScreen);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(MatchingScreen);

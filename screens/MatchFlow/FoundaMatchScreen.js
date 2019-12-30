@@ -1,4 +1,4 @@
-import * as React from 'react';
+import * as React from "react";
 import {
   Text,
   View,
@@ -10,14 +10,14 @@ import {
   ActivityIndicator,
   Dimensions,
   Image
-} from 'react-native';
-import { miniServer } from '../../config/ipconfig';
-import axios from 'axios';
-import { connect } from 'react-redux';
-import LoadingScreen from '../../sharedComponents/LoadingScreen';
-import Footer from '../../sharedComponents/Footer';
-import { Card } from 'react-native-paper';
-import { testobj } from '../../data/testObj';
+} from "react-native";
+import { miniServer } from "../../config/ipconfig";
+import axios from "axios";
+import { connect } from "react-redux";
+import LoadingScreen from "../../sharedComponents/LoadingScreen";
+import Footer from "../../sharedComponents/Footer";
+import { Card } from "react-native-paper";
+import { testobj } from "../../data/testObj";
 
 class MatchScreen extends React.Component {
   //Header
@@ -28,43 +28,30 @@ class MatchScreen extends React.Component {
       isSuccess: false,
       isDeviceUserReady: false,
       isMatchUserReady: false,
-      matchedGuid: '',
-      matchedFirstName: '',
-      matchedLastName: '',
-      matchedLikesArray: [],
-      matchedImage: '',
-      matchedMiles: ''
+      matchingUserGuid: "",
+      matchingFirstName: "",
+      matchingLastName: "",
+      matchingLikesArray: [],
+      matchingImage: "",
+      matchingMiles: ""
     };
     //Socket
     //receive socket roomID
     //and set isMatchUserReady to true
   }
 
-  setMatchedUserInfo = successObj => {
+  setMatchingUser = match => {
     this.setState({
-      matchedGuid: successObj.matchedGuid,
-      matchedFirstName: successObj.matchedFirstName,
-      matchedLastName: successObj.matchedLastName,
-      matchedLikesArray: successObj.matchedLikesArray,
-      matchedImage: successObj.matchedImage,
-      matchedMiles: successObj.matchedMiles,
-      matchedAge: successObj.matchedAge,
-      matchedLocation: successObj.matchedLocation,
-      matchedState: successObj.matchedState
-    });
-  };
-
-  setMatchedUser = match => {
-    this.setState({
-      matchedGuid: this.props.navigation.state.params.match,
-      matchedFirstName: match.firstName,
-      matchedLastName: match.lastName,
-      matchedLikesArray: match.likesArray,
-      matchedImage: match.imageUrl,
-      matchedMiles: '4.26',
-      matchedAge: this.calculateAge(match.birthday),
-      matchedLocation: match.city,
-      matchedState: match.State,
+      matchingUserGuid: this.props.navigation.state.params.matchingUserGuid,
+      matchingRoomGuid: this.props.navigation.state.params.matchingRoomGuid,
+      matchingFirstName: match.firstName,
+      matchingLastName: match.lastName,
+      matchingLikesArray: match.likesArray,
+      matchingImage: match.imageUrl,
+      matchingMiles: "4.26",
+      matchingAge: this.calculateAge(match.birthDate),
+      matchingLocation: match.city,
+      matchingState: match.state,
       isSuccess: true
     });
   };
@@ -85,17 +72,17 @@ class MatchScreen extends React.Component {
       .post(
         `http://${miniServer}:4000/api/profile/profile_query`,
         {
-          guid: this.props.navigation.state.params.match,
-          collection: 'aboutYou'
+          guid: this.props.navigation.state.params.matchingUserGuid,
+          collection: "aboutYou"
         },
-        { headers: { 'Content-Type': 'application/json' } }
+        { headers: { "Content-Type": "application/json" } }
       )
       .then(response => {
-        this.setMatchedUser(response.data.result);
+        this.setMatchingUser(response.data.result);
       })
       .catch(error => {
-        console.log('Error: ', error);
-        return this.props.navigation.navigate('Home');
+        console.log("Error: ", error);
+        return this.props.navigation.navigate("Home");
       });
   }
 
@@ -118,22 +105,22 @@ class MatchScreen extends React.Component {
       prevState.isMatchUserReady !== this.state.isMatchUserReady
     ) {
       //Testing use
-      this.props.navigation.navigate('MinuteChatRoom', {
-        matchedInfo: this.state
+      this.props.navigation.navigate("MinuteChatRoom", {
+        matchingInfo: this.state
       });
       //Testing use
 
       if (this.state.isDeviceUserReady && this.state.isMatchUserReady) {
         //also send a private room id to match screen
-        this.props.navigation.navigate('MinuteChatRoom', {
-          matchedInfo: this.state
+        this.props.navigation.navigate("MinuteChatRoom", {
+          matchingInfo: this.state
         });
       }
     }
   }
 
   successScreen = () => {
-    let displayMatchedLikesArray = this.state.matchedLikesArray.map(
+    let displayMatchedLikesArray = this.state.matchingLikesArray.map(
       (e, index) => {
         return (
           <View key={index++}>
@@ -148,11 +135,11 @@ class MatchScreen extends React.Component {
       <View style={styles.container}>
         <View style={{ flex: 0.9 }}>
           {/*space*/}
-          <View style={{ padding: '5%' }} />
+          <View style={{ padding: "5%" }} />
 
           {/*Found a match Text*/}
-          <View style={{ flex: 1, alignItems: 'center' }}>
-            <Text style={{ fontWeight: 'normal', fontSize: 20, color: '#fff' }}>
+          <View style={{ flex: 1, alignItems: "center" }}>
+            <Text style={{ fontWeight: "normal", fontSize: 20, color: "#fff" }}>
               Found a Match!
             </Text>
 
@@ -161,42 +148,44 @@ class MatchScreen extends React.Component {
             <View
               style={{
                 width: 200,
-                fontWeight: 'normal',
+                fontWeight: "normal",
                 fontSize: 20
-              }}>
+              }}
+            >
               <Text
                 style={{
-                  fontWeight: 'normal',
+                  fontWeight: "normal",
                   fontSize: 16,
-                  color: '#fff',
-                  textAlign: 'center'
-                }}>
+                  color: "#fff",
+                  textAlign: "center"
+                }}
+              >
                 You've got 90 seconds to get to know you match.
               </Text>
             </View>
 
             {/*space*/}
-            <View style={{ padding: '7%' }} />
+            <View style={{ padding: "7%" }} />
 
-            {/*matched user info box*/}
+            {/*matching user info box*/}
             <Card style={styles.card}>
               <View style={styles.imageWrap}>
                 <Image
                   blurRadius={10}
                   source={{
-                    uri: this.state.matchedImage
+                    uri: this.state.matchingImage
                   }}
                   style={styles.image}
                 />
               </View>
 
               {/*space*/}
-              <View style={{ alignItems: 'center', bottom: 25 }}>
-                {/*matched user info*/}
+              <View style={{ alignItems: "center", bottom: 25 }}>
+                {/*matching user info*/}
                 <Text style={{ fontSize: 16 }}>
-                  {this.state.matchedFirstName}, {this.state.matchedLastName}
+                  {this.state.matchingFirstName}, {this.state.matchingLastName}
                 </Text>
-                <Text> {this.state.matchedMiles} miles away </Text>
+                <Text> {this.state.matchingMiles} miles away </Text>
               </View>
 
               {/**border line */}
@@ -204,27 +193,27 @@ class MatchScreen extends React.Component {
                 style={{
                   borderWidth: 1,
                   width: 300,
-                  borderColor: '#4d88ff',
-                  marginLeft: '1%',
-                  marginRight: '1%',
-                  alignSelf: 'center'
+                  borderColor: "#4d88ff",
+                  marginLeft: "1%",
+                  marginRight: "1%",
+                  alignSelf: "center"
                 }}
               />
 
-              <View style={{ padding: '3%' }} />
+              <View style={{ padding: "3%" }} />
 
-              <View style={{ left: '1%' }}>
+              <View style={{ left: "1%" }}>
                 <Text>Interests</Text>
               </View>
 
-              <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
+              <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
                 {displayMatchedLikesArray}
               </View>
             </Card>
 
             <TouchableOpacity
               style={{
-                alignItems: 'center',
+                alignItems: "center",
                 borderWidth: 1,
                 borderRadius: 25,
                 paddingLeft: 100,
@@ -232,13 +221,14 @@ class MatchScreen extends React.Component {
                 paddingTop: 10,
                 paddingBottom: 10,
                 margin: 15,
-                backgroundColor: 'purple'
+                backgroundColor: "purple"
               }}
               onPress={() => {
                 this.setUserReady();
-              }}>
+              }}
+            >
               {/*Testing Use*/}
-              <Text style={{ color: 'white' }}> I'm Ready</Text>
+              <Text style={{ color: "white" }}> I'm Ready</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -257,50 +247,50 @@ class MatchScreen extends React.Component {
   }
 }
 
-const { height, width } = Dimensions.get('window');
+const { height, width } = Dimensions.get("window");
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#4d88ff'
+    backgroundColor: "#4d88ff"
   },
   likeButtonWrap: {
-    alignItems: 'center',
+    alignItems: "center",
     paddingLeft: 10,
     paddingRight: 10,
     paddingTop: 7.5,
     paddingBottom: 7.5,
-    width: 'auto',
+    width: "auto",
     borderRadius: 40,
     borderWidth: 2,
-    backgroundColor: 'rgb(67, 33, 140)',
-    borderColor: '#fff',
+    backgroundColor: "rgb(67, 33, 140)",
+    borderColor: "#fff",
     margin: 5
   },
   card: {
-    backgroundColor: '#e2dcff',
-    borderColor: 'white',
+    backgroundColor: "#e2dcff",
+    borderColor: "white",
     borderRadius: 10,
     borderWidth: 6,
     width: width * 0.86,
     height: width * 0.7,
-    alignItems: 'center'
+    alignItems: "center"
   },
   likeButton: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 17
   },
   image: {
     width: 75,
     height: 75,
     borderRadius: 37,
-    alignSelf: 'center',
+    alignSelf: "center",
     top: 5
   },
   imageWrap: {
-    alignSelf: 'center',
-    backgroundColor: '#e2dcff',
-    borderColor: '#fff',
+    alignSelf: "center",
+    backgroundColor: "#e2dcff",
+    borderColor: "#fff",
     borderWidth: 6,
     bottom: 50,
     width: 100,
@@ -317,4 +307,7 @@ const mapDispatchToProps = dispatch => {
   return {};
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(MatchScreen);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(MatchScreen);

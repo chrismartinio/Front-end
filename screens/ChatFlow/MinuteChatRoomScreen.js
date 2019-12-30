@@ -58,21 +58,36 @@ class MinuteChatRoomScreen extends React.Component {
       counting: false,
       endTime: "",
       modalVisible: false,
-      matchedGuid: "",
-      matchedFirstName: "",
-      matchedLastName: "",
-      matchedLikesArray: [],
-      matchedImage: "",
-      matchedAge: "",
-      matchedLocation: "",
-      matchedState: "",
+      matchingUserGuid: "",
+      matchingFirstName: "",
+      matchingLastName: "",
+      matchingLikesArray: [],
+      matchingImage:
+        "https://cdn.pixabay.com/photo/2016/03/31/15/33/contact-1293388_960_720.png",
+      matchingAge: "",
+      matchingLocation: "",
+      matchingState: "",
       keyBoardShown: false,
-      matchedInfoToggle: true
+      matchingInfoToggle: true
     };
     this.guid = "";
     this.user_firstName = "";
-    this.matched_user_firstName = "";
-    this.socket = io(`http://${localhost}:3060`);
+
+    this.roomGuid = this.props.navigation.state.params.matchingInfo.matchingRoomGuid;
+    this.token = "";
+    this.socket = io(`http://${localhost}:3060/${this.roomGuid}`, {
+      forceNew: true,
+      transportOptions: {
+        polling: {
+          extraHeaders: {
+            authorization: "Bearer " + this.token // if you have token for auth
+          }
+        }
+      },
+      query: {
+        namespace: this.roomGuid
+      }
+    });
 
     //handle new message
     this.socket.on("new message", data => {
@@ -85,7 +100,9 @@ class MinuteChatRoomScreen extends React.Component {
 
     //handle user joined
     this.socket.on("user joined", data => {
-      this.matched_user_firstName = data.username;
+      this.setState({
+        matchingFirstName: data.username
+      });
       let str = `${data.username} has joined`;
       this.addChatMessage(3, str, data.username);
       if (this.scrollView != null) {
@@ -126,8 +143,10 @@ class MinuteChatRoomScreen extends React.Component {
 
     //handle user typingaddChatMessage
     this.socket.on("typing", data => {
-      if (this.matched_user_firstName === "") {
-        this.matched_user_firstName = data.username;
+      if (this.state.matchingFirstName === "") {
+        this.setState({
+          matchingFirstName: data.username
+        });
       }
       this.setState({
         isTyping: true
@@ -164,16 +183,16 @@ class MinuteChatRoomScreen extends React.Component {
     });
   }
 
-  setMatchedUserInfo = successObj => {
+  setMatchingUserInfo = match => {
     this.setState({
-      matchedGuid: successObj.matchedGuid,
-      matchedFirstName: successObj.matchedFirstName,
-      matchedLastName: successObj.matchedLastName,
-      matchedLikesArray: successObj.matchedLikesArray,
-      matchedImage: successObj.matchedImage,
-      matchedAge: successObj.matchedAge,
-      matchedLocation: successObj.matchedLocation,
-      matchedState: successObj.matchedState
+      matchingUserGuid: match.matchingUserGuid,
+      matchingFirstName: match.matchingFirstName,
+      matchingLastName: match.matchingLastName,
+      matchingLikesArray: match.matchingLikesArray,
+      matchingImage: match.matchingImage,
+      matchingAge: match.matchingAge,
+      matchingLocation: match.matchingLocation,
+      matchingState: match.matchingState
     });
   };
 
@@ -193,13 +212,14 @@ class MinuteChatRoomScreen extends React.Component {
       }
     });
 
-    this.setMatchedUserInfo(testobj[0]);
-    //this.setMatchedUserInfo(this.props.navigation.getParam("matchedInfo"));
+    this.setMatchingUserInfo(this.props.navigation.state.params.matchingInfo);
 
     this.guid = await this.props.CreateProfileDataReducer.guid;
 
     this.user_firstName = await this.props.CreateProfileDataReducer.aboutYouData
       .firstName;
+
+    this.roomGuid = this.props.navigation.state.params.matchingInfo.matchingRoomGuid;
 
     //emit an event to tell the socket the user has enter the room
     this.socket.emit("add user", {
@@ -332,7 +352,7 @@ class MinuteChatRoomScreen extends React.Component {
 
   messageType = (messageItem, index) => {
     //1 - device user message
-    //2 - matched user message
+    //2 - matching user message
     //3 - Status message
     switch (messageItem.type) {
       case 1:
@@ -347,7 +367,7 @@ class MinuteChatRoomScreen extends React.Component {
                   }`}</Text>
                 </View>
               </View>
-              <Text style={styles.circle}>{this.user_firstName[0]}</Text>
+              <Text style={styles.circle}>{this.user_firstName}</Text>
             </View>
           </View>
         );
@@ -357,7 +377,7 @@ class MinuteChatRoomScreen extends React.Component {
           <View key={index}>
             <View style={styles.textContainer}>
               <Text style={styles.circlePurple}>
-                {this.matched_user_firstName[0]}
+                {this.state.matchingFirstName}
               </Text>
               <View style={styles.targetMessageTextWrap}>
                 <View style={styles.targetMessageText}>
@@ -394,7 +414,7 @@ class MinuteChatRoomScreen extends React.Component {
       }
     );
 
-    let displayMatchedLikesArray = this.state.matchedLikesArray.map(
+    let displayMatchingLikesArray = this.state.matchingLikesArray.map(
       (e, index = 0) => {
         return (
           <View key={index++}>
@@ -406,19 +426,19 @@ class MinuteChatRoomScreen extends React.Component {
       }
     );
 
-    let matchedInfoToggle = (
+    let matchingInfoToggle = (
       <TouchableOpacity
         style={{ alignItems: "center" }}
         onPress={() => {
           this.setState({
-            matchedInfoToggle: !this.state.matchedInfoToggle
+            matchingInfoToggle: !this.state.matchingInfoToggle
           });
         }}
       >
         {
           <Icon
             type="font-awesome"
-            name={this.state.matchedInfoToggle ? "caret-down" : "caret-up"}
+            name={this.state.matchingInfoToggle ? "caret-down" : "caret-up"}
             size={25}
             color="gray"
           />
@@ -426,19 +446,19 @@ class MinuteChatRoomScreen extends React.Component {
       </TouchableOpacity>
     );
 
-    let matchedInfo = this.state.matchedInfoToggle && (
+    let matchingInfo = this.state.matchingInfoToggle && (
       <View>
         <View style={{ alignItems: "center" }}>
           <Text>
-            {this.state.matchedAge}, {this.state.matchedLocation}{" "}
-            {this.state.matchedState}
+            {this.state.matchingAge}, {this.state.matchingLocation}{" "}
+            {this.state.matchingState}
           </Text>
         </View>
 
         {/*Matched LikesArray*/}
         <View style={{ alignItems: "center" }}>
           <View style={{ flexDirection: "row", margin: "3%" }}>
-            {displayMatchedLikesArray}
+            {displayMatchingLikesArray}
           </View>
         </View>
       </View>
@@ -455,9 +475,9 @@ class MinuteChatRoomScreen extends React.Component {
             {/*Matched Image*/}
             <View style={{ alignItems: "center" }}>
               <Image
+                blurRadius={10}
                 source={{
-                  uri:
-                    "https://www.famousbirthdays.com/faces/efron-zac-image.jpg"
+                  uri: this.state.matchingImage
                 }}
                 style={{
                   width: width * 0.2,
@@ -469,9 +489,9 @@ class MinuteChatRoomScreen extends React.Component {
             </View>
 
             {/*Matched Info*/}
-            {matchedInfoToggle}
+            {matchingInfoToggle}
 
-            {matchedInfo}
+            {matchingInfo}
 
             <View style={{ top: "3%" }}>
               <View
@@ -510,7 +530,7 @@ class MinuteChatRoomScreen extends React.Component {
             {this.state.isTyping && (
               <View style={styles.textContainer}>
                 <Text style={styles.circlePurple}>
-                  {this.matched_user_firstName}
+                  {this.state.matchingFirstName}
                 </Text>
                 <Text style={styles.targetMessageText}>is typing...</Text>
               </View>
