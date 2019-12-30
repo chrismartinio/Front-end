@@ -221,15 +221,15 @@ class LoginScreen extends React.Component {
           guid: guid
         });
 
+        //if the user is a continue user, send the user back to registration
+        if (isContinueUser) {
+          return this.props.navigation.navigate("Registration");
+        }
+
         //if the user is a continue user and have not finish the image,
         //send them to registration selfie screen
         if (isContinueUserForImage) {
           return this.props.navigation.navigate("Selfie", { isEdit: false });
-        }
-
-        //if the user is a continue user, send the user back to registration
-        if (isContinueUser) {
-          return this.props.navigation.navigate("Registration");
         }
 
         this.props.navigation.navigate("Main");
