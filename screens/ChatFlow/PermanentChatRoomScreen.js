@@ -250,24 +250,6 @@ class PermanentChatRoomScreen extends React.Component {
         this.socket.emit("stop typing");
       }
     }
-
-    if (this.state.appState !== prevState.appState) {
-      if (this.state.appState === "active") {
-        let currentTime = new Date();
-        //when app wakes up again
-        //check if currentTime exceed endTime we set earlier
-        if (currentTime.getTime() > this.state.endTime) {
-          this.exitChat();
-        } else {
-          //if not then do some calculation do calculate current time
-          this.setState({
-            timerSecond: Math.round(
-              (this.state.endTime - currentTime.getTime()) / 1000
-            )
-          });
-        }
-      }
-    }
   }
 
   componentWillUnmount() {
