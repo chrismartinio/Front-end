@@ -33,20 +33,20 @@ class MatchingScreen extends React.Component {
   }
 
   handleMatchResponse = response => {
-    const matchedUsers =
-      response.data.matchData.matchedUsers.length > 0
-        ? [...response.data.matchData.matchedUsers]
-        : null;
-    if (matchedUsers === null) {
-      return this.props.navigation.navigate("Home");
-    }
+      const matchedUsers =
+        response.data.matchData.matchedUsers.length > 0
+          ? [...response.data.matchData.matchedUsers]
+          : null;
+      if (matchedUsers === null) {
+        return this.props.navigation.navigate('Home');
+      }
+      this.setState({
+        foundaMatch: true,
+        match: matchedUsers[0].mathcedUser,
+        user: response.data.userGuid
+      });
+    };
 
-    this.setState({
-      foundaMatch: true,
-      matchingUserGuid: matchedUsers[0],
-      matchingRoomGuid: "something"
-    });
-  };
 
   componentDidMount() {
     this.initializeComponent();
