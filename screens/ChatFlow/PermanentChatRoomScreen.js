@@ -193,7 +193,6 @@ class PermanentChatRoomScreen extends React.Component {
       .firstName;
 
     this.roomGuid = this.props.navigation.state.params.roomGuid;
-    console.log(this.roomGuid);
 
     //Keyboard
     this.keyboardDidShowListener = Keyboard.addListener(
