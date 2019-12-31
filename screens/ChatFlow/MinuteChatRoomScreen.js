@@ -40,9 +40,12 @@ import { Icon } from "react-native-elements";
 class MinuteChatRoomScreen extends React.Component {
   static navigationOptions = ({ navigation }) => {
     return {
+      /*
       headerLeft: () => (
         <Button title="Exit" onPress={navigation.getParam("openMenu")} />
       )
+      */
+      headerLeft: null
     };
   };
 

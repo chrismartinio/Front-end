@@ -58,7 +58,7 @@ class PermanentChatRoomScreen extends React.Component {
                 })
               ]
             });
-            navigation.dispatch(resetConversationsAction)
+            navigation.dispatch(resetConversationsAction);
           }}
         />
       )
@@ -182,6 +182,44 @@ class PermanentChatRoomScreen extends React.Component {
     });
   };
 
+  formatOldMessage = messagesArray => {
+    let temp = [];
+    for (let i = 0; i < messagesArray.length; i++) {
+      temp.push({
+        type: messagesArray[i].userGuid === this.userGuid ? 1 : 2,
+        message: messagesArray[i].message,
+        userName:
+          messagesArray[i].userGuid === this.userGuid
+            ? this.user_firstName
+            : this.state.matchedFirstName,
+        timeStamp: messagesArray[i].date
+      });
+    }
+    this.setState({
+      allMessages: temp
+    });
+  };
+
+  getOldMessageFromDB = async roomGuid => {
+    await fetch(`http://${localhost}:3060/api/chat/messages`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        roomGuid: roomGuid
+      })
+    })
+      .then(res => res.json())
+      .then(res => {
+        console.log(res);
+        this.formatOldMessage(res);
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
+
   async componentDidMount() {
     //Matched Info
     let {
@@ -212,6 +250,8 @@ class PermanentChatRoomScreen extends React.Component {
       .firstName;
 
     this.roomGuid = this.props.navigation.state.params.roomGuid;
+
+    this.getOldMessageFromDB(this.roomGuid);
 
     //Keyboard
     this.keyboardDidShowListener = Keyboard.addListener(
