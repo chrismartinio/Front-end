@@ -331,8 +331,11 @@ class MinuteChatRoomScreen extends React.Component {
     let str = `${this.state.currentMessage}`;
     this.addChatMessage(1, str, this.user_firstName);
     this.socket.emit("new message", {
-      guid: this.guid,
-      message: this.state.currentMessage
+      userGuid: this.userGuid,
+      userName: this.user_firstName,
+      matchedUserGuid: this.state.matchingUserGuid,
+      message: this.state.currentMessage,
+      roomGuid: this.roomGuid
     });
     this.setState({
       currentMessage: ""

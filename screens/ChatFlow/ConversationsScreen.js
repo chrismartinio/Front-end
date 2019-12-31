@@ -26,7 +26,7 @@ import io from 'socket.io-client';
 
 import LoadingScreen from '../../sharedComponents/LoadingScreen';
 
-import { miniServer } from '../../config/ipconfig';
+import { miniServer, localhost } from '../../config/ipconfig';
 
 import Footer from '../../sharedComponents/Footer';
 
@@ -67,7 +67,7 @@ class ConversationsScreen extends React.Component {
       matchedUserGuidArray.push(e.matchedUserGuid);
     });
     let arr1 = matchedUsersList;
-    let arr2 = await fetch(`http://${miniServer}:4000/api/profile/chat_query`, {
+    let arr2 = await fetch(`http://${localhost}:4000/api/profile/chat_query`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -94,7 +94,7 @@ class ConversationsScreen extends React.Component {
   };
 
   getMatchedUsersStatusFromDB = async guid => {
-    return await fetch(`http://${miniServer}:3060/api/chat/chatRooms`, {
+    return await fetch(`http://${localhost}:3060/api/chat/chatRooms`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
