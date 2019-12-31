@@ -193,6 +193,8 @@ class MinuteChatRoomScreen extends React.Component {
       matchingAge: match.matchingAge,
       matchingLocation: match.matchingLocation,
       matchingState: match.matchingState
+    }, () => {
+      console.log(this.state.matchingUserGuid)
     });
   };
 

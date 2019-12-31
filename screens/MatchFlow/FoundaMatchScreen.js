@@ -18,6 +18,7 @@ import LoadingScreen from "../../sharedComponents/LoadingScreen";
 import Footer from "../../sharedComponents/Footer";
 import { Card } from "react-native-paper";
 import { testobj } from "../../data/testObj";
+const { height, width } = Dimensions.get("window");
 
 class MatchScreen extends React.Component {
   //Header
@@ -135,11 +136,17 @@ class MatchScreen extends React.Component {
       <View style={styles.container}>
         <View style={{ flex: 0.9 }}>
           {/*space*/}
-          <View style={{ padding: "5%" }} />
+          <View style={{ padding: `${0.006 * width}%` }} />
 
           {/*Found a match Text*/}
           <View style={{ flex: 1, alignItems: "center" }}>
-            <Text style={{ fontWeight: "normal", fontSize: 20, color: "#fff" }}>
+            <Text
+              style={{
+                fontWeight: "normal",
+                fontSize: 0.053 * width,
+                color: "#fff"
+              }}
+            >
               Found a Match!
             </Text>
 
@@ -147,15 +154,15 @@ class MatchScreen extends React.Component {
 
             <View
               style={{
-                width: 200,
+                width: 0.53 * width,
                 fontWeight: "normal",
-                fontSize: 20
+                fontSize: 0.053 * width
               }}
             >
               <Text
                 style={{
                   fontWeight: "normal",
-                  fontSize: 16,
+                  fontSize: 0.042 * width,
                   color: "#fff",
                   textAlign: "center"
                 }}
@@ -165,7 +172,7 @@ class MatchScreen extends React.Component {
             </View>
 
             {/*space*/}
-            <View style={{ padding: "7%" }} />
+            <View style={{ padding: `${0.026 * width}%` }} />
 
             {/*matching user info box*/}
             <Card style={styles.card}>
@@ -182,7 +189,7 @@ class MatchScreen extends React.Component {
               {/*space*/}
               <View style={{ alignItems: "center", bottom: 25 }}>
                 {/*matching user info*/}
-                <Text style={{ fontSize: 16 }}>
+                <Text style={{ fontSize: 0.042 * width }}>
                   {this.state.matchingFirstName}, {this.state.matchingLastName}
                 </Text>
                 <Text> {this.state.matchingMiles} miles away </Text>
@@ -192,7 +199,7 @@ class MatchScreen extends React.Component {
               <View
                 style={{
                   borderWidth: 1,
-                  width: 300,
+                  width: 0.8 * width,
                   borderColor: "#4d88ff",
                   marginLeft: "1%",
                   marginRight: "1%",
@@ -200,7 +207,7 @@ class MatchScreen extends React.Component {
                 }}
               />
 
-              <View style={{ padding: "3%" }} />
+              <View style={{ padding: `${0.008 * width}%` }} />
 
               <View style={{ left: "1%" }}>
                 <Text>Interests</Text>
@@ -215,12 +222,12 @@ class MatchScreen extends React.Component {
               style={{
                 alignItems: "center",
                 borderWidth: 1,
-                borderRadius: 25,
-                paddingLeft: 100,
-                paddingRight: 100,
-                paddingTop: 10,
-                paddingBottom: 10,
-                margin: 15,
+                borderRadius: 0.06 * width,
+                paddingLeft: 0.26 * width,
+                paddingRight: 0.26 * width,
+                paddingTop: 0.026 * width,
+                paddingBottom: 0.026 * width,
+                margin: 0.04 * width,
                 backgroundColor: "purple"
               }}
               onPress={() => {
@@ -247,8 +254,6 @@ class MatchScreen extends React.Component {
   }
 }
 
-const { height, width } = Dimensions.get("window");
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -256,16 +261,16 @@ const styles = StyleSheet.create({
   },
   likeButtonWrap: {
     alignItems: "center",
-    paddingLeft: 10,
-    paddingRight: 10,
+    paddingLeft: 0.026 * width,
+    paddingRight: 0.026 * width,
     paddingTop: 7.5,
     paddingBottom: 7.5,
     width: "auto",
-    borderRadius: 40,
+    borderRadius: 0.106 * width,
     borderWidth: 2,
     backgroundColor: "rgb(67, 33, 140)",
     borderColor: "#fff",
-    margin: 5
+    margin: 0.013 * width
   },
   card: {
     backgroundColor: "#e2dcff",
@@ -278,11 +283,11 @@ const styles = StyleSheet.create({
   },
   likeButton: {
     color: "#fff",
-    fontSize: 17
+    fontSize: 0.045 * width
   },
   image: {
-    width: 75,
-    height: 75,
+    width: 0.2 * width,
+    height: 0.2 * width,
     borderRadius: 37,
     alignSelf: "center",
     top: 5
@@ -293,9 +298,9 @@ const styles = StyleSheet.create({
     borderColor: "#fff",
     borderWidth: 6,
     bottom: 50,
-    width: 100,
-    height: 100,
-    borderRadius: 50
+    width: 0.26 * width,
+    height: 0.26 * width,
+    borderRadius: 0.13 * width
   }
 });
 

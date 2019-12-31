@@ -99,6 +99,7 @@ const TestStack = createStackNavigator(
     TestViewQuestionaire: ViewQuestionaire,
     TestReplyQuestionaire: ReplyQuestionaire,
     TestMatches: Matches,
+    TestFoundaMatchScreen: FoundaMatchScreen,
 
     //Chat flow
     TestChatPage: ChatPage,
