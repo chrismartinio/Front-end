@@ -42,8 +42,8 @@ class MatchingScreen extends React.Component {
       }
       this.setState({
         foundaMatch: true,
-        match: matchedUsers[0].mathcedUser,
-        user: response.data.userGuid
+        matchingUserGuid: matchedUsers[0].mathcedUser,
+        matchingRoomGuid: matchedUsers[0].roomGuid
       });
     };
 
