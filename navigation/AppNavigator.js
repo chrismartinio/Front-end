@@ -5,95 +5,190 @@ import {
   createStackNavigator
 } from "react-navigation";
 
-//Navigator
-import MainTabNavigator from "./MainTabNavigator";
+//Main Navigator
+//Profile Home Settings
+import MainNavigator from "./MainNavigator";
 
-//MainScreen
-import mainSignInPage from "../screens/HomeScreen";
+//Signup flow Screens
+import RegistrationPage from "../screens/OldScreens/SignUpFlow/RegistrationPage";
+import SelfiePage from "../screens/OldScreens/SignUpFlow/SelfiePage";
+import PhotoReview from "../screens/OldScreens/SignUpFlow/PhotoReview";
+import ProfilePage from "../screens/OldScreens/SignUpFlow/ProfilePage";
+import SignupPage from "../screens/OldScreens/SignUpFlow/IndividualScreensTestingSync/SignupPage";
+import AboutYou from "../screens/OldScreens/SignUpFlow/IndividualScreensTestingSync/AboutYou";
+import ImInterestedIn from "../screens/OldScreens/SignUpFlow/IndividualScreensTestingSync/ImInterestedIn";
+import SpendWeekend from "../screens/OldScreens/SignUpFlow/IndividualScreensTestingSync/SpendAWeekend";
+import WouldRather from "../screens/OldScreens/SignUpFlow/IndividualScreensTestingSync/WouldRather";
+import TellUsMore from "../screens/OldScreens/SignUpFlow/IndividualScreensTestingSync/TellUsMore";
 
-//Other Screens
-import MatchesPage from "../screens/SignUpFlow/Matches";
-import RegistrationPage from "../screens/SignUpFlow/RegistrationPage";
-import SelfiePage from "../screens/SignUpFlow/SelfiePage";
-import PhotoReview from "../screens/SignUpFlow/PhotoReview";
-import ProfilePage from "../screens/SignUpFlow/ProfilePage";
+//Match flow screens
+import CreateQuestionaire from "../screens/MatchFlow/matchCreateQuestionaire";
+import ReplyQuestionaire from "../screens/MatchFlow/matchCreateReply";
+import ViewQuestionaire from "../screens/MatchFlow/matchViewReply";
+import FoundaMatchScreen from "../screens/MatchFlow/FoundaMatchScreen";
+import AcceptMatchingScreen from "../screens/MatchFlow/AcceptMatchingScreen";
+import MatchingScreen from "../screens/MatchFlow/MatchingScreen";
+import Matches from "../screens/OldScreens/SignUpFlow/Matches";
+
+//LocationFlow
+import LocationServices from "../screens/LocationFlow/LocationServices";
+
+//Chat Flow screens
 import ChatPage from "../screens/ChatFlow/chatMain";
+import Chat from "../screens/ChatFlow/Chat";
 import TestScreen from "../screens/ChatFlow/InitialMatchChoice";
 import GhostingOthersScreen from "../screens/ChatFlow/GhostingOthers";
 import GotLucky from "../screens/ChatFlow/GotLuckyGoToChat";
 import InitialMatchChoice from "../screens/ChatFlow/InitialMatchChoice";
 import Selection from "../screens/ChatFlow/Selection";
 import GotGhosted from "../screens/ChatFlow/GotGhosted";
-import CreateQuestionaire from "../screens/FindMatchFlow/matchCreateQuestionaire";
-import ReplyQuestionaire from "../screens/FindMatchFlow/matchCreateReply";
-import ViewQuestionaire from "../screens/FindMatchFlow/matchViewReply";
-import LocationServices from "../screens/LocationServices/LocationServices";
+import MinuteChatRoomScreen from "../screens/ChatFlow/MinuteChatRoomScreen";
+import PermanentChatRoomScreen from "../screens/ChatFlow/PermanentChatRoomScreen";
 
-//On-Boarding Individual Screens
-import SignupPage from "../screens/SignUpFlow/IndividualScreensTestingSync/SignupPage";
-import AboutYou from "../screens/SignUpFlow/IndividualScreensTestingSync/AboutYou";
-import ImInterestedIn from "../screens/SignUpFlow/IndividualScreensTestingSync/ImInterestedIn";
-import SpendWeekend from "../screens/SignUpFlow/IndividualScreensTestingSync/SpendAWeekend";
-import WouldRather from "../screens/SignUpFlow/IndividualScreensTestingSync/WouldRather";
-import TellUsMore from "../screens/SignUpFlow/IndividualScreensTestingSync/TellUsMore";
-import RegistrationComplete from "../screens/SignUpFlow/Collapsible_ScrollView_Components/RegistrationComplete.js";
+//Profile Flow - Profile_Registration
+import Profile_Registration from "../screens/ProfileFlow/Profile_Registration/Profile_Registration";
+import SelfieScreen from "../screens/ProfileFlow/Profile_Registration/RegistrationScreens/SelfieScreen";
+import RegistrationComplete from "../screens/ProfileFlow/Profile_Registration/RegistrationScreens/RegistrationComplete";
 
-//On-Boarding Collapsible Screen (Includes all on-boarding screens)
-import Collapsible from "../screens/SignUpFlow/ProfileClient/CollapsibleRegistration";
+//Profile Flow - Profile Screen
+import ProfileScreen from "../screens/ProfileFlow/Profile/ProfileScreen";
+import EditScreen from "../screens/ProfileFlow/Profile/EditScreen";
+import ProfileLocationScreen from "../screens/ProfileFlow/Profile/ProfileLocationScreen";
+
+//LinkScreen
 import LinksScreen from "../screens/LinksScreen";
+import LoginScreen from "../screens/LoginScreen";
 
-const TestStack = createStackNavigator({
-  TestLocationServices: LocationServices,
-  TestLinksScreen: LinksScreen,
-  TestQuestionaries: CreateQuestionaire,
-  TestSignUp: SignupPage,
-  TestRegistration: RegistrationPage,
-  TestSelfie: SelfiePage,
-  TestProfile: ProfilePage,
-  TestChatPage: ChatPage,
-  TestPhotoReview: PhotoReview,
-  TestScreen: TestScreen,
-  TestMatches: MatchesPage,
-  TestAboutYou: AboutYou,
-  TestTellUsMore: TellUsMore,
-  TestWouldRather: WouldRather,
-  TestSpendWeekend: SpendWeekend,
-  TestImInterestedIn: ImInterestedIn,
-  TestCollapsible: Collapsible,
-  TestRegistrationComplete: RegistrationComplete
+//Notification Components
+import NotificationsButton from "../screens/NotificationsFlow/NotificationsButton";
+import NotificationsScreen from "../screens/NotificationsFlow/NotificationsScreen";
+import ErrorScreen from "../sharedComponents/ErrorScreen";
+
+//Test Matched User Profile Stack
+const LinkProfileStack = createStackNavigator({
+  LinkProfile: {
+    screen: ProfileScreen,
+    navigationOptions: ({ navigation }) => ({
+      title: `Profile`
+      //headerRight is set inside ProfileScreen.js
+    })
+  },
+  LinkProfileLocation: {
+    screen: ProfileLocationScreen,
+    navigationOptions: () => ({
+      title: `Location`
+    })
+  },
+  LinkNotifications: {
+    screen: NotificationsScreen,
+    navigationOptions: () => ({
+      header: null
+    })
+  }
 });
 
-const AuthStack = createStackNavigator({
-  SignUp: Collapsible,
-  Registration: RegistrationPage,
-  Selfie: SelfiePage,
-  Profile: ProfilePage
+//register screens here for testing in linkscreen
+const TestStack = createStackNavigator(
+  {
+    Links: LinksScreen,
+
+    //Location
+    TestLocationServices: LocationServices,
+
+    //Match Flow
+    TestQuestionaries: CreateQuestionaire,
+    TestViewQuestionaire: ViewQuestionaire,
+    TestReplyQuestionaire: ReplyQuestionaire,
+    TestMatches: Matches,
+    TestAcceptMatchingScreen: AcceptMatchingScreen,
+
+    //Chat flow
+    TestChatPage: ChatPage,
+    TestChat: Chat,
+    TestPhotoReview: PhotoReview,
+    TestScreen: TestScreen,
+
+    //Profile Flow
+    TestProfile: LinkProfileStack,
+    TestProfileLocation: ProfileLocationScreen,
+
+    //Profile Registration Flow
+    TestProfile_Registration: Profile_Registration,
+    TestSelfie: SelfieScreen,
+    TestOldSelfie: SelfiePage,
+    TestRegistrationComplete: RegistrationComplete,
+
+    //sharedComponents
+    TestErrorScreen: ErrorScreen
+  },
+  {
+    initialRouteName: "Links"
+  }
+);
+
+//SignUp Flow
+const SignUpStack = createStackNavigator({
+  Login: {
+    screen: LoginScreen,
+    navigationOptions: () => ({
+      title: `Login`,
+      header: null
+    })
+  },
+  Registration: {
+    screen: Profile_Registration,
+    navigationOptions: () => ({
+      title: `Sign Up`
+    })
+  },
+  Selfie: {
+    screen: SelfieScreen,
+    navigationOptions: () => ({
+      title: `Selfie`,
+      header: null
+    })
+  },
+  RegistrationComplete: {
+    screen: RegistrationComplete,
+    navigationOptions: () => ({
+      title: `RegistrationComplete`,
+      header: null
+    })
+  }
 });
 
-const ChatStack = createStackNavigator({
-  Chat: ChatPage,
-  InitialMatchChoice: InitialMatchChoice,
-  GhostingOthers: GhostingOthersScreen,
-  GotLucky: GotLucky,
-  Selection: Selection,
-  GotGhosted: GotGhosted
-});
+/*
 
-const MatchStack = createStackNavigator({
-  CreateQuestionaire: CreateQuestionaire,
-  ViewQuestionaire: ViewQuestionaire,
-  ReplyQuestionaire: ReplyQuestionaire
-});
+Switch: no back buttons
+Bottom: there is a burger menu tab at the bottom of the screen
+Stack: every screens inside the stack can go back by back button
 
+You can export a stacks (the stack's screen must have different name than other stacks's screen)
+When you export a stack, this stack will have a default header; you can set the header:null in navigationOptions
+
+Test Main Screen Flow and Login Main Screen Flow (User login),
+Both Screens has a footer menu, this footer menu will send a redux guid (always device's user) and a boolean isDeviceUser = true to ProfileScreen
+SO Both Flow simulate Device's user go to their Profile screen which will display their profile information
+
+Link Screen Flow
+In link screen, the buttons will send a string of guid and a boolean of isDeviceUser = false to Profile Screen
+SO Link Screen Flow simulate Device's user go to matched user Profile Screen which will display matched user Profile Screen
+
+Edit Screen would only visible by isDeviceUser = true, and only use the redux guid
+
+*/
 export default createAppContainer(
-  createSwitchNavigator({
-    // You could add another route here for authentication.
-    // Read more at https://reactnavigation.org/docs/en/auth-flow.html
-    Main: MainTabNavigator,
-    Auth: AuthStack,
-    Chat: ChatStack,
-    SignIn: mainSignInPage,
-    Match: MatchStack,
-    Test: TestStack
-  })
+  createSwitchNavigator(
+    {
+      // You could add another route here for authentication.
+      // Read more at https://reactnavigation.org/docs/en/auth-flow.html
+      Login: LoginScreen, //Login
+      Main: MainNavigator, //Profile Home Settings
+      SignUp: SignUpStack, //Stacks for LoginScreen <-> SignUp
+      Test: TestStack //Stacks for LinksScreen <-> test screens
+    },
+    {
+      initialRouteName: "Login"
+    }
+  )
 );

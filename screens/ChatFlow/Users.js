@@ -3,7 +3,6 @@ import {
   StyleSheet,
   Text,
   View,
-  // import these:
   FlatList,
   TouchableHighlight,
   TouchableOpacity,
@@ -30,7 +29,7 @@ export default class Users extends React.Component {
         <View style={styles.body}>
           {this.props.users.length == 0 && (
             <View style={styles.activity}>
-              <ActivityIndicator size="large" color="#05a5d1" />
+              {/*<ActivityIndicator size="large" color="#05a5d1" />*/}
               <Text style={styles.activity_text}>Loading users...</Text>
             </View>
           )}

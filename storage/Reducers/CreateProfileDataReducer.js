@@ -1,14 +1,24 @@
 const CreateProfileDataReducer = (
   state = {
     isContinueUser: false,
-    checklist: [true, false, false, false, false, false],
-    gui: null,
+    isThirdPartiesServiceUser: false,
+    checklist: {
+      createAccount: false,
+      aboutYou: false,
+      preferences: false,
+      interests: false,
+      wouldYouRather: false,
+      localDestination: false,
+      imageProcessing: false
+    },
+    guid: null,
     createAccountData: null,
     aboutYouData: null,
     preferencesData: null,
     interestsData: null,
     wouldYouRatherData: null,
-    localDestinationData: null
+    localDestinationData: null,
+    headPhotoImageUrl: null
   },
   action
 ) => {
@@ -19,8 +29,13 @@ const CreateProfileDataReducer = (
         isContinueUser: action.PAYLOAD.isContinueUser,
         checklist: action.PAYLOAD.checklist
       };
-    case "SET_GUI":
-      return { ...state, gui: action.PAYLOAD.gui };
+    case "SET_IS_THIRD_PARTY_SERVICES_USER":
+      return {
+        ...state,
+        isThirdPartiesServiceUser: action.PAYLOAD.isThirdPartiesServiceUser
+      };
+    case "SET_GUID":
+      return { ...state, guid: action.PAYLOAD.guid };
     case "ADD_CREATEACCOUNT_DATA":
       return { ...state, createAccountData: action.PAYLOAD };
     case "ADD_ABOUTYOU_DATA":
@@ -33,10 +48,12 @@ const CreateProfileDataReducer = (
       return { ...state, wouldYouRatherData: action.PAYLOAD };
     case "ADD_LOCALDESTINATION_DATA":
       return { ...state, localDestinationData: action.PAYLOAD };
+    case "SET_HEAD_PHOTO_IMAGE_URL":
+      return { ...state, headPhotoImageUrl: action.PAYLOAD.imageUrl };
     case "RESET_REDUX_DATA":
       return {
         ...state,
-        gui: null,
+        guid: null,
         checklist: [true, false, false, false, false, false],
         isContinueUser: false,
         createAccountData: null,

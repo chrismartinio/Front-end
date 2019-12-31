@@ -4,10 +4,14 @@
     "slug": "testVersion",
     "privacy": "public",
     "sdkVersion": "35.0.0",
-    "platforms": ["ios", "android"],
+    "platforms": [
+      "ios",
+      "android"
+    ],
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
+    "scheme": "blindly",
     "splash": {
       "image": "./assets/images/splash.png",
       "resizeMode": "contain",
@@ -16,9 +20,14 @@
     "updates": {
       "fallbackToCacheTimeout": 0
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "UIUserInterfaceStyle": "Light"
+      }
     },
     "extra": {
       "firebase": {
@@ -28,10 +37,8 @@
         "projectId": "blindlychat",
         "storageBucket": "blindlychat.appspot.com",
         "messagingSenderId": "361575972774"
-      },
-      "facebook": {
-        "appId": "1908299149278756"
       }
-    }
+    },
+    "description": ""
   }
 }
