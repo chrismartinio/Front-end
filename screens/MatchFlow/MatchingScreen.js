@@ -47,6 +47,12 @@ class MatchingScreen extends React.Component {
       });
     };
 
+    this.setState({
+      foundaMatch: true,
+      matchingUserGuid: matchedUsers[0],
+      matchingRoomGuid: "something"
+    });
+  };
 
   componentDidMount() {
     this.initializeComponent();
