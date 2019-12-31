@@ -17,6 +17,7 @@ import ConversationsScreen from "../screens/ChatFlow/ConversationsScreen";
 //Match Flow
 import MatchingScreen from "../screens/MatchFlow/MatchingScreen";
 import FoundaMatchScreen from "../screens/MatchFlow/FoundaMatchScreen";
+import AcceptMatchingScreen from "../screens/MatchFlow/AcceptMatchingScreen";
 
 //Profile Flow
 import ProfileScreen from "../screens/ProfileFlow/Profile/ProfileScreen";
@@ -215,6 +216,24 @@ const MainStack = createStackNavigator(
         headerLeft: (
           <CustomBackButton buttonColor={"#fff"} navigation={navigation} />
         )
+        //headerRight: <NotificationsButton navigation={navigation} />
+      })
+    },
+    AcceptMatching: {
+      screen: AcceptMatchingScreen,
+      navigationOptions: ({ navigation }) => ({
+        title: `Blindly`,
+        //headerRight: <NotificationsButton navigation={navigation} />,
+        //HeaderLeft is set inside ConversationsScreen.js
+        headerTitleStyle: {
+          bottom: "3%",
+          color: "#fff"
+        },
+        headerStyle: {
+          backgroundColor: "#4d88ff",
+          borderBottomWidth: 0
+        },
+        gesturesEnabled: false
         //headerRight: <NotificationsButton navigation={navigation} />
       })
     },

@@ -26,6 +26,7 @@ import CreateQuestionaire from "../screens/MatchFlow/matchCreateQuestionaire";
 import ReplyQuestionaire from "../screens/MatchFlow/matchCreateReply";
 import ViewQuestionaire from "../screens/MatchFlow/matchViewReply";
 import FoundaMatchScreen from "../screens/MatchFlow/FoundaMatchScreen";
+import AcceptMatchingScreen from "../screens/MatchFlow/AcceptMatchingScreen";
 import MatchingScreen from "../screens/MatchFlow/MatchingScreen";
 import Matches from "../screens/OldScreens/SignUpFlow/Matches";
 
@@ -99,7 +100,7 @@ const TestStack = createStackNavigator(
     TestViewQuestionaire: ViewQuestionaire,
     TestReplyQuestionaire: ReplyQuestionaire,
     TestMatches: Matches,
-    TestFoundaMatchScreen: FoundaMatchScreen,
+    TestAcceptMatchingScreen: AcceptMatchingScreen,
 
     //Chat flow
     TestChatPage: ChatPage,
