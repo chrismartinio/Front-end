@@ -124,6 +124,7 @@ class MinuteChatRoomScreen extends React.Component {
 
     //handle timer
     this.socket.on("timer", data => {
+      console.log('timer has started');
       //when the socket detect 2 ppl in the room
       //start the timer
       //counting is to prevent one of the user disconnect
@@ -131,17 +132,16 @@ class MinuteChatRoomScreen extends React.Component {
       //and reconnect, room number + 1 which equal 2 and re-emitting the timer event again
       //if re-emitting, time will get reset and also call the interval
       //which will cause multiple interval and speed up the timer
-      if (!this.state.counting) {
+      // if (this.state.counting) {
         this.interval = setInterval(this.countDown, 1000);
         let currentTime = new Date();
         this.setState({
           endTime: currentTime.getTime() + 90 * 1000
         });
-      }
-
-      this.setState({
-        counting: true
-      });
+      // }
+      // this.setState({
+      //   counting: true
+      // });
     });
 
     //handle user typingaddChatMessage
@@ -332,10 +332,7 @@ class MinuteChatRoomScreen extends React.Component {
     this.addChatMessage(1, str, this.user_firstName);
     this.socket.emit("new message", {
       userGuid: this.userGuid,
-      userName: this.user_firstName,
-      matchedUserGuid: this.state.matchingUserGuid,
-      message: this.state.currentMessage,
-      roomGuid: this.roomGuid
+      message: this.state.currentMessage
     });
     this.setState({
       currentMessage: ""

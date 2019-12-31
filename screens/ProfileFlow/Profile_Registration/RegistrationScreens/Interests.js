@@ -16,10 +16,6 @@ import {
   Dimensions,
   ActivityIndicator
 } from "react-native";
-<<<<<<< HEAD
-=======
-
->>>>>>> ac76f6671bbeffc4f272726e0e3a7f930bb700d7
 //Redux
 import { connect } from "react-redux";
 import SetInterestsDataAction from "../../../../storage/actions/RegistrationActions/SetInterestsDataAction";
