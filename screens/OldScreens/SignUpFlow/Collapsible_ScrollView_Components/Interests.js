@@ -83,7 +83,11 @@ class TellUsMore extends React.Component {
   handleSubmit = () => {
     if (this.state.passed) {
       //Send data to database
+<<<<<<< HEAD:screens/OldScreens/SignUpFlow/Collapsible_ScrollView_Components/Interests.js
       fetch(`http://${ip.localhost}:5000/api/profile/interestsSubmit`, {
+=======
+      fetch("http://10.0.0.119:5000/api/profile/interestsSubmit", {
+>>>>>>> ac76f6671bbeffc4f272726e0e3a7f930bb700d7:screens/OldScreens/SignUpFlow/Collapsible_ScrollView_Components/Interests.js
         method: "POST",
         headers: {
           "Content-Type": "application/json"

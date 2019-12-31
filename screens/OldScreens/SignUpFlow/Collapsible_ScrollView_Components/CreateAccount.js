@@ -27,7 +27,11 @@ import { Chevron } from "react-native-shapes";
 
 //click password button to toggle password
 
+<<<<<<< HEAD:screens/OldScreens/SignUpFlow/Collapsible_ScrollView_Components/CreateAccount.js
 const profileServer = `http://${ip.localhost}:5000/dbRouter/`;
+=======
+const profileServer = "http://10.0.0.119:5000/dbRouter/";
+>>>>>>> ac76f6671bbeffc4f272726e0e3a7f930bb700d7:screens/OldScreens/SignUpFlow/Collapsible_ScrollView_Components/CreateAccount.js
 
 class CreateAccount extends Component {
   constructor(props) {
@@ -314,7 +318,11 @@ class CreateAccount extends Component {
       this.mode = "";
 
       //Send data to database
+<<<<<<< HEAD:screens/OldScreens/SignUpFlow/Collapsible_ScrollView_Components/CreateAccount.js
       fetch(`http://${ip.localhost}:5000/api/profile/createAccountSubmit`, {
+=======
+      fetch("http://10.0.0.119:5000/api/profile/createAccountSubmit", {
+>>>>>>> ac76f6671bbeffc4f272726e0e3a7f930bb700d7:screens/OldScreens/SignUpFlow/Collapsible_ScrollView_Components/CreateAccount.js
         method: "POST",
         headers: {
           "Content-Type": "application/json"

@@ -306,7 +306,11 @@ class AboutYou extends Component {
       //if all tests passed, set passed to true and navigate to next screen
 
       //Send data to database
+<<<<<<< HEAD:screens/OldScreens/SignUpFlow/Collapsible_ScrollView_Components/AboutYou.js
       fetch(`http://${localhost}:5000/api/profile/aboutYouSubmit`, {
+=======
+      fetch("http://10.0.0.119:5000/api/profile/aboutYouSubmit", {
+>>>>>>> ac76f6671bbeffc4f272726e0e3a7f930bb700d7:screens/OldScreens/SignUpFlow/Collapsible_ScrollView_Components/AboutYou.js
         method: "POST",
         headers: {
           "Content-Type": "application/json"

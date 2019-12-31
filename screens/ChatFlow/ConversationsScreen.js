@@ -27,7 +27,11 @@ import io from 'socket.io-client';
 import LoadingScreen from '../../sharedComponents/LoadingScreen';
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 import { localhost, miniServer } from '../../config/ipconfig';
+=======
+import { miniServer, localhost } from '../../config/ipconfig';
+>>>>>>> ac76f6671bbeffc4f272726e0e3a7f930bb700d7
 =======
 import { miniServer, localhost } from '../../config/ipconfig';
 >>>>>>> ac76f6671bbeffc4f272726e0e3a7f930bb700d7

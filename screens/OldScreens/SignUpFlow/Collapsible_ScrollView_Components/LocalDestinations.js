@@ -192,7 +192,11 @@ class LocationDestinations extends React.Component {
   handleSubmit = () => {
     if (this.state.passed) {
       //Send data to database
+<<<<<<< HEAD:screens/OldScreens/SignUpFlow/Collapsible_ScrollView_Components/LocalDestinations.js
       fetch(`http://${ip.localhost}:5000/api/profile/localDestinationsSubmit`, {
+=======
+      fetch("http://10.0.0.119:5000/api/profile/localDestinationsSubmit", {
+>>>>>>> ac76f6671bbeffc4f272726e0e3a7f930bb700d7:screens/OldScreens/SignUpFlow/Collapsible_ScrollView_Components/LocalDestinations.js
         method: "POST",
         headers: {
           "Content-Type": "application/json"

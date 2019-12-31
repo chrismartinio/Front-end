@@ -228,7 +228,11 @@ class Preferences extends React.Component {
       }
 
       //Send data to database
+<<<<<<< HEAD:screens/OldScreens/SignUpFlow/Collapsible_ScrollView_Components/Preferences.js
       fetch(`http://${ip.localhost}:5000/api/profile/preferencesSubmit`, {
+=======
+      fetch("http://10.0.0.119:5000/api/profile/preferencesSubmit", {
+>>>>>>> ac76f6671bbeffc4f272726e0e3a7f930bb700d7:screens/OldScreens/SignUpFlow/Collapsible_ScrollView_Components/Preferences.js
         method: "POST",
         headers: {
           "Content-Type": "application/json"
