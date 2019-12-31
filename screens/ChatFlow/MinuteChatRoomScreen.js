@@ -132,7 +132,7 @@ class MinuteChatRoomScreen extends React.Component {
       //and reconnect, room number + 1 which equal 2 and re-emitting the timer event again
       //if re-emitting, time will get reset and also call the interval
       //which will cause multiple interval and speed up the timer
-      if (this.state.counting) {
+      if (!this.state.counting) {
         this.interval = setInterval(this.countDown, 1000);
         let currentTime = new Date();
         this.setState({
