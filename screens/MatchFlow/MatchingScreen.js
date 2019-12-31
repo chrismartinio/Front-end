@@ -40,9 +40,10 @@ class MatchingScreen extends React.Component {
     if (matchedUsers === null) {
       return this.props.navigation.navigate("Home");
     }
+
     this.setState({
       foundaMatch: true,
-      matchingUserGuid: matchedUsers[0].mathcedUser,
+      matchingUserGuid: matchedUsers[0].matchedUser,
       matchingRoomGuid: matchedUsers[0].roomGuid
     });
   };
