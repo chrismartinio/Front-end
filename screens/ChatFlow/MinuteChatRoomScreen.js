@@ -193,12 +193,19 @@ class MinuteChatRoomScreen extends React.Component {
       matchingAge: match.matchingAge,
       matchingLocation: match.matchingLocation,
       matchingState: match.matchingState
-    }, () => {
-      console.log(this.state.matchingUserGuid)
     });
   };
 
   async componentDidMount() {
+    //Testing USE
+    //this.interval = setInterval(this.countDown, 1000);
+    /*
+    this.props.navigation.navigate("AcceptMatching", {
+      matchingInfo: this.props.navigation.state.params.matchingInfo
+    });
+    */
+    //Testing Use
+
     this.keyboardDidShowListener = Keyboard.addListener(
       "keyboardDidShow",
       this._keyboardDidShow
@@ -335,8 +342,19 @@ class MinuteChatRoomScreen extends React.Component {
       timerSecond: --this.state.timerSecond
     });
     if (this.state.timerSecond <= 0) {
-      this.exitChat();
+      this.goToAcceptMatchingScreen();
     }
+  };
+
+  goToAcceptMatchingScreen = () => {
+    clearInterval(this.interval);
+    //THIS WORK ONLY FROM CHATLIST TO CHATROOM
+    //this.props.navigation.getParam.forceReRender;
+    this.socket.emit("disconnect");
+    //For MinuteChatRoom, direct user go back to home
+    this.props.navigation.navigate("AcceptMatching", {
+      matchingInfo: this.props.navigation.state.params.matchingInfo
+    });
   };
 
   exitChat = () => {

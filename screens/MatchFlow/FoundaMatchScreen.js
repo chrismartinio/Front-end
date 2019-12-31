@@ -88,15 +88,9 @@ class MatchScreen extends React.Component {
   }
 
   setUserReady = () => {
-    this.setState(
-      {
-        isDeviceUserReady: true
-      },
-      () => {
-        console.log(this.state.isDeviceUserReady);
-        console.log(this.state.isMatchUserReady);
-      }
-    );
+    this.setState({
+      isDeviceUserReady: true
+    });
     //Send Socket
   };
 
@@ -106,6 +100,7 @@ class MatchScreen extends React.Component {
       prevState.isMatchUserReady !== this.state.isMatchUserReady
     ) {
       //Testing use
+      //no Socket setup yet, so have this for now
       this.props.navigation.navigate("MinuteChatRoom", {
         matchingInfo: this.state
       });

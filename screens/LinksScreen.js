@@ -35,11 +35,11 @@ class LinksScreen extends React.Component {
       "TestProfile", //Notification kinda buggy in linksScreen; regular flow (normal) will be not buggy
 
       //Match Flow
-      "TestFoundaMatchScreen",
+      "TestAcceptMatchingScreen",
 
       //Chat Flow
-      "MinuteChatRoom",
-      "PermanentChatRoom",
+      //"MinuteChatRoom",
+      //"PermanentChatRoom",
 
       //sharedComponents
       "TestErrorScreen"

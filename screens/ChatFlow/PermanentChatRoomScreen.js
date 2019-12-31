@@ -37,11 +37,30 @@ import { testobj } from "../../data/testObj";
 
 import { Icon } from "react-native-elements";
 
+import { StackActions, NavigationActions } from "react-navigation";
+
 class PermanentChatRoomScreen extends React.Component {
   static navigationOptions = ({ navigation }) => {
     return {
       headerRight: (
         <Button title="Menu" onPress={navigation.getParam("openMenu")} />
+      ),
+      headerLeft: (
+        <Button
+          title="Back"
+          onPress={() => {
+            const resetConversationsAction = StackActions.reset({
+              index: 1,
+              actions: [
+                NavigationActions.navigate({ routeName: "Home" }),
+                NavigationActions.navigate({
+                  routeName: "Conversations"
+                })
+              ]
+            });
+            navigation.dispatch(resetConversationsAction)
+          }}
+        />
       )
     };
   };
