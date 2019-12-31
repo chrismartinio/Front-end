@@ -62,7 +62,7 @@ const User = t.struct({
   password: t.String
 });
 
-import { localhost, miniServer } from "../config/ipconfig";
+import { localhost, miniServer, miniServerProd } from "../config/ipconfig";
 import {
   createTablesInToLocalStorage,
   displayAllTablesFromLocalStorage,
@@ -152,7 +152,7 @@ class LoginScreen extends React.Component {
       return alert("Please fill in Email or Password");
     }
 
-    await fetch(`http://${miniServer}:3002/api/auth/login`, {
+    await fetch(`${ miniServerProd }/api/auth/login`, {
       method: "POST",
       mode: "cors",
       credentials: "same-origin",
@@ -247,10 +247,10 @@ class LoginScreen extends React.Component {
     this.props.navigation.navigate("Registration");
   };
 
-  openBrowser = async (provider, hostname) => {
+  openBrowser = async (provider) => {
     try {
       let result = await WebBrowser.openAuthSessionAsync(
-        `http://${hostname}:3002/api/auth/${provider}?deepLink=${Linking.makeUrl(
+        `${ miniServerProd }/api/auth/${provider}?deepLink=${Linking.makeUrl(
           "/?"
         )}`
       );
@@ -291,15 +291,15 @@ class LoginScreen extends React.Component {
   };
 
   checkFaceBookValidity = async () => {
-    this.openBrowser("facebook", miniServer);
+    this.openBrowser("facebook");
   };
 
   checkGoogleValidity = () => {
-    this.openBrowser("google", miniServer);
+    this.openBrowser("google");
   };
 
   checkTwitterValidity = () => {
-    this.openBrowser("twitter", miniServer);
+    this.openBrowser("twitter");
   };
 
   render() {
