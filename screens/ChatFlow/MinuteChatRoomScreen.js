@@ -138,6 +138,7 @@ class MinuteChatRoomScreen extends React.Component {
         this.setState({
           endTime: currentTime.getTime() + 90 * 1000
         });
+        this.socket.emit("startTimer", {});
       }
       this.setState({
         counting: true
