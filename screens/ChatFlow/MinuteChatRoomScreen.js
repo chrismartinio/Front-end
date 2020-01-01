@@ -73,7 +73,7 @@ class MinuteChatRoomScreen extends React.Component {
       keyBoardShown: false,
       matchingInfoToggle: true
     };
-    this.guid = "";
+    this.userGuid = "";
     this.user_firstName = "";
 
     this.roomGuid = this.props.navigation.state.params.matchingInfo.matchingRoomGuid;
@@ -236,7 +236,7 @@ class MinuteChatRoomScreen extends React.Component {
 
     //emit an event to tell the socket the user has enter the room
     this.socket.emit("add user", {
-      guid: this.guid,
+      guid: this.userGuid,
       user_firstName: this.user_firstName
     });
 
