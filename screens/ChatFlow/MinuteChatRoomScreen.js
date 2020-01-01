@@ -236,7 +236,7 @@ class MinuteChatRoomScreen extends React.Component {
 
     //emit an event to tell the socket the user has enter the room
     this.socket.emit("add user", {
-      guid: this.userGuid,
+      userGuid: this.userGuid,
       user_firstName: this.user_firstName
     });
 
