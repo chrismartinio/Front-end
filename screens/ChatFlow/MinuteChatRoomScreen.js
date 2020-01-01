@@ -227,7 +227,7 @@ class MinuteChatRoomScreen extends React.Component {
 
     this.setMatchingUserInfo(this.props.navigation.state.params.matchingInfo);
 
-    this.guid = await this.props.CreateProfileDataReducer.guid;
+    this.userGuid = await this.props.CreateProfileDataReducer.guid;
 
     this.user_firstName = await this.props.CreateProfileDataReducer.aboutYouData
       .firstName;
