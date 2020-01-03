@@ -381,7 +381,13 @@ class PermanentChatRoomScreen extends React.Component {
                   }`}</Text>
                 </View>
               </View>
-              <Text style={styles.circle}>{this.user_firstName}</Text>
+              <Image
+                source={{
+                  //Change this to selfimage
+                  uri: this.state.matchedImage
+                }}
+                style={styles.selfMessageIcon}
+              />
             </View>
           </View>
         );
@@ -390,9 +396,12 @@ class PermanentChatRoomScreen extends React.Component {
         return (
           <View key={index}>
             <View style={styles.textContainer}>
-              <Text style={styles.circlePurple}>
-                {this.matched_user_firstName}
-              </Text>
+              <Image
+                source={{
+                  uri: this.state.matchedImage
+                }}
+                style={styles.matchMessageIcon}
+              />
               <View style={styles.targetMessageTextWrap}>
                 <View style={styles.targetMessageText}>
                   <Text>{`${messageItem.message}`}</Text>
@@ -532,7 +541,7 @@ class PermanentChatRoomScreen extends React.Component {
 
             {this.state.isTyping && (
               <View style={styles.textContainer}>
-                <Text style={styles.circlePurple}>
+                <Text style={styles.matchMessageIcon}>
                   {this.matched_user_firstName}
                 </Text>
                 <Text style={styles.targetMessageText}>is typing...</Text>
@@ -715,26 +724,21 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     margin: 5
   },
-  circle: {
+  selfMessageIcon: {
     marginLeft: 5,
     overflow: "hidden",
     width: 30,
     height: 30,
     borderRadius: 30 / 2,
-    backgroundColor: "red",
-    textAlign: "center",
     paddingTop: 7
   },
-  circlePurple: {
+  matchMessageIcon: {
     marginRight: 5,
     overflow: "hidden",
     width: 30,
     height: 30,
     borderRadius: 30 / 2,
-    backgroundColor: "purple",
-    textAlign: "center",
-    paddingTop: 7,
-    color: "white"
+    paddingTop: 7
   },
   deviceUserMessageView: {
     alignItems: "flex-end"

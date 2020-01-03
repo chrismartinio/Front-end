@@ -101,6 +101,8 @@ const TestStack = createStackNavigator(
     TestReplyQuestionaire: ReplyQuestionaire,
     TestMatches: Matches,
     TestAcceptMatchingScreen: AcceptMatchingScreen,
+    TestMinuteChatRoomScreen: MinuteChatRoomScreen,
+    TestPermanentChatRoomScreen: PermanentChatRoomScreen,
 
     //Chat flow
     TestChatPage: ChatPage,

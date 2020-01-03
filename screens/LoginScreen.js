@@ -7,16 +7,13 @@ import {
   Text,
   TouchableOpacity,
   View,
-  Button
+  Button,
+  Dimensions
 } from "react-native";
-import Firebase from "../storage/Store";
-import { MonoText } from "../components/StyledText";
-import t from "tcomb-form-native";
-//import { signInWithFacebook } from "../utils/auth.js";
 
-//1. make an error screen for no data for profile screen and edit screen
-//2. delay footer buttons
-//3. fix faill storing
+import t from "tcomb-form-native";
+
+const { height, width } = Dimensions.get("window");
 
 //Redux
 import { connect } from "react-redux";
@@ -55,7 +52,13 @@ stylesheet.textboxView.error.marginBottom = 5;
 const Form = t.form.Form;
 var options = {
   stylesheet: stylesheet,
-  auto: "placeholders"
+  auto: "placeholders",
+  fields: {
+    password: {
+      password: true,
+      secureTextEntry: true
+    }
+  }
 };
 const User = t.struct({
   email: t.String,
@@ -152,7 +155,7 @@ class LoginScreen extends React.Component {
       return alert("Please fill in Email or Password");
     }
 
-    await fetch(`${ miniServerProd }/api/auth/login`, {
+    await fetch(`${miniServerProd}/api/auth/login`, {
       method: "POST",
       mode: "cors",
       credentials: "same-origin",
@@ -247,10 +250,10 @@ class LoginScreen extends React.Component {
     this.props.navigation.navigate("Registration");
   };
 
-  openBrowser = async (provider) => {
+  openBrowser = async provider => {
     try {
       let result = await WebBrowser.openAuthSessionAsync(
-        `${ miniServerProd }/api/auth/${provider}?deepLink=${Linking.makeUrl(
+        `${miniServerProd}/api/auth/${provider}?deepLink=${Linking.makeUrl(
           "/?"
         )}`
       );
@@ -305,89 +308,110 @@ class LoginScreen extends React.Component {
   render() {
     return (
       <View style={styles.container}>
-        <ScrollView
-          style={styles.container}
-          contentContainerStyle={styles.contentContainer}
+        {/*space*/}
+        <View
+          style={{
+            padding: width >= 375 ? `${width * 0.036}%` : `${width * 0.013}%`
+          }}
+        />
+
+        {/*Image*/}
+        <View style={styles.welcomeContainer}>
+          <Image
+            source={
+              __DEV__
+                ? require("../assets/images/butterfly.png")
+                : require("../assets/images/butterfly.png")
+            }
+            style={styles.welcomeImage}
+          />
+        </View>
+
+        {/*space*/}
+        <View style={{ padding: width >= 375 && `${width * 0.013}%` }} />
+
+        {/*email and password input*/}
+        <View style={styles.formContainer}>
+          <Form
+            options={options}
+            autoCapitalize="none"
+            type={User}
+            ref={c => (this._form = c)}
+          />
+        </View>
+
+        {/*Sign in Button*/}
+        <View style={styles.buttonStyle}>
+          <Button
+            title="Sign In"
+            onPress={e => this.localLogin(e)}
+            color="white"
+            key="100"
+          />
+        </View>
+
+        {/*Sign Up Button*/}
+        <View style={styles.buttonStyleOutline}>
+          <Button
+            title="Sign Up"
+            onPress={this.handleSignUp}
+            color="#18cdf6"
+            key="100"
+          />
+        </View>
+
+        {/*Forgot Password */}
+        <Button
+          title="Forgot password!"
+          /*onPress={this.handleSignUp}*/ color="#18cdf6"
+        />
+
+        {/*space*/}
+        <View style={{ padding: width >= 375 && `${width * 0.013}%` }} />
+
+        {/*Third Party Providers*/}
+        <Text style={styles.centerText}>Sign in with</Text>
+        <View
+          style={{ flex: 1, flexDirection: "row", justifyContent: "center" }}
         >
-          <View style={styles.welcomeContainer}>
+          <TouchableOpacity onPress={this.checkFaceBookValidity}>
             <Image
               source={
                 __DEV__
-                  ? require("../assets/images/butterfly.png")
-                  : require("../assets/images/butterfly.png")
+                  ? require("../assets/images/f_logo.png")
+                  : require("../assets/images/f_logo.png")
               }
-              style={styles.welcomeImage}
+              style={styles.iconImage}
             />
-          </View>
-          <View style={styles.formContainer}>
-            <Form
-              options={options}
-              autoCapitalize="none"
-              type={User}
-              ref={c => (this._form = c)}
+          </TouchableOpacity>
+
+          <TouchableOpacity onPress={this.checkGoogleValidity}>
+            <Image
+              source={
+                __DEV__
+                  ? require("../assets/images/google-plus.png")
+                  : require("../assets/images/google-plus.png")
+              }
+              style={styles.iconImage}
             />
-          </View>
-          <View style={styles.buttonStyle}>
-            <Button
-              title="Sign In"
-              onPress={e => this.localLogin(e)}
-              color="white"
-              key="100"
+          </TouchableOpacity>
+
+          <TouchableOpacity onPress={this.checkTwitterValidity}>
+            <Image
+              source={
+                __DEV__
+                  ? require("../assets/images/twitter.png")
+                  : require("../assets/images/twitter.png")
+              }
+              style={styles.iconImage}
             />
-          </View>
-          <View style={styles.buttonStyleOutline}>
-            <Button
-              title="Sign Up"
-              onPress={this.handleSignUp}
-              color="#18cdf6"
-              key="100"
-            />
-          </View>
+          </TouchableOpacity>
+        </View>
+
+        {/*Testing USE*/}
+        <View style={{ position: "absolute", left: 0, top: "5%" }}>
           <Button
-            title="Forgot password!"
-            /*onPress={this.handleSignUp}*/ color="#18cdf6"
-          />
-          <Text style={styles.centerText}>Sign in with</Text>
-          <View
-            style={{ flex: 1, flexDirection: "row", justifyContent: "center" }}
-          >
-            <TouchableOpacity onPress={this.checkFaceBookValidity}>
-              <Image
-                source={
-                  __DEV__
-                    ? require("../assets/images/f_logo.png")
-                    : require("../assets/images/f_logo.png")
-                }
-                style={styles.iconImage}
-              />
-            </TouchableOpacity>
-
-            <TouchableOpacity onPress={this.checkGoogleValidity}>
-              <Image
-                source={
-                  __DEV__
-                    ? require("../assets/images/google-plus.png")
-                    : require("../assets/images/google-plus.png")
-                }
-                style={styles.iconImage}
-              />
-            </TouchableOpacity>
-
-            <TouchableOpacity onPress={this.checkTwitterValidity}>
-              <Image
-                source={
-                  __DEV__
-                    ? require("../assets/images/twitter.png")
-                    : require("../assets/images/twitter.png")
-                }
-                style={styles.iconImage}
-              />
-            </TouchableOpacity>
-          </View>
-
-          {/*Testing USE*/}
-          <Button
-            title="Testing - Go to Link Screen"
+            title="LINKS"
             //If Navigate to Profile, in side linkscreen has set a guid
             onPress={() => {
               this.props.SetGUIDAction({
@@ -404,13 +428,16 @@ class LoginScreen extends React.Component {
               this.props.navigation.navigate("Links");
             }}
           />
+        </View>
+        {/*Testing USE*/}
+        <View style={{ position: "absolute", left: 0, top: "10%" }}>
           <Button
-            title="Testing - Go to Main Screen"
+            title="HOME"
             onPress={() => {
               //TESTING USE (TEMP)
               //Set Device user GUID
               this.props.SetGUIDAction({
-                guid: "5df0426e1c9d44000040a446"
+                guid: "5e0f04d2ed63ee02f3999dea"
               });
               this.props.SetAboutYouDataAction({
                 firstName: "te st",
@@ -424,7 +451,7 @@ class LoginScreen extends React.Component {
               this.props.navigation.navigate("Main");
             }}
           />
-        </ScrollView>
+        </View>
       </View>
     );
   }
@@ -470,13 +497,40 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#fff"
   },
+  welcomeContainer: {
+    alignItems: "center"
+  },
+  welcomeImage: {
+    width: width * 0.53,
+    height: width * 0.53,
+    resizeMode: "contain"
+  },
   formContainer: {
     justifyContent: "center",
-    width: "55%",
-    marginTop: 50,
-    padding: 10,
+    width: `${width * 0.18}%`,
     backgroundColor: "#ffffff",
     alignSelf: "center"
+  },
+  buttonStyle: {
+    borderRadius: 20,
+    color: "white",
+    backgroundColor: "#18cdf6",
+    paddingLeft: width * 0.26,
+    paddingRight: width * 0.26,
+    alignSelf: "center",
+    fontStyle: "italic",
+    margin: 5
+  },
+  buttonStyleOutline: {
+    borderRadius: 20,
+    color: "#18cdf6",
+    borderWidth: 0.5,
+    borderColor: "#18cdf6",
+    paddingLeft: width * 0.26,
+    paddingRight: width * 0.26,
+    alignSelf: "center",
+    fontStyle: "italic",
+    margin: 5
   },
   developmentModeText: {
     marginBottom: 20,
@@ -485,74 +539,6 @@ const styles = StyleSheet.create({
     lineHeight: 19,
     textAlign: "center"
   },
-  contentContainer: {
-    paddingTop: 30
-  },
-  welcomeContainer: {
-    alignItems: "center",
-    marginTop: 10,
-    marginBottom: 10
-  },
-  welcomeImage: {
-    width: 300,
-    height: 200,
-    resizeMode: "contain",
-    marginTop: "10%",
-    marginLeft: -10
-  },
-  getStartedContainer: {
-    alignItems: "center",
-    marginHorizontal: 50
-  },
-  homeScreenFilename: {
-    marginVertical: 7
-  },
-  codeHighlightText: {
-    color: "rgba(96,100,109, 0.8)"
-  },
-  codeHighlightContainer: {
-    backgroundColor: "rgba(0,0,0,0.05)",
-    borderRadius: 3,
-    paddingHorizontal: 4
-  },
-  getStartedText: {
-    fontSize: 17,
-    color: "rgba(96,100,109, 1)",
-    lineHeight: 24,
-    textAlign: "center"
-  },
-  tabBarInfoContainer: {
-    position: "absolute",
-    bottom: 0,
-    left: 0,
-    right: 0,
-    ...Platform.select({
-      ios: {
-        shadowColor: "black",
-        shadowOffset: { height: -3 },
-        shadowOpacity: 0.1,
-        shadowRadius: 3
-      },
-      android: {
-        elevation: 20
-      }
-    }),
-    alignItems: "center",
-    backgroundColor: "#fbfbfb",
-    paddingVertical: 20
-  },
-  tabBarInfoText: {
-    fontSize: 17,
-    color: "rgba(96,100,109, 1)",
-    textAlign: "center"
-  },
-  navigationFilename: {
-    marginTop: 5
-  },
-  helpContainer: {
-    marginTop: 15,
-    alignItems: "center"
-  },
   helpLink: {
     paddingVertical: 15
   },
@@ -560,35 +546,15 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: "#2e78b7"
   },
-  buttonStyle: {
-    borderRadius: 20,
-    color: "white",
-    backgroundColor: "#18cdf6",
-    width: "75%",
-    alignSelf: "center",
-    marginBottom: 20,
-    fontStyle: "italic"
-  },
-  buttonStyleOutline: {
-    borderRadius: 20,
-    color: "#18cdf6",
-    borderWidth: 1,
-    borderColor: "#18cdf6",
-    width: "75%",
-    alignSelf: "center",
-    marginBottom: 5,
-    fontStyle: "italic"
-  },
   centerText: {
     marginTop: 15,
     textAlign: "center",
     color: "grey"
   },
   iconImage: {
-    width: 40,
-    height: 40,
+    width: 50,
+    height: 50,
     resizeMode: "contain",
-    marginTop: 15,
     padding: 10,
     margin: 20
   }
