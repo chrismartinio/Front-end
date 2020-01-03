@@ -37,6 +37,11 @@ import { testobj } from "../../data/testObj";
 
 import { Icon } from "react-native-elements";
 
+//At Homescreen, fetch user self image and send to redux
+//because if user go striaght to match, we cannot get their image
+
+//At Homescreen, fetch config 
+
 class MinuteChatRoomScreen extends React.Component {
   static navigationOptions = ({ navigation }) => {
     return {
@@ -124,7 +129,7 @@ class MinuteChatRoomScreen extends React.Component {
 
     //handle timer
     this.socket.on("timer", data => {
-      console.log('timer has started');
+      console.log("timer has started");
       //when the socket detect 2 ppl in the room
       //start the timer
       //counting is to prevent one of the user disconnect
@@ -391,7 +396,14 @@ class MinuteChatRoomScreen extends React.Component {
                   }`}</Text>
                 </View>
               </View>
-              <Text style={styles.circle}>{this.user_firstName}</Text>
+              <Image
+                blurRadius={10}
+                source={{
+                  //Change this to selfimage
+                  uri: this.state.matchingImage
+                }}
+                style={styles.selfMessageIcon}
+              />
             </View>
           </View>
         );
@@ -400,9 +412,13 @@ class MinuteChatRoomScreen extends React.Component {
         return (
           <View key={index}>
             <View style={styles.textContainer}>
-              <Text style={styles.circlePurple}>
-                {this.state.matchingFirstName}
-              </Text>
+              <Image
+                blurRadius={10}
+                source={{
+                  uri: this.state.matchingImage
+                }}
+                style={styles.matchMessageIcon}
+              />
               <View style={styles.targetMessageTextWrap}>
                 <View style={styles.targetMessageText}>
                   <Text>{`${messageItem.message}`}</Text>
@@ -553,7 +569,7 @@ class MinuteChatRoomScreen extends React.Component {
 
             {this.state.isTyping && (
               <View style={styles.textContainer}>
-                <Text style={styles.circlePurple}>
+                <Text style={styles.matchMessageIcon}>
                   {this.state.matchingFirstName}
                 </Text>
                 <Text style={styles.targetMessageText}>is typing...</Text>
@@ -738,26 +754,21 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     margin: 5
   },
-  circle: {
+  selfMessageIcon: {
     marginLeft: 5,
     overflow: "hidden",
     width: 30,
     height: 30,
     borderRadius: 30 / 2,
-    backgroundColor: "red",
-    textAlign: "center",
     paddingTop: 7
   },
-  circlePurple: {
+  matchMessageIcon: {
     marginRight: 5,
     overflow: "hidden",
     width: 30,
     height: 30,
     borderRadius: 30 / 2,
-    backgroundColor: "purple",
-    textAlign: "center",
     paddingTop: 7,
-    color: "white"
   },
   deviceUserMessageView: {
     alignItems: "flex-end"

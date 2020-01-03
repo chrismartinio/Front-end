@@ -20,6 +20,17 @@ class LinksScreen extends React.Component {
   };
   constructor(props) {
     super(props);
+    this.state = {
+      isSuccess: false,
+      isDeviceUserReady: false,
+      isMatchUserReady: false,
+      matchingUserGuid: "ACD",
+      matchingFirstName: "A",
+      matchingLastName: "B",
+      matchingLikesArray: ["A", "B", "C"],
+      matchingImage: "http://shared.frenys.com/assets/1009731/6154108-Shawn-Ashmore.jpg",
+      matchingMiles: ""
+    };
 
     this.buttonAry = [
       //Location Flow
@@ -36,6 +47,8 @@ class LinksScreen extends React.Component {
 
       //Match Flow
       "TestAcceptMatchingScreen",
+      "TestMinuteChatRoomScreen",
+      "TestPermanentChatRoomScreen",
 
       //Chat Flow
       //"MinuteChatRoom",
@@ -69,17 +82,28 @@ class LinksScreen extends React.Component {
         );
       }
 
-      if (e === "TestSelfie") {
+      if (e === "TestMinuteChatRoomScreen") {
         return (
           <Button
             key={index++}
             title={e}
-            onPress={() =>
-              this.props.navigation.navigate(e, {
-                isEdit: false //Profile_Registration
-                //isEdit: true //EditScreen
-              })
-            }
+            onPress={() => {
+              this.props.navigation.navigate("MinuteChatRoom", {
+                matchingInfo: this.state
+              });
+            }}
+          />
+        );
+      }
+
+      if (e === "TestPermanentChatRoomScreen") {
+        return (
+          <Button
+            key={index++}
+            title={e}
+            onPress={() => {
+              this.props.navigation.navigate("PermanentChatRoom", this.state);
+            }}
           />
         );
       }

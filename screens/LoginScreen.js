@@ -437,7 +437,7 @@ class LoginScreen extends React.Component {
               //TESTING USE (TEMP)
               //Set Device user GUID
               this.props.SetGUIDAction({
-                guid: "5df0426e1c9d44000040a446"
+                guid: "5e0f04d2ed63ee02f3999dea"
               });
               this.props.SetAboutYouDataAction({
                 firstName: "te st",
