@@ -55,7 +55,13 @@ stylesheet.textboxView.error.marginBottom = 5;
 const Form = t.form.Form;
 var options = {
   stylesheet: stylesheet,
-  auto: "placeholders"
+  auto: "placeholders",
+  fields: {
+    password: {
+      password: true,
+      secureTextEntry: true
+    }
+  }
 };
 const User = t.struct({
   email: t.String,
@@ -152,7 +158,7 @@ class LoginScreen extends React.Component {
       return alert("Please fill in Email or Password");
     }
 
-    await fetch(`${ miniServerProd }/api/auth/login`, {
+    await fetch(`${miniServerProd}/api/auth/login`, {
       method: "POST",
       mode: "cors",
       credentials: "same-origin",
@@ -247,10 +253,10 @@ class LoginScreen extends React.Component {
     this.props.navigation.navigate("Registration");
   };
 
-  openBrowser = async (provider) => {
+  openBrowser = async provider => {
     try {
       let result = await WebBrowser.openAuthSessionAsync(
-        `${ miniServerProd }/api/auth/${provider}?deepLink=${Linking.makeUrl(
+        `${miniServerProd}/api/auth/${provider}?deepLink=${Linking.makeUrl(
           "/?"
         )}`
       );
