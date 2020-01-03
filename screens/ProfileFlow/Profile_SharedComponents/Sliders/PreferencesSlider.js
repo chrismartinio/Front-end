@@ -9,7 +9,8 @@ class CSlider extends React.Component {
       rightBound: "Daryl in Polo",
       minimumValue: -50,
       maximumValue: 50,
-      value: 0
+      value: 0,
+      displayValue: 0
     };
   }
 
@@ -17,22 +18,24 @@ class CSlider extends React.Component {
     // callback listener must return true
 
     this.props.functionListener(value);
-    //console.log(value)
+    console.log(value);
     val = value;
     this.setState({
       value: value
     });
   };
+  /*
   handleRealTimeUpdate = value => {
     // callback listener must return true
 
     this.props.functionListener(value);
-    //console.log(value)
+    console.log(value)
     val = value;
     this.setState({
       value: value
     });
   };
+  */
 
   render() {
     return (
@@ -41,6 +44,9 @@ class CSlider extends React.Component {
          <Text style={styles.text}> {-1*(Math.floor(this.state.value)-50)}  </Text>
          <Text style={styles.text}> {Math.floor(this.state.value)+50}  </Text>
        </View> */}
+        <View style={{ alignItems: "center", paddingTop: 5 }}>
+          <Text>{this.state.displayValue}</Text>
+        </View>
         <Slider
           value={this.props.value}
           minimumValue={this.props.minimumValue}
@@ -51,8 +57,8 @@ class CSlider extends React.Component {
           onSlidingComplete={value => {
             this.handleCallbackListener(value);
           }}
-          onValueChange={value => {
-            //this.handleRealTimeUpdate(value)
+          onValueChange={val => {
+            this.setState({ displayValue: val });
           }}
         />
 
