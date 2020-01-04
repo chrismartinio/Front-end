@@ -104,7 +104,6 @@ class ConversationsScreen extends React.Component {
     }
 
     let arr3 = this.mergeArrayObjects(arr1, arr2);
-    console.log(arr3)
 
     this.setState({
       matchUsersList: arr3

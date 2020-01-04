@@ -52,7 +52,6 @@ export default class InputMenu extends React.Component {
                 onSubmitEditing={Keyboard.dismiss}
                 placeholder="Write Something here..."
                 multiline={true}
-                numberOfLines={4}
                 onChangeText={this.props.onChangeText}
                 value={this.props.currentMessage}
               />

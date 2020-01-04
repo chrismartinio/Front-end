@@ -79,7 +79,7 @@ class PermanentChatRoomScreen extends React.Component {
       matchFirstName: "",
       matchLikesArray: [],
       matchAge: "",
-      matchLocation: "",
+      matchCity: "",
       matchState: "",
       keyBoardShown: false,
       matchInfoToggle: true,
@@ -180,7 +180,7 @@ class PermanentChatRoomScreen extends React.Component {
           messagesArray[i].userGuid === this.userGuid
             ? this.user_firstName
             : this.state.matchFirstName,
-        timeStamp: messagesArray[i].date
+        timeStamp: this.oldMessagetimeStamp(messagesArray[i].date)
       });
     }
     this.setState({
@@ -237,15 +237,15 @@ class PermanentChatRoomScreen extends React.Component {
     //Matched Info
     this.setMatchedUserInfo(this.props.navigation.state.params);
 
-    //call old messages
-
     //Device's user Info
     this.userGuid = await this.props.CreateProfileDataReducer.guid;
     this.user_firstName = await this.props.CreateProfileDataReducer.aboutYouData
       .firstName;
 
+    //Setup RoomGuid
     this.roomGuid = this.props.navigation.state.params.matchRoomGuid;
 
+    //call old messages
     this.getOldMessageFromDB(this.roomGuid);
 
     //Keyboard
@@ -271,6 +271,11 @@ class PermanentChatRoomScreen extends React.Component {
       userGuid: this.userGuid,
       user_firstName: this.user_firstName
     });
+
+    //scroll to end at the beginning
+    setTimeout(() => {
+      this.scrollView.scrollToEnd({ animated: false });
+    }, 50);
 
     this.setState({
       isSuccess: true
@@ -318,6 +323,18 @@ class PermanentChatRoomScreen extends React.Component {
 
   timeStamp = () => {
     let date = new Date();
+    var hours = date.getHours();
+    var minutes = date.getMinutes();
+    var ampm = hours >= 12 ? "pm" : "am";
+    hours = hours % 12;
+    hours = hours ? hours : 12; // the hour '0' should be '12'
+    minutes = minutes < 10 ? "0" + minutes : minutes;
+    var strTime = hours + ":" + minutes + " " + ampm;
+    return strTime;
+  };
+
+  oldMessagetimeStamp = time => {
+    let date = new Date(time);
     var hours = date.getHours();
     var minutes = date.getMinutes();
     var ampm = hours >= 12 ? "pm" : "am";
@@ -471,7 +488,7 @@ class PermanentChatRoomScreen extends React.Component {
       <View>
         <View style={{ alignItems: "center" }}>
           <Text>
-            {this.state.matchAge}, {this.state.matchLocation}{" "}
+            {this.state.matchAge}, {this.state.matchCity}{" "}
             {this.state.matchState}
           </Text>
         </View>
