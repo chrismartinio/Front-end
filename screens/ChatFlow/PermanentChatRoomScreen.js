@@ -43,7 +43,7 @@ class PermanentChatRoomScreen extends React.Component {
   static navigationOptions = ({ navigation }) => {
     return {
       headerRight: (
-        <Button title="Menu" onPress={navigation.getParam("openMenu")} />
+        <Button title="Menus" onPress={navigation.getParam("openMenu")} />
       ),
       headerLeft: (
         <Button
