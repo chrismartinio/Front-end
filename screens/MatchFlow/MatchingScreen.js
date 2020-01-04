@@ -25,8 +25,8 @@ class MatchingScreen extends React.Component {
     this.state = {
       isSuccess: true,
       foundaMatch: false,
-      matchingUserGuid: "",
-      matchingRoomGuid: ""
+      matchUserGuid: "",
+      matchRoomGuid: ""
     };
     //Set up a socket that after socket send they found a match
     //then change the foundaMatch = true
@@ -43,8 +43,8 @@ class MatchingScreen extends React.Component {
 
     this.setState({
       foundaMatch: true,
-      matchingUserGuid: matchedUsers[0].matchedUser,
-      matchingRoomGuid: matchedUsers[0].roomGuid
+      matchUserGuid: matchedUsers[0].matchedUser,
+      matchRoomGuid: matchedUsers[0].roomGuid
     });
   };
 
@@ -84,8 +84,8 @@ class MatchingScreen extends React.Component {
       if (this.state.foundaMatch) {
         //also send a private room id to match screen
         this.props.navigation.navigate("FoundaMatch", {
-          matchingUserGuid: this.state.matchingUserGuid,
-          matchingRoomGuid: this.state.matchingRoomGuid
+          matchUserGuid: this.state.matchUserGuid,
+          matchRoomGuid: this.state.matchRoomGuid
         });
       }
     }
