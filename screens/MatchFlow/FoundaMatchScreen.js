@@ -11,7 +11,7 @@ import {
   Dimensions,
   Image
 } from "react-native";
-import { miniServer } from "../../config/ipconfig";
+import { miniServer, localhost } from "../../config/ipconfig";
 import axios from "axios";
 import { connect } from "react-redux";
 import LoadingScreen from "../../sharedComponents/LoadingScreen";
@@ -29,30 +29,43 @@ class MatchScreen extends React.Component {
       isSuccess: false,
       isDeviceUserReady: false,
       isMatchUserReady: false,
-      matchingUserGuid: "",
-      matchingFirstName: "",
-      matchingLastName: "",
-      matchingLikesArray: [],
-      matchingImage: "",
-      matchingMiles: ""
+      matchUserGuid: "",
+      matchRoomGuid: "",
+      matchFirstName: "",
+      matchLastName: "",
+      matchLikesArray: "",
+      matchImageUrl: "",
+      matchMiles: "4.26",
+      matchAge: "",
+      matchCity: "",
+      matchState: ""
     };
     //Socket
     //receive socket roomID
     //and set isMatchUserReady to true
   }
 
-  setMatchingUser = match => {
+  setMatchingUserInfo = ({
+    firstName,
+    lastName,
+    likesArray,
+    imageUrl,
+    city,
+    age,
+    state
+  }) => {
+    console.log(age);
     this.setState({
-      matchingUserGuid: this.props.navigation.state.params.matchingUserGuid,
-      matchingRoomGuid: this.props.navigation.state.params.matchingRoomGuid,
-      matchingFirstName: match.firstName,
-      matchingLastName: match.lastName,
-      matchingLikesArray: match.likesArray,
-      matchingImage: match.imageUrl,
-      matchingMiles: "4.26",
-      matchingAge: this.calculateAge(match.birthDate),
-      matchingLocation: match.city,
-      matchingState: match.state,
+      matchUserGuid: this.props.navigation.state.params.matchUserGuid,
+      matchRoomGuid: this.props.navigation.state.params.matchRoomGuid,
+      matchFirstName: firstName,
+      matchLastName: lastName,
+      matchLikesArray: likesArray,
+      matchImageUrl: imageUrl,
+      matchMiles: "4.26",
+      matchAge: age,
+      matchCity: city,
+      matchState: state,
       isSuccess: true
     });
   };
@@ -66,20 +79,22 @@ class MatchScreen extends React.Component {
   };
 
   componentDidMount() {
-    //reset the matchingScreen's foundaMatch = false
+    //reset the matchScreen's foundaMatch = false
     //fetch data
     //and use guid to get interest, miles, firstName, lastName, image
     axios
       .post(
-        `http://${miniServer}:4000/api/profile/profile_query`,
+        `http://${localhost}:4000/api/profile/chat_query`,
         {
-          guid: this.props.navigation.state.params.matchingUserGuid,
+          matchUserGuidArray: [
+            this.props.navigation.state.params.matchUserGuid
+          ],
           collection: "aboutYou"
         },
         { headers: { "Content-Type": "application/json" } }
       )
       .then(response => {
-        this.setMatchingUser(response.data.result);
+        this.setMatchingUserInfo(response.data.result[0]);
       })
       .catch(error => {
         console.log("Error: ", error);
@@ -101,22 +116,17 @@ class MatchScreen extends React.Component {
     ) {
       //Testing use
       //no Socket setup yet, so have this for now
-      this.props.navigation.navigate("MinuteChatRoom", {
-        matchingInfo: this.state
-      });
+      this.props.navigation.navigate("MinuteChatRoom", this.state);
       //Testing use
 
       if (this.state.isDeviceUserReady && this.state.isMatchUserReady) {
-        //also send a private room id to match screen
-        this.props.navigation.navigate("MinuteChatRoom", {
-          matchingInfo: this.state
-        });
+        this.props.navigation.navigate("MinuteChatRoom", this.state);
       }
     }
   }
 
   successScreen = () => {
-    let displayMatchedLikesArray = this.state.matchingLikesArray.map(
+    let displayMatchedLikesArray = this.state.matchLikesArray.map(
       (e, index) => {
         return (
           <View key={index++}>
@@ -169,13 +179,13 @@ class MatchScreen extends React.Component {
             {/*space*/}
             <View style={{ padding: `${0.026 * width}%` }} />
 
-            {/*matching user info box*/}
+            {/*match user info box*/}
             <Card style={styles.card}>
               <View style={styles.imageWrap}>
                 <Image
                   blurRadius={10}
                   source={{
-                    uri: this.state.matchingImage
+                    uri: this.state.matchImageUrl
                   }}
                   style={styles.image}
                 />
@@ -183,11 +193,11 @@ class MatchScreen extends React.Component {
 
               {/*space*/}
               <View style={{ alignItems: "center", bottom: 25 }}>
-                {/*matching user info*/}
+                {/*match user info*/}
                 <Text style={{ fontSize: 0.042 * width }}>
-                  {this.state.matchingFirstName}, {this.state.matchingLastName}
+                  {this.state.matchFirstName}, {this.state.matchLastName}
                 </Text>
-                <Text> {this.state.matchingMiles} miles away </Text>
+                <Text> {this.state.matchMiles} miles away </Text>
               </View>
 
               {/**border line */}

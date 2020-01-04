@@ -30,8 +30,8 @@ export default class CircularCarousel extends React.Component {
   setDisplayItems = (nextInitial, nextFinal) => {
     let temp = [];
     for (let i = nextInitial; i < nextFinal; i++) {
-      if (this.props.matchedUsersList[i] !== undefined) {
-        temp.push(this.props.matchedUsersList[i]);
+      if (this.props.matchUsersList[i] !== undefined) {
+        temp.push(this.props.matchUsersList[i]);
       }
     }
     this.setState({
@@ -57,7 +57,7 @@ export default class CircularCarousel extends React.Component {
 
   returnItemsXY = index => {
     //below degree can fit all items on th CircularCarousel, but no margin
-    //let degree = (index * 360) / this.props.matchedUsersList.length;
+    //let degree = (index * 360) / this.props.matchUsersList.length;
     let degree = 240 - index * 30;
     let angleRad = degToRad(degree);
     let radius = this.circleSize / 2;
@@ -67,10 +67,10 @@ export default class CircularCarousel extends React.Component {
     return { x, y };
   };
 
-  nextMatchedList = () => {
+  nextMatchList = () => {
     let pageNumber = this.state.pageNumber + 1;
-    if (pageNumber > Math.round(this.props.matchedUsersList.length / 12) - 1) {
-      pageNumber = Math.round(this.props.matchedUsersList.length / 12) - 1;
+    if (pageNumber > Math.round(this.props.matchUsersList.length / 12) - 1) {
+      pageNumber = Math.round(this.props.matchUsersList.length / 12) - 1;
     }
     this.setState({ pageNumber: pageNumber });
     let nextInitial = pageNumber * 12;
@@ -124,7 +124,7 @@ export default class CircularCarousel extends React.Component {
           height={this.itemSize * 1.1}
           borderRadius={this.itemSize / 2}
           itemAnimationsXY={itemAnimationsXY}
-          matchedUserData={this.state.displayItems[i]}
+          matchUserData={this.state.displayItems[i]}
           navigation={this.props.navigation}
         />
       );

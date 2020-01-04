@@ -28,12 +28,12 @@ class AcceptMatchingScreen extends React.Component {
     this.state = {
       isSuccess: true,
       modalVisible: false,
-      matchingUserGuid: "",
-      matchingFirstName: "",
+      matchUserGuid: "",
+      matchFirstName: "",
       isDeviceUserAccept: false,
       isMatchUserAccept: false,
       isMatchUserClicked: false,
-      matchingImage:
+      matchImageUrl:
         "https://cdn.pixabay.com/photo/2016/03/31/15/33/contact-1293388_960_720.png"
     };
     //setup socket to get matching user accept/reject
@@ -43,9 +43,9 @@ class AcceptMatchingScreen extends React.Component {
 
   setMatchingUserInfo = match => {
     this.setState({
-      matchingUserGuid: match.matchingUserGuid,
-      matchingFirstName: match.matchingFirstName,
-      matchingImage: match.matchingImage
+      matchUserGuid: match.matchUserGuid,
+      matchFirstName: match.matchFirstName,
+      matchImageUrl: match.matchImageUrl
     });
   };
 
@@ -55,7 +55,7 @@ class AcceptMatchingScreen extends React.Component {
       prevState.isMatchUserAccept !== this.state.isMatchUserAccept
     ) {
       //Testing use
-      this.acceptMatchingUser()
+      this.acceptMatchingUser();
       //Testing use
 
       //if matching user click reject and also check if they clicked once
@@ -78,7 +78,7 @@ class AcceptMatchingScreen extends React.Component {
   }
 
   componentDidMount() {
-    this.setMatchingUserInfo(this.props.navigation.state.params.matchingInfo);
+    this.setMatchingUserInfo(this.props.navigation.state.params);
   }
 
   setDeviceUserAccept = () => {
@@ -87,7 +87,7 @@ class AcceptMatchingScreen extends React.Component {
 
     //setState
     this.setState({
-      isDeviceUserAccept: true,
+      isDeviceUserAccept: true
     });
   };
 
@@ -111,27 +111,31 @@ class AcceptMatchingScreen extends React.Component {
   acceptMatchingUser = () => {
     console.log("accept");
     let {
-      matchingAge,
-      matchingFirstName,
-      matchingLocation,
-      matchingUserGuid,
-      matchingLikesArray,
-      matchingState,
-      matchingImage,
-      matchingRoomGuid
-    } = this.props.navigation.state.params.matchingInfo;
-
-    let matchingInfo = {
-      matchedUserGuid: matchingUserGuid,
-      matchedFirstName: matchingFirstName,
-      likesArray: matchingLikesArray,
-      matchedUserAge: matchingAge,
-      matchedUserCity: matchingLocation,
-      matchedState: matchingState,
-      imageUrl: matchingImage,
-      roomGuid: matchingRoomGuid
-    };
-    this.props.navigation.navigate("PermanentChatRoom", matchingInfo);
+      matchAge,
+      matchFirstName,
+      matchLocation,
+      matchUserGuid,
+      matchLikesArray,
+      matchState,
+      matchImageUrl,
+      matchRoomGuid
+    } = this.props.navigation.state.params;
+    this.props.navigation.navigate(
+      "PermanentChatRoom",
+      this.props.navigation.state.params
+    );
+    /*
+    this.props.navigation.navigate("PermanentChatRoom", {
+      matchedUserGuid: matchUserGuid,
+      matchedFirstName: matchFirstName,
+      likesArray: matchLikesArray,
+      matchedUserAge: matchAge,
+      matchedUserCity: matchLocation,
+      matchedState: matchState,
+      imageUrl: matchImageUrl,
+      roomGuid: matchRoomGuid
+    });
+    */
   };
 
   successScreen = () => {
@@ -141,7 +145,7 @@ class AcceptMatchingScreen extends React.Component {
         <Image
           blurRadius={10}
           source={{
-            uri: this.state.matchingImage
+            uri: this.state.matchImageUrl
           }}
           style={{
             width: 0.8 * width,
@@ -158,7 +162,7 @@ class AcceptMatchingScreen extends React.Component {
             Congrats!
           </Text>
           <Text style={{ color: "white", fontSize: 20 }}>
-            {`You and ${this.state.matchingFirstName} must like each other.`}
+            {`You and ${this.state.matchFirstName} must like each other.`}
           </Text>
           <Text style={{ color: "white", fontSize: 20 }}>
             You had a 90 second convo!

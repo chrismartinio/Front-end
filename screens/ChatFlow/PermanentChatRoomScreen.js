@@ -75,18 +75,18 @@ class PermanentChatRoomScreen extends React.Component {
       appState: AppState.currentState,
       endTime: "",
       modalVisible: false,
-      matchedUserGuid: "",
-      matchedFirstName: "",
-      matchedLikesArray: [],
-      matchedAge: "",
-      matchedLocation: "",
-      matchedState: "",
+      matchUserGuid: "",
+      matchFirstName: "",
+      matchLikesArray: [],
+      matchAge: "",
+      matchCity: "",
+      matchState: "",
       keyBoardShown: false,
-      matchedInfoToggle: true,
-      matchedUserImageUrl:
+      matchInfoToggle: true,
+      matchImageUrl:
         "https://cdn.pixabay.com/photo/2016/03/31/15/33/contact-1293388_960_720.png"
     };
-    this.roomGuid = this.props.navigation.state.params.roomGuid;
+    this.roomGuid = this.props.navigation.state.params.matchRoomGuid;
     this.token = "";
     this.socket = io(`http://${localhost}:3060/${this.roomGuid}`, {
       forceNew: true,
@@ -170,18 +170,6 @@ class PermanentChatRoomScreen extends React.Component {
     });
   }
 
-  setMatchedUserInfo = matchedObj => {
-    this.setState({
-      matchedUserGuid: matchedObj.matchedUserGuid,
-      matchedFirstName: matchedObj.matchedFirstName,
-      matchedLikesArray: matchedObj.matchedLikesArray,
-      matchedAge: matchedObj.matchedAge,
-      matchedLocation: matchedObj.matchedLocation,
-      matchedState: matchedObj.matchedState,
-      matchedUserImageUrl: matchedObj.matchedUserImageUrl
-    });
-  };
-
   formatOldMessage = messagesArray => {
     let temp = [];
     for (let i = 0; i < messagesArray.length; i++) {
@@ -191,8 +179,8 @@ class PermanentChatRoomScreen extends React.Component {
         userName:
           messagesArray[i].userGuid === this.userGuid
             ? this.user_firstName
-            : this.state.matchedFirstName,
-        timeStamp: messagesArray[i].date
+            : this.state.matchFirstName,
+        timeStamp: this.oldMessagetimeStamp(messagesArray[i].date)
       });
     }
     this.setState({
@@ -212,7 +200,6 @@ class PermanentChatRoomScreen extends React.Component {
     })
       .then(res => res.json())
       .then(res => {
-        console.log(res);
         this.formatOldMessage(res);
       })
       .catch(err => {
@@ -220,37 +207,45 @@ class PermanentChatRoomScreen extends React.Component {
       });
   };
 
+  setMatchedUserInfo = ({
+    matchUserGuid,
+    matchRoomGuid,
+    matchFirstName,
+    matchLastName,
+    matchLikesArray,
+    matchImageUrl,
+    matchMiles,
+    matchAge,
+    matchCity,
+    matchState
+  }) => {
+    this.setState({
+      matchUserGuid: matchUserGuid,
+      matchRoomGuid: matchRoomGuid,
+      matchFirstName: matchFirstName,
+      matchLastName: matchLastName,
+      matchLikesArray: matchLikesArray,
+      matchImageUrl: matchImageUrl,
+      matchMiles: matchMiles,
+      matchAge: matchAge,
+      matchCity: matchCity,
+      matchState: matchState
+    });
+  };
+
   async componentDidMount() {
     //Matched Info
-    let {
-      matchedUserAge,
-      matchedUserName,
-      matchedUserCity,
-      matchedUserGuid,
-      likesArray,
-      state,
-      imageUrl
-    } = this.props.navigation.state.params;
-    let matchedObj = {
-      matchedUserGuid: matchedUserGuid,
-      matchedFirstName: matchedUserName,
-      matchedLikesArray: likesArray,
-      matchedAge: matchedUserAge,
-      matchedLocation: matchedUserCity,
-      matchedState: state,
-      matchedUserImageUrl: imageUrl
-    };
-    this.setMatchedUserInfo(matchedObj);
-
-    //call old messages
+    this.setMatchedUserInfo(this.props.navigation.state.params);
 
     //Device's user Info
     this.userGuid = await this.props.CreateProfileDataReducer.guid;
     this.user_firstName = await this.props.CreateProfileDataReducer.aboutYouData
       .firstName;
 
-    this.roomGuid = this.props.navigation.state.params.roomGuid;
+    //Setup RoomGuid
+    this.roomGuid = this.props.navigation.state.params.matchRoomGuid;
 
+    //call old messages
     this.getOldMessageFromDB(this.roomGuid);
 
     //Keyboard
@@ -276,6 +271,11 @@ class PermanentChatRoomScreen extends React.Component {
       userGuid: this.userGuid,
       user_firstName: this.user_firstName
     });
+
+    //scroll to end at the beginning
+    setTimeout(() => {
+      this.scrollView.scrollToEnd({ animated: false });
+    }, 50);
 
     this.setState({
       isSuccess: true
@@ -333,6 +333,18 @@ class PermanentChatRoomScreen extends React.Component {
     return strTime;
   };
 
+  oldMessagetimeStamp = time => {
+    let date = new Date(time);
+    var hours = date.getHours();
+    var minutes = date.getMinutes();
+    var ampm = hours >= 12 ? "pm" : "am";
+    hours = hours % 12;
+    hours = hours ? hours : 12; // the hour '0' should be '12'
+    minutes = minutes < 10 ? "0" + minutes : minutes;
+    var strTime = hours + ":" + minutes + " " + ampm;
+    return strTime;
+  };
+
   //add a new message into the allMessageArray
   addChatMessage = (type, message, username) => {
     let allMessages = this.state.allMessages;
@@ -349,14 +361,17 @@ class PermanentChatRoomScreen extends React.Component {
 
   //user send a message
   submitMessage = () => {
-    let str = `${this.state.currentMessage}`;
+    let str = this.state.currentMessage;
+    if (this.state.currentMessage === "") {
+      return;
+    }
     this.addChatMessage(1, str, this.user_firstName);
     this.socket.emit("new message", {
       userGuid: this.userGuid,
       userName: this.user_firstName,
-      matchedUserGuid: this.state.matchedUserGuid,
+      matchedUserGuid: this.state.matchUserGuid,
       message: this.state.currentMessage,
-      roomGuid: this.roomGuid
+      roomGuid: this.matchRoomGuid
     });
     this.setState({
       currentMessage: ""
@@ -384,7 +399,7 @@ class PermanentChatRoomScreen extends React.Component {
               <Image
                 source={{
                   //Change this to selfimage
-                  uri: this.state.matchedImage
+                  uri: this.state.matchImageUrl
                 }}
                 style={styles.selfMessageIcon}
               />
@@ -398,7 +413,7 @@ class PermanentChatRoomScreen extends React.Component {
             <View style={styles.textContainer}>
               <Image
                 source={{
-                  uri: this.state.matchedImage
+                  uri: this.state.matchImageUrl
                 }}
                 style={styles.matchMessageIcon}
               />
@@ -437,7 +452,7 @@ class PermanentChatRoomScreen extends React.Component {
       }
     );
 
-    let displayMatchedLikesArray = this.state.matchedLikesArray.map(
+    let displayMatchedLikesArray = this.state.matchLikesArray.map(
       (e, index = 0) => {
         return (
           <View key={index++}>
@@ -454,14 +469,14 @@ class PermanentChatRoomScreen extends React.Component {
         style={{ alignItems: "center" }}
         onPress={() => {
           this.setState({
-            matchedInfoToggle: !this.state.matchedInfoToggle
+            matchInfoToggle: !this.state.matchInfoToggle
           });
         }}
       >
         {
           <Icon
             type="font-awesome"
-            name={this.state.matchedInfoToggle ? "caret-down" : "caret-up"}
+            name={this.state.matchInfoToggle ? "caret-down" : "caret-up"}
             size={25}
             color="gray"
           />
@@ -469,12 +484,12 @@ class PermanentChatRoomScreen extends React.Component {
       </TouchableOpacity>
     );
 
-    let matchedInfo = this.state.matchedInfoToggle && (
+    let matchedInfo = this.state.matchInfoToggle && (
       <View>
         <View style={{ alignItems: "center" }}>
           <Text>
-            {this.state.matchedAge}, {this.state.matchedLocation}{" "}
-            {this.state.matchedState}
+            {this.state.matchAge}, {this.state.matchCity}{" "}
+            {this.state.matchState}
           </Text>
         </View>
 
@@ -500,14 +515,14 @@ class PermanentChatRoomScreen extends React.Component {
               <TouchableOpacity
                 onPress={() => {
                   this.props.navigation.navigate("Profile", {
-                    guid: this.state.matchedUserGuid,
+                    guid: this.state.matchUserGuid,
                     isDeviceUser: false
                   });
                 }}
               >
                 <Image
                   source={{
-                    uri: this.state.matchedUserImageUrl
+                    uri: this.state.matchImageUrl
                   }}
                   style={{
                     width: width * 0.2,
