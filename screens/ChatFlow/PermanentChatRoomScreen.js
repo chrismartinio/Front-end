@@ -350,6 +350,9 @@ class PermanentChatRoomScreen extends React.Component {
   //user send a message
   submitMessage = () => {
     let str = `${this.state.currentMessage}`;
+    if (this.state.currentMessage === "") {
+      return;
+    }
     this.addChatMessage(1, str, this.user_firstName);
     this.socket.emit("new message", {
       userGuid: this.userGuid,
@@ -384,7 +387,7 @@ class PermanentChatRoomScreen extends React.Component {
               <Image
                 source={{
                   //Change this to selfimage
-                  uri: this.state.matchedImage
+                  uri: this.state.matchedUserImageUrl
                 }}
                 style={styles.selfMessageIcon}
               />
@@ -398,7 +401,7 @@ class PermanentChatRoomScreen extends React.Component {
             <View style={styles.textContainer}>
               <Image
                 source={{
-                  uri: this.state.matchedImage
+                  uri: this.state.matchedUserImageUrl
                 }}
                 style={styles.matchMessageIcon}
               />

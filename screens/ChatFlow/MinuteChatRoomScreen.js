@@ -40,7 +40,7 @@ import { Icon } from "react-native-elements";
 //At Homescreen, fetch user self image and send to redux
 //because if user go striaght to match, we cannot get their image
 
-//At Homescreen, fetch config 
+//At Homescreen, fetch config
 
 class MinuteChatRoomScreen extends React.Component {
   static navigationOptions = ({ navigation }) => {
@@ -335,6 +335,9 @@ class MinuteChatRoomScreen extends React.Component {
   //user send a message
   submitMessage = () => {
     let str = `${this.state.currentMessage}`;
+    if (this.state.currentMessage === "") {
+      return;
+    }
     this.addChatMessage(1, str, this.user_firstName);
     this.socket.emit("new message", {
       userGuid: this.userGuid,
