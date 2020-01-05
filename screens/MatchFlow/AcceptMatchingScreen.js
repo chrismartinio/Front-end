@@ -124,24 +124,16 @@ class AcceptMatchingScreen extends React.Component {
       "PermanentChatRoom",
       this.props.navigation.state.params
     );
-    /*
-    this.props.navigation.navigate("PermanentChatRoom", {
-      matchedUserGuid: matchUserGuid,
-      matchedFirstName: matchFirstName,
-      likesArray: matchLikesArray,
-      matchedUserAge: matchAge,
-      matchedUserCity: matchLocation,
-      matchedState: matchState,
-      imageUrl: matchImageUrl,
-      roomGuid: matchRoomGuid
-    });
-    */
   };
 
   successScreen = () => {
     return (
       <View style={styles.container}>
-        <View style={{ padding: `${0.026 * width}%` }} />
+        <View
+          style={{
+            padding: width >= 375 ? `${0.026 * width}%` : `${0.013 * width}%`
+          }}
+        />
         <Image
           blurRadius={10}
           source={{
@@ -158,13 +150,13 @@ class AcceptMatchingScreen extends React.Component {
         <View style={{ padding: `${0.013 * width}%` }} />
 
         <View style={{ alignItems: "center" }}>
-          <Text style={{ fontSize: 24, fontWeight: "bold", color: "white" }}>
+          <Text style={{ fontSize: 0.064 * width, fontWeight: "bold", color: "white" }}>
             Congrats!
           </Text>
-          <Text style={{ color: "white", fontSize: 20 }}>
+          <Text style={{ color: "white", fontSize: 0.053 * width }}>
             {`You and ${this.state.matchFirstName} must like each other.`}
           </Text>
-          <Text style={{ color: "white", fontSize: 20 }}>
+          <Text style={{ color: "white", fontSize: 0.053 * width }}>
             You had a 90 second convo!
           </Text>
         </View>

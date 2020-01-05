@@ -39,6 +39,14 @@ import { Icon } from "react-native-elements";
 
 import { StackActions, NavigationActions } from "react-navigation";
 
+//Flow of get to this screen
+//#1
+//LoginScreen.js -> HomeScreen.js -> ConversationsScreen.js -> PermanentChatRoomScreen.js
+
+//#2
+//LoginScreen.js -> HomeScreen.js -> MatchingScreen.js -> FoundaMatchScreen.js ->
+//MinuteChatRoomScreen.js -> AcceptMatchingScreen.js -> PermanentChatRoomScreen.js
+
 class PermanentChatRoomScreen extends React.Component {
   static navigationOptions = ({ navigation }) => {
     return {

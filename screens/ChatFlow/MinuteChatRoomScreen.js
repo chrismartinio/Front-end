@@ -37,10 +37,10 @@ import { testobj } from "../../data/testObj";
 
 import { Icon } from "react-native-elements";
 
-//At Homescreen, fetch user self image and send to redux
-//because if user go striaght to match, we cannot get their image
-
-//At Homescreen, fetch config
+//Flow of get to this screen
+//#1
+//LoginScreen.js -> HomeScreen.js -> MatchingScreen.js -> FoundaMatchScreen.js ->
+//MinuteChatRoomScreen.js
 
 class MinuteChatRoomScreen extends React.Component {
   static navigationOptions = ({ navigation }) => {
@@ -218,12 +218,12 @@ class MinuteChatRoomScreen extends React.Component {
     //Testing USE
     //this.interval = setInterval(this.countDown, 1000);
 
-    /*
+    ///*
     this.props.navigation.navigate(
       "AcceptMatching",
       this.props.navigation.state.params
     );
-    */
+    //*/
 
     //Testing Use
 
