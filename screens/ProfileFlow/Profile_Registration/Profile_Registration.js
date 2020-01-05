@@ -120,6 +120,7 @@ class Profile_Registration extends Component {
 
     if (isThirdParty) {
       checklist.createAccount = true;
+      checklist.imageProcessing = false;
     }
 
     return {

@@ -93,10 +93,12 @@ class LoginScreen extends React.Component {
   //Profile Services uses
   async componentDidMount() {
     //Reset Everything at Start
-    this.props.SetJwtAction(null);
+    //this.props.SetJwtAction(null);
+    /*
     this.props.ResetReduxDataAction({
       reset: true
     });
+    */
 
     ///////////////////////////////
     //LOCALSTORAGE SECTION (SQLITE)
@@ -245,7 +247,7 @@ class LoginScreen extends React.Component {
         )}`
       );
 
-      console.log(`Result from ${provider}`, result);
+      //console.log(`Result from ${provider}`, result);
 
       if ((result.type = "success")) {
         let redirectionData = result.url ? Linking.parse(result.url) : null;
@@ -273,12 +275,17 @@ class LoginScreen extends React.Component {
           zipCode: ""
         });
 
+        //store guid to redux
+        this.props.SetGUIDAction({
+          guid: guid
+        });
+
         let isContinueUser = false;
         let isContinueUserForImage = false;
         //Any false inside the object values
         //means the user has not finished one of the screen
         //and mark them as continue user
-        console.log(checklist);
+        //console.log(checklist);
         Object.entries(checklist).forEach(e => {
           let key = e[0],
             value = e[1];
@@ -295,11 +302,6 @@ class LoginScreen extends React.Component {
           }
         });
 
-        //store guid to redux
-        this.props.SetGUIDAction({
-          guid: guid
-        });
-
         //if the user is a continue user, send the user back to registration
         if (isContinueUser) {
           return this.props.navigation.navigate("Registration");
@@ -311,9 +313,9 @@ class LoginScreen extends React.Component {
           return this.props.navigation.navigate("Selfie", { isEdit: false });
         }
 
-        this.props.navigation.navigate("Main");
-
         this.setState({ redirectionData });
+
+        this.props.navigation.navigate("Main");
       } else throw new Error("Redirection failed");
     } catch (e) {
       alert(`${provider} login failed`);
