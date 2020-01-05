@@ -289,6 +289,26 @@ class CreateAccount extends Component {
       });
   };
 
+  setupThirdPartyServices = () => {
+    //setState
+    this.setState({
+      email: "third party services",
+      confirmEmail: "third party services",
+      password: "Password",
+      confirmPassword: "Password",
+      emailWarning: "",
+      confirmEmailWarning: "",
+      passwordWarning: "",
+      confirmPasswordWarning: "",
+      password_UpperLowerCaseWarning: false,
+      password_NumberSymbolWarning: false,
+      password_LengthWarning: false,
+      isSuccess: true,
+      editable: false,
+      passed: true
+    });
+  };
+
   async componentDidMount() {
     if (Constants.isDevice) {
       registerForPushNotificationsAsync();
@@ -328,7 +348,13 @@ class CreateAccount extends Component {
       this.props.CreateProfileDataReducer.isContinueUser
     ) {
       if (!this.isContinueUserFetched) {
-        this.getDataFromDB();
+        if (this.props.CreateProfileDataReducer.isThirdPartiesServiceUser) {
+          console.log("3rd")
+          this.setupThirdPartyServices();
+        } else {
+          console.log("continue")
+          this.getDataFromDB();
+        }
         this.isContinueUserFetched = true;
       }
     }
@@ -453,7 +479,7 @@ class CreateAccount extends Component {
     //is to input all the fields,
     if (this.state.passed) {
       let checklist = this.props.CreateProfileDataReducer.checklist;
-      console.log(checklist)
+      console.log(checklist);
       checklist.createAccount = true;
 
       //When user submit email/password

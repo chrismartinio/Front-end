@@ -254,7 +254,9 @@ class LocationDestinations extends Component {
               collection: "localDestination",
               data: {
                 localDestination: this.state.localDestination,
-                checklist: checklist
+                checklist: checklist,
+                isThirdPartiesServiceUser: this.props.CreateProfileDataReducer
+                  .isThirdPartiesServiceUser
               }
             })
           })

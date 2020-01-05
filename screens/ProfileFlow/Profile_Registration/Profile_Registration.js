@@ -113,10 +113,14 @@ class Profile_Registration extends Component {
 
     //Decode JWT
     var decoded = jwtDecode(jwt);
-    console.log(decoded);
+    //console.log(decoded);
     let { guid, isThirdParty, checklist } = decoded;
 
     let isThirdPartiesServiceUser = isThirdParty;
+
+    if (isThirdParty) {
+      checklist.createAccount = true;
+    }
 
     return {
       guid: guid,

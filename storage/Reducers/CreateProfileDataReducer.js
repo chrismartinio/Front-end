@@ -1,27 +1,26 @@
-const CreateProfileDataReducer = (
-  state = {
-    isContinueUser: false,
-    isThirdPartiesServiceUser: false,
-    checklist: {
-      createAccount: false,
-      aboutYou: false,
-      preferences: false,
-      interests: false,
-      wouldYouRather: false,
-      localDestination: false,
-      imageProcessing: false
-    },
-    guid: null,
-    createAccountData: null,
-    aboutYouData: null,
-    preferencesData: null,
-    interestsData: null,
-    wouldYouRatherData: null,
-    localDestinationData: null,
-    headPhotoImageUrl: null
+let initialState = {
+  isContinueUser: false,
+  isThirdPartiesServiceUser: false,
+  checklist: {
+    createAccount: false,
+    aboutYou: false,
+    preferences: false,
+    interests: false,
+    wouldYouRather: false,
+    localDestination: false,
+    imageProcessing: false
   },
-  action
-) => {
+  guid: null,
+  createAccountData: null,
+  aboutYouData: null,
+  preferencesData: null,
+  interestsData: null,
+  wouldYouRatherData: null,
+  localDestinationData: null,
+  headPhotoImageUrl: null
+};
+
+const CreateProfileDataReducer = (state = initialState, action) => {
   switch (action.type) {
     case "SET_IS_CONTINUE_USER":
       return {
@@ -51,18 +50,7 @@ const CreateProfileDataReducer = (
     case "SET_HEAD_PHOTO_IMAGE_URL":
       return { ...state, headPhotoImageUrl: action.PAYLOAD.imageUrl };
     case "RESET_REDUX_DATA":
-      return {
-        ...state,
-        guid: null,
-        checklist: [true, false, false, false, false, false],
-        isContinueUser: false,
-        createAccountData: null,
-        aboutYouData: null,
-        preferencesData: null,
-        interestsData: null,
-        wouldYouRatherData: null,
-        localDestinationData: null
-      };
+      return initialState;
     case "SET_USER_ALL_DATA":
       return {
         ...state,

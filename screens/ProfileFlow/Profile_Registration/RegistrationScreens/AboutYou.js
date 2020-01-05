@@ -33,13 +33,13 @@ import { Chevron } from "react-native-shapes";
 import FailScreen from "../../Profile_SharedComponents/FailScreen";
 import NextButton from "../../Profile_SharedComponents/NextButton";
 
-import { Appearance } from 'react-native-appearance';
+import { Appearance } from "react-native-appearance";
 const colorScheme = Appearance.getColorScheme();
 let bgColor;
-if(colorScheme === 'dark'){
-  bgColor = '#000';
-}else{
-  bgColor = '#fff';
+if (colorScheme === "dark") {
+  bgColor = "#000";
+} else {
+  bgColor = "#fff";
 }
 
 //SQLite
@@ -101,17 +101,10 @@ class AboutYou extends Component {
 
   //QUERY DATA FROM DB
   getDataFromDB = async () => {
-    //If the user is not a third party user
-    if (!this.props.CreateProfileDataReducer.isThirdPartiesServiceUser) {
-      //continue user
-      //aboutYou = false
-      //that means they havent finish the screen
-      //retur and give them a blinkScreen
-      if (!this.props.CreateProfileDataReducer.checklist.aboutYou) {
-        return;
-      }
+    if (!this.props.CreateProfileDataReducer.checklist.aboutYou) {
+      return;
     }
-
+    //pass in isThirdParty
     await fetch(`http://${localhost}:4000/api/profile/query`, {
       method: "POST",
       headers: {
@@ -455,7 +448,7 @@ class AboutYou extends Component {
     ) {
       //Set the screen's checklist index to true
       let checklist = this.props.CreateProfileDataReducer.checklist;
-      console.log(checklist)
+      console.log(checklist);
       checklist.aboutYou = true;
 
       this.setState(
@@ -479,7 +472,9 @@ class AboutYou extends Component {
                 country: this.state.country,
                 zipCode: this.state.zipCode,
                 userBio: this.state.userBio,
-                checklist: checklist
+                checklist: checklist,
+                isThirdPartiesServiceUser: this.props.CreateProfileDataReducer
+                  .isThirdPartiesServiceUser
               }
             })
           })
