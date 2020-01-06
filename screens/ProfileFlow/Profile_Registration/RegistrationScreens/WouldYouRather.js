@@ -242,7 +242,9 @@ class WouldYouRather extends Component {
                 s2r2: this.s2r2,
                 s3r1: this.s3r1,
                 s3r2: this.s3r2,
-                checklist: checklist
+                checklist: checklist,
+                isThirdPartiesServiceUser: this.props.CreateProfileDataReducer
+                  .isThirdPartiesServiceUser
               }
             })
           })

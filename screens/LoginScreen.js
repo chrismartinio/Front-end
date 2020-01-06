@@ -19,10 +19,11 @@ const { height, width } = Dimensions.get("window");
 import { connect } from "react-redux";
 import SetFbDataAction from "../storage/actions/DataReducerActions/SetFbDataAction";
 import SetJwtAction from "../storage/actions/DataReducerActions/SetJwtAction";
-import SetGUIDAction from "..//storage/actions/RegistrationActions/SetGUIDAction";
+import SetGUIDAction from "../storage/actions/RegistrationActions/SetGUIDAction";
 import SetAboutYouDataAction from "../storage/actions/RegistrationActions/SetAboutYouDataAction";
 import SetIsContinueUserAction from "../storage/actions/RegistrationActions/SetIsContinueUserAction";
 import SetChecklistAction from "../storage/actions/RegistrationActions/SetChecklistAction";
+import ResetReduxDataAction from "../storage/actions/RegistrationActions/ResetReduxDataAction";
 
 //import publicIP from "react-native-public-ip";
 import * as WebBrowser from "expo-web-browser";
@@ -91,32 +92,18 @@ class LoginScreen extends React.Component {
 
   //Profile Services uses
   async componentDidMount() {
-    //Set to all false so if there is a way user can come back to login
-    //and go to registration as new user
-    //the checklist would be all false
-    //but inside profile_registration, there is some code to set the checklist to false
-    //this is just for in case
-    this.props.SetIsContinueUserAction({
-      isContinueUser: false,
-      checklist: {
-        createAccount: false,
-        aboutYou: false,
-        preferences: false,
-        interests: false,
-        wouldYouRather: false,
-        localDestination: false,
-        imageProcessing: false
-      }
+    //Reset Everything at Start
+    //this.props.SetJwtAction(null);
+    /*
+    this.props.ResetReduxDataAction({
+      reset: true
     });
-
-    console.log("Inside HomeScreen.js creating table");
-    //console.log(Platform.OS === "android");
-    //console.log(Platform.OS === "ios");
-    //create tables for device's user
+    */
 
     ///////////////////////////////
     //LOCALSTORAGE SECTION (SQLITE)
     ///////////////////////////////
+    console.log("LOGINSCREEN - CREATING TABLES");
 
     //DROP ALL TABLES
     //NOTICE: If you want to add a new column, you would have following:
@@ -180,7 +167,6 @@ class LoginScreen extends React.Component {
       .then(async res => {
         if (!res.jwt) throw new Error("Jwt is missing");
         var decoded = jwtDecode(res.jwt);
-        console.log(decoded);
 
         let { guid, firstName, checklist } = decoded;
 
@@ -202,7 +188,6 @@ class LoginScreen extends React.Component {
         //Any false inside the object values
         //means the user has not finished one of the screen
         //and mark them as continue user
-        console.log(checklist);
         Object.entries(checklist).forEach(e => {
           let key = e[0],
             value = e[1];
@@ -247,6 +232,10 @@ class LoginScreen extends React.Component {
   };
 
   handleSignUp = () => {
+    this.props.SetJwtAction(null);
+    this.props.ResetReduxDataAction({
+      reset: true
+    });
     this.props.navigation.navigate("Registration");
   };
 
@@ -258,24 +247,27 @@ class LoginScreen extends React.Component {
         )}`
       );
 
-      console.log(`Result from ${provider}`, result);
+      //console.log(`Result from ${provider}`, result);
 
       if ((result.type = "success")) {
         let redirectionData = result.url ? Linking.parse(result.url) : null;
 
-        console.log(redirectionData);
+        //console.log(redirectionData);
 
         if (!redirectionData || !redirectionData.queryParams.jwt)
           throw new Error("Url is invalid, might not contain jwt");
 
         const decodedToken = jwtDecode(redirectionData.queryParams.jwt);
-        console.log("User token", decodedToken);
-        this.props.SetGUIDAction({
-          guid: decodedToken.guid
-        });
+        //console.log("User token", decodedToken);
 
+        let { guid, firstName, checklist } = decodedToken;
+
+        //store jwt to redux
+        this.props.SetJwtAction(redirectionData.queryParams.jwt);
+
+        //store firstName to redux
         this.props.SetAboutYouDataAction({
-          firstName: decodedToken.firstName,
+          firstName: firstName,
           lastName: "",
           birthDate: "",
           gender: "",
@@ -283,9 +275,47 @@ class LoginScreen extends React.Component {
           zipCode: ""
         });
 
-        this.props.navigation.navigate("Main");
+        //store guid to redux
+        this.props.SetGUIDAction({
+          guid: guid
+        });
+
+        let isContinueUser = false;
+        let isContinueUserForImage = false;
+        //Any false inside the object values
+        //means the user has not finished one of the screen
+        //and mark them as continue user
+        //console.log(checklist);
+        Object.entries(checklist).forEach(e => {
+          let key = e[0],
+            value = e[1];
+          if (key !== "imageProcessing") {
+            //Registration Screen
+            if (!value) {
+              isContinueUser = true;
+            }
+          } else {
+            //Selfie Screen
+            if (!value) {
+              isContinueUserForImage = true;
+            }
+          }
+        });
+
+        //if the user is a continue user, send the user back to registration
+        if (isContinueUser) {
+          return this.props.navigation.navigate("Registration");
+        }
+
+        //if the user is a continue user and have not finish the image,
+        //send them to registration selfie screen
+        if (isContinueUserForImage) {
+          return this.props.navigation.navigate("Selfie", { isEdit: false });
+        }
 
         this.setState({ redirectionData });
+
+        this.props.navigation.navigate("Main");
       } else throw new Error("Redirection failed");
     } catch (e) {
       alert(`${provider} login failed`);
@@ -570,7 +600,8 @@ const mapDispatchToProps = dispatch => ({
   SetJwtAction: payload => dispatch(SetJwtAction(payload)),
   SetIsContinueUserAction: payload =>
     dispatch(SetIsContinueUserAction(payload)),
-  SetChecklistAction: payload => dispatch(SetChecklistAction(payload))
+  SetChecklistAction: payload => dispatch(SetChecklistAction(payload)),
+  ResetReduxDataAction: payload => dispatch(ResetReduxDataAction(payload))
 });
 
 export default connect(

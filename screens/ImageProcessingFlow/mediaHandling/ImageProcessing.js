@@ -78,7 +78,7 @@ exports.sendImages = async (images, platform, body) => {
     .then(res => {
       console.log("Upload success!");
       if (!res.success) {
-        throw new Error("Duplicate Email");
+        throw new Error("Fail");
       }
       return true;
     })

@@ -361,7 +361,9 @@ class Preferences extends Component {
                 ageRange: this.state.ageRange,
                 distanceRange: this.state.distanceRange,
                 interestedGender: interestedGender,
-                checklist: checklist
+                checklist: checklist,
+                isThirdPartiesServiceUser: this.props.CreateProfileDataReducer
+                  .isThirdPartiesServiceUser
               }
             })
           })

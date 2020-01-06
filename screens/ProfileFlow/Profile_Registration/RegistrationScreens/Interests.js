@@ -231,7 +231,9 @@ class Interests extends Component {
               collection: "interests",
               data: {
                 likesArray: this.state.likesArray,
-                checklist: checklist
+                checklist: checklist,
+                isThirdPartiesServiceUser: this.props.CreateProfileDataReducer
+                  .isThirdPartiesServiceUser
               }
             })
           })
