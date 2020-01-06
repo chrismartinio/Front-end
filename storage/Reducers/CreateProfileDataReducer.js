@@ -17,7 +17,7 @@ let initialState = {
   interestsData: null,
   wouldYouRatherData: null,
   localDestinationData: null,
-  headPhotoImageUrl: null
+  deviceUserImageUrl: null
 };
 
 const CreateProfileDataReducer = (state = initialState, action) => {
@@ -47,8 +47,8 @@ const CreateProfileDataReducer = (state = initialState, action) => {
       return { ...state, wouldYouRatherData: action.PAYLOAD };
     case "ADD_LOCALDESTINATION_DATA":
       return { ...state, localDestinationData: action.PAYLOAD };
-    case "SET_HEAD_PHOTO_IMAGE_URL":
-      return { ...state, headPhotoImageUrl: action.PAYLOAD.imageUrl };
+    case "SET_DEVICE_USER_IMAGE_URL":
+      return { ...state, deviceUserImageUrl: action.PAYLOAD.url };
     case "RESET_REDUX_DATA":
       return initialState;
     case "SET_USER_ALL_DATA":

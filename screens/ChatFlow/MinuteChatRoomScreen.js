@@ -217,14 +217,12 @@ class MinuteChatRoomScreen extends React.Component {
   async componentDidMount() {
     //Testing USE
     //this.interval = setInterval(this.countDown, 1000);
-
-    ///*
+    /*
     this.props.navigation.navigate(
       "AcceptMatching",
       this.props.navigation.state.params
     );
-    //*/
-
+    */
     //Testing Use
 
     //KeyBoard
@@ -251,6 +249,8 @@ class MinuteChatRoomScreen extends React.Component {
     this.userGuid = await this.props.CreateProfileDataReducer.guid;
     this.user_firstName = await this.props.CreateProfileDataReducer.aboutYouData
       .firstName;
+    this.user_imageUrl = await this.props.CreateProfileDataReducer
+      .deviceUserImageUrl;
 
     //Setup RoomGuid
     this.roomGuid = this.props.navigation.state.params.matchRoomGuid;
@@ -416,10 +416,9 @@ class MinuteChatRoomScreen extends React.Component {
                 </View>
               </View>
               <Image
-                blurRadius={10}
                 source={{
                   //Change this to selfimage
-                  uri: this.state.matchImageUrl
+                  uri: this.user_imageUrl
                 }}
                 style={styles.selfMessageIcon}
               />

@@ -135,7 +135,7 @@ class AcceptMatchingScreen extends React.Component {
           }}
         />
         <Image
-          blurRadius={10}
+          blurRadius={20}
           source={{
             uri: this.state.matchImageUrl
           }}

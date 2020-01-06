@@ -1,7 +1,7 @@
-const setProfilePicturesAction = uri => dispatch => {
+const setProfilePicturesAction = url => dispatch => {
   dispatch({
-    type: "ADD_PROFILE_PICTURE",
-    PAYLOAD: uri
+    type: "SET_DEVICE_USER_IMAGE_URL",
+    PAYLOAD: url
   });
 };
 

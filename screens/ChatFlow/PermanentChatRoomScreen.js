@@ -249,6 +249,8 @@ class PermanentChatRoomScreen extends React.Component {
     this.userGuid = await this.props.CreateProfileDataReducer.guid;
     this.user_firstName = await this.props.CreateProfileDataReducer.aboutYouData
       .firstName;
+    this.user_imageUrl = await this.props.CreateProfileDataReducer
+      .deviceUserImageUrl;
 
     //Setup RoomGuid
     this.roomGuid = this.props.navigation.state.params.matchRoomGuid;
@@ -407,7 +409,7 @@ class PermanentChatRoomScreen extends React.Component {
               <Image
                 source={{
                   //Change this to selfimage
-                  uri: this.state.matchImageUrl
+                  uri: this.user_imageUrl
                 }}
                 style={styles.selfMessageIcon}
               />

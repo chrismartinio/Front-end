@@ -19,7 +19,7 @@ const { height, width } = Dimensions.get("window");
 import { connect } from "react-redux";
 import SetFbDataAction from "../storage/actions/DataReducerActions/SetFbDataAction";
 import SetJwtAction from "../storage/actions/DataReducerActions/SetJwtAction";
-import SetGUIDAction from "..//storage/actions/RegistrationActions/SetGUIDAction";
+import SetGUIDAction from "../storage/actions/RegistrationActions/SetGUIDAction";
 import SetAboutYouDataAction from "../storage/actions/RegistrationActions/SetAboutYouDataAction";
 import SetIsContinueUserAction from "../storage/actions/RegistrationActions/SetIsContinueUserAction";
 import SetChecklistAction from "../storage/actions/RegistrationActions/SetChecklistAction";
