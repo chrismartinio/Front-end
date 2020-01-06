@@ -35,43 +35,41 @@ class ConversationsScreen extends React.Component {
     super(props);
     this.state = {
       appState: AppState.currentState,
-      matchedUsersList: testobj,
+      matchedUsersList: [],
       isSuccess: false
     };
-
-    //this.socket = io("http://74.80.250.210:3060");
     this.scrollY;
   }
 
-  async componentDidMount() {
-    AppState.addEventListener("change", this._handleAppStateChange);
-    this.guid = await this.props.CreateProfileDataReducer.guid;
-
-    this.user_firstName = await this.props.CreateProfileDataReducer.aboutYouData
-      .firstName;
-
-    console.log("HomeScreen");
-    console.log("USER GUID: ", this.guid);
-    console.log("USER firstName: ", this.user_firstName);
-
-    /*
-    await fetch(`http://${localhost}:3003/api/chat/`, {
+  getMatchedUsersStatusFromDB = async guid => {
+    fetch(`http://${localhost}:3060/api/chat/chatRooms`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        data: { guid: this.guid, user_firstName: this.user_firstName }
+        userGuid: guid
       })
     })
+      .then(res => res.json())
       .then(res => {
-        return res.json();
+        this.setState({ matchedUsersList: res });
       })
-      .then(res => {
-        //here's what I will get the chatobject
-        console.log(res.roomID[0].key); //1231231231.1231231232131
+      .catch(err => {
+        console.log(err);
       });
-*/
+  };
+
+  async componentDidMount() {
+    this.guid = await this.props.CreateProfileDataReducer.guid;
+
+    this.user_firstName = await this.props.CreateProfileDataReducer.aboutYouData
+      .firstName;
+
+    await this.getMatchedUsersStatusFromDB(this.guid);
+
+    AppState.addEventListener("change", this._handleAppStateChange);
+
     this.setState({
       isSuccess: true
     });
@@ -130,16 +128,18 @@ class ConversationsScreen extends React.Component {
             borderWidth: 1,
             padding: 20,
             margin: 5,
-            backgroundColor: "#fff"
+            backgroundColor: "#fff",
+            alignItems: "center",
+            borderRadius: 20
           }}
           onPress={() => {
             this.props.navigation.navigate("Profile", {
-              guid: e.matchedGuid,
+              guid: e.matchedUserGuid,
               isDeviceUser: false
             });
           }}
         >
-          <Text>{e.matchedFirstName}</Text>
+          <Text>{e.matchedUserName}</Text>
         </TouchableOpacity>
       );
     });

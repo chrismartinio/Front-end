@@ -21,27 +21,24 @@ class LoadingScreen extends React.Component {
     return (
       <View
         style={{
-          flex: 1
+          flex: 1,
+          backgroundColor: "#4d88ff",
+          justifyContent: "center"
         }}
       >
-        <ImageBackground
-          source={require("../assets/Assets_V1/Butterfly_Background/butterflyBackground.png")}
-          style={styles.backgroundImage}
-        >
-          {/*Loading Text*/}
-          <ActivityIndicator size="large" color="black" />
-          <View style={{ alignItems: "center" }}>
-            <Text>Loading...</Text>
-            <Text />
-            <Button
-              title={"back to login"}
-              color={"black"}
-              onPress={() => {
-                this.props.navigation.navigate("Login");
-              }}
-            />
-          </View>
-        </ImageBackground>
+        {/*Loading Text*/}
+        <ActivityIndicator size="large" color="white" />
+        <View style={{ alignItems: "center" }}>
+          <Text style={{ color: "white" }}>Loading...</Text>
+          <Text />
+          <Button
+            title={"back to login"}
+            color={"white"}
+            onPress={() => {
+              this.props.navigation.navigate("Login");
+            }}
+          />
+        </View>
       </View>
     );
   }

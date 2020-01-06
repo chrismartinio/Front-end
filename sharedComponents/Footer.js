@@ -52,6 +52,16 @@ class Footer extends React.Component {
       ]
     });
 
+    const resetConnectionsAction = StackActions.reset({
+      index: 1,
+      actions: [
+        NavigationActions.navigate({ routeName: "Home" }),
+        NavigationActions.navigate({
+          routeName: "Connections"
+        })
+      ]
+    });
+
     const resetMatchingAction = StackActions.reset({
       index: 1,
       actions: [
@@ -112,7 +122,9 @@ class Footer extends React.Component {
             <Text style={styles.footerText}>Notifications</Text>
           </TouchableOpacity>
           <TouchableOpacity
-            onPress={() => this.props.navigation.navigate("Connections")}
+            onPress={() =>
+              this.props.navigation.dispatch(resetConnectionsAction)
+            }
           >
             <Icon name="people" size={width * 0.06} color="#46278c" />
             <Text style={styles.footerText}>Connections</Text>
