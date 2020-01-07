@@ -479,7 +479,7 @@ class CreateAccount extends Component {
     //is to input all the fields,
     if (this.state.passed) {
       let checklist = this.props.CreateProfileDataReducer.checklist;
-      console.log(checklist);
+      //console.log(checklist);
       checklist.createAccount = true;
 
       //When user submit email/password
