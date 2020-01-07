@@ -24,8 +24,6 @@ import AntIcon from "react-native-vector-icons/AntDesign";
 
 import LoadingScreen from "../sharedComponents/LoadingScreen";
 
-import SetProfilePictureAction from "../storage/actions/SetProfilePictureAction/";
-
 import { localhost } from "../config/ipconfig";
 
 import Footer from "../sharedComponents/Footer";
@@ -38,43 +36,16 @@ class HomeScreen extends React.Component {
     this.state = {
       appState: AppState.currentState,
       connections: 250,
-      online: 15,
+      online: 13,
       isSuccess: false
     };
   }
-
-  setProfileImage = async guid => {
-    fetch(`http://${localhost}:4000/api/profile/profile_query`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        guid: guid,
-        collection: "aboutYou"
-      })
-    })
-      .then(res => res.json())
-      .then(res => {
-        this.props.SetProfilePictureAction({
-          url: res.result.imageUrl
-        });
-      })
-      .catch(err => {
-        console.log(err);
-        this.props.SetProfilePictureAction({
-          url: ""
-        });
-      });
-  };
 
   async componentDidMount() {
     this.guid = await this.props.CreateProfileDataReducer.guid;
 
     this.user_firstName = await this.props.CreateProfileDataReducer.aboutYouData
       .firstName;
-
-    await this.setProfileImage(this.guid);
 
     AppState.addEventListener("change", this._handleAppStateChange);
     this.setState({
@@ -381,10 +352,7 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => {
-  return {
-    SetProfilePictureAction: payload =>
-      dispatch(SetProfilePictureAction(payload))
-  };
+  return {};
 };
 
 export default connect(
