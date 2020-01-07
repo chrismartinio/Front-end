@@ -36,7 +36,7 @@ class HomeScreen extends React.Component {
     this.state = {
       appState: AppState.currentState,
       connections: 250,
-      online: 13,
+      online: 15,
       isSuccess: false
     };
 
