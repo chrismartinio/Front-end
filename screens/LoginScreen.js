@@ -220,7 +220,7 @@ class LoginScreen extends React.Component {
           return this.props.navigation.navigate("Selfie", { isEdit: false });
         }
 
-        this.props.navigation.navigate("Main");
+        this.props.navigation.navigate("PreSettings");
       })
       .catch(err => {
         if (err.httpStatusCode === 401) {
@@ -315,7 +315,7 @@ class LoginScreen extends React.Component {
 
         this.setState({ redirectionData });
 
-        this.props.navigation.navigate("Main");
+        this.props.navigation.navigate("PreSettings");
       } else throw new Error("Redirection failed");
     } catch (e) {
       alert(`${provider} login failed`);
@@ -478,7 +478,7 @@ class LoginScreen extends React.Component {
                 zipCode: ""
               });
               //TESTING USE
-              this.props.navigation.navigate("Main");
+              this.props.navigation.navigate("PreSettings");
             }}
           />
         </View>

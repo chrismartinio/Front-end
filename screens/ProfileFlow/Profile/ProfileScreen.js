@@ -17,7 +17,7 @@ import LoadingScreen from "../../../sharedComponents/LoadingScreen";
 
 import NotificationsButton from "../../../screens/NotificationsFlow/NotificationsButton";
 
-import SetHeadPhotoImageURL from "../../../storage/actions/RegistrationActions/SetHeadPhotoImageURL";
+import SetDeviceUserImageUrlAction from "../../../storage/actions/ImageProcessingActions/SetDeviceUserImageUrlAction/";
 
 import Footer from "../../../sharedComponents/Footer";
 
@@ -271,8 +271,8 @@ class ProfileScreen extends React.Component {
             );
 
             //store image url to redux
-            this.props.SetHeadPhotoImageURL({
-              imageUrl: imageUrl
+            this.props.SetDeviceUserImageUrlAction({
+              url: imageUrl
             });
 
             if (!success) {
@@ -388,8 +388,8 @@ class ProfileScreen extends React.Component {
             let { imageUrl } = imageProcessingObject.result.rows._array[0];
 
             //store image url to redux
-            this.props.SetHeadPhotoImageURL({
-              imageUrl: imageUrl
+            this.props.SetDeviceUserImageUrlAction({
+              url: imageUrl
             });
 
             //setState
@@ -702,7 +702,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    SetHeadPhotoImageURL: payload => dispatch(SetHeadPhotoImageURL(payload))
+    SetDeviceUserImageUrlAction: payload =>
+      dispatch(SetDeviceUserImageUrlAction(payload))
   };
 };
 

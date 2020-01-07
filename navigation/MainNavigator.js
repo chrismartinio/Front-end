@@ -257,6 +257,21 @@ const MainStack = createStackNavigator(
           <CustomBackButton buttonColor={"#660066"} navigation={navigation} />
         )
       })
+    },
+    PreSettings: {
+      screen: PreSettingsScreen,
+      navigationOptions: () => ({
+        title: `Blindy`,
+        headerStyle: {
+          backgroundColor: "#fff",
+          borderBottomWidth: 0
+        },
+        headerTitleStyle: {
+          bottom: "3%",
+          color: "#660066"
+        },
+        gesturesEnabled: false
+      })
     }
   },
   {

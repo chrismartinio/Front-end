@@ -448,7 +448,7 @@ class AboutYou extends Component {
     ) {
       //Set the screen's checklist index to true
       let checklist = this.props.CreateProfileDataReducer.checklist;
-      console.log(checklist);
+      //console.log(checklist);
       checklist.aboutYou = true;
 
       this.setState(

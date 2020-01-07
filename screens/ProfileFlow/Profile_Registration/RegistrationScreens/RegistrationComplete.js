@@ -77,7 +77,7 @@ class RegistrationComplete extends Component {
         <View alignItems="center">
           <TouchableOpacity
             onPress={() => {
-              this.props.navigation.navigate("Main");
+              this.props.navigation.navigate("PreSettings");
             }}
           >
             <Text style={styles.button}>Start Matching!</Text>
