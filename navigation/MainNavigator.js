@@ -6,7 +6,8 @@ import {
 } from "react-navigation";
 
 //Setting Flow
-import SettingsScreen from "../screens/SettingsScreen";
+import SettingsScreen from "../screens/SettingsFlow/SettingsScreen";
+import PreSettingsScreen from "../screens/SettingsFlow/PreSettingsScreen";
 
 //Chat Flow
 import HomeScreen from "../screens/HomeScreen";
