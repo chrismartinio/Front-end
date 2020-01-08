@@ -93,12 +93,13 @@ class LoginScreen extends React.Component {
   //Profile Services uses
   async componentDidMount() {
     //Reset Everything at Start
-    //this.props.SetJwtAction(null);
-    /*
+    this.props.SetJwtAction(null);
     this.props.ResetReduxDataAction({
       reset: true
     });
-    */
+    console.log(this.props.CreateProfileDataReducer)
+    console.log(this.props.CreateThirdPartyDataReducer)
+    console.log(this.props.uploadMediaReducer)
 
     ///////////////////////////////
     //LOCALSTORAGE SECTION (SQLITE)
