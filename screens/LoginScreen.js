@@ -92,17 +92,12 @@ class LoginScreen extends React.Component {
 
   //Profile Services uses
   async componentDidMount() {
-    //Reset Everything at Start
-    //NO IDEAS WHY ADDING THIS WOULD MAKE GUID GONE IN IMAGEPROCESSING
-    /*
+    //Reset Redux at the beginning
+
     this.props.SetJwtAction(null);
     this.props.ResetReduxDataAction({
       reset: true
     });
-    console.log(this.props.CreateProfileDataReducer)
-    console.log(this.props.CreateThirdPartyDataReducer)
-    console.log(this.props.uploadMediaReducer)
-    */
 
     ///////////////////////////////
     //LOCALSTORAGE SECTION (SQLITE)
