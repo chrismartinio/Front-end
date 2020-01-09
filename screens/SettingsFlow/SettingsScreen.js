@@ -32,7 +32,8 @@ class SettingsScreen extends React.Component {
       passwordPanelVisible: false,
       oldPassword: "",
       newPassword: "",
-      confirmNewPassword: ""
+      confirmNewPassword: "",
+      passwordWarning: ""
     };
   }
 
@@ -51,10 +52,73 @@ class SettingsScreen extends React.Component {
   };
 
   changePassword = () => {
-    //old password
-    //new password
-    //confirm new password
-    console.log("change password")
+    if (
+      this.state.oldPassword === "" ||
+      this.state.newPassword === "" ||
+      this.state.confirmNewPassword === ""
+    ) {
+      return this.setState({ passwordWarning: "empty" });
+    }
+
+    if (this.state.newPassword !== this.state.confirmNewPassword) {
+      return this.setState({ passwordWarning: "confirmNotMatch" });
+    }
+
+    console.log("change password");
+    fetch(`http://${localhost}:4000/api/profile/update`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        guid: this.props.CreateProfileDataReducer.guid,
+        collection: "createAccount",
+        data: {
+          oldPassword: this.state.oldPassword,
+          newPassword: this.state.newPassword
+        }
+      })
+    })
+      .then(res => res.json())
+      .then(res => {
+        if (!res.success && res.status === 422) {
+          this.setState({
+            passwordWarning: "oldNotMatch"
+          });
+        }
+
+        if (!res.success && res.status === 500) {
+          throw new Error("Internal Error ");
+        }
+
+        if (res.success) {
+          this.setState({ passwordWarning: "success" });
+        }
+      })
+      .catch(err => {
+        this.setState({
+          passwordWarning: "error"
+        });
+      });
+  };
+
+  passwordWarningStatus = () => {
+    switch (this.state.passwordWarning) {
+      case "":
+        return "";
+      case "success":
+        return "Your password has changed";
+      case "empty":
+        return "Empty password";
+      case "oldNotMatch":
+        return "Invalid old Password";
+      case "confirmNotMatch":
+        return "Your confirm password is not match";
+      case "error":
+        return "Internal Error";
+      default:
+        return "";
+    }
   };
 
   toggleMenu = visible => {
@@ -78,6 +142,8 @@ class SettingsScreen extends React.Component {
   };
 
   render() {
+    let passwordWarning = <Text>{this.passwordWarningStatus()}</Text>;
+
     return (
       <View style={{ flex: 1, alignItems: "center" }}>
         {/*Sign up Blindly Account*/}
@@ -104,6 +170,7 @@ class SettingsScreen extends React.Component {
         >
           <Text style={{ color: "black" }}> Change my password </Text>
         </TouchableOpacity>
+        {passwordWarning}
 
         {/*Password Panel*/}
         {this.state.passwordPanelVisible && (
