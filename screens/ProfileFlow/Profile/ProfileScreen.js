@@ -520,7 +520,7 @@ class ProfileScreen extends React.Component {
             </View>
 
             <View style={{ margin: 20 }}>
-              <Text style={{ fontSize: 20, fontWeight: "500" }}>
+              <Text style={{ color: "#6a0dad", fontSize: 20, fontWeight: "500" }}>
                 {/**User Name */}
                 {this.state.firstName} {this.state.lastName}, {this.state.age}
               </Text>
@@ -547,7 +547,7 @@ class ProfileScreen extends React.Component {
                   <View style={{ padding: "1%" }} />
 
                   {/*Address*/}
-                  <Text style={{ fontSize: 15, fontWeight: "400" }}>
+                  <Text style={{ color: "#6a0dad", fontSize: 15, fontWeight: "400" }}>
                     {this.state.city}, {this.state.state}
                   </Text>
                 </View>
@@ -573,7 +573,7 @@ class ProfileScreen extends React.Component {
                 marginBottom: 3
               }}
             >
-              <Text style={{ fontSize: 17, fontWeight: "500" }}>Interests</Text>
+              <Text style={{ color: "#6a0dad", fontSize: 17, fontWeight: "500" }}>Interests</Text>
             </View>
             {/*Likes*/}
             <View>
@@ -602,7 +602,7 @@ class ProfileScreen extends React.Component {
                 marginBottom: 3
               }}
             >
-              <Text style={{ fontSize: 17, fontWeight: "500" }}>About Me</Text>
+              <Text style={{ color: "#6a0dad", fontSize: 17, fontWeight: "500" }}>About Me</Text>
             </View>
             {/*Bio*/}
             <View style={{ margin: 15 }}>
@@ -611,7 +611,8 @@ class ProfileScreen extends React.Component {
                   fontSize: 17,
                   fontWeight: "100",
                   textAlign: "left",
-                  lineHeight: 30
+                  lineHeight: 30,
+                  color: "#6a0dad", 
                 }}
               >
                 {this.state.userBio}
@@ -637,7 +638,7 @@ class ProfileScreen extends React.Component {
                 marginBottom: 3
               }}
             >
-              <Text style={{ fontSize: 17, fontWeight: "500" }}>Photo</Text>
+              <Text style={{ color: "#6a0dad", fontSize: 17, fontWeight: "500" }}>Photo</Text>
             </View>
             <View
               style={{
