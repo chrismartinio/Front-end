@@ -24,6 +24,7 @@ import SetAboutYouDataAction from "../storage/actions/RegistrationActions/SetAbo
 import SetIsContinueUserAction from "../storage/actions/RegistrationActions/SetIsContinueUserAction";
 import SetChecklistAction from "../storage/actions/RegistrationActions/SetChecklistAction";
 import ResetReduxDataAction from "../storage/actions/RegistrationActions/ResetReduxDataAction";
+import SetIsThirdPartyServicesUserAction from "../storage/actions/RegistrationActions/SetIsThirdPartyServicesUserAction";
 
 //import publicIP from "react-native-public-ip";
 import * as WebBrowser from "expo-web-browser";
@@ -92,13 +93,11 @@ class LoginScreen extends React.Component {
 
   //Profile Services uses
   async componentDidMount() {
-    //Reset Everything at Start
-    //this.props.SetJwtAction(null);
-    /*
+    //Reset Redux at the beginning
+    this.props.SetJwtAction(null);
     this.props.ResetReduxDataAction({
       reset: true
     });
-    */
 
     ///////////////////////////////
     //LOCALSTORAGE SECTION (SQLITE)
@@ -260,7 +259,12 @@ class LoginScreen extends React.Component {
         const decodedToken = jwtDecode(redirectionData.queryParams.jwt);
         //console.log("User token", decodedToken);
 
-        let { guid, firstName, checklist } = decodedToken;
+        let { guid, firstName, checklist, isThirdParty } = decodedToken;
+
+        //Set is Third Party Services Provider User
+        this.props.SetIsThirdPartyServicesUserAction({
+          isThirdPartiesServiceUser: isThirdParty
+        });
 
         //store jwt to redux
         this.props.SetJwtAction(redirectionData.queryParams.jwt);
@@ -601,7 +605,9 @@ const mapDispatchToProps = dispatch => ({
   SetIsContinueUserAction: payload =>
     dispatch(SetIsContinueUserAction(payload)),
   SetChecklistAction: payload => dispatch(SetChecklistAction(payload)),
-  ResetReduxDataAction: payload => dispatch(ResetReduxDataAction(payload))
+  ResetReduxDataAction: payload => dispatch(ResetReduxDataAction(payload)),
+  SetIsThirdPartyServicesUserAction: payload =>
+    dispatch(SetIsThirdPartyServicesUserAction(payload))
 });
 
 export default connect(

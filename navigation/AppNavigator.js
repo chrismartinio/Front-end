@@ -128,8 +128,8 @@ const TestStack = createStackNavigator(
   }
 );
 
-//SignUp Flow
-const SignUpStack = createStackNavigator({
+//Starts of the App
+const StartStack = createStackNavigator({
   Login: {
     screen: LoginScreen,
     navigationOptions: () => ({
@@ -176,6 +176,12 @@ Link Screen Flow
 In link screen, the buttons will send a string of guid and a boolean of isDeviceUser = false to Profile Screen
 SO Link Screen Flow simulate Device's user go to matched user Profile Screen which will display matched user Profile Screen
 
+Some bug fixed: there was a bug that loginscreen got called twice, that is because
+I put Login LoginScreen as initialRoute inside the createSwitchNavigator below
+it cause calling twice because startstack also contains loginscreen
+when calling screens inside the startstack, it would load the intiialscreen first then to your screen
+
+
 Edit Screen would only visible by isDeviceUser = true, and only use the redux guid
 
 */
@@ -184,13 +190,12 @@ export default createAppContainer(
     {
       // You could add another route here for authentication.
       // Read more at https://reactnavigation.org/docs/en/auth-flow.html
-      Login: LoginScreen, //Login
-      Main: MainNavigator, //Profile Home Settings
-      SignUp: SignUpStack, //Stacks for LoginScreen <-> SignUp
-      Test: TestStack //Stacks for LinksScreen <-> test screens
+      Start: StartStack,//Stacks for Auth and Profile
+      Main: MainNavigator, //Stacks for App main screens
+      Test: TestStack //Stacks for any test screens
     },
     {
-      initialRouteName: "Login"
+      initialRouteName: "Start"
     }
   )
 );
