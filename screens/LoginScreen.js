@@ -93,7 +93,6 @@ class LoginScreen extends React.Component {
   //Profile Services uses
   async componentDidMount() {
     //Reset Redux at the beginning
-
     this.props.SetJwtAction(null);
     this.props.ResetReduxDataAction({
       reset: true

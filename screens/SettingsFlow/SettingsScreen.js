@@ -8,7 +8,8 @@ import {
   Button,
   TouchableOpacity,
   Dimensions,
-  Modal
+  Modal,
+  Alert
 } from "react-native";
 
 //log out
@@ -32,8 +33,7 @@ class SettingsScreen extends React.Component {
       passwordPanelVisible: false,
       oldPassword: "",
       newPassword: "",
-      confirmNewPassword: "",
-      passwordWarning: ""
+      confirmNewPassword: ""
     };
   }
 
@@ -41,7 +41,39 @@ class SettingsScreen extends React.Component {
 
   deleteAccount = () => {
     console.log("delete Account");
-    //delete both blindly and 3rd
+    fetch(`http://${localhost}:4000/api/profile/delete`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        guid: this.props.CreateProfileDataReducer.guid
+      })
+    })
+      .then(res => res.json())
+      .then(res => {
+        if (res.success) {
+          Alert.alert(
+            "Success!",
+            "Your Account is deleted. Good Bye!",
+            [
+              {
+                text: "OK",
+                onPress: () => {
+                  this.props.navigation.navigate("Login");
+                }
+              }
+            ],
+            { cancelable: false }
+          );
+        } else {
+          throw new Error("Internal Error ");
+        }
+      })
+      .catch(err => {
+        alert("Ops! Some error occured. Please try again!");
+      });
+
     this.toggleMenu(false);
   };
 
@@ -57,11 +89,11 @@ class SettingsScreen extends React.Component {
       this.state.newPassword === "" ||
       this.state.confirmNewPassword === ""
     ) {
-      return this.setState({ passwordWarning: "empty" });
+      return alert("Please fill all the password fields!");
     }
 
     if (this.state.newPassword !== this.state.confirmNewPassword) {
-      return this.setState({ passwordWarning: "confirmNotMatch" });
+      return alert("Your password and confirm password are not match!");
     }
 
     console.log("change password");
@@ -82,9 +114,7 @@ class SettingsScreen extends React.Component {
       .then(res => res.json())
       .then(res => {
         if (!res.success && res.status === 422) {
-          this.setState({
-            passwordWarning: "oldNotMatch"
-          });
+          alert("Your old password is incorrect");
         }
 
         if (!res.success && res.status === 500) {
@@ -92,33 +122,29 @@ class SettingsScreen extends React.Component {
         }
 
         if (res.success) {
-          this.setState({ passwordWarning: "success" });
+          Alert.alert(
+            "Success!",
+            "Your password has changed.",
+            [
+              {
+                text: "OK",
+                onPress: () => {}
+              }
+            ],
+            { cancelable: false }
+          );
+          this.setState({
+            oldPassword: "",
+            newPassword: "",
+            confirmNewPassword: ""
+          });
+        } else {
+          throw new Error("Internal Error ");
         }
       })
       .catch(err => {
-        this.setState({
-          passwordWarning: "error"
-        });
+        alert("Ops! Some error occured. Please try again!");
       });
-  };
-
-  passwordWarningStatus = () => {
-    switch (this.state.passwordWarning) {
-      case "":
-        return "";
-      case "success":
-        return "Your password has changed";
-      case "empty":
-        return "Empty password";
-      case "oldNotMatch":
-        return "Invalid old Password";
-      case "confirmNotMatch":
-        return "Your confirm password is not match";
-      case "error":
-        return "Internal Error";
-      default:
-        return "";
-    }
   };
 
   toggleMenu = visible => {
@@ -142,8 +168,6 @@ class SettingsScreen extends React.Component {
   };
 
   render() {
-    let passwordWarning = <Text>{this.passwordWarningStatus()}</Text>;
-
     return (
       <View style={{ flex: 1, alignItems: "center" }}>
         {/*Sign up Blindly Account*/}
@@ -170,7 +194,6 @@ class SettingsScreen extends React.Component {
         >
           <Text style={{ color: "black" }}> Change my password </Text>
         </TouchableOpacity>
-        {passwordWarning}
 
         {/*Password Panel*/}
         {this.state.passwordPanelVisible && (
@@ -187,9 +210,24 @@ class SettingsScreen extends React.Component {
         <TouchableOpacity
           style={{ borderWidth: 1, borderRadius: 10, padding: 10, margin: 10 }}
           onPress={() => {
-            this.setState({
-              modalVisible: true
-            });
+            Alert.alert(
+              "Warning!",
+              "Are you sure you want to delete your account?",
+              [
+                {
+                  text: "Yes",
+                  onPress: () => {
+                    this.deleteAccount();
+                  }
+                },
+                {
+                  text: "No",
+                  onPress: () => {},
+                  style: "cancel"
+                }
+              ],
+              { cancelable: false }
+            );
           }}
         >
           <Text style={{ color: "black" }}> Delete Blindly Account </Text>
@@ -204,76 +242,6 @@ class SettingsScreen extends React.Component {
         >
           <Text style={{ color: "black" }}> Sign out </Text>
         </TouchableOpacity>
-
-        {/*Delete Account Prompt*/}
-        <Modal
-          animationType="slide"
-          transparent={true}
-          visible={this.state.modalVisible}
-        >
-          <View
-            style={{
-              position: "absolute",
-              height: width * 0.4,
-              width: width * 0.53,
-              top: "40%",
-              alignSelf: "center",
-              backgroundColor: "#3399ff",
-              borderRadius: 30
-            }}
-          >
-            <View>
-              <View style={{ padding: "10%" }} />
-              <View style={{ alignItems: "center" }}>
-                <Text style={{ color: "#fff", fontSize: width * 0.032 }}>
-                  Are you sure you want to delete your account?
-                </Text>
-
-                <View style={{ padding: "5%" }} />
-
-                <View
-                  style={{
-                    flexDirection: "row"
-                  }}
-                >
-                  <View
-                    style={{
-                      backgroundColor: "#fff",
-                      padding: "3%",
-                      borderRadius: 50
-                    }}
-                  >
-                    <TouchableOpacity
-                      onPress={() => {
-                        this.deleteAccount();
-                      }}
-                    >
-                      <Text style={{ color: "#3399ff" }}>Yes</Text>
-                    </TouchableOpacity>
-                  </View>
-
-                  <View style={{ padding: "5%" }} />
-
-                  <View
-                    style={{
-                      backgroundColor: "#fff",
-                      padding: "3%",
-                      borderRadius: 50
-                    }}
-                  >
-                    <TouchableOpacity
-                      onPress={() => {
-                        this.toggleMenu(false);
-                      }}
-                    >
-                      <Text style={{ color: "#3399ff" }}>No</Text>
-                    </TouchableOpacity>
-                  </View>
-                </View>
-              </View>
-            </View>
-          </View>
-        </Modal>
       </View>
     );
   }

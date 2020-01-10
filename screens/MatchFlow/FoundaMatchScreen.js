@@ -54,7 +54,6 @@ class MatchScreen extends React.Component {
     age,
     state
   }) => {
-    console.log(age);
     this.setState({
       matchUserGuid: this.props.navigation.state.params.matchUserGuid,
       matchRoomGuid: this.props.navigation.state.params.matchRoomGuid,
