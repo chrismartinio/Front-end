@@ -49,7 +49,7 @@ const MainStack = createStackNavigator(
         },
         headerTitleStyle: {
           bottom: "3%",
-          color: "#660066"
+          color: "#6a0dad"
         }
       })
     },
@@ -65,11 +65,11 @@ const MainStack = createStackNavigator(
         },
         headerTitleStyle: {
           bottom: "3%",
-          color: "#660066"
+          color: "#6a0dad"
         },
         //headerRight is set inside ProfileScreen.js
         headerLeft: (
-          <CustomBackButton buttonColor={"#660066"} navigation={navigation} />
+          <CustomBackButton buttonColor={"#6a0dad"} navigation={navigation} />
         )
       })
     },
@@ -83,10 +83,10 @@ const MainStack = createStackNavigator(
         },
         headerTitleStyle: {
           bottom: "3%",
-          color: "#660066"
+          color: "#6a0dad"
         },
         headerLeft: (
-          <CustomBackButton buttonColor={"#660066"} navigation={navigation} />
+          <CustomBackButton buttonColor={"#6a0dad"} navigation={navigation} />
         )
       })
     },
@@ -112,10 +112,10 @@ const MainStack = createStackNavigator(
         },
         headerTitleStyle: {
           bottom: "3%",
-          color: "#660066"
+          color: "#6a0dad"
         },
         headerLeft: (
-          <CustomBackButton buttonColor={"#660066"} navigation={navigation} />
+          <CustomBackButton buttonColor={"#6a0dad"} navigation={navigation} />
         )
       })
     },
@@ -138,7 +138,7 @@ const MainStack = createStackNavigator(
         headerLeft: (
           <CustomBackButton buttonColor={"#fff"} navigation={navigation} />
         )
-      })
+      }) 
     },
 
     MinuteChatRoom: {
@@ -151,7 +151,7 @@ const MainStack = createStackNavigator(
         },
         headerTitleStyle: {
           bottom: "3%",
-          color: "#660066"
+          color: "#6a0dad"
         },
         gesturesEnabled: false
       })
@@ -167,7 +167,7 @@ const MainStack = createStackNavigator(
         },
         headerTitleStyle: {
           bottom: "3%",
-          color: "#660066"
+          color: "#6a0dad"
         }
       })
     },
@@ -251,10 +251,10 @@ const MainStack = createStackNavigator(
         },
         headerTitleStyle: {
           bottom: "3%",
-          color: "#660066"
+          color: "#6a0dad"
         },
         headerLeft: (
-          <CustomBackButton buttonColor={"#660066"} navigation={navigation} />
+          <CustomBackButton buttonColor={"#6a0dad"} navigation={navigation} />
         )
       })
     },
@@ -268,7 +268,7 @@ const MainStack = createStackNavigator(
         },
         headerTitleStyle: {
           bottom: "3%",
-          color: "#660066"
+          color: "#6a0dad"
         },
         gesturesEnabled: false
       })
