@@ -111,7 +111,7 @@ class HomeScreen extends React.Component {
           <Text
             style={{
               fontSize: 0.053 * width,
-              color: "#7443aa"
+              color: "#6a0dad"
             }}
           >
             START
@@ -142,7 +142,7 @@ class HomeScreen extends React.Component {
           <Text
             style={{
               fontSize: 0.053 * width,
-              color: "#7443aa"
+              color: "#6a0dad"
             }}
           >
             NEW CHAT
@@ -160,7 +160,7 @@ class HomeScreen extends React.Component {
             style={{
               fontSize: 0.037 * width,
               fontWeight: "bold",
-              color: "#7443aa"
+              color: "#6a0dad"
             }}
           >
             No More Swiping.
@@ -179,7 +179,7 @@ class HomeScreen extends React.Component {
               style={{
                 fontSize: 0.026 * width,
                 textAlign: "center",
-                color: "#7443aa"
+                color: "#6a0dad"
               }}
             >
               We want you to make a deeper and more significant connection by
@@ -200,7 +200,7 @@ class HomeScreen extends React.Component {
               style={{
                 fontSize: 0.026 * width,
                 textAlign: "center",
-                color: "#7443aa"
+                color: "#6a0dad"
               }}
             >
               Blindly will only show you what the other person looks like until
@@ -234,20 +234,20 @@ class HomeScreen extends React.Component {
                 type="font-awesome"
                 size={width * 0.06}
                 name="group"
-                color="#46278c"
+                color="#6a0dad"
               />
               <View style={{ padding: `${0.013 * width}%` }} />
-              <Text style={{ color: "#7443aa", fontWeight: "bold" }}>
+              <Text style={{ color: "#6a0dad", fontWeight: "bold" }}>
                 {this.state.connections}
               </Text>
               <View style={{ padding: `${0.008 * width}%` }} />
-              <Text style={{ color: "#7443aa" }}>Connections</Text>
+              <Text style={{ color: "#6a0dad" }}>Connections</Text>
             </View>
 
             <View
               style={{
                 borderWidth: 0.5,
-                borderColor: "#7443aa",
+                borderColor: "#6a0dad",
                 height: 0.26 * width,
                 alignSelf: "center"
               }}
@@ -260,14 +260,14 @@ class HomeScreen extends React.Component {
                 alignItems: "center"
               }}
             >
-              <AntIcon name="earth" color="#46278c" size={width * 0.06} />
+              <AntIcon name="earth" color="#6a0dad" size={width * 0.06} />
 
               <View style={{ padding: `${0.013 * width}%` }} />
-              <Text style={{ color: "#7443aa", fontWeight: "bold" }}>
+              <Text style={{ color: "#6a0dad", fontWeight: "bold" }}>
                 {this.state.online}
               </Text>
               <View style={{ padding: `${0.008 * width}%` }} />
-              <Text style={{ color: "#7443aa" }}>Online</Text>
+              <Text style={{ color: "#6a0dad" }}>Online</Text>
             </View>
           </View>
         </View>
