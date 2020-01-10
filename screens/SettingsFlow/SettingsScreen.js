@@ -23,21 +23,33 @@ import { localhost } from "../../config/ipconfig";
 
 const { height, width } = Dimensions.get("window");
 
+var jwtDecode = require("jwt-decode");
+
 import PasswordPanel from "./Setting_SharedComponents/PasswordPanel";
 
 class SettingsScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      modalVisible: false,
       passwordPanelVisible: false,
       oldPassword: "",
       newPassword: "",
-      confirmNewPassword: ""
+      confirmNewPassword: "",
+      thirdPartyPassword: "",
+      confirmThirdPartyPassword: "",
+      email: ""
     };
   }
 
-  componentDidMount() {}
+  async componentDidMount() {
+    let jwt = "";
+    jwt = await this.props.CreateThirdPartyDataReducer.JWT;
+    if (jwt !== null) {
+      const decodedToken = jwtDecode(jwt);
+      let { email } = decodedToken;
+      this.setState({ email });
+    }
+  }
 
   deleteAccount = () => {
     console.log("delete Account");
@@ -73,14 +85,16 @@ class SettingsScreen extends React.Component {
       .catch(err => {
         alert("Ops! Some error occured. Please try again!");
       });
-
-    this.toggleMenu(false);
   };
 
   togglePasswordPanel = () => {
     this.setState({
       passwordPanelVisible: !this.state.passwordPanelVisible
     });
+  };
+
+  signUpBlindlyAccountForThirdParty = () => {
+    console.log("sign up third party");
   };
 
   changePassword = () => {
@@ -147,10 +161,6 @@ class SettingsScreen extends React.Component {
       });
   };
 
-  toggleMenu = visible => {
-    this.setState({ modalVisible: visible });
-  };
-
   setPassword = (password, type) => {
     //1 - old
     //2 - new
@@ -179,7 +189,9 @@ class SettingsScreen extends React.Component {
               padding: 10,
               margin: 10
             }}
-            onPress={() => {}}
+            onPress={() => {
+              this.signUpBlindlyAccountForThirdParty();
+            }}
           >
             <Text style={{ color: "black" }}> Sign up a Blindly Account </Text>
           </TouchableOpacity>
