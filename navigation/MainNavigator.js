@@ -8,6 +8,8 @@ import {
 //Setting Flow
 import SettingsScreen from "../screens/SettingsFlow/SettingsScreen";
 import PreSettingsScreen from "../screens/SettingsFlow/PreSettingsScreen";
+import ChangePasswordScreen from "../screens/SettingsFlow/ChangePasswordScreen";
+import CreateBlindlyAccountScreen from "../screens/SettingsFlow/CreateBlindlyAccountScreen";
 
 //Chat Flow
 import HomeScreen from "../screens/HomeScreen";
@@ -138,7 +140,7 @@ const MainStack = createStackNavigator(
         headerLeft: (
           <CustomBackButton buttonColor={"#fff"} navigation={navigation} />
         )
-      }) 
+      })
     },
 
     MinuteChatRoom: {
@@ -271,6 +273,34 @@ const MainStack = createStackNavigator(
           color: "#6a0dad"
         },
         gesturesEnabled: false
+      })
+    },
+    ChangePassword: {
+      screen: ChangePasswordScreen,
+      navigationOptions: () => ({
+        title: `Blindy`,
+        headerStyle: {
+          backgroundColor: "#fff",
+          borderBottomWidth: 0
+        },
+        headerTitleStyle: {
+          bottom: "3%",
+          color: "#6a0dad"
+        }
+      })
+    },
+    CreateBlindlyAccount: {
+      screen: CreateBlindlyAccountScreen,
+      navigationOptions: () => ({
+        title: `Blindy`,
+        headerStyle: {
+          backgroundColor: "#fff",
+          borderBottomWidth: 0
+        },
+        headerTitleStyle: {
+          bottom: "3%",
+          color: "#6a0dad"
+        }
       })
     }
   },
