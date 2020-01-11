@@ -12,11 +12,6 @@ import {
   Alert
 } from "react-native";
 
-//log out
-//sign up blindly account (3rd party)
-//delete account
-//change password
-
 import { connect } from "react-redux";
 
 import { localhost } from "../../config/ipconfig";
@@ -25,29 +20,9 @@ const { height, width } = Dimensions.get("window");
 
 var jwtDecode = require("jwt-decode");
 
-import PasswordPanel from "./Setting_SharedComponents/PasswordPanel";
-
 class SettingsScreen extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      oldPassword: "",
-      newPassword: "",
-      confirmNewPassword: "",
-      thirdPartyPassword: "",
-      confirmThirdPartyPassword: "",
-      email: ""
-    };
-  }
-
-  async componentDidMount() {
-    let jwt = "";
-    jwt = await this.props.CreateThirdPartyDataReducer.JWT;
-    if (jwt !== null) {
-      const decodedToken = jwtDecode(jwt);
-      let { email } = decodedToken;
-      this.setState({ email });
-    }
   }
 
   deleteAccount = () => {
@@ -86,11 +61,6 @@ class SettingsScreen extends React.Component {
       });
   };
 
-  signUpBlindlyAccountForThirdParty = () => {
-    console.log("sign up third party");
-  };
-
-
   render() {
     return (
       <View style={{ flex: 1, alignItems: "center" }}>
@@ -103,7 +73,9 @@ class SettingsScreen extends React.Component {
               padding: 10,
               margin: 10
             }}
-            onPress={() => {}}
+            onPress={() => {
+              this.props.navigation.navigate("CreateBlindlyAccount");
+            }}
           >
             <Text style={{ color: "black" }}> Sign up a Blindly Account </Text>
           </TouchableOpacity>

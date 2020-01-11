@@ -288,8 +288,7 @@ const MainStack = createStackNavigator(
           color: "#6a0dad"
         }
       })
-    }
-    /*
+    },
     CreateBlindlyAccount: {
       screen: CreateBlindlyAccountScreen,
       navigationOptions: () => ({
@@ -304,7 +303,6 @@ const MainStack = createStackNavigator(
         }
       })
     }
-    */
   },
   {
     initialRouteName: "Home",
