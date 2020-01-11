@@ -37,6 +37,10 @@ export const invalidPasswordWarning = (
   <Text style={styles.warningText}>* Please enter a valid password</Text>
 );
 
+export const incorrectPasswordWarning = (
+  <Text style={styles.warningText}>* Please enter a correct password</Text>
+);
+
 export const invalidConfirmPasswordWarning = (
   <Text style={styles.warningText}>* Password does not match</Text>
 );

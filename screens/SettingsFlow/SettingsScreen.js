@@ -31,7 +31,6 @@ class SettingsScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      passwordPanelVisible: false,
       oldPassword: "",
       newPassword: "",
       confirmNewPassword: "",
@@ -87,95 +86,10 @@ class SettingsScreen extends React.Component {
       });
   };
 
-  togglePasswordPanel = () => {
-    this.setState({
-      passwordPanelVisible: !this.state.passwordPanelVisible
-    });
-  };
-
   signUpBlindlyAccountForThirdParty = () => {
     console.log("sign up third party");
   };
 
-  changePassword = () => {
-    if (
-      this.state.oldPassword === "" ||
-      this.state.newPassword === "" ||
-      this.state.confirmNewPassword === ""
-    ) {
-      return alert("Please fill all the password fields!");
-    }
-
-    if (this.state.newPassword !== this.state.confirmNewPassword) {
-      return alert("Your password and confirm password are not match!");
-    }
-
-    console.log("change password");
-    fetch(`http://${localhost}:4000/api/profile/update`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        guid: this.props.CreateProfileDataReducer.guid,
-        collection: "createAccount",
-        data: {
-          oldPassword: this.state.oldPassword,
-          newPassword: this.state.newPassword
-        }
-      })
-    })
-      .then(res => res.json())
-      .then(res => {
-        if (!res.success && res.status === 422) {
-          alert("Your old password is incorrect");
-        }
-
-        if (!res.success && res.status === 500) {
-          throw new Error("Internal Error ");
-        }
-
-        if (res.success) {
-          Alert.alert(
-            "Success!",
-            "Your password has changed.",
-            [
-              {
-                text: "OK",
-                onPress: () => {}
-              }
-            ],
-            { cancelable: false }
-          );
-          this.setState({
-            oldPassword: "",
-            newPassword: "",
-            confirmNewPassword: ""
-          });
-        } else {
-          throw new Error("Internal Error ");
-        }
-      })
-      .catch(err => {
-        alert("Ops! Some error occured. Please try again!");
-      });
-  };
-
-  setPassword = (password, type) => {
-    //1 - old
-    //2 - new
-    //3 - confirm new
-    switch (type) {
-      case 1:
-        return this.setState({ oldPassword: password });
-      case 2:
-        return this.setState({ newPassword: password });
-      case 3:
-        return this.setState({ confirmNewPassword: password });
-      default:
-        return;
-    }
-  };
 
   render() {
     return (
@@ -189,9 +103,7 @@ class SettingsScreen extends React.Component {
               padding: 10,
               margin: 10
             }}
-            onPress={() => {
-              this.signUpBlindlyAccountForThirdParty();
-            }}
+            onPress={() => {}}
           >
             <Text style={{ color: "black" }}> Sign up a Blindly Account </Text>
           </TouchableOpacity>
@@ -201,22 +113,11 @@ class SettingsScreen extends React.Component {
         <TouchableOpacity
           style={{ borderWidth: 1, borderRadius: 10, padding: 10, margin: 10 }}
           onPress={() => {
-            this.togglePasswordPanel();
+            this.props.navigation.navigate("ChangePassword");
           }}
         >
           <Text style={{ color: "black" }}> Change my password </Text>
         </TouchableOpacity>
-
-        {/*Password Panel*/}
-        {this.state.passwordPanelVisible && (
-          <PasswordPanel
-            oldPassword={this.state.oldPassword}
-            newPassword={this.state.newPassword}
-            confirmNewPassword={this.state.confirmNewPassword}
-            setPassword={this.setPassword}
-            changePassword={this.changePassword}
-          />
-        )}
 
         {/*Delete Account*/}
         <TouchableOpacity
