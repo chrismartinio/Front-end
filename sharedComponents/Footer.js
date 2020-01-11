@@ -94,7 +94,7 @@ class Footer extends React.Component {
           <TouchableOpacity
             onPress={() => this.props.navigation.dispatch(resetProfileAction)}
           >
-            <Icon name="person" size={width * 0.06} color="#46278c" />
+            <Icon name="person" size={width * 0.06} color="#6a0dad" />
             <Text style={styles.footerText}>Profile</Text>
           </TouchableOpacity>
           <TouchableOpacity
@@ -106,7 +106,7 @@ class Footer extends React.Component {
               type="font-awesome"
               size={width * 0.06}
               name="commenting-o"
-              color="#46278c"
+              color="#6a0dad"
             />
             <Text style={styles.footerText}>Conversations</Text>
           </TouchableOpacity>
@@ -117,7 +117,7 @@ class Footer extends React.Component {
               type="font-awesome"
               size={width * 0.06}
               name="bell-o"
-              color="#46278c"
+              color="#6a0dad"
             />
             <Text style={styles.footerText}>Notifications</Text>
           </TouchableOpacity>
@@ -126,7 +126,7 @@ class Footer extends React.Component {
               this.props.navigation.dispatch(resetConnectionsAction)
             }
           >
-            <Icon name="people" size={width * 0.06} color="#46278c" />
+            <Icon name="people" size={width * 0.06} color="#6a0dad" />
             <Text style={styles.footerText}>Connections</Text>
           </TouchableOpacity>
           <TouchableOpacity
@@ -137,7 +137,7 @@ class Footer extends React.Component {
                 type="font-awesome"
                 size={width * 0.06}
                 name="sliders"
-                color="#46278c"
+                color="#6a0dad"
               />
             </View>
             <Text style={styles.footerText}>Settings</Text>
@@ -161,7 +161,7 @@ const styles = StyleSheet.create({
     paddingTop: 10
   },
   footerText: {
-    color: "#46278c",
+    color: "#6a0dad",
     fontSize: width * 0.026,
     textAlign: "center",
     marginTop: 5
