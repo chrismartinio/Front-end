@@ -64,7 +64,9 @@ class SettingsScreen extends React.Component {
   render() {
     return (
       <View style={{ flex: 1, alignItems: "center" }}>
-        {/*Sign up Blindly Account*/}
+        {/*Sign up Blindly Account
+          Only Visible to Third Party User
+          */}
         {this.props.CreateProfileDataReducer.isThirdPartiesServiceUser && (
           <TouchableOpacity
             style={{
@@ -81,15 +83,25 @@ class SettingsScreen extends React.Component {
           </TouchableOpacity>
         )}
 
-        {/*Chnage Password*/}
-        <TouchableOpacity
-          style={{ borderWidth: 1, borderRadius: 10, padding: 10, margin: 10 }}
-          onPress={() => {
-            this.props.navigation.navigate("ChangePassword");
-          }}
-        >
-          <Text style={{ color: "black" }}> Change my password </Text>
-        </TouchableOpacity>
+        {/*Chnage Password
+          Only Visible to Local
+          */}
+
+        {!this.props.CreateProfileDataReducer.isThirdPartiesServiceUser && (
+          <TouchableOpacity
+            style={{
+              borderWidth: 1,
+              borderRadius: 10,
+              padding: 10,
+              margin: 10
+            }}
+            onPress={() => {
+              this.props.navigation.navigate("ChangePassword");
+            }}
+          >
+            <Text style={{ color: "black" }}> Change my password </Text>
+          </TouchableOpacity>
+        )}
 
         {/*Delete Account*/}
         <TouchableOpacity

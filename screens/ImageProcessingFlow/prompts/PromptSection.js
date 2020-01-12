@@ -49,6 +49,8 @@ const PromptSection = props => (
           return alert("Please take a picture");
         }
 
+        console.log(props.selectedImages)
+
         uploadImages(
           props.selectedImages,
           props.captions,
