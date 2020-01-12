@@ -253,6 +253,23 @@ class CreateBlindlyAccountScreen extends React.Component {
     if (jwt !== null) {
       const decodedToken = jwtDecode(jwt);
       let { email } = decodedToken;
+
+      if (email === "" || email === undefined || email === null) {
+        Alert.alert(
+          "Warning!",
+          "Invalid Email",
+          [
+            {
+              text: "OK",
+              onPress: () => {
+                this.props.navigation.goBack();
+              }
+            }
+          ],
+          { cancelable: false }
+        );
+      }
+
       this.setState({ email });
     }
   }
