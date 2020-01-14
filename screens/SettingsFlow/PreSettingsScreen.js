@@ -96,7 +96,7 @@ class PreSettingsScreen extends React.Component {
 
   setTimer = async () => {
     fetchRetry(
-      `http://${localhost}:4050/api/frontendconfig/query`,
+      `http://${localhost}:4080/api/frontendconfig/query`,
       this.retryDelay,
       this.retryTime,
       {
