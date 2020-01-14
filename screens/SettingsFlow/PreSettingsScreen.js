@@ -14,54 +14,117 @@ import { connect } from "react-redux";
 import { localhost } from "../../config/ipconfig";
 import SetDeviceUserImageUrlAction from "../../storage/actions/ImageProcessingActions/SetDeviceUserImageUrlAction/";
 import SetTimeAction from "../../storage/actions/ConfigReducerActions/SetTimeAction/";
+import { StackActions, NavigationActions } from "react-navigation";
+import ErrorScreen from "../../sharedComponents/ErrorScreen";
+
+function fetchRetry(url, delay, limit, fetchOptions = {}) {
+  return new Promise((resolve, reject) => {
+    function success(res) {
+      resolve(res);
+    }
+    function failure(error) {
+      limit--;
+      if (limit) {
+        setTimeout(fetchUrl, delay);
+      } else {
+        // this time it failed for real
+        reject(error);
+      }
+    }
+    function finalHandler(finalError) {
+      throw finalError;
+    }
+    function fetchUrl() {
+      return fetch(url, fetchOptions)
+        .then(success)
+        .catch(failure)
+        .catch(finalHandler);
+    }
+    fetchUrl();
+  });
+}
 
 class PreSettingsScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      profileImagePass: false,
+      timerPass: false,
       isSuccess: false
     };
+    this.retryTime = 10;
+    this.retryDelay = 3000;
   }
 
   setProfileImage = async guid => {
-    fetch(`http://${localhost}:4000/api/profile/profile_query`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        guid: guid,
-        collection: "aboutYou"
-      })
-    })
+    fetchRetry(
+      `http://${localhost}:4000/api/profile/profile_query`,
+      this.retryDelay,
+      this.retryTime,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          guid: guid,
+          collection: "aboutYou"
+        })
+      }
+    )
       .then(res => res.json())
+      .then(res => {
+        if (!res.success) {
+          throw new Error("failed!");
+        }
+        return res;
+      })
       .then(res => {
         this.props.SetDeviceUserImageUrlAction({
           url: res.result.imageUrl
         });
+        this.setState({
+          profileImagePass: true
+        });
       })
       .catch(err => {
-        this.props.SetDeviceUserImageUrlAction({
-          url: ""
+        this.setState({
+          isSuccess: false
         });
       });
   };
 
   setTimer = async () => {
-    fetch(`http://${localhost}:4050/api/frontendconfig/query`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
+    fetchRetry(
+      `http://${localhost}:4050/api/frontendconfig/query`,
+      this.retryDelay,
+      this.retryTime,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        }
       }
-    })
+    )
       .then(res => res.json())
+      .then(res => {
+        if (!res.success) {
+          throw new Error("failed!");
+        }
+        return res;
+      })
       .then(res => {
         this.props.SetTimeAction({
           time: res.result.minuteChatTimer
         });
+        this.setState({
+          timerPass: true
+        });
       })
       .catch(err => {
-        console.log(err);
+        this.setState({
+          isSuccess: false
+        });
       });
   };
 
@@ -72,21 +135,23 @@ class PreSettingsScreen extends React.Component {
 
     await this.setTimer();
 
-    this.props.navigation.navigate("Home");
     this.setState({
       isSuccess: true
     });
   }
 
-  /*
   componentDidUpdate(prevProps, prevState, snapshot) {
-    if(prevState.isSuccess !== this.state.isSuccess) {
-      this.props.navigation.navigate("Home");
+    if (
+      prevState.profileImagePass !== this.state.profileImagePass ||
+      prevState.timerPass !== this.state.timerPass
+    ) {
+      if (this.state.profileImagePass && this.state.timerPass) {
+        this.props.navigation.navigate("Home");
+      }
     }
   }
-*/
 
-  render() {
+  loadingScreen = () => {
     return (
       <View
         style={{
@@ -110,6 +175,14 @@ class PreSettingsScreen extends React.Component {
         </View>
       </View>
     );
+  };
+
+  errorScreen = () => {
+    return <ErrorScreen navigation={this.props.navigation} />;
+  };
+
+  render() {
+    return this.state.isSuccess ? this.loadingScreen() : this.errorScreen();
   }
 }
 
