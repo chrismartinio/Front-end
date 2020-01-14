@@ -61,7 +61,7 @@ class MinuteChatRoomScreen extends React.Component {
       currentMessage: "",
       isSuccess: false,
       isTyping: false,
-      timerSecond: 90,
+      countDownSecond: 90,
       appState: AppState.currentState,
       counting: false,
       endTime: "",
@@ -141,7 +141,7 @@ class MinuteChatRoomScreen extends React.Component {
         this.interval = setInterval(this.countDown, 1000);
         let currentTime = new Date();
         this.setState({
-          endTime: currentTime.getTime() + 90 * 1000
+          endTime: currentTime.getTime() + this.minuteChatTimer_time * 1000
         });
         this.socket.emit("startTimer", {});
       }
@@ -214,9 +214,16 @@ class MinuteChatRoomScreen extends React.Component {
     });
   };
 
+  setupTimer = () => {
+    this.setState({
+      countDownSecond: this.props.ConfigReducer.minuteChatTimer_time
+    });
+    return this.props.ConfigReducer.minuteChatTimer_time;
+  };
+
   async componentDidMount() {
     //Testing USE
-    //this.interval = setInterval(this.countDown, 1000);
+    this.interval = setInterval(this.countDown, 1000);
     /*
     this.props.navigation.navigate(
       "AcceptMatching",
@@ -224,6 +231,9 @@ class MinuteChatRoomScreen extends React.Component {
     );
     */
     //Testing Use
+    this.minuteChatTimer_time = await this.setupTimer();
+
+    //Setup Total Seconds
 
     //KeyBoard
     this.keyboardDidShowListener = Keyboard.addListener(
@@ -291,7 +301,7 @@ class MinuteChatRoomScreen extends React.Component {
         } else {
           //if not then do some calculation do calculate current time
           this.setState({
-            timerSecond: Math.round(
+            countDownSecond: Math.round(
               (this.state.endTime - currentTime.getTime()) / 1000
             )
           });
@@ -369,9 +379,9 @@ class MinuteChatRoomScreen extends React.Component {
 
   countDown = () => {
     this.setState({
-      timerSecond: --this.state.timerSecond
+      countDownSecond: --this.state.countDownSecond
     });
-    if (this.state.timerSecond <= 0) {
+    if (this.state.countDownSecond <= 0) {
       this.goToAcceptMatchingScreen();
     }
   };
@@ -529,6 +539,7 @@ class MinuteChatRoomScreen extends React.Component {
           behavior="padding"
           enabled
         >
+          <Text>{this.state.countDownSecond}</Text>
           <View style={{ backgroundColor: "#fff" }}>
             {/*Matched Image*/}
             <View style={{ alignItems: "center" }}>
@@ -563,7 +574,9 @@ class MinuteChatRoomScreen extends React.Component {
               <View
                 style={{
                   borderWidth: 3,
-                  width: this.state.timerSecond * (width / 90),
+                  width:
+                    this.state.countDownSecond *
+                    (width / this.minuteChatTimer_time),
                   borderColor: "purple",
                   top: -3,
                   borderTopRightRadius: 3,

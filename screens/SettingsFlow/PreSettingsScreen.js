@@ -13,6 +13,7 @@ import { connect } from "react-redux";
 
 import { localhost } from "../../config/ipconfig";
 import SetDeviceUserImageUrlAction from "../../storage/actions/ImageProcessingActions/SetDeviceUserImageUrlAction/";
+import SetTimeAction from "../../storage/actions/ConfigReducerActions/SetTimeAction/";
 
 class PreSettingsScreen extends React.Component {
   constructor(props) {
@@ -40,10 +41,27 @@ class PreSettingsScreen extends React.Component {
         });
       })
       .catch(err => {
-        console.log(err);
         this.props.SetDeviceUserImageUrlAction({
           url: ""
         });
+      });
+  };
+
+  setTimer = async () => {
+    fetch(`http://${localhost}:4050/api/frontendconfig/query`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      }
+    })
+      .then(res => res.json())
+      .then(res => {
+        this.props.SetTimeAction({
+          time: res.result.minuteChatTimer
+        });
+      })
+      .catch(err => {
+        console.log(err);
       });
   };
 
@@ -51,6 +69,8 @@ class PreSettingsScreen extends React.Component {
     this.guid = await this.props.CreateProfileDataReducer.guid;
 
     await this.setProfileImage(this.guid);
+
+    await this.setTimer();
 
     this.props.navigation.navigate("Home");
     this.setState({
@@ -108,7 +128,8 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     SetDeviceUserImageUrlAction: payload =>
-      dispatch(SetDeviceUserImageUrlAction(payload))
+      dispatch(SetDeviceUserImageUrlAction(payload)),
+    SetTimeAction: payload => dispatch(SetTimeAction(payload))
   };
 };
 
