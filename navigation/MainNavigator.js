@@ -263,16 +263,7 @@ const MainStack = createStackNavigator(
     PreSettings: {
       screen: PreSettingsScreen,
       navigationOptions: () => ({
-        title: `Blindy`,
-        headerStyle: {
-          backgroundColor: "#fff",
-          borderBottomWidth: 0
-        },
-        headerTitleStyle: {
-          bottom: "3%",
-          color: "#6a0dad"
-        },
-        gesturesEnabled: false
+        header: null
       })
     },
     ChangePassword: {
