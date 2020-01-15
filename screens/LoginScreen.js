@@ -50,6 +50,9 @@ stylesheet.textboxView.normal.borderBottomWidth = 1;
 stylesheet.textboxView.error.borderBottomWidth = 1;
 stylesheet.textboxView.normal.marginBottom = 5;
 stylesheet.textboxView.error.marginBottom = 5;
+stylesheet.textbox.normal.color = '#6a0dad';
+
+
 const Form = t.form.Form;
 var options = {
   stylesheet: stylesheet,
@@ -362,7 +365,8 @@ class LoginScreen extends React.Component {
 
         {/*email and password input*/}
         <View style={styles.formContainer}>
-          <Form
+          <Form 
+          
             options={options}
             autoCapitalize="none"
             type={User}
@@ -385,7 +389,7 @@ class LoginScreen extends React.Component {
           <Button
             title="Sign Up"
             onPress={this.handleSignUp}
-            color="#18cdf6"
+            color="#6a0dad"
             key="100"
           />
         </View>
@@ -393,7 +397,7 @@ class LoginScreen extends React.Component {
         {/*Forgot Password */}
         <Button
           title="Forgot password!"
-          /*onPress={this.handleSignUp}*/ color="#18cdf6"
+          /*onPress={this.handleSignUp}*/ color="#6a0dad"
         />
 
         {/*space*/}
@@ -408,8 +412,8 @@ class LoginScreen extends React.Component {
             <Image
               source={
                 __DEV__
-                  ? require("../assets/images/f_logo.png")
-                  : require("../assets/images/f_logo.png")
+                  ? require("../assets/images/facebookBW.png")
+                  : require("../assets/images/facebookBW.png")
               }
               style={styles.iconImage}
             />
@@ -419,8 +423,8 @@ class LoginScreen extends React.Component {
             <Image
               source={
                 __DEV__
-                  ? require("../assets/images/google-plus.png")
-                  : require("../assets/images/google-plus.png")
+                  ? require("../assets/images/googleBW.png")
+                  : require("../assets/images/googleBW.png")
               }
               style={styles.iconImage}
             />
@@ -430,8 +434,8 @@ class LoginScreen extends React.Component {
             <Image
               source={
                 __DEV__
-                  ? require("../assets/images/twitter.png")
-                  : require("../assets/images/twitter.png")
+                  ? require("../assets/images/TwitterBW.png")
+                  : require("../assets/images/TwitterBW.png")
               }
               style={styles.iconImage}
             />
@@ -539,12 +543,14 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     width: `${width * 0.18}%`,
     backgroundColor: "#ffffff",
-    alignSelf: "center"
+    alignSelf: "center",
+    color: "#6a0dad",
+    borderColor:"#6a0dad",
   },
   buttonStyle: {
     borderRadius: 20,
     color: "white",
-    backgroundColor: "#18cdf6",
+    backgroundColor: "#6a0dad",
     paddingLeft: width * 0.26,
     paddingRight: width * 0.26,
     alignSelf: "center",
@@ -553,9 +559,9 @@ const styles = StyleSheet.create({
   },
   buttonStyleOutline: {
     borderRadius: 20,
-    color: "#18cdf6",
+    color: "#6a0dad",
     borderWidth: 0.5,
-    borderColor: "#18cdf6",
+    borderColor: "#6a0dad",
     paddingLeft: width * 0.26,
     paddingRight: width * 0.26,
     alignSelf: "center",
@@ -579,7 +585,7 @@ const styles = StyleSheet.create({
   centerText: {
     marginTop: 15,
     textAlign: "center",
-    color: "grey"
+    color: "#6a0dad"
   },
   iconImage: {
     width: 50,
