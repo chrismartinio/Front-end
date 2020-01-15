@@ -57,6 +57,35 @@ class PreSettingsScreen extends React.Component {
   }
 
   setProfileImage = async guid => {
+    fetch(`http://${localhost}:4000/api/profile/profile_query`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        guid: guid,
+        collection: "aboutYou"
+      })
+    })
+      .then(res => res.json())
+      .then(res => {
+        this.props.SetDeviceUserImageUrlAction({
+          url: res.result.imageUrl
+        });
+        this.setState({
+          profileImagePass: true
+        });
+      })
+      .catch(err => {
+        this.props.SetDeviceUserImageUrlAction({
+          url: ""
+        });
+        this.setState({
+          profileImagePass: true
+        });
+      });
+
+    /*
     fetchRetry(
       `http://${localhost}:4000/api/profile/profile_query`,
       this.retryDelay,
@@ -92,9 +121,31 @@ class PreSettingsScreen extends React.Component {
           isSuccess: false
         });
       });
+      */
   };
 
   setTimer = async () => {
+    fetch(`http://${localhost}:4080/api/frontendconfig/query`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      }
+    })
+      .then(res => res.json())
+      .then(res => {
+        this.props.SetTimeAction({
+          time: res.result.minuteChatTimer
+        });
+        this.setState({
+          timerPass: true
+        });
+      })
+      .catch(err => {
+        this.setState({
+          timerPass: true
+        });
+      });
+    /*
     fetchRetry(
       `http://${localhost}:4080/api/frontendconfig/query`,
       this.retryDelay,
@@ -126,16 +177,15 @@ class PreSettingsScreen extends React.Component {
           isSuccess: false
         });
       });
+      */
   };
 
   async componentDidMount() {
     this.guid = await this.props.CreateProfileDataReducer.guid;
 
-    //await this.setProfileImage(this.guid);
+    await this.setProfileImage(this.guid);
 
-    //await this.setTimer();
-
-    this.props.navigation.navigate("Home");
+    await this.setTimer();
 
     this.setState({
       isSuccess: true
@@ -148,6 +198,8 @@ class PreSettingsScreen extends React.Component {
       prevState.timerPass !== this.state.timerPass
     ) {
       if (this.state.profileImagePass && this.state.timerPass) {
+        this.props.navigation.navigate("Home");
+      } else {
         this.props.navigation.navigate("Home");
       }
     }
