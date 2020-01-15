@@ -131,9 +131,11 @@ class PreSettingsScreen extends React.Component {
   async componentDidMount() {
     this.guid = await this.props.CreateProfileDataReducer.guid;
 
-    await this.setProfileImage(this.guid);
+    //await this.setProfileImage(this.guid);
 
-    await this.setTimer();
+    //await this.setTimer();
+
+    this.props.navigation.navigate("Home");
 
     this.setState({
       isSuccess: true
