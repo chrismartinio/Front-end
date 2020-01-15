@@ -19,6 +19,7 @@ import Footer from "../../sharedComponents/Footer";
 import { Card } from "react-native-paper";
 import { testobj } from "../../data/testObj";
 const { height, width } = Dimensions.get("window");
+import SetTimeAction from "../../storage/actions/ConfigReducerActions/SetTimeAction/";
 
 class MatchScreen extends React.Component {
   //Header
@@ -77,10 +78,34 @@ class MatchScreen extends React.Component {
     return Math.abs(ageDate.getUTCFullYear() - 1970);
   };
 
-  componentDidMount() {
+  setTimer = async () => {
+    fetch(`http://${localhost}:4080/api/frontendconfig/query`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      }
+    })
+      .then(res => res.json())
+      .then(res => {
+        this.props.SetTimeAction({
+          time: res.result.minuteChatTimer
+        });
+        this.setState({
+          timerPass: true
+        });
+      })
+      .catch(err => {
+        this.setState({
+          timerPass: true
+        });
+      });
+  };
+
+  async componentDidMount() {
     //reset the matchScreen's foundaMatch = false
     //fetch data
     //and use guid to get interest, miles, firstName, lastName, image
+
     axios
       .post(
         `http://${localhost}:4000/api/profile/chat_query`,
@@ -99,6 +124,7 @@ class MatchScreen extends React.Component {
         console.log("Error: ", error);
         return this.props.navigation.navigate("Home");
       });
+    await this.setTimer();
   }
 
   setUserReady = () => {
@@ -313,7 +339,7 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => {
-  return {};
+  return { SetTimeAction: payload => dispatch(SetTimeAction(payload)) };
 };
 
 export default connect(
