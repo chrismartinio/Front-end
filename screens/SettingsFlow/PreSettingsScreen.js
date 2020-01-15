@@ -49,7 +49,6 @@ class PreSettingsScreen extends React.Component {
     super(props);
     this.state = {
       profileImagePass: false,
-      timerPass: false,
       isSuccess: false
     };
     this.retryTime = 10;
@@ -124,68 +123,10 @@ class PreSettingsScreen extends React.Component {
       */
   };
 
-  setTimer = async () => {
-    fetch(`http://${localhost}:4080/api/frontendconfig/query`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      }
-    })
-      .then(res => res.json())
-      .then(res => {
-        this.props.SetTimeAction({
-          time: res.result.minuteChatTimer
-        });
-        this.setState({
-          timerPass: true
-        });
-      })
-      .catch(err => {
-        this.setState({
-          timerPass: true
-        });
-      });
-    /*
-    fetchRetry(
-      `http://${localhost}:4080/api/frontendconfig/query`,
-      this.retryDelay,
-      this.retryTime,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        }
-      }
-    )
-      .then(res => res.json())
-      .then(res => {
-        if (!res.success) {
-          throw new Error("failed!");
-        }
-        return res;
-      })
-      .then(res => {
-        this.props.SetTimeAction({
-          time: res.result.minuteChatTimer
-        });
-        this.setState({
-          timerPass: true
-        });
-      })
-      .catch(err => {
-        this.setState({
-          isSuccess: false
-        });
-      });
-      */
-  };
-
   async componentDidMount() {
     this.guid = await this.props.CreateProfileDataReducer.guid;
 
     await this.setProfileImage(this.guid);
-
-    await this.setTimer();
 
     this.setState({
       isSuccess: true
@@ -193,11 +134,8 @@ class PreSettingsScreen extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
-    if (
-      prevState.profileImagePass !== this.state.profileImagePass ||
-      prevState.timerPass !== this.state.timerPass
-    ) {
-      if (this.state.profileImagePass && this.state.timerPass) {
+    if (prevState.profileImagePass !== this.state.profileImagePass) {
+      if (this.state.profileImagePass) {
         this.props.navigation.navigate("Home");
       } else {
         this.props.navigation.navigate("Home");
