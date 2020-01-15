@@ -70,7 +70,7 @@ const User = t.struct({
   password: t.String
 });
 
-import { localhost, miniServer, miniServerProd } from "../config/ipconfig";
+import { localhost, miniServer, miniServerProd, awsProdServer } from "../config/ipconfig";
 import {
   createTablesInToLocalStorage,
   displayAllTablesFromLocalStorage,
@@ -144,7 +144,7 @@ class LoginScreen extends React.Component {
       return alert("Please fill in Email or Password");
     }
 
-    await fetch(`${miniServerProd}/api/auth/login`, {
+    await fetch(`${awsProdServer}/api/auth/login`, {
       method: "POST",
       mode: "cors",
       credentials: "same-origin",
@@ -244,7 +244,7 @@ class LoginScreen extends React.Component {
   openBrowser = async provider => {
     try {
       let result = await WebBrowser.openAuthSessionAsync(
-        `${miniServerProd}/api/auth/${provider}?deepLink=${Linking.makeUrl(
+        `${awsProdServer}/api/auth/${provider}?deepLink=${Linking.makeUrl(
           "/?"
         )}`
       );
