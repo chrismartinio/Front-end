@@ -540,7 +540,7 @@ class ProfileScreen extends React.Component {
                     type="font-awesome"
                     name="map-marker"
                     size={width * 0.04}
-                    color="rgb(67, 33, 140)"
+                    color="#6a0dad"
                     iconStyle={{ bottom: 0 }}
                   />
 
@@ -687,11 +687,11 @@ const styles = StyleSheet.create({
     width: "auto",
     borderRadius: 40,
     borderWidth: 2,
-    borderColor: "rgb(67, 33, 140)",
+    borderColor: "#6a0dad",
     margin: 5
   },
   likeButton: {
-    color: "rgb(67, 33, 140)",
+    color: "#6a0dad",
     fontSize: 17
   }
 });
