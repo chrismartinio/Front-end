@@ -2,7 +2,7 @@
 //     SOME IPs     //
 //////////////////////
 //3.225.209.229
-const myIP = "74.80.250.210";
+const myIP = "http://74.80.250.210:4040";
 const awsDevServer = "https://devbackend.blindlydate.com";
 const awsProdServer = "https://backend.blindlydate.com";
 

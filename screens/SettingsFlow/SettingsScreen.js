@@ -20,6 +20,9 @@ const { height, width } = Dimensions.get("window");
 
 var jwtDecode = require("jwt-decode");
 
+import ResetReduxDataAction from "../../storage/actions/RegistrationActions/ResetReduxDataAction";
+import SetJwtAction from "../../storage/actions/DataReducerActions/SetJwtAction";
+
 class SettingsScreen extends React.Component {
   constructor(props) {
     super(props);
@@ -134,6 +137,10 @@ class SettingsScreen extends React.Component {
         <TouchableOpacity
           style={{ borderWidth: 1, borderRadius: 10, padding: 10, margin: 10 }}
           onPress={() => {
+            this.props.SetJwtAction(null);
+            this.props.ResetReduxDataAction({
+              reset: true
+            });
             this.props.navigation.navigate("Login");
           }}
         >
@@ -149,7 +156,10 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => {
-  return {};
+  return {
+    SetJwtAction: payload => dispatch(SetJwtAction(payload)),
+    ResetReduxDataAction: payload => dispatch(ResetReduxDataAction(payload))
+  };
 };
 
 export default connect(

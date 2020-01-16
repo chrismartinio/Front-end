@@ -50,7 +50,7 @@ const PromptSection = props => (
         }
 
         console.log(props.selectedImages)
-
+        console.log(props.guid)
         uploadImages(
           props.selectedImages,
           props.captions,

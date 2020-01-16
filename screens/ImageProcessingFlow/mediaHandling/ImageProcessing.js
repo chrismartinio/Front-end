@@ -74,6 +74,10 @@ exports.sendImages = async (images, platform, body) => {
       body: data
     }
   )
+    .then(res => {
+      console.log(res);
+      return res;
+    })
     .then(res => res.json())
     .then(res => {
       console.log(res);
