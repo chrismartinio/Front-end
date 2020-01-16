@@ -1,4 +1,4 @@
-import { localhost } from "../../../config/ipconfig";
+import { server_imageProcessing } from "../../../config/ipconfig";
 
 const createFormData = (photo, operatingSystem, body) => {
   const data = new FormData();
@@ -46,6 +46,7 @@ const createFormDataMulti = (images, operatingSystem, body) => {
   return data;
 };
 
+/*
 exports.getImages = guid => {
   fetch(`http://${localhost}:4040/api/getImages/${guid}`, {
     method: "GET"
@@ -54,7 +55,6 @@ exports.getImages = guid => {
     .catch(err => console.log(err));
 };
 
-/*
 exports.getAllImages = () => {
   fetch(`http://${localhost}:3001/api/getAllImages`, {
     method: "GET"
@@ -68,7 +68,7 @@ exports.sendImages = async (images, platform, body) => {
   let data = createFormDataMulti(images, platform.OS, body);
 
   let success = await fetch(
-    `http://${localhost}:4040/api/imageProcessing/upload`,
+    `${server_imageProcessing}/api/imageProcessing/upload`,
     {
       method: "POST",
       body: data
@@ -76,7 +76,7 @@ exports.sendImages = async (images, platform, body) => {
   )
     .then(res => res.json())
     .then(res => {
-      console.log(res)
+      console.log(res);
       console.log("Upload success!");
       if (!res.success) {
         throw new Error("Fail");

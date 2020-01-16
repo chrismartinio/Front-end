@@ -21,7 +21,7 @@ import SetDeviceUserImageUrlAction from "../../../storage/actions/ImageProcessin
 
 import Footer from "../../../sharedComponents/Footer";
 
-import { localhost } from "../../../config/ipconfig";
+import { server_profile } from "../../../config/ipconfig";
 
 import { Icon } from "react-native-elements";
 
@@ -167,7 +167,7 @@ class ProfileScreen extends React.Component {
   }
 
   getDataFromDB = async () => {
-    await fetch(`http://${localhost}:4000/api/profile/profile_query`, {
+    await fetch(`${server_profile}/api/profile/profile_query`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -520,7 +520,9 @@ class ProfileScreen extends React.Component {
             </View>
 
             <View style={{ margin: 20 }}>
-              <Text style={{ color: "#6a0dad", fontSize: 20, fontWeight: "500" }}>
+              <Text
+                style={{ color: "#6a0dad", fontSize: 20, fontWeight: "500" }}
+              >
                 {/**User Name */}
                 {this.state.firstName} {this.state.lastName}, {this.state.age}
               </Text>
@@ -547,7 +549,13 @@ class ProfileScreen extends React.Component {
                   <View style={{ padding: "1%" }} />
 
                   {/*Address*/}
-                  <Text style={{ color: "#6a0dad", fontSize: 15, fontWeight: "400" }}>
+                  <Text
+                    style={{
+                      color: "#6a0dad",
+                      fontSize: 15,
+                      fontWeight: "400"
+                    }}
+                  >
                     {this.state.city}, {this.state.state}
                   </Text>
                 </View>
@@ -573,7 +581,11 @@ class ProfileScreen extends React.Component {
                 marginBottom: 3
               }}
             >
-              <Text style={{ color: "#6a0dad", fontSize: 17, fontWeight: "500" }}>Interests</Text>
+              <Text
+                style={{ color: "#6a0dad", fontSize: 17, fontWeight: "500" }}
+              >
+                Interests
+              </Text>
             </View>
             {/*Likes*/}
             <View>
@@ -602,7 +614,11 @@ class ProfileScreen extends React.Component {
                 marginBottom: 3
               }}
             >
-              <Text style={{ color: "#6a0dad", fontSize: 17, fontWeight: "500" }}>About Me</Text>
+              <Text
+                style={{ color: "#6a0dad", fontSize: 17, fontWeight: "500" }}
+              >
+                About Me
+              </Text>
             </View>
             {/*Bio*/}
             <View style={{ margin: 15 }}>
@@ -612,7 +628,7 @@ class ProfileScreen extends React.Component {
                   fontWeight: "100",
                   textAlign: "left",
                   lineHeight: 30,
-                  color: "#6a0dad", 
+                  color: "#6a0dad"
                 }}
               >
                 {this.state.userBio}
@@ -638,7 +654,11 @@ class ProfileScreen extends React.Component {
                 marginBottom: 3
               }}
             >
-              <Text style={{ color: "#6a0dad", fontSize: 17, fontWeight: "500" }}>Photo</Text>
+              <Text
+                style={{ color: "#6a0dad", fontSize: 17, fontWeight: "500" }}
+              >
+                Photo
+              </Text>
             </View>
             <View
               style={{

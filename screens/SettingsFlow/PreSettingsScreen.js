@@ -11,7 +11,7 @@ import {
 
 import { connect } from "react-redux";
 
-import { localhost } from "../../config/ipconfig";
+import { server_profile } from "../../config/ipconfig";
 import SetDeviceUserImageUrlAction from "../../storage/actions/ImageProcessingActions/SetDeviceUserImageUrlAction/";
 import SetTimeAction from "../../storage/actions/ConfigReducerActions/SetTimeAction/";
 import { StackActions, NavigationActions } from "react-navigation";
@@ -49,14 +49,14 @@ class PreSettingsScreen extends React.Component {
     super(props);
     this.state = {
       profileImagePass: false,
-      isSuccess: false
+      isSuccess: true
     };
     this.retryTime = 10;
     this.retryDelay = 3000;
   }
 
   setProfileImage = async guid => {
-    fetch(`http://${localhost}:4000/api/profile/profile_query`, {
+    await fetch(`${server_profile}/api/profile/profile_query`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -124,13 +124,11 @@ class PreSettingsScreen extends React.Component {
   };
 
   async componentDidMount() {
+    //Setup GUID
     this.guid = await this.props.CreateProfileDataReducer.guid;
 
+    //Setup Profile Image
     await this.setProfileImage(this.guid);
-
-    this.setState({
-      isSuccess: true
-    });
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {

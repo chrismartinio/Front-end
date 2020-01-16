@@ -42,7 +42,7 @@ import {
 } from "../../LocalStorage/localStorage.js";
 
 //IP config
-import { localhost } from "../../../../config/ipconfig";
+import { server_profile } from "../../../../config/ipconfig";
 
 //Checker Functions
 import {
@@ -138,7 +138,7 @@ class CreateAccount extends Component {
 
   //Query data from database
   getDataFromDB = async () => {
-    await fetch(`http://${localhost}:4000/api/profile/query`, {
+    await fetch(`${server_profile}/api/profile/query`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -349,10 +349,10 @@ class CreateAccount extends Component {
     ) {
       if (!this.isContinueUserFetched) {
         if (this.props.CreateProfileDataReducer.isThirdPartiesServiceUser) {
-          console.log("3rd")
+          console.log("3rd");
           this.setupThirdPartyServices();
         } else {
-          console.log("continue")
+          console.log("continue");
           this.getDataFromDB();
         }
         this.isContinueUserFetched = true;
@@ -493,7 +493,7 @@ class CreateAccount extends Component {
         },
         () => {
           //insert a profile into database
-          fetch(`http://${localhost}:4000/api/profile/insert`, {
+          fetch(`${server_profile}/api/profile/insert`, {
             method: "POST",
             headers: {
               "Content-Type": "application/json"

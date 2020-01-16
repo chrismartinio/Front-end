@@ -13,7 +13,7 @@ import {
   Alert
 } from "react-native";
 import { connect } from "react-redux";
-import { miniServer, localhost } from "../../config/ipconfig";
+import { server_profile } from "../../config/ipconfig";
 const { height, width } = Dimensions.get("window");
 
 //Expo
@@ -114,7 +114,7 @@ class CreateBlindlyAccountScreen extends React.Component {
 
   createAccount = () => {
     console.log("Create Account");
-    fetch(`http://${localhost}:4000/api/profile/insertFor3rd`, {
+    fetch(`${server_profile}/api/profile/insertFor3rd`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"

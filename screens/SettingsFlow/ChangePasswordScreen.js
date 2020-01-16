@@ -13,7 +13,7 @@ import {
   Alert
 } from "react-native";
 import { connect } from "react-redux";
-import { miniServer, localhost } from "../../config/ipconfig";
+import { server_profile } from "../../config/ipconfig";
 const { height, width } = Dimensions.get("window");
 //Icons
 import { Icon, Input } from "react-native-elements";
@@ -59,7 +59,7 @@ class ChangePasswordScreen extends React.Component {
 
   changePassword = () => {
     console.log("change password");
-    fetch(`http://${localhost}:4000/api/profile/update`, {
+    fetch(`${server_profile}/api/profile/update`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"

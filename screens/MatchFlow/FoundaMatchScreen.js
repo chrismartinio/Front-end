@@ -11,7 +11,7 @@ import {
   Dimensions,
   Image
 } from "react-native";
-import { miniServer, localhost } from "../../config/ipconfig";
+import { server_profile, server_frontendConfig } from "../../config/ipconfig";
 import axios from "axios";
 import { connect } from "react-redux";
 import LoadingScreen from "../../sharedComponents/LoadingScreen";
@@ -79,7 +79,7 @@ class MatchScreen extends React.Component {
   };
 
   setTimer = async () => {
-    fetch(`http://${localhost}:4080/api/frontendconfig/query`, {
+    fetch(`${server_frontendConfig}/api/frontendconfig/query`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -108,7 +108,7 @@ class MatchScreen extends React.Component {
 
     axios
       .post(
-        `http://${localhost}:4000/api/profile/chat_query`,
+        `${server_profile}/api/profile/chat_query`,
         {
           matchUserGuidArray: [
             this.props.navigation.state.params.matchUserGuid

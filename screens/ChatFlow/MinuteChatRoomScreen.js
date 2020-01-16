@@ -539,7 +539,6 @@ class MinuteChatRoomScreen extends React.Component {
           behavior="padding"
           enabled
         >
-          <Text>{this.state.countDownSecond}</Text>
           <View style={{ backgroundColor: "#fff" }}>
             {/*Matched Image*/}
             <View style={{ alignItems: "center" }}>

@@ -51,7 +51,7 @@ import {
 } from "../../LocalStorage/localStorage.js";
 
 //IP config
-import { localhost } from "../../../../config/ipconfig";
+import { server_profile } from "../../../../config/ipconfig";
 
 //Checkers Functions
 import {
@@ -105,7 +105,7 @@ class AboutYou extends Component {
       return;
     }
     //pass in isThirdParty
-    await fetch(`http://${localhost}:4000/api/profile/query`, {
+    await fetch(`${server_profile}/api/profile/query`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -456,7 +456,7 @@ class AboutYou extends Component {
           isDelaying: true
         },
         () => {
-          fetch(`http://${localhost}:4000/api/profile/update`, {
+          fetch(`${server_profile}/api/profile/update`, {
             method: "POST",
             headers: {
               "Content-Type": "application/json"

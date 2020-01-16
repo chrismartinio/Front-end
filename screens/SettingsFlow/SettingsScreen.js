@@ -14,7 +14,7 @@ import {
 
 import { connect } from "react-redux";
 
-import { localhost } from "../../config/ipconfig";
+import { server_profile } from "../../config/ipconfig";
 
 const { height, width } = Dimensions.get("window");
 
@@ -27,7 +27,7 @@ class SettingsScreen extends React.Component {
 
   deleteAccount = () => {
     console.log("delete Account");
-    fetch(`http://${localhost}:4000/api/profile/delete`, {
+    fetch(`${server_profile}/api/profile/delete`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"

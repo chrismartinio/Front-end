@@ -29,7 +29,7 @@ import LoadingScreen from "../../sharedComponents/LoadingScreen";
 
 import InputMenu from "./Chat_SharedComponents/InputMenu";
 
-import { localhost } from "../../config/ipconfig";
+import { server_chat } from "../../config/ipconfig";
 
 const { height, width } = Dimensions.get("window");
 
@@ -96,6 +96,7 @@ class PermanentChatRoomScreen extends React.Component {
     };
     this.roomGuid = this.props.navigation.state.params.matchRoomGuid;
     this.token = "";
+    //this.socket = io(`${server_chat}/${this.roomGuid}`, {
     this.socket = io(`http://${localhost}:3060/${this.roomGuid}`, {
       forceNew: true,
       transportOptions: {
@@ -197,7 +198,7 @@ class PermanentChatRoomScreen extends React.Component {
   };
 
   getOldMessageFromDB = async roomGuid => {
-    await fetch(`http://${localhost}:3060/api/chat/messages`, {
+    await fetch(`${server_chat}/api/chat/messages`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"

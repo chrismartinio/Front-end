@@ -20,7 +20,10 @@ import io from "socket.io-client";
 
 import LoadingScreen from "../../sharedComponents/LoadingScreen";
 
-import { localhost } from "../../config/ipconfig";
+import {
+  server_chat,
+  server_pushNotification
+} from "../../config/ipconfig";
 
 import Footer from "../../sharedComponents/Footer";
 
@@ -42,7 +45,7 @@ class ConversationsScreen extends React.Component {
   }
 
   getMatchedUsersStatusFromDB = async guid => {
-    fetch(`http://${localhost}:3060/api/chat/chatRooms`, {
+    fetch(`${server_chat}/api/chat/chatRooms`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -86,30 +89,36 @@ class ConversationsScreen extends React.Component {
       nextAppState === "active"
     ) {
       console.log("User: " + this.guid + " has come to the foreground!");
-      await fetch(`http://${localhost}:3020/api/pushNotification/appState`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          data: { guid: this.guid, appState: "foreground" }
-        })
-      })
+      await fetch(
+        `${server_pushNotification}/api/pushNotification/appState`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            data: { guid: this.guid, appState: "foreground" }
+          })
+        }
+      )
         .then(() => console.log("success"))
         .catch(error => {
           console.log(error);
         });
     } else {
       console.log("User: " + this.guid + " has gone to the background!");
-      await fetch(`http://${localhost}:3020/api/pushNotification/appState`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          data: { guid: this.guid, appState: "background" }
-        })
-      })
+      await fetch(
+        `${server_pushNotification}/api/pushNotification/appState`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            data: { guid: this.guid, appState: "background" }
+          })
+        }
+      )
         .then(() => console.log("success"))
         .catch(error => {
           console.log(error);

@@ -31,7 +31,7 @@ import {
 } from "../../LocalStorage/localStorage.js";
 
 //IP Config
-import { localhost } from "../../../../config/ipconfig";
+import { server_profile } from "../../../../config/ipconfig";
 
 //Warning Texts
 import { internalErrorWarning } from "../Util/RegistrationScreenWarnings.js";
@@ -68,7 +68,7 @@ class WouldYouRather extends Component {
       return;
     }
 
-    await fetch(`http://${localhost}:4000/api/profile/query`, {
+    await fetch(`${server_profile}/api/profile/query`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -227,7 +227,7 @@ class WouldYouRather extends Component {
         },
         () => {
           //Send data to database
-          fetch(`http://${localhost}:4000/api/profile/update`, {
+          fetch(`${server_profile}/api/profile/update`, {
             method: "POST",
             headers: {
               "Content-Type": "application/json"

@@ -24,7 +24,7 @@ import AntIcon from "react-native-vector-icons/AntDesign";
 
 import LoadingScreen from "../sharedComponents/LoadingScreen";
 
-import { localhost } from "../config/ipconfig";
+import { server_pushNotification } from "../config/ipconfig";
 
 import Footer from "../sharedComponents/Footer";
 
@@ -64,7 +64,7 @@ class HomeScreen extends React.Component {
       nextAppState === "active"
     ) {
       console.log("User: " + this.guid + " has come to the foreground!");
-      await fetch(`http://${localhost}:3020/api/pushNotification/appState`, {
+      await fetch(`${server_pushNotification}/api/pushNotification/appState`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -79,7 +79,7 @@ class HomeScreen extends React.Component {
         });
     } else {
       console.log("User: " + this.guid + " has gone to the background!");
-      await fetch(`http://${localhost}:3020/api/pushNotification/appState`, {
+      await fetch(`${server_pushNotification}/api/pushNotification/appState`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"

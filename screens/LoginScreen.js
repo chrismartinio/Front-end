@@ -51,8 +51,7 @@ stylesheet.textboxView.normal.borderBottomWidth = 1;
 stylesheet.textboxView.error.borderBottomWidth = 1;
 stylesheet.textboxView.normal.marginBottom = 5;
 stylesheet.textboxView.error.marginBottom = 5;
-stylesheet.textbox.normal.color = '#6a0dad';
-
+stylesheet.textbox.normal.color = "#6a0dad";
 
 const Form = t.form.Form;
 var options = {
@@ -70,7 +69,7 @@ const User = t.struct({
   password: t.String
 });
 
-import { localhost, miniServer, miniServerProd, awsProdServer, awsDevServer } from "../config/ipconfig";
+import { server_auth } from "../config/ipconfig";
 import {
   createTablesInToLocalStorage,
   displayAllTablesFromLocalStorage,
@@ -144,7 +143,7 @@ class LoginScreen extends React.Component {
       return alert("Please fill in Email or Password");
     }
 
-    await fetch(`${awsDevServer}/api/auth/login`, {
+    await fetch(`${server_auth}/api/auth/login`, {
       method: "POST",
       mode: "cors",
       credentials: "same-origin",
@@ -244,7 +243,7 @@ class LoginScreen extends React.Component {
   openBrowser = async provider => {
     try {
       let result = await WebBrowser.openAuthSessionAsync(
-        `${awsDevServer}/api/auth/${provider}?deepLink=${Linking.makeUrl(
+        `${server_auth}/api/auth/${provider}?deepLink=${Linking.makeUrl(
           "/?"
         )}`
       );
@@ -369,8 +368,7 @@ class LoginScreen extends React.Component {
 
         {/*email and password input*/}
         <View style={styles.formContainer}>
-          <Form 
-          
+          <Form
             options={options}
             autoCapitalize="none"
             type={User}
@@ -549,7 +547,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#ffffff",
     alignSelf: "center",
     color: "#6a0dad",
-    borderColor:"#6a0dad",
+    borderColor: "#6a0dad"
   },
   buttonStyle: {
     borderRadius: 20,

@@ -12,7 +12,7 @@ import {
   Image
 } from "react-native";
 import { connect } from "react-redux";
-import { miniServer } from "../../config/ipconfig";
+import { server_match } from "../../config/ipconfig";
 import LoadingScreen from "../../sharedComponents/LoadingScreen";
 import Footer from "../../sharedComponents/Footer";
 import axios from "axios";
@@ -55,7 +55,7 @@ class MatchingScreen extends React.Component {
   initializeComponent = () => {
     axios
       .post(
-        `http://${miniServer}:5000/api/match`,
+        `${server_match}/api/match`,
         {
           _id: this.props.navigation.state.params.id
         },
@@ -65,6 +65,7 @@ class MatchingScreen extends React.Component {
         this.handleMatchResponse(response);
       })
       .catch(error => {
+        console.log(error);
         return this.props.navigation.navigate("Home");
       });
   };
