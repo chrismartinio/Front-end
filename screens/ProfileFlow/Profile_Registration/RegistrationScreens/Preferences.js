@@ -521,7 +521,7 @@ class Preferences extends Component {
               styles.genderButtonWrap,
               {
                 backgroundColor: this.state.pickedMen
-                  ? "rgb(67, 33, 140)"
+                  ? "#6a0dad"
                   : "#fff"
               }
             ]}
@@ -533,7 +533,7 @@ class Preferences extends Component {
               style={[
                 styles.genderButtonText,
                 {
-                  color: this.state.pickedMen ? "#fff" : "rgb(67, 33, 140)"
+                  color: this.state.pickedMen ? "#fff" : "#6a0dad"
                 }
               ]}
             >
@@ -547,7 +547,7 @@ class Preferences extends Component {
               styles.genderButtonWrap,
               {
                 backgroundColor: this.state.pickedWomen
-                  ? "rgb(67, 33, 140)"
+                  ? "#6a0dad"
                   : "#fff"
               }
             ]}
@@ -559,7 +559,7 @@ class Preferences extends Component {
               style={[
                 styles.genderButtonText,
                 {
-                  color: this.state.pickedWomen ? "#fff" : "rgb(67, 33, 140)"
+                  color: this.state.pickedWomen ? "#fff" : "#6a0dad"
                 }
               ]}
             >
@@ -603,7 +603,7 @@ class Preferences extends Component {
             sliderLength={Math.round(width / 1.33)}
             trackStyle={{
               shadowColor: "red",
-              backgroundColor: "rgb(67, 33, 140)"
+              backgroundColor: "#6a0dad"
             }}
           />
         </View>
@@ -675,13 +675,13 @@ const styles = StyleSheet.create({
   },
   ageRangeNumbersText: {
     margin: 10,
-    color: "rgb(67, 33, 140)",
+    color: "#6a0dad",
     textAlign: "center"
   },
   sliderTitleText: {
     //top: 40,
     //margin: 10,
-    color: "rgb(67, 33, 140)",
+    color: "#6a0dad",
     fontSize: 20,
     textAlign: "center"
   },
@@ -690,11 +690,11 @@ const styles = StyleSheet.create({
     padding: 7,
     borderRadius: 40,
     borderWidth: 2,
-    borderColor: "rgb(67, 33, 140)",
+    borderColor: "#6a0dad",
     width: "65%"
   },
   genderButtonText: {
-    color: "rgb(67, 33, 140)",
+    color: "#6a0dad",
     fontSize: 20
   },
   flexContainer: {
@@ -703,12 +703,12 @@ const styles = StyleSheet.create({
     alignItems: "stretch"
   },
   imInterestedInText: {
-    color: "rgb(67, 33, 140)",
+    color: "#6a0dad",
     fontSize: Math.round(width / 15.625)
   },
   pickOneorBothText: {
     opacity: 0.7,
-    color: "rgb(67, 33, 140)",
+    color: "#6a0dad",
     fontSize: Math.round(width / 25)
   }
 });

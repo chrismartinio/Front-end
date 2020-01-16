@@ -442,7 +442,7 @@ class Interests extends Component {
                 backgroundColor:
                   this.state.likesArray.indexOf(e) === -1
                     ? "#fff"
-                    : "rgb(67, 33, 140)"
+                    : "#6a0dad"
               }
             ]}
             onPress={() => this.handlePress(e)}
@@ -453,7 +453,7 @@ class Interests extends Component {
                 {
                   color:
                     this.state.likesArray.indexOf(e) === -1
-                      ? "rgb(67, 33, 140)"
+                      ? "#6a0dad"
                       : "#fff"
                 }
               ]}
@@ -537,7 +537,7 @@ const { height, width } = Dimensions.get("window");
 
 const styles = StyleSheet.create({
   likeButton: {
-    color: "rgb(67, 33, 140)",
+    color: "#6a0dad",
     fontSize: 20
   },
   likeButtonWrap: {
@@ -545,7 +545,7 @@ const styles = StyleSheet.create({
     padding: Math.round(width / 37.5),
     borderRadius: 40,
     borderWidth: 2,
-    borderColor: "rgb(67, 33, 140)",
+    borderColor: "#6a0dad",
     width: "auto",
     minWidth: "25%",
     marginLeft: Math.round(width / 125),
@@ -554,10 +554,10 @@ const styles = StyleSheet.create({
     marginBottom: Math.round(width / 37.5)
   },
   imInterestedInText: {
-    color: "rgb(67, 33, 140)",
+    color: "#6a0dad",
     fontSize: 24
   },
-  pick3Text: { opacity: 0.7, color: "rgb(67, 33, 140)" },
+  pick3Text: { opacity: 0.7, color: "#6a0dad" },
   likesWrap: {
     flexDirection: "row",
     flexWrap: "wrap",

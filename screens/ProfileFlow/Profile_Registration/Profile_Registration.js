@@ -457,7 +457,7 @@ const styles = StyleSheet.create({
     marginBottom: 48
   },
   joinBlindlyText: {
-    color: "rgb(67, 33, 140)",
+    color: "#6a0dad",
     fontSize: Math.round(width / 15),
     top: 10,
     fontWeight: "500"

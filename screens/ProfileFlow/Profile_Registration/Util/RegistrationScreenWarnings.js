@@ -4,7 +4,7 @@ import { Icon } from "react-native-elements";
 const { height, width } = Dimensions.get("window");
 const styles = StyleSheet.create({
   warningText: {
-    color: "rgb(67, 33, 140)",
+    color: "#6a0dad",
     fontSize: Math.round(width / 37.5),
     paddingTop: "3%",
     fontWeight: "bold"
@@ -80,7 +80,7 @@ export const emptyGenderWarning = (
       <Icon
         type="font-awesome"
         name="exclamation-circle"
-        color="rgb(67, 33, 140)"
+        color="#6a0dad"
         iconStyle={{ top: 3 }}
       />
       <Text style={styles.warningText}>
@@ -99,7 +99,7 @@ export const invalidLikesWarning = (
       <Icon
         type="font-awesome"
         name="exclamation-circle"
-        color="rgb(67, 33, 140)"
+        color="#6a0dad"
         iconStyle={{ top: 3 }}
       />
       <Text style={styles.warningText}>{"   "}Please select 3 interests</Text>
@@ -116,7 +116,7 @@ export const emptyCityWarning = (
       <Icon
         type="font-awesome"
         name="exclamation-circle"
-        color="rgb(67, 33, 140)"
+        color="#6a0dad"
         iconStyle={{ top: 3 }}
       />
       <Text style={styles.warningText}>{"   "}Please select a city</Text>

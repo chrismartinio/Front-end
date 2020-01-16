@@ -51,8 +51,8 @@ class CSlider extends React.Component {
           value={this.props.value}
           minimumValue={this.props.minimumValue}
           maximumValue={this.props.maximumValue}
-          minimumTrackTintColor={"rgb(67, 33, 140)"}
-          maximumTrackTintColor={"rgb(67, 33, 140)"}
+          minimumTrackTintColor={"#6a0dad"}
+          maximumTrackTintColor={"#6a0dad"}
           step={1}
           onSlidingComplete={value => {
             this.handleCallbackListener(value);
@@ -83,7 +83,7 @@ const styles = StyleSheet.create({
     width: "100%"
   },
   text: {
-    color: "rgb(67, 33, 140)"
+    color: "#6a0dad"
   }
 });
 
