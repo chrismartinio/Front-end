@@ -707,7 +707,8 @@ const styles = StyleSheet.create({
     paddingBottom: 7.5,
     width: "auto",
     borderRadius: 40,
-    borderWidth: 2,
+    borderWidth: 1,
+    backgroundColor: "#eeeaf3",
     borderColor: "#6a0dad",
     margin: 5
   },
