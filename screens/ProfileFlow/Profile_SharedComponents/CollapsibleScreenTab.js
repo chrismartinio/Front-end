@@ -117,7 +117,7 @@ export default function CollapsibleScreenTab(props) {
           <Icon
             type="font-awesome"
             name="check-circle"
-            color="rgb(67, 33, 140)"
+            color="#6a0dad"
             iconStyle={{ bottom: 25 }}
           />
         );
@@ -128,7 +128,7 @@ export default function CollapsibleScreenTab(props) {
             size={2}
             rotate={props.componentToggle ? 0 : 270}
             style={{ bottom: 17, right: 5 }}
-            color="rgb(67, 33, 140)"
+            color="#6a0dad"
           />
         );
 
@@ -137,7 +137,7 @@ export default function CollapsibleScreenTab(props) {
           <Icon
             type="font-awesome"
             name="exclamation-circle"
-            color="rgb(67, 33, 140)"
+            color="#6a0dad"
             iconStyle={{ bottom: 25 }}
           />
         );
@@ -148,7 +148,7 @@ export default function CollapsibleScreenTab(props) {
             size={2}
             rotate={props.componentToggle ? 0 : 270}
             style={{ bottom: 15, right: 5 }}
-            color="rgb(67, 33, 140)"
+            color="#6a0dad"
           />
         );
     }
@@ -169,7 +169,7 @@ export default function CollapsibleScreenTab(props) {
         >
           <Text
             style={{
-              color: "rgb(67, 33, 140)",
+              color: "#6a0dad",
               fontSize: Math.round(width / 17.625),
               fontWeight: "500"
             }}
