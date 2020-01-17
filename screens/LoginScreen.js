@@ -96,10 +96,10 @@ class LoginScreen extends React.Component {
   //Profile Services uses
   async componentDidMount() {
     //Reset Redux at the beginning
-    //this.props.SetJwtAction(null);
-    //this.props.ResetReduxDataAction({
-    //  reset: true
-    //});
+    this.props.SetJwtAction(null);
+    this.props.ResetReduxDataAction({
+      reset: true
+    });
 
     ///////////////////////////////
     //LOCALSTORAGE SECTION (SQLITE)
@@ -451,7 +451,8 @@ class LoginScreen extends React.Component {
             //If Navigate to Profile, in side linkscreen has set a guid
             onPress={() => {
               this.props.SetGUIDAction({
-                guid: "5de42b16b4dc5b1fba94e1d4"
+                guid: "5de42b16b4dc5b1fba94e1d4",
+                //guid: "5e119b146ebb5e4b3c2fff6f"
               });
               this.props.SetAboutYouDataAction({
                 firstName: "KaChi",
@@ -473,7 +474,8 @@ class LoginScreen extends React.Component {
               //TESTING USE (TEMP)
               //Set Device user GUID
               this.props.SetGUIDAction({
-                guid: "5e0f04d2ed63ee02f3999dea"
+                guid: "5e0f04d2ed63ee02f3999dea",
+                //guid: "5e119b146ebb5e4b3c2fff6f"
               });
               this.props.SetAboutYouDataAction({
                 firstName: "te st",

@@ -173,7 +173,6 @@ class ProfileScreen extends React.Component {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        //guid: this.guid,
         guid: this.guid,
         collection: "aboutYou"
       })
@@ -183,7 +182,6 @@ class ProfileScreen extends React.Component {
         let object = JSON.parse(JSON.stringify(res));
         //console.log(object);
         //SUCCESS ON QUERYING DATA
-
         if (object.success) {
           let {
             firstName,
@@ -217,16 +215,17 @@ class ProfileScreen extends React.Component {
           });
 
           //LocalStorage
+          //Check If this profile screen belongs to Device's User
           if (this.guid === this.props.CreateProfileDataReducer.guid) {
             //Store to device_user_createAccount
             let insertSqlStatement =
-              "INSERT OR REPLACE into device_user_createAccount(id, addressLatitude, addressLongitude) " +
-              "values(1, ?, ?);";
+              "INSERT OR REPLACE into device_user_createAccount(id, guid, addressLatitude, addressLongitude) " +
+              "values(1, ?, ?, ?);";
 
             let { success } = await insertDataIntoLocalStorage(
               insertSqlStatement,
               "device_user_createAccount",
-              [addressLatitude, addressLongitude],
+              [this.guid, addressLatitude, addressLongitude],
               false
             );
 
@@ -280,6 +279,7 @@ class ProfileScreen extends React.Component {
               //handle error on inserting data into localStorage
             }
           } else {
+            //If this profile screen not belongs device's user, it must be matched user profile
             //here is store to matched's user tables
             console.log("store matched profile info");
             //Find id by GUID
@@ -336,7 +336,6 @@ class ProfileScreen extends React.Component {
         //console.log(err);
         //HANDLE ANY CATCHED ERRORS
         //AND WILL TRY TO GET DATA FROM LOCALSTORAGE
-
         //LocalStorage
         //Check if localstorage guid === current device's user guid
         if (this.guid === this.props.CreateProfileDataReducer.guid) {
@@ -367,6 +366,16 @@ class ProfileScreen extends React.Component {
             createAccountObject.success &&
             imageProcessingObject.success
           ) {
+            let { guid } = createAccountObject.result.rows._array[0];
+            //if there is already a localstroage guid
+            //and if that guid doesn't match the guid that is inside redux guid
+            //then set the screen to false
+            if (guid !== this.props.CreateProfileDataReducer.guid) {
+              return this.setState({
+                isSuccess: false
+              });
+            }
+
             let {
               firstName,
               lastName,

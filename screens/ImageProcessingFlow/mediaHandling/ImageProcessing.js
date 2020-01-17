@@ -66,12 +66,15 @@ exports.getAllImages = () => {
 
 exports.sendImages = async (images, platform, body) => {
   let data = createFormDataMulti(images, platform.OS, body);
+
+  console.log(data);
+
   let success = await fetch(
     `${server_imageProcessing}/api/imageProcessing/upload`,
     {
       method: "POST",
       headers: {
-        "Accept": "application/json",
+        Accept: "application/json",
         "Content-Type": "application/json"
       },
       body: data
