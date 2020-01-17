@@ -93,7 +93,7 @@ class SelfieScreen extends Component {
 
 const styles = StyleSheet.create({
   button: {
-    color: "rgb(67, 33, 140)",
+    color: "#6a0dad",
     fontSize: 15
   },
   ButtonWrap: {
@@ -101,7 +101,7 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 40,
     borderWidth: 2,
-    borderColor: "rgb(67, 33, 140)",
+    borderColor: "#6a0dad",
     width: "90%",
     margin: 5
   }
