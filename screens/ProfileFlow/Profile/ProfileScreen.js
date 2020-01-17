@@ -227,7 +227,7 @@ class ProfileScreen extends React.Component {
               insertSqlStatement,
               "device_user_createAccount",
               [addressLatitude, addressLongitude],
-              true
+              false
             );
 
             //Store to device_user_aboutYou
@@ -239,7 +239,7 @@ class ProfileScreen extends React.Component {
               insertSqlStatement,
               "device_user_aboutYou",
               [firstName, lastName, birthDate, userBio, city, state, zipCode],
-              true
+              false
             );
 
             //Store to device_user_interests
@@ -255,7 +255,7 @@ class ProfileScreen extends React.Component {
               insertSqlStatement,
               "device_user_interests",
               [json_likesArray],
-              true
+              false
             );
 
             //Store to device_user_imageProcessing
@@ -267,7 +267,7 @@ class ProfileScreen extends React.Component {
               insertSqlStatement,
               "device_user_imageProcessing",
               [imageUrl],
-              true
+              false
             );
 
             //store image url to redux
@@ -322,7 +322,7 @@ class ProfileScreen extends React.Component {
                 json_likesArray,
                 imageUrl
               ],
-              true
+              false
             );
 
             return;
