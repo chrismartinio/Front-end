@@ -29,7 +29,7 @@ import LoadingScreen from "../../sharedComponents/LoadingScreen";
 
 import InputMenu from "./Chat_SharedComponents/InputMenu";
 
-import { localhost } from "../../config/ipconfig";
+import { server_chat } from "../../config/ipconfig";
 
 const { height, width } = Dimensions.get("window");
 
@@ -83,7 +83,7 @@ class MinuteChatRoomScreen extends React.Component {
 
     this.roomGuid = this.props.navigation.state.params.matchRoomGuid;
     this.token = "";
-    this.socket = io(`http://${localhost}:3060/${this.roomGuid}`, {
+    this.socket = io(`${server_chat}/${this.roomGuid}`, {
       forceNew: true,
       transportOptions: {
         polling: {
