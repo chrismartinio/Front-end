@@ -3,6 +3,7 @@ import io from "socket.io-client";
 export function onlineIndicator(user) {
   console.log('Online indicator activated');
   const socket = io(`http://192.168.4.151:5040/?token=${user}`);
+  /* sending the user as a token so the server can handle disconnecting the user for increase opitmization*/
   
   socket.on('connect', () => {
     console.log('Connected to server'); // true
