@@ -28,6 +28,8 @@ import { server_pushNotification } from "../config/ipconfig";
 
 import Footer from "../sharedComponents/Footer";
 
+import {onlineIndicator} from "../screens/ChatFlow/Util/onlinePresence.js"
+
 const { height, width } = Dimensions.get("window");
 
 class HomeScreen extends React.Component {
@@ -43,7 +45,8 @@ class HomeScreen extends React.Component {
 
   async componentDidMount() {
     this.guid = await this.props.CreateProfileDataReducer.guid;
-
+    onlineIndicator(this.guid)
+    
     this.user_firstName = await this.props.CreateProfileDataReducer.aboutYouData
       .firstName;
 
