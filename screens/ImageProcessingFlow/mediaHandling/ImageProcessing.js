@@ -1,4 +1,5 @@
 import { server_imageProcessing } from "../../../config/ipconfig";
+import axios from "axios";
 
 const createFormData = (photo, operatingSystem, body) => {
   const data = new FormData();
@@ -64,24 +65,38 @@ exports.getAllImages = () => {
 };
 */
 
-exports.sendImages = async (images, platform, body) => {
-  let data = createFormDataMulti(images, platform.OS, body);
+async function detectFace(imageFile) {
+  console.log("Detecting Face");
+  const file = {
+    uri: imageFile,
+    name: "Pic001",
+    type: "image"
+  };
+  const formData = new FormData();
+  formData.append("file", file);
+  //console.log(formData);
 
-  let imageFile = images[0].node.image.uri;
-  await fetch(`${server_imageProcessing}/api/detectFace`, {
-    method: "POST",
-    headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json"
-    },
-    body: imageFile
-  })
+  axios
+    .post(`${server_imageProcessing}/api/detectFace`, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data"
+      }
+    })
     .then(res => {
-      console.log(res);
+      console.log(res.data);
     })
     .catch(err => {
       console.log(err);
     });
+}
+
+exports.sendImages = async (images, platform, body) => {
+  let data = createFormDataMulti(images, platform.OS, body);
+
+  let imageFile = images[0].node.image.uri;
+  console.log(imageFile);
+
+  await detectFace(imageFile);
 
   let success = await fetch(
     `${server_imageProcessing}/api/imageProcessing/upload`,
@@ -95,12 +110,12 @@ exports.sendImages = async (images, platform, body) => {
     }
   )
     .then(res => {
-      console.log(res);
+      //console.log(res);
       return res;
     })
     .then(res => res.json())
     .then(res => {
-      console.log(res);
+      //console.log(res);
       console.log("Upload success!");
       if (!res.success) {
         throw new Error("Fail");
