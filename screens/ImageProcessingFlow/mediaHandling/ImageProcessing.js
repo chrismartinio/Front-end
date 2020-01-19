@@ -27,7 +27,7 @@ exports.encodeImage = (currentImage, Platform, metaData, cb) => {
 
 const createFormDataMulti = (images, operatingSystem, body) => {
   const data = new FormData();
-  console.log("BODDYYYYY ", body);
+  //console.log("BODDYYYYY ", body);
   images.forEach((el, id) => {
     if (el) {
       data.append(`photos`, {
@@ -65,38 +65,51 @@ exports.getAllImages = () => {
 };
 */
 
-async function detectFace(imageFile) {
+async function detectFace(imagePath) {
   console.log("Detecting Face");
-  const file = {
-    uri: imageFile,
-    name: "Pic001",
-    type: "image"
-  };
+  let fixedImagePath = imagePath.replace(/%25/g, "%").slice(7);
   const formData = new FormData();
-  formData.append("file", file);
-  //console.log(formData);
+  formData.append("file", imagePath);
+  console.log(formData);
 
-  axios
-    .post(`${server_imageProcessing}/api/detectFace`, formData, {
-      headers: {
-        "Content-Type": "multipart/form-data"
-      }
-    })
-    .then(res => {
-      console.log(res.data);
-    })
-    .catch(err => {
-      console.log(err);
-    });
+  fetch(`https://devbackend.blindlydate.com/api/detectFace`, {
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json"
+    },
+    body: formData
+  })
+    .then(res => res.json())
+    .then(res => console.log(res))
+    .catch(err => console.log(err));
+
+/*
+  let config = {
+    headers: {
+      file: value
+    }
+  };
+
+  axios.post("https://devbackend.blindlydate.com/api/detectFace", formData, config);
+  */
+  /*
+  axios({
+    method: "post",
+    url: "https://devbackend.blindlydate.com/api/detectFace",
+    data: formData,
+    config: { headers: { "Content-Type": "multipart/form-data" } }
+  })
+    .then(res => console.log(res.data))
+    .catch(err => console.log(err));
+    */
 }
 
 exports.sendImages = async (images, platform, body) => {
   let data = createFormDataMulti(images, platform.OS, body);
+  //console.log(data);
 
-  let imageFile = images[0].node.image.uri;
-  console.log(imageFile);
-
-  await detectFace(imageFile);
+  await detectFace(images[0].node.image.uri);
 
   let success = await fetch(
     `${server_imageProcessing}/api/imageProcessing/upload`,
