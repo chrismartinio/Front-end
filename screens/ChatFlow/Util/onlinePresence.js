@@ -1,5 +1,5 @@
 import io from "socket.io-client";
-import { server_presence } from "../../../config/ipconfig";
+import { server_presence, myIP } from "../../../config/ipconfig";
 
 export function onlineIndicator(user) {
   console.log('Online indicator activated');
@@ -49,8 +49,8 @@ export function onlineIndicator(user) {
 
 export function getOnlineStatus(user) {
   console.log(`fetching (${user}) status`);
-  fetch(`${server_presence}/api/presence`, {
-    method: "GET",
+  fetch(`${myIP}/api/presence/status`, {
+    method: "POST",
     headers: {
       "Content-Type": "application/json"
     },
