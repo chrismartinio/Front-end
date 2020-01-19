@@ -46,3 +46,22 @@ export function onlineIndicator(user) {
 
 
 }
+
+export function getOnlineStatu(user) {
+  console.log(`fetching (${user}) status`);
+  fetch(`${server_presence}/api/presence`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      userGuid: user,
+    })
+  })
+  .then(() => {
+    console.log(`Request made for (${user}) status`);
+  })
+  .catch((error) => {
+    console.log('Error', error);
+  })
+}
