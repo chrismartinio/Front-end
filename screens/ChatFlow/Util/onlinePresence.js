@@ -47,7 +47,7 @@ export function onlineIndicator(user) {
 
 }
 
-export function getOnlineStatu(user) {
+export function getOnlineStatus(user) {
   console.log(`fetching (${user}) status`);
   fetch(`${server_presence}/api/presence`, {
     method: "GET",
