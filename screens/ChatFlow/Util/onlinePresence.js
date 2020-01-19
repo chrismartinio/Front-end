@@ -1,20 +1,20 @@
 import io from "socket.io-client";
+import { server_presence } from "../../../config/ipconfig";
 
 export function onlineIndicator(user) {
   console.log('Online indicator activated');
   const socket = io(`http://192.168.4.151:5040/?token=${user}`);
   /* sending the user as a token so the server can handle disconnecting the user for increase opitmization*/
-  
   socket.on('connect', () => {
     console.log('Connected to server'); // true
-    fetch(`http://192.168.4.151:5040/api/presence`, {
+    fetch(`${server_presence}/api/presence`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
         userGuid: user,
-        status: true 
+        status: true
       })
     })
     .then(() => {
@@ -33,7 +33,7 @@ export function onlineIndicator(user) {
   //     },
   //     body: JSON.stringify({
   //       userGuid: user,
-  //       status: false 
+  //       status: false
   //     })
   //   })
   //   .then(() => {
@@ -44,6 +44,5 @@ export function onlineIndicator(user) {
   //   })
   // })
 
-  
-}
 
+}
