@@ -5,8 +5,12 @@ import {
   Text,
   TouchableOpacity,
   Platform,
-  StyleSheet
+  StyleSheet,
+  Dimensions,
+  Button
 } from "react-native";
+import { Icon } from "react-native-elements";
+import AntIcon from "react-native-vector-icons/AntDesign";
 
 import { connect } from "react-redux";
 import * as uploadImgActions from "../../../storage/actions/ImageProcessingActions/uploadMediaActions";
@@ -14,6 +18,7 @@ import * as uploadImgActions from "../../../storage/actions/ImageProcessingActio
 import PromptPanel from "./PromptPanel.js";
 
 import ImgProcessing from "../mediaHandling/ImageProcessing.js";
+const { height, width } = Dimensions.get("window");
 
 const uploadImages = async (
   imgArr,
@@ -39,10 +44,41 @@ const uploadImages = async (
 const PromptSection = props => (
   <ScrollView>
     {/*Gallery Camera Options*/}
-    <PromptPanel />
+    {/* <PromptPanel /> */}
+    <View style={styles.iconView}>
+      <AntIcon name="camera" color="#6a0dad" size={50} />
+    </View>
+    
 
     {/*Upload Button*/}
-    <TouchableOpacity
+    <View style={styles.textView}>
+        <Text style={styles.textStyle}>Take a selfie to use as</Text>
+        <Text style={styles.textStyle}>your profile photo</Text>
+
+          {/* <Button
+            title="Upload Photo"
+            onPress={e => this.localLogin(e)}
+            color="white"
+            key="100"
+            onPress={() => {
+              if (props.selectedImages[0] === null) {
+                return alert("Please take a picture");
+              }
+      
+              console.log(props.selectedImages)
+              console.log(props.guid)
+              uploadImages(
+                props.selectedImages,
+                props.captions,
+                props,
+                Platform,
+                props.guid,
+                props.handleisUploaded
+              );
+            }}
+          /> */}
+        </View>
+    {/* <TouchableOpacity
       style={styles.uploadButton}
       onPress={() => {
         if (props.selectedImages[0] === null) {
@@ -61,8 +97,8 @@ const PromptSection = props => (
         );
       }}
     >
-      <Text style={{ color: "#fff" }}>Upload Photo</Text>
-    </TouchableOpacity>
+      <Text style={{ color: "white" }}>Upload Photo</Text>
+    </TouchableOpacity> */}
   </ScrollView>
 );
 
@@ -78,11 +114,46 @@ const styles = StyleSheet.create({
     display: "flex"
   },
   uploadButton: {
-    backgroundColor: "#e300d8",
-    alignItems: "center",
-    padding: 10,
-    margin: 15,
-    borderRadius: 5
+    borderRadius: 20,
+    color: "white",
+    backgroundColor: "#6a0dad",
+    paddingLeft: width * 0.26,
+    paddingRight: width * 0.26,
+    alignSelf: "center",
+    fontStyle: "italic",
+    margin: 5
+  },
+  buttonStyle: {
+    borderRadius: 20,
+    color: "white",
+    backgroundColor: "#6a0dad",
+    paddingLeft: width * 0.26,
+    paddingRight: width * 0.26,
+    alignSelf: "center",
+    fontStyle: "italic",
+    margin: 5
+  },
+    textView: {
+      color: "#6a0dad",
+      paddingLeft: width * 0.26,
+      paddingRight: width * 0.26,
+      alignSelf: "center",
+      fontStyle: "italic",
+      textAlign: "center",
+      margin: 5
+    },
+    textStyle: {
+      textAlign: "center",
+      color: "#6a0dad",
+      fontFamily: "HelveticaNeue"
+    },
+  iconView: {
+    paddingLeft: width * 0.26,
+    paddingRight: width * 0.26,
+    alignSelf: "center",
+    fontStyle: "italic",
+    margin: 50,
+    marginTop: height/3.5
   }
 });
 
