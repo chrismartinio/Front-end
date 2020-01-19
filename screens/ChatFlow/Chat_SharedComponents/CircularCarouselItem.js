@@ -20,6 +20,8 @@ import {
   calculateLastMessageDate
 } from "../Util/ConnectionsScreenFunctions.js";
 
+import {getOnlineStatus} from "../../../screens/ChatFlow/Util/onlinePresence.js"
+
 function calculateAge(birthday) {
   birthday = new Date(birthday);
   // birthday is a date
@@ -69,6 +71,7 @@ export default class CircularCarouselItem extends React.Component {
 
   render() {
     let nameFont = shortName(this.props.matchUserData.firstName);
+    getOnlineStatus(this.props.matchUserData.userGuid);
     let ageAddressFont = shortAgeAndAddressSTR(
       this.props.matchUserData.age + " , " + this.props.matchUserData.city
     );
