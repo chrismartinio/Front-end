@@ -23,14 +23,16 @@ const uploadImages = async (
   guid,
   handleisUploaded
 ) => {
-  let success = await ImgProcessing.sendImages(imgArr, platform, {
+  let imageResult = await ImgProcessing.sendImages(imgArr, platform, {
     captions,
     guid: guid
   });
-  if (success) {
+  if (imageResult.success) {
     handleisUploaded();
     props.clearImgSelection();
     props.clearCaptions();
+  } else if (!imageResult.success && imageResult.status === 422) {
+    alert("Invalid Photo. Please try again");
   } else {
     alert("Failed Upload. Please try again!");
   }
