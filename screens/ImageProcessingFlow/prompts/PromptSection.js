@@ -42,27 +42,29 @@ const PromptSection = props => (
     <PromptPanel />
 
     {/*Upload Button*/}
-    <TouchableOpacity
-      style={styles.uploadButton}
-      onPress={() => {
-        if (props.selectedImages[0] === null) {
-          return alert("Please take a picture");
-        }
+    {props.selectedImages[0] !== null && (
+      <TouchableOpacity
+        style={styles.uploadButton}
+        onPress={() => {
+          if (props.selectedImages[0] === null) {
+            return alert("Please take a picture");
+          }
 
-        console.log(props.selectedImages)
-        console.log(props.guid)
-        uploadImages(
-          props.selectedImages,
-          props.captions,
-          props,
-          Platform,
-          props.guid,
-          props.handleisUploaded
-        );
-      }}
-    >
-      <Text style={{ color: "#fff" }}>Upload Photo</Text>
-    </TouchableOpacity>
+          console.log(props.selectedImages);
+          console.log(props.guid);
+          uploadImages(
+            props.selectedImages,
+            props.captions,
+            props,
+            Platform,
+            props.guid,
+            props.handleisUploaded
+          );
+        }}
+      >
+        <Text style={{ color: "#fff" }}>Upload Photo</Text>
+      </TouchableOpacity>
+    )}
   </ScrollView>
 );
 

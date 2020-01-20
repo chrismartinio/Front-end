@@ -9,6 +9,8 @@ import {
   Dimensions
 } from "react-native";
 
+import AntIcon from "react-native-vector-icons/AntDesign";
+
 import { connect } from "react-redux";
 import * as uploadImgActions from "../../../storage/actions/ImageProcessingActions/uploadMediaActions";
 const { height, width } = Dimensions.get("window");
@@ -30,15 +32,18 @@ const PhotoPrompt = props => {
     <Image style={styles.imagePreview} source={{ uri: imageUri }} />
   ) : (
     <View>
-      <Text style={[{ fontSize: 70 }, styles.addText]}>+</Text>
-      <Text style={[{ fontSize: 15 }, styles.addText]}>Add</Text>
+      <View style={styles.iconView}>
+        <AntIcon name="camera" color="#6a0dad" size={50} />
+      </View>
+      <Text style={styles.textStyle}>Take a selfie to use as</Text>
+      <Text style={styles.textStyle}>your profile photo</Text>
     </View>
   );
 
   return (
     <View style={styles.container}>
       <TouchableOpacity
-        style={styles.addBox}
+        //style={styles.addBox}
         onPress={() => {
           addIndexToggleSelection(key, true);
         }}
@@ -69,7 +74,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     borderColor: "black",
     borderWidth: 3,
-    borderStyle: 'dotted',
+    borderStyle: "dotted",
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 2,
@@ -87,7 +92,20 @@ const styles = StyleSheet.create({
   },
   imagePreview: {
     width: width * 0.93,
-    height: width * 0.93,
+    height: width * 0.93
+  },
+  iconView: {
+    paddingLeft: width * 0.26,
+    paddingRight: width * 0.26,
+    alignSelf: "center",
+    fontStyle: "italic",
+    margin: 50,
+    marginTop: height / 3.5
+  },
+  textStyle: {
+    textAlign: "center",
+    color: "#6a0dad",
+    fontFamily: "HelveticaNeue"
   }
 });
 
