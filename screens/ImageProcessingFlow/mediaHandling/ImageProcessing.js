@@ -42,8 +42,6 @@ const createFormDataMulti = (images, operatingSystem, body) => {
 
       data.append("guid", body.guid);
       data.append("caption", body.captions[id]);
-      data.append("filePath", el.node.image.uri.replace("file://", ""));
-      data.append("isPhone", Constants.isDevice ? true : false);
     }
   });
 
