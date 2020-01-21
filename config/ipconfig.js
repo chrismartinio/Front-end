@@ -34,7 +34,7 @@ export const server_match = awsDevServer;
 ///////////////////////////////
 //     IMAGEPROCESSING       //
 ///////////////////////////////
-export const server_imageProcessing = awsDevServer;
+export const server_imageProcessing = myIP;
 
 ///////////////////////////////
 //     FRONTEND_CONFIG       //
