@@ -23,14 +23,16 @@ const uploadImages = async (
   guid,
   handleisUploaded
 ) => {
-  let success = await ImgProcessing.sendImages(imgArr, platform, {
+  let imageResult = await ImgProcessing.sendImages(imgArr, platform, {
     captions,
     guid: guid
   });
-  if (success) {
+  if (imageResult.success) {
     handleisUploaded();
     props.clearImgSelection();
     props.clearCaptions();
+  } else if (!imageResult.success && imageResult.status === 422) {
+    alert("Invalid Photo. Please try again");
   } else {
     alert("Failed Upload. Please try again!");
   }
@@ -42,27 +44,29 @@ const PromptSection = props => (
     <PromptPanel />
 
     {/*Upload Button*/}
-    <TouchableOpacity
-      style={styles.uploadButton}
-      onPress={() => {
-        if (props.selectedImages[0] === null) {
-          return alert("Please take a picture");
-        }
+    {props.selectedImages[0] !== null && (
+      <TouchableOpacity
+        style={styles.uploadButton}
+        onPress={() => {
+          if (props.selectedImages[0] === null) {
+            return alert("Please take a picture");
+          }
 
-        console.log(props.selectedImages)
-        console.log(props.guid)
-        uploadImages(
-          props.selectedImages,
-          props.captions,
-          props,
-          Platform,
-          props.guid,
-          props.handleisUploaded
-        );
-      }}
-    >
-      <Text style={{ color: "#fff" }}>Upload Photo</Text>
-    </TouchableOpacity>
+          console.log(props.selectedImages);
+          console.log(props.guid);
+          uploadImages(
+            props.selectedImages,
+            props.captions,
+            props,
+            Platform,
+            props.guid,
+            props.handleisUploaded
+          );
+        }}
+      >
+        <Text style={{ color: "#fff" }}>Upload Photo</Text>
+      </TouchableOpacity>
+    )}
   </ScrollView>
 );
 

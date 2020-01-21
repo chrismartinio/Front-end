@@ -1,4 +1,4 @@
-import * as React from 'react';
+import * as React from "react";
 import {
   Text,
   View,
@@ -7,17 +7,17 @@ import {
   Button,
   Dimensions,
   TouchableOpacity
-} from 'react-native';
-import { degToRad } from '../Util/ConnectionsScreenFunctions.js';
+} from "react-native";
+import { degToRad } from "../Util/ConnectionsScreenFunctions.js";
 import {
   FlingGestureHandler,
   Directions,
   State
-} from 'react-native-gesture-handler';
+} from "react-native-gesture-handler";
 
-const { height, width } = Dimensions.get('window');
+const { height, width } = Dimensions.get("window");
 
-import CircularCarouselItem from './CircularCarouselItem';
+import CircularCarouselItem from "./CircularCarouselItem";
 
 export default class CircularCarousel extends React.Component {
   constructor(props) {
@@ -143,7 +143,8 @@ export default class CircularCarousel extends React.Component {
           if (nativeEvent.state === State.ACTIVE) {
             this.goUp();
           }
-        }}>
+        }}
+      >
         <FlingGestureHandler
           direction={Directions.DOWN}
           numberOfPointers={1}
@@ -151,8 +152,20 @@ export default class CircularCarousel extends React.Component {
             if (nativeEvent.state === State.ACTIVE) {
               this.goDown();
             }
-          }}>
+          }}
+        >
           <View>
+            {/* worst case
+              <Button
+              title={"next"}
+              color={"white"}
+              onPress={this.nextMatchList}
+            />
+            <Button
+              title={"previous"}
+              color={"white"}
+              onPress={this.previousMatchedList}
+            />*/}
             <View
               style={[
                 styles.circularCarousel,
@@ -161,7 +174,8 @@ export default class CircularCarousel extends React.Component {
                   height: this.circleSize,
                   borderRadius: this.circleSize / 2
                 }
-              ]}>
+              ]}
+            >
               {displayItems}
             </View>
           </View>
@@ -173,17 +187,17 @@ export default class CircularCarousel extends React.Component {
 
 const styles = StyleSheet.create({
   circularCarousel: {
-    backgroundColor: 'transparent',
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: "transparent",
+    alignItems: "center",
+    justifyContent: "center",
     borderWidth: 3,
     borderRadius: 500,
-    borderStyle: 'dotted',
-    borderColor: '#fff',
-    left: '20%'
+    borderStyle: "dotted",
+    borderColor: "#fff",
+    left: "20%"
   },
   item: {
-    backgroundColor: '#fff',
-    position: 'absolute'
+    backgroundColor: "#fff",
+    position: "absolute"
   }
 });

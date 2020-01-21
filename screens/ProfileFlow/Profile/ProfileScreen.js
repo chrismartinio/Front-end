@@ -333,6 +333,7 @@ class ProfileScreen extends React.Component {
         }
       })
       .catch(async err => {
+        console.log("ERROR")
         //console.log(err);
         //HANDLE ANY CATCHED ERRORS
         //AND WILL TRY TO GET DATA FROM LOCALSTORAGE

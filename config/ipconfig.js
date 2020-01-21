@@ -2,7 +2,7 @@
 //     SOME IPs     //
 //////////////////////
 //3.225.209.229
-const myIP = "http://74.80.250.210:4000";
+const myIP = "http://74.80.250.210:4040";
 const awsDevServer = "https://devbackend.blindlydate.com";
 const awsProdServer = "https://backend.blindlydate.com";
 
@@ -34,7 +34,7 @@ export const server_match = awsDevServer;
 ///////////////////////////////
 //     IMAGEPROCESSING       //
 ///////////////////////////////
-export const server_imageProcessing = awsDevServer;
+export const server_imageProcessing = myIP;
 
 ///////////////////////////////
 //     FRONTEND_CONFIG       //
