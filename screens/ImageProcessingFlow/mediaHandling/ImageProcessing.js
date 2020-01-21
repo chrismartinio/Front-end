@@ -1,4 +1,6 @@
 import { server_imageProcessing } from "../../../config/ipconfig";
+import axios from "axios";
+import Constants from "expo-constants";
 
 const createFormData = (photo, operatingSystem, body) => {
   const data = new FormData();
@@ -26,7 +28,7 @@ exports.encodeImage = (currentImage, Platform, metaData, cb) => {
 
 const createFormDataMulti = (images, operatingSystem, body) => {
   const data = new FormData();
-  console.log("BODDYYYYY ", body);
+  //console.log("BODDYYYYY ", body);
   images.forEach((el, id) => {
     if (el) {
       data.append(`photos`, {
@@ -67,8 +69,6 @@ exports.getAllImages = () => {
 exports.sendImages = async (images, platform, body) => {
   let data = createFormDataMulti(images, platform.OS, body);
 
-  console.log(data);
-
   let success = await fetch(
     `${server_imageProcessing}/api/imageProcessing/upload`,
     {
@@ -81,21 +81,27 @@ exports.sendImages = async (images, platform, body) => {
     }
   )
     .then(res => {
-      console.log(res);
+      //console.log(res);
       return res;
     })
     .then(res => res.json())
     .then(res => {
-      console.log(res);
-      console.log("Upload success!");
+      if (!res.success && res.status === 422) {
+        throw new Error("Invalid");
+      }
       if (!res.success) {
         throw new Error("Fail");
       }
-      return true;
+      console.log(res.status);
+      console.log("Upload success!");
+      return { success: true, status: 200 };
     })
     .catch(err => {
-      console.log(err);
-      return false;
+      if (err.message === "Invalid") {
+        return { success: false, status: 422 };
+      } else {
+        return { success: false, status: 500 };
+      }
     });
   return success;
 };
