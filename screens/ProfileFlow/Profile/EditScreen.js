@@ -63,7 +63,8 @@ class EditScreen extends React.Component {
         preferences: true,
         interests: true,
         wouldYouRather: true,
-        localDestination: true
+        localDestination: true,
+        imageProcessing: true
       }
     });
 
@@ -184,10 +185,11 @@ class EditScreen extends React.Component {
                       style={{
                         color: "#6a0dad",
                         fontSize: Math.round(width / 17.625),
-                        fontWeight: "500"
+                        fontWeight: "500",
+                        textAlign: "center"
                       }}
                     >
-                      Edit Photo
+                      Edit Profile Photo
                     </Text>
                   </TouchableOpacity>
                 </View>
@@ -250,6 +252,32 @@ class EditScreen extends React.Component {
                     handleToggle={this.handleToggle}
                     handlePassed={this.handlePassed}
                   />
+                </View>
+
+                {/*Photos*/}
+                <View style={{ alignItems: "center", margin: 50 }}>
+                  <TouchableOpacity
+                    style={{
+                      borderWidth: 1,
+                      borderColor: "purple",
+                      borderRadius: 25,
+                      padding: 25
+                    }}
+                    onPress={() => {
+                      this.props.navigation.navigate("PhotosEdit");
+                    }}
+                  >
+                    <Text
+                      style={{
+                        color: "#6a0dad",
+                        fontSize: Math.round(width / 17.625),
+                        fontWeight: "500",
+                        textAlign: "center"
+                      }}
+                    >
+                      Edit Photos
+                    </Text>
+                  </TouchableOpacity>
                 </View>
 
                 {/*Temporay solution for scrollView; without this would not scroll properly*/}

@@ -16,6 +16,7 @@ import SetDeviceUserImageUrlAction from "../../storage/actions/ImageProcessingAc
 import SetTimeAction from "../../storage/actions/ConfigReducerActions/SetTimeAction/";
 import { StackActions, NavigationActions } from "react-navigation";
 import ErrorScreen from "../../sharedComponents/ErrorScreen";
+import { onlineIndicator } from "../ChatFlow/Util/onlinePresence.js";
 
 function fetchRetry(url, delay, limit, fetchOptions = {}) {
   return new Promise((resolve, reject) => {
@@ -126,6 +127,7 @@ class PreSettingsScreen extends React.Component {
   async componentDidMount() {
     //Setup GUID
     this.guid = await this.props.CreateProfileDataReducer.guid;
+    onlineIndicator(this.guid);
 
     //Setup Profile Image
     await this.setProfileImage(this.guid);
