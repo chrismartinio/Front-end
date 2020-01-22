@@ -63,8 +63,34 @@ export default class LocationServices extends Component {
     }
   };
 
+  onWatchSuccess = pos => {
+    const { latitude, longitude } = pos.coords;
+    this.setState({
+      coordinate: {
+        latitude: latitude,
+        longitude: longitude
+      }
+    });
+  };
+
+  onWatchError = err => {
+    console.log('Error: ' + err.message);
+  };
+
+  watchID = null;
+
   componentDidMount() {
     this.setRegion();
+    this.watchID = navigator.geolocation.watchPosition(
+      this.onWatchSuccess,
+      this.onWatchError,
+      { enableHighAccuracy: true, timeout: 20000, maximumAge: 0 }
+    );
+  }
+
+  componentWillUnmount() {
+    console.log('clearing geolocation watch');
+    navigator.geolocation.clearWatch(this.locationWatch);
   }
 
   setRegion = () => {
@@ -113,6 +139,7 @@ export default class LocationServices extends Component {
 
   render() {
     const { coordinate, region } = this.state;
+    console.log('new coordinates from watch: ', coordinate);
     return (
       <View style={styles.container}>
         <View style={styles.titleContainer}>
@@ -126,11 +153,9 @@ export default class LocationServices extends Component {
         <MapView
           provider="google"
           style={styles.map}
-          showsUserLocation={true}
           initialRegion={region.latitude === -1 ? null : region}
-          onUserLocationChange={e =>
-            this.setCurrentLocation(e.nativeEvent.coordinate)
-          }>
+          followUserLocation
+          loadingEnabled>
           <TextInput
             value={this.state.destinationInput}
             autoCorrect={false}
