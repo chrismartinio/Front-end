@@ -33,6 +33,28 @@ function calculateAge(birthday) {
 export default class CircularCarouselItem extends React.Component {
   constructor(props) {
     super(props);
+    this.state = {
+      oStatus: 'test'
+    }
+  }
+
+  componentDidMount() {
+    console.log('log');
+    getOnlineStatus(this.props.matchUserData.userGuid)
+    .then((data) => {
+      let obj = 'darrian';
+      console.log('darrian', data);
+      if(data === true) {
+        this.setState({
+          oStatus: " online"
+        });
+      } else {
+        this.setState({
+          oStatus: " offline"
+        });
+      }
+      // return data;
+    })
   }
 
   goToPermanentChatRoom = ({
@@ -71,7 +93,6 @@ export default class CircularCarouselItem extends React.Component {
 
   render() {
     let nameFont = shortName(this.props.matchUserData.firstName);
-    getOnlineStatus(this.props.matchUserData.userGuid);
     let ageAddressFont = shortAgeAndAddressSTR(
       this.props.matchUserData.age + " , " + this.props.matchUserData.city
     );
@@ -146,6 +167,7 @@ export default class CircularCarouselItem extends React.Component {
                   }}
                 >
                   {this.props.matchUserData.firstName}
+                   {this.state.oStatus}
                   {/*this.props.matchUserData.matchLastName[0]*/}
                 </Text>
 
