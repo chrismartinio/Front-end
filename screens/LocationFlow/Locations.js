@@ -52,28 +52,51 @@ const fakeLocations = [
 export default class LocationServices extends Component {
   state = {
     region: {
+      latitude: -1,
+      longitude: -1,
+      latitudeDelta: -1,
+      longitudeDelta: -1
+    },
+    coordinate: {
       latitude: 0,
-      longitude: 0,
-      latitudeDelta: 0,
-      longitudeDelta: 0
+      longitude: 0
     }
   };
 
   componentDidMount() {
-    console.log(this.props);
+    this.setRegion();
+  }
+
+  setRegion = () => {
     return this.getCurrentLocation().then(position => {
       if (position) {
         this.setState({
+          coordinate: {
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude
+          },
           region: {
             latitude: position.coords.latitude,
             longitude: position.coords.longitude,
-            latitudeDelta: 0.02,
-            longitudeDelta: 0.02
+            latitudeDelta: 0.025,
+            longitudeDelta: 0.025
           }
         });
       }
     });
-  }
+  };
+
+  setCurrentLocation = coordinate => {
+    const results = coordinate === undefined ? {} : coordinate;
+    results === {}
+      ? null
+      : this.setState({
+          coordinate: {
+            latitude: results.latitude,
+            longitude: results.longitude
+          }
+        });
+  };
 
   getCurrentLocation = () => {
     return new Promise((resolve, reject) => {
@@ -89,6 +112,7 @@ export default class LocationServices extends Component {
   };
 
   render() {
+    const { coordinate, region } = this.state;
     return (
       <View style={styles.container}>
         <View style={styles.titleContainer}>
@@ -101,11 +125,12 @@ export default class LocationServices extends Component {
         </View>
         <MapView
           provider="google"
+          style={styles.map}
           showsUserLocation={true}
-          followsUserLocation={true}
-          region={this.state.region}
-          followsUserLocation={true}
-          style={styles.map}>
+          initialRegion={region.latitude === -1 ? null : region}
+          onUserLocationChange={e =>
+            this.setCurrentLocation(e.nativeEvent.coordinate)
+          }>
           <TextInput
             value={this.state.destinationInput}
             autoCorrect={false}
@@ -119,6 +144,12 @@ export default class LocationServices extends Component {
             style={styles.placeInputStyle}
             placeholder="How many miles?"
           />
+          <Marker
+            key="user"
+            coordinate={coordinate}
+            title={'Your location'}
+            image={flagBlueImg}
+            centerOffset={{ x: 0.5, y: 0 }}></Marker>
         </MapView>
         <View style={styles.listItemsContainer}>
           <LocationsDetailsList data={fakeLocations} />
@@ -128,7 +159,6 @@ export default class LocationServices extends Component {
   }
 }
 
-const { height, width } = Dimensions.get('window');
 const styles = StyleSheet.create({
   container: {
     margin: 0,
@@ -184,5 +214,8 @@ const styles = StyleSheet.create({
     paddingLeft: 12,
     paddingRight: 12,
     paddingBottom: 10
+  },
+  customView: {
+    width: 160
   }
 });
