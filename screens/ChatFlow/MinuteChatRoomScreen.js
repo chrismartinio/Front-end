@@ -392,7 +392,7 @@ class MinuteChatRoomScreen extends React.Component {
     //this.props.navigation.getParam.forceReRender;
     this.socket.emit("disconnect");
     //For MinuteChatRoom, direct user go back to home
-    this.props.navigation.navigate("AcceptMatching", this.state);
+    this.props.navigation.navigate("AcceptMatching", this.props.navigation.state.params);
   };
 
   exitChat = () => {
