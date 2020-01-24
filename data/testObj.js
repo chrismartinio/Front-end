@@ -604,7 +604,6 @@ export const fakeData = [
     matchCity: "Some City",
     matchState: "Some State"
   },
-  ,
   {
     matchUserGuid: "15",
     matchRoomGuid: "15",
