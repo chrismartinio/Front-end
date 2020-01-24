@@ -30,9 +30,7 @@ class AcceptMatchingScreen extends React.Component {
         <Button
           color="#fff"
           title="Back"
-          onPress={() => {
-            navigation.navigate("Home");
-          }}
+          onPress={navigation.getParam("backToHome")}
         />
       )
     };
@@ -132,6 +130,12 @@ class AcceptMatchingScreen extends React.Component {
   componentDidMount() {
     this.roomGuid = this.props.navigation.state.params.matchRoomGuid;
     this.setMatchingUserInfo(this.props.navigation.state.params);
+    //open menu
+    this.props.navigation.setParams({
+      backToHome: () => {
+        this.setDeviceUserReject();
+      }
+    });
   }
 
   componentWillUnmount() {
@@ -157,7 +161,11 @@ class AcceptMatchingScreen extends React.Component {
   setDeviceUserReject = () => {
     console.log("Device Reject");
     //emit socket for reject
-    this.socket.emit("vote", { voteData: "ghost" });
+    this.socket.emit("vote", {
+      voteData: "ghost",
+      userGuid: this.props.CreateProfileDataReducer.guid,
+      matchedUserGuid: this.state.matchUserGuid
+    });
 
     //setState
     this.setState({
@@ -265,32 +273,32 @@ class AcceptMatchingScreen extends React.Component {
 
         <View style={{ flexDirection: "row", justifyContent: "space-around" }}>
           {/*Reject/Ghost Button*/}
-          {!this.state.isDeviceUserClicked && (
-            <TouchableOpacity
-              disabled={this.state.isDeviceUserClicked}
-              onPress={() => this.setDeviceUserReject()}
-              style={{
-                borderWidth: 0.5,
-                borderRadius: 50,
-                borderColor: "#fff",
-                paddingLeft: 20,
-                paddingRight: 20,
-                paddingTop: 10,
-                paddingBottom: 10
-              }}
-            >
-              <FontAwesome5
-                color={"white"}
-                name={"ghost"}
-                size={width * 0.15}
-                solid
-              />
-            </TouchableOpacity>
-          )}
+          <TouchableOpacity
+            onPress={() => this.setDeviceUserReject()}
+            style={{
+              borderWidth: 0.5,
+              borderRadius: 50,
+              borderColor: "#fff",
+              paddingLeft: 20,
+              paddingRight: 20,
+              paddingTop: 10,
+              paddingBottom: 10,
+              backgroundColor:
+                !this.state.isDeviceUserAccept && this.state.isDeviceUserClicked
+                  ? "#fff"
+                  : "transparent"
+            }}
+          >
+            <FontAwesome5
+              color={"white"}
+              name={"ghost"}
+              size={width * 0.15}
+              solid
+            />
+          </TouchableOpacity>
 
           {/*Accept Button*/}
           <TouchableOpacity
-            disabled={this.state.isDeviceUserClicked}
             onPress={() => this.setDeviceUserAccept()}
             style={{
               borderWidth: 0.5,
@@ -300,7 +308,7 @@ class AcceptMatchingScreen extends React.Component {
               paddingRight: 20,
               paddingTop: 10,
               paddingBottom: 10,
-              backgroundColor: this.state.isDeviceUserClicked
+              backgroundColor: this.state.isDeviceUserAccept
                 ? "#fff"
                 : "transparent"
             }}

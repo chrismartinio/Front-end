@@ -224,12 +224,12 @@ class MinuteChatRoomScreen extends React.Component {
   async componentDidMount() {
     //Testing USE
     //this.interval = setInterval(this.countDown, 1000);
-    /*
+    ///*
     this.props.navigation.navigate(
       "AcceptMatching",
       this.props.navigation.state.params
     );
-    */
+    //*/
     //Testing Use
     this.minuteChatTimer_time = await this.setupTimer();
 
