@@ -19,9 +19,12 @@ import {
   TouchableHighlight,
   AppState,
   Dimensions,
-  TouchableWithoutFeedback
+  TouchableWithoutFeedback,
+  Alert
 } from "react-native";
 import { connect } from "react-redux";
+
+import Constants from "expo-constants";
 
 import io from "socket.io-client";
 
@@ -37,6 +40,8 @@ import { testobj } from "../../data/testObj";
 
 import { Icon } from "react-native-elements";
 
+import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+
 //Flow of get to this screen
 //#1
 //LoginScreen.js -> HomeScreen.js -> MatchingScreen.js -> FoundaMatchScreen.js ->
@@ -45,12 +50,13 @@ import { Icon } from "react-native-elements";
 class MinuteChatRoomScreen extends React.Component {
   static navigationOptions = ({ navigation }) => {
     return {
-      /*
       headerLeft: () => (
-        <Button title="Exit" onPress={navigation.getParam("openMenu")} />
+        <Button
+          color="#6a0dad"
+          title="Back"
+          onPress={navigation.getParam("backToHome")}
+        />
       )
-      */
-      headerLeft: null
     };
   };
 
@@ -76,7 +82,9 @@ class MinuteChatRoomScreen extends React.Component {
       matchCity: "",
       matchState: "",
       keyBoardShown: false,
-      matchInfoToggle: true
+      matchInfoToggle: true,
+      isMatchUserAccept: false,
+      isMatchUserClicked: false
     };
     this.userGuid = "";
     this.user_firstName = "";
@@ -190,6 +198,22 @@ class MinuteChatRoomScreen extends React.Component {
         this.scrollView.scrollToEnd({ animated: true });
       }
     });
+
+    //handle ghost
+    this.socket.on("ghostChat", () => {
+      if (Constants.isDevice) {
+        console.log("===phone===");
+      } else {
+        console.log("===simulator===");
+      }
+      console.log(
+        `Your match user ${this.state.matchUserGuid} ghosted You${
+          this.props.CreateProfileDataReducer.guid
+        }`
+      );
+
+      this.setState({ isMatchUserClicked: true, isMatchUserAccept: false });
+    });
   }
 
   setMatchingUserInfo = ({
@@ -221,6 +245,32 @@ class MinuteChatRoomScreen extends React.Component {
     return this.props.ConfigReducer.minuteChatTimer_time;
   };
 
+  setDeviceUserReject = () => {
+    Alert.alert(
+      "Warning!",
+      "Are you sure you want to leave?",
+      [
+        {
+          text: "Yes",
+          onPress: () => {
+            this.socket.emit("vote", {
+              voteData: "ghost",
+              userGuid: this.props.CreateProfileDataReducer.guid,
+              matchedUserGuid: this.state.matchUserGuid
+            });
+            this.props.navigation.navigate("Home");
+          }
+        },
+        {
+          text: "No",
+          onPress: () => {},
+          style: "cancel"
+        }
+      ],
+      { cancelable: false }
+    );
+  };
+
   async componentDidMount() {
     //Testing USE
     //this.interval = setInterval(this.countDown, 1000);
@@ -246,9 +296,18 @@ class MinuteChatRoomScreen extends React.Component {
     );
 
     //Ghost Button
+    /*
     this.props.navigation.setParams({
       openMenu: () => {
         this.openMenu(true);
+      }
+    });
+    */
+
+    //exit button
+    this.props.navigation.setParams({
+      backToHome: () => {
+        this.setDeviceUserReject();
       }
     });
 
@@ -308,7 +367,39 @@ class MinuteChatRoomScreen extends React.Component {
         }
       }
     }
+
+    if (
+      prevState.isMatchUserAccept !== this.state.isMatchUserAccept ||
+      prevState.isMatchUserClicked !== this.state.isMatchUserClicked
+    ) {
+      if (
+        this.state.isMatchUserAccept === false &&
+        this.state.isMatchUserClicked
+      ) {
+        console.log("Match Reject");
+        return this.backToHome();
+      }
+    }
   }
+
+  backToHome = () => {
+    console.log("Back to HomeScreen.js");
+    Alert.alert(
+      "Ops!",
+      `${
+        this.state.matchFirstName
+      } Rejected you! You will be return to Home Screen.`,
+      [
+        {
+          text: "OK",
+          onPress: () => {
+            this.props.navigation.navigate("Home");
+          }
+        }
+      ],
+      { cancelable: false }
+    );
+  };
 
   _keyboardDidShow = () => {
     this.setState({
@@ -392,7 +483,10 @@ class MinuteChatRoomScreen extends React.Component {
     //this.props.navigation.getParam.forceReRender;
     this.socket.emit("disconnect");
     //For MinuteChatRoom, direct user go back to home
-    this.props.navigation.navigate("AcceptMatching", this.props.navigation.state.params);
+    this.props.navigation.navigate(
+      "AcceptMatching",
+      this.props.navigation.state.params
+    );
   };
 
   exitChat = () => {
@@ -475,6 +569,49 @@ class MinuteChatRoomScreen extends React.Component {
     this.setState({ currentMessage });
   };
 
+  reportAlert = () => {
+    Alert.alert(
+      "Warning!",
+      "Are you sure you want to report your match user",
+      [
+        {
+          text: "Yes",
+          onPress: () => {
+            this.reportUser();
+          }
+        },
+        {
+          text: "No",
+          onPress: () => {},
+          style: "cancel"
+        }
+      ],
+      { cancelable: false }
+    );
+  };
+
+  reportUser = () => {
+    console.log("report user");
+    this.socket.emit("vote", {
+      voteData: "ghost",
+      userGuid: this.props.CreateProfileDataReducer.guid,
+      matchedUserGuid: this.state.matchUserGuid
+    });
+    Alert.alert(
+      "Success!",
+      "Your reported match user. You will be return to Home.",
+      [
+        {
+          text: "OK",
+          onPress: () => {
+            this.props.navigation.navigate("Home");
+          }
+        }
+      ],
+      { cancelable: false }
+    );
+  };
+
   successScreen = () => {
     let displayAllChatMessage = this.state.allMessages.map(
       (messageItem, index = 0) => {
@@ -541,7 +678,26 @@ class MinuteChatRoomScreen extends React.Component {
         >
           <View style={{ backgroundColor: "#fff" }}>
             {/*Matched Image*/}
-            <View style={{ alignItems: "center" }}>
+            <View
+              style={{
+                justifyContent: "space-around",
+                flexDirection: "row"
+              }}
+            >
+              <TouchableOpacity
+                onPress={() => {
+                  this.reportAlert();
+                }}
+              >
+                <MaterialIcons
+                  name={"report-problem"}
+                  color={"red"}
+                  size={width * 0.1}
+                  solid
+                  style={{ top: 30 }}
+                />
+              </TouchableOpacity>
+
               <Image
                 blurRadius={10}
                 source={{
@@ -554,6 +710,7 @@ class MinuteChatRoomScreen extends React.Component {
                   margin: "3%"
                 }}
               />
+              <View style={{ padding: 27 }} />
             </View>
 
             {/*Matched Info*/}

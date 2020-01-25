@@ -130,7 +130,8 @@ class AcceptMatchingScreen extends React.Component {
   componentDidMount() {
     this.roomGuid = this.props.navigation.state.params.matchRoomGuid;
     this.setMatchingUserInfo(this.props.navigation.state.params);
-    //open menu
+
+    //exit button
     this.props.navigation.setParams({
       backToHome: () => {
         this.setDeviceUserReject();
