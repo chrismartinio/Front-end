@@ -22,6 +22,7 @@ const { height, width } = Dimensions.get("window");
 import io from "socket.io-client";
 import { Icon } from "react-native-elements";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
+import Constants from "expo-constants";
 
 class AcceptMatchingScreen extends React.Component {
   static navigationOptions = ({ navigation }) => {
@@ -68,22 +69,24 @@ class AcceptMatchingScreen extends React.Component {
 
     //handle ghost
     this.socket.on("ghostChat", () => {
-      console.log(
-        `${this.state.matchUserGuid} ghosted ${
-          this.props.CreateProfileDataReducer.guid
-        }`
-      );
+      console.log("AcceptMatching");
+      if (Constants.isDevice) {
+        console.log("===phone===");
+      } else {
+        console.log("===simulator===");
+      }
 
       this.setState({ isMatchUserClicked: true, isMatchUserAccept: false });
     });
 
     //handle ghost
     this.socket.on("acceptChat", () => {
-      console.log(
-        `${this.state.matchUserGuid} Accepted ${
-          this.props.CreateProfileDataReducer.guid
-        }`
-      );
+      console.log("AcceptMatching");
+      if (Constants.isDevice) {
+        console.log("===phone===");
+      } else {
+        console.log("===simulator===");
+      }
       this.setState({ isMatchUserClicked: true, isMatchUserAccept: true });
     });
   }
@@ -161,19 +164,36 @@ class AcceptMatchingScreen extends React.Component {
 
   setDeviceUserReject = () => {
     console.log("Device Reject");
-    //emit socket for reject
-    this.socket.emit("vote", {
-      voteData: "ghost",
-      userGuid: this.props.CreateProfileDataReducer.guid,
-      matchedUserGuid: this.state.matchUserGuid
-    });
 
-    //setState
-    this.setState({
-      isDeviceUserAccept: false,
-      isDeviceUserClicked: true
-    });
-    return this.props.navigation.navigate("Home");
+    Alert.alert(
+      "Warning!",
+      "Are you sure you want to leave?",
+      [
+        {
+          text: "Yes",
+          onPress: () => {
+            //setState
+            this.setState({
+              isDeviceUserAccept: false,
+              isDeviceUserClicked: true
+            });
+            this.socket.emit("vote", {
+              voteData: "ghost",
+              userGuid: this.props.CreateProfileDataReducer.guid,
+              matchedUserGuid: this.state.matchUserGuid
+            });
+            this.socket.close();
+            this.props.navigation.navigate("Home");
+          }
+        },
+        {
+          text: "No",
+          onPress: () => {},
+          style: "cancel"
+        }
+      ],
+      { cancelable: false }
+    );
   };
 
   backToHome = () => {
@@ -187,6 +207,7 @@ class AcceptMatchingScreen extends React.Component {
         {
           text: "OK",
           onPress: () => {
+            this.socket.close();
             this.props.navigation.navigate("Home");
           }
         }
@@ -216,6 +237,7 @@ class AcceptMatchingScreen extends React.Component {
         {
           text: "OK",
           onPress: () => {
+            this.socket.close();
             this.props.navigation.navigate(
               "PermanentChatRoom",
               this.props.navigation.state.params

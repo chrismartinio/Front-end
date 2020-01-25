@@ -201,16 +201,12 @@ class MinuteChatRoomScreen extends React.Component {
 
     //handle ghost
     this.socket.on("ghostChat", () => {
+      console.log("Minute")
       if (Constants.isDevice) {
         console.log("===phone===");
       } else {
         console.log("===simulator===");
       }
-      console.log(
-        `Your match user ${this.state.matchUserGuid} ghosted You${
-          this.props.CreateProfileDataReducer.guid
-        }`
-      );
 
       this.setState({ isMatchUserClicked: true, isMatchUserAccept: false });
     });
@@ -258,6 +254,7 @@ class MinuteChatRoomScreen extends React.Component {
               userGuid: this.props.CreateProfileDataReducer.guid,
               matchedUserGuid: this.state.matchUserGuid
             });
+            this.socket.close();
             this.props.navigation.navigate("Home");
           }
         },
@@ -274,12 +271,9 @@ class MinuteChatRoomScreen extends React.Component {
   async componentDidMount() {
     //Testing USE
     //this.interval = setInterval(this.countDown, 1000);
-    /*
-    this.props.navigation.navigate(
-      "AcceptMatching",
-      this.props.navigation.state.params
-    );
-    */
+    ///*
+    this.goToAcceptMatchingScreen()
+    //*/
     //Testing Use
     this.minuteChatTimer_time = await this.setupTimer();
 
@@ -393,6 +387,7 @@ class MinuteChatRoomScreen extends React.Component {
         {
           text: "OK",
           onPress: () => {
+            this.socket.close();
             this.props.navigation.navigate("Home");
           }
         }
@@ -483,6 +478,7 @@ class MinuteChatRoomScreen extends React.Component {
     //this.props.navigation.getParam.forceReRender;
     this.socket.emit("disconnect");
     //For MinuteChatRoom, direct user go back to home
+    this.socket.close();
     this.props.navigation.navigate(
       "AcceptMatching",
       this.props.navigation.state.params
@@ -494,6 +490,7 @@ class MinuteChatRoomScreen extends React.Component {
     //THIS WORK ONLY FROM CHATLIST TO CHATROOM
     //this.props.navigation.getParam.forceReRender;
     this.socket.emit("disconnect");
+    this.socket.close();
     //For MinuteChatRoom, direct user go back to home
     this.props.navigation.navigate("Home");
   };
@@ -604,6 +601,7 @@ class MinuteChatRoomScreen extends React.Component {
         {
           text: "OK",
           onPress: () => {
+            this.socket.close();
             this.props.navigation.navigate("Home");
           }
         }
