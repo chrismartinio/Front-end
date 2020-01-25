@@ -24,6 +24,13 @@ import { Icon } from "react-native-elements";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import Constants from "expo-constants";
 
+//Because this is navigation stack, previous screen won't call componentWillUnmount, so won't close socket
+//this.socket.close();
+//Device user presses Back -> setDeviceUserReject -> Home
+//Device user presses Ghost -> setDeviceUserReject -> Home
+//Match user presses Ghost -> this.socket.on("ghostChat") -> componentDidUpdate -> backToHome -> Home
+//Device & Match press Accept -> this.socket.on("acceptChat") -> componentDidUpdate -> bothAccept -> Permanent
+
 class AcceptMatchingScreen extends React.Component {
   static navigationOptions = ({ navigation }) => {
     return {

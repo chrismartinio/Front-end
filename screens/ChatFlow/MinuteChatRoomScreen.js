@@ -47,6 +47,14 @@ import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 //LoginScreen.js -> HomeScreen.js -> MatchingScreen.js -> FoundaMatchScreen.js ->
 //MinuteChatRoomScreen.js
 
+//Because this is navigation stack, previous screen won't call componentWillUnmount, so won't close socket
+//this.socket.close();
+//Time up -> goToAcceptMatchingScreen -> AcceptMatchingScreen
+//Device user presses Back -> setDeviceUserReject -> Home
+//Device user presses Alert -> reportAlert -> reportuser -> Home
+//Match user presses Back/Alert -> this.socket.on("ghostChat") -> componentDidUpdate -> backToHome -> Home
+
+
 class MinuteChatRoomScreen extends React.Component {
   static navigationOptions = ({ navigation }) => {
     return {
@@ -272,7 +280,7 @@ class MinuteChatRoomScreen extends React.Component {
     //Testing USE
     //this.interval = setInterval(this.countDown, 1000);
     ///*
-    this.goToAcceptMatchingScreen()
+    //this.goToAcceptMatchingScreen()
     //*/
     //Testing Use
     this.minuteChatTimer_time = await this.setupTimer();
