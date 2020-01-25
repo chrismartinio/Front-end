@@ -9,9 +9,14 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   Dimensions,
-  Image
+  Image,
+  Alert
 } from "react-native";
-import { server_profile, server_frontendConfig } from "../../config/ipconfig";
+import {
+  server_profile,
+  server_frontendConfig,
+  server_chat
+} from "../../config/ipconfig";
 import axios from "axios";
 import { connect } from "react-redux";
 import LoadingScreen from "../../sharedComponents/LoadingScreen";
@@ -20,16 +25,30 @@ import { Card } from "react-native-paper";
 import { testobj } from "../../data/testObj";
 const { height, width } = Dimensions.get("window");
 import SetTimeAction from "../../storage/actions/ConfigReducerActions/SetTimeAction/";
+import io from "socket.io-client";
+import Constants from "expo-constants";
 
-class MatchScreen extends React.Component {
-  //Header
+class FoundaMatch extends React.Component {
+  static navigationOptions = ({ navigation }) => {
+    return {
+      headerLeft: () => (
+        <Button
+          color="#fff"
+          title="Back"
+          onPress={navigation.getParam("backToHome")}
+        />
+      )
+    };
+  };
 
   constructor(props) {
     super(props);
     this.state = {
       isSuccess: false,
-      isDeviceUserReady: false,
-      isMatchUserReady: false,
+      isDeviceUserAccept: false,
+      isDeviceUserClicked: false,
+      isMatchUserAccept: false,
+      isMatchUserClicked: false,
       matchUserGuid: "",
       matchRoomGuid: "",
       matchFirstName: "",
@@ -41,9 +60,44 @@ class MatchScreen extends React.Component {
       matchCity: "",
       matchState: ""
     };
-    //Socket
-    //receive socket roomID
-    //and set isMatchUserReady to true
+    this.roomGuid = this.props.navigation.state.params.matchRoomGuid;
+    this.token = "";
+    this.socket = io(`${server_chat}/${this.roomGuid}`, {
+      forceNew: true,
+      transportOptions: {
+        polling: {
+          extraHeaders: {
+            authorization: "Bearer " + this.token // if you have token for auth
+          }
+        }
+      },
+      query: {
+        namespace: this.roomGuid
+      }
+    });
+
+    //handle ghost
+    this.socket.on("ghostChat", () => {
+      console.log("AcceptMatching");
+      if (Constants.isDevice) {
+        console.log("===phone===");
+      } else {
+        console.log("===simulator===");
+      }
+
+      this.setState({ isMatchUserClicked: true, isMatchUserAccept: false });
+    });
+
+    //handle ghost
+    this.socket.on("acceptChat", () => {
+      console.log("AcceptMatching");
+      if (Constants.isDevice) {
+        console.log("===phone===");
+      } else {
+        console.log("===simulator===");
+      }
+      this.setState({ isMatchUserClicked: true, isMatchUserAccept: true });
+    });
   }
 
   setMatchingUserInfo = ({
@@ -102,10 +156,16 @@ class MatchScreen extends React.Component {
   };
 
   async componentDidMount() {
-    //reset the matchScreen's foundaMatch = false
-    //fetch data
-    //and use guid to get interest, miles, firstName, lastName, image
+    this.roomGuid = this.props.navigation.state.params.matchRoomGuid;
 
+    //exit button
+    this.props.navigation.setParams({
+      backToHome: () => {
+        this.setDeviceUserReject();
+      }
+    });
+
+    //fetch data
     axios
       .post(
         `${server_profile}/api/profile/chat_query`,
@@ -127,28 +187,112 @@ class MatchScreen extends React.Component {
     await this.setTimer();
   }
 
-  setUserReady = () => {
-    this.setState({
-      isDeviceUserReady: true
-    });
-    //Send Socket
-  };
-
   componentDidUpdate(prevProps, prevState, snapshot) {
     if (
-      prevState.isDeviceUserReady !== this.state.isDeviceUserReady ||
-      prevState.isMatchUserReady !== this.state.isMatchUserReady
+      prevState.isDeviceUserAccept !== this.state.isDeviceUserAccept ||
+      prevState.isMatchUserAccept !== this.state.isMatchUserAccept ||
+      prevState.isMatchUserClicked !== this.state.isMatchUserClicked
     ) {
       //Testing use
-      //no Socket setup yet, so have this for now
-      this.props.navigation.navigate("MinuteChatRoom", this.state);
+      //this.bothAccept();
       //Testing use
 
-      if (this.state.isDeviceUserReady && this.state.isMatchUserReady) {
-        this.props.navigation.navigate("MinuteChatRoom", this.state);
+      //isMatchUserAccept is set to default
+      //if Device's user triggers componentDidUpdate, (either accept or reject)
+      //and because isMatchUserAccept is false by default
+      //this would lead to a situation that match user didn't do any response
+      //but device's user does and send device's back to home
+      if (
+        this.state.isMatchUserAccept === false &&
+        this.state.isMatchUserClicked
+      ) {
+        console.log("Match Reject");
+        return this.backToHome();
+      }
+
+      //if both users click accept
+      if (this.state.isDeviceUserAccept && this.state.isMatchUserAccept) {
+        console.log("Both Accept");
+        return this.bothAccept();
       }
     }
   }
+
+  setDeviceUserReject = () => {
+    console.log("Device Reject");
+
+    Alert.alert(
+      "Warning!",
+      "Are you sure you want to leave?",
+      [
+        {
+          text: "Yes",
+          onPress: () => {
+            //setState
+            this.setState({
+              isDeviceUserAccept: false,
+              isDeviceUserClicked: true
+            });
+            this.socket.emit("vote", {
+              voteData: "ghost",
+              userGuid: this.props.CreateProfileDataReducer.guid,
+              matchedUserGuid: this.state.matchUserGuid
+            });
+            this.socket.close();
+            this.props.navigation.navigate("Home");
+          }
+        },
+        {
+          text: "No",
+          onPress: () => {},
+          style: "cancel"
+        }
+      ],
+      { cancelable: false }
+    );
+  };
+
+  backToHome = () => {
+    console.log("Back to HomeScreen.js");
+    Alert.alert(
+      "Ops!",
+      `${
+        this.state.matchFirstName
+      } Rejected you! You will be return to Home Screen.`,
+      [
+        {
+          text: "OK",
+          onPress: () => {
+            this.socket.close();
+            this.props.navigation.navigate("Home");
+          }
+        }
+      ],
+      { cancelable: false }
+    );
+  };
+
+  bothAccept = () => {
+    console.log("Both Accept, Directing to MinuteChatRoom");
+    this.socket.close();
+    this.props.navigation.navigate("MinuteChatRoom", this.state);
+  };
+
+  setDeviceUserAccept = () => {
+    console.log("Accept");
+    //emit socket for accept
+    this.socket.emit("vote", {
+      voteData: "matched",
+      userGuid: this.props.CreateProfileDataReducer.guid,
+      matchedUserGuid: this.state.matchUserGuid
+    });
+
+    //setState
+    this.setState({
+      isDeviceUserAccept: true,
+      isDeviceUserClicked: true
+    });
+  };
 
   successScreen = () => {
     let displayMatchedLikesArray = this.state.matchLikesArray.map(
@@ -261,7 +405,7 @@ class MatchScreen extends React.Component {
                 backgroundColor: "purple"
               }}
               onPress={() => {
-                this.setUserReady();
+                this.setDeviceUserAccept();
               }}
             >
               {/*Testing Use*/}
@@ -345,4 +489,4 @@ const mapDispatchToProps = dispatch => {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(MatchScreen);
+)(FoundaMatch);

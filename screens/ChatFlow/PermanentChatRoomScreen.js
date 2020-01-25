@@ -19,7 +19,8 @@ import {
   TouchableHighlight,
   AppState,
   Dimensions,
-  TouchableWithoutFeedback
+  TouchableWithoutFeedback,
+  Alert
 } from "react-native";
 import { connect } from "react-redux";
 
@@ -39,6 +40,10 @@ import { Icon } from "react-native-elements";
 
 import { StackActions, NavigationActions } from "react-navigation";
 
+import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+
+import Constants from "expo-constants";
+
 //Flow of get to this screen
 //#1
 //LoginScreen.js -> HomeScreen.js -> ConversationsScreen.js -> PermanentChatRoomScreen.js
@@ -46,6 +51,11 @@ import { StackActions, NavigationActions } from "react-navigation";
 //#2
 //LoginScreen.js -> HomeScreen.js -> MatchingScreen.js -> FoundaMatchScreen.js ->
 //MinuteChatRoomScreen.js -> AcceptMatchingScreen.js -> PermanentChatRoomScreen.js
+
+//Because this is navigation stack, previous screen won't call componentWillUnmount, so won't close socket
+//this.socket.close();
+//Device user presses Alert -> reportAlert -> reportuser -> Home
+//Match user presses Back/Alert -> this.socket.on("ghostChat") -> componentDidUpdate -> backToHome -> Home
 
 class PermanentChatRoomScreen extends React.Component {
   static navigationOptions = ({ navigation }) => {
@@ -92,7 +102,9 @@ class PermanentChatRoomScreen extends React.Component {
       keyBoardShown: false,
       matchInfoToggle: true,
       matchImageUrl:
-        "https://cdn.pixabay.com/photo/2016/03/31/15/33/contact-1293388_960_720.png"
+        "https://cdn.pixabay.com/photo/2016/03/31/15/33/contact-1293388_960_720.png",
+      isMatchUserAccept: false,
+      isMatchUserClicked: false
     };
     this.roomGuid = this.props.navigation.state.params.matchRoomGuid;
     this.token = "";
@@ -176,6 +188,18 @@ class PermanentChatRoomScreen extends React.Component {
       if (this.scrollView != null) {
         this.scrollView.scrollToEnd({ animated: true });
       }
+    });
+
+    //handle ghost
+    this.socket.on("ghostChat", () => {
+      console.log("Perm");
+      if (Constants.isDevice) {
+        console.log("===phone===");
+      } else {
+        console.log("===simulator===");
+      }
+
+      this.setState({ isMatchUserClicked: true, isMatchUserAccept: false });
     });
   }
 
@@ -319,7 +343,40 @@ class PermanentChatRoomScreen extends React.Component {
         this.socket.emit("stop typing");
       }
     }
+
+    if (
+      prevState.isMatchUserAccept !== this.state.isMatchUserAccept ||
+      prevState.isMatchUserClicked !== this.state.isMatchUserClicked
+    ) {
+      if (
+        this.state.isMatchUserAccept === false &&
+        this.state.isMatchUserClicked
+      ) {
+        console.log("Match Reject");
+        return this.backToHome();
+      }
+    }
   }
+
+  backToHome = () => {
+    console.log("Back to HomeScreen.js");
+    Alert.alert(
+      "Ops!",
+      `${
+        this.state.matchFirstName
+      } Blocked you! You will be return to Home Screen.`,
+      [
+        {
+          text: "OK",
+          onPress: () => {
+            this.socket.close();
+            this.props.navigation.navigate("Home");
+          }
+        }
+      ],
+      { cancelable: false }
+    );
+  };
 
   componentWillUnmount() {
     this.keyboardDidShowListener.remove();
@@ -456,6 +513,50 @@ class PermanentChatRoomScreen extends React.Component {
     this.setState({ currentMessage });
   };
 
+  reportAlert = () => {
+    Alert.alert(
+      "Warning!",
+      "Are you sure you want to report your match user",
+      [
+        {
+          text: "Yes",
+          onPress: () => {
+            this.reportUser();
+          }
+        },
+        {
+          text: "No",
+          onPress: () => {},
+          style: "cancel"
+        }
+      ],
+      { cancelable: false }
+    );
+  };
+
+  reportUser = () => {
+    console.log("report user");
+    this.socket.emit("vote", {
+      voteData: "ghost",
+      userGuid: this.props.CreateProfileDataReducer.guid,
+      matchedUserGuid: this.state.matchUserGuid
+    });
+    Alert.alert(
+      "Success!",
+      "Your reported match user. You will be return to Home.",
+      [
+        {
+          text: "OK",
+          onPress: () => {
+            this.socket.close();
+            this.props.navigation.navigate("Home");
+          }
+        }
+      ],
+      { cancelable: false }
+    );
+  };
+
   successScreen = () => {
     let displayAllChatMessage = this.state.allMessages.map(
       (messageItem, index = 0) => {
@@ -522,7 +623,26 @@ class PermanentChatRoomScreen extends React.Component {
         >
           <View style={{ backgroundColor: "#fff" }}>
             {/*Matched Image*/}
-            <View style={{ alignItems: "center" }}>
+            <View
+              style={{
+                justifyContent: "space-around",
+                flexDirection: "row"
+              }}
+            >
+              <TouchableOpacity
+                onPress={() => {
+                  this.reportAlert();
+                }}
+              >
+                <MaterialIcons
+                  name={"report-problem"}
+                  color={"red"}
+                  size={width * 0.1}
+                  solid
+                  style={{ top: 30 }}
+                />
+              </TouchableOpacity>
+
               <TouchableOpacity
                 onPress={() => {
                   this.props.navigation.navigate("Profile", {
@@ -542,6 +662,7 @@ class PermanentChatRoomScreen extends React.Component {
                   }}
                 />
               </TouchableOpacity>
+              <View style={{ padding: 27 }} />
             </View>
           </View>
 
