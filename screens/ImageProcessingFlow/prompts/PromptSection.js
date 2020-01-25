@@ -32,7 +32,7 @@ const uploadImages = async (
     props.clearImgSelection();
     props.clearCaptions();
   } else if (!imageResult.success && imageResult.status === 422) {
-    alert("Invalid Photo. Please try again");
+    alert("Ops! Your selfie is not a face. Please try again!");
   } else {
     alert("Failed Upload. Please try again!");
   }

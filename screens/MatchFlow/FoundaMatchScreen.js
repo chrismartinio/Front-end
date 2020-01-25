@@ -28,6 +28,13 @@ import SetTimeAction from "../../storage/actions/ConfigReducerActions/SetTimeAct
 import io from "socket.io-client";
 import Constants from "expo-constants";
 
+//Because this is navigation stack, previous screen won't call componentWillUnmount, so won't close socket
+//this.socket.close();
+//Device user presses Back -> setDeviceUserReject -> Home
+//Match user presses Back -> this.socket.on("ghostChat") -> componentDidUpdate -> backToHome -> Home
+//Device & Match press Accept -> this.socket.on("acceptChat") -> componentDidUpdate -> bothAccept -> Minute
+
+
 class FoundaMatch extends React.Component {
   static navigationOptions = ({ navigation }) => {
     return {
@@ -462,7 +469,7 @@ const styles = StyleSheet.create({
   image: {
     width: 0.2 * width,
     height: 0.2 * width,
-    borderRadius: 37,
+    borderRadius: 0.098 * width,
     alignSelf: "center",
     top: 5
   },
@@ -471,7 +478,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#e2dcff",
     borderColor: "#fff",
     borderWidth: 6,
-    bottom: 50,
+    bottom: 0.13 * width,
     width: 0.26 * width,
     height: 0.26 * width,
     borderRadius: 0.13 * width
