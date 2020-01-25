@@ -467,12 +467,12 @@ class LoginScreen extends React.Component {
         {/*Testing USE*/}
         <View style={{ position: "absolute", left: 0, top: "10%" }}>
           <Button
-            title="HOME - ABC"
+            title="HOME - USER_A"
             onPress={() => {
               //TESTING USE (TEMP)
               //Set Device user GUID
               this.props.SetGUIDAction({
-                guid: "5e0f04d2ed63ee02f3999dea"
+                guid: "5e2bf53d2353214d94dd137e"
                 //guid: "5e119b146ebb5e4b3c2fff6f"
               });
               this.props.SetAboutYouDataAction({
@@ -491,12 +491,12 @@ class LoginScreen extends React.Component {
         {/*Testing USE*/}
         <View style={{ position: "absolute", left: 0, top: "15%" }}>
           <Button
-            title="HOME - BBB"
+            title="HOME - USER_B"
             onPress={() => {
               //TESTING USE (TEMP)
               //Set Device user GUID
               this.props.SetGUIDAction({
-                guid: "5e0feb18efe16e02ee55c906"
+                guid: "5e2bf60b2353214d94dd137f"
                 //guid: "5e119b146ebb5e4b3c2fff6f"
               });
               this.props.SetAboutYouDataAction({

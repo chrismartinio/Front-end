@@ -307,7 +307,7 @@ class AcceptMatchingScreen extends React.Component {
             onPress={() => this.setDeviceUserReject()}
             style={{
               borderWidth: 0.5,
-              borderRadius: 50,
+              borderRadius: 25,
               borderColor: "#fff",
               paddingLeft: 20,
               paddingRight: 20,
