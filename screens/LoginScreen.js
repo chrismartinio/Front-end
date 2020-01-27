@@ -510,7 +510,7 @@ class LoginScreen extends React.Component {
           />
         </View>
         {/*Testing USE*/}
-        <View style={{ position: "absolute", left: 0, top: "15%" }}>
+        <View style={{ position: "absolute", left: 0, top: "20%" }}>
           <Button
             title="HOME - USER_B"
             onPress={() => {
@@ -534,7 +534,7 @@ class LoginScreen extends React.Component {
           />
         </View>
         {/*Testing USE*/}
-        <View style={{ position: "absolute", left: 0, top: "20%" }}>
+        <View style={{ position: "absolute", left: 0, top: "25%" }}>
           <Button
             title="Reset"
             onPress={() => {
