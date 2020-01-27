@@ -112,22 +112,24 @@ class PhotosAlbumModal extends React.Component {
       >
         <View style={{ padding: "7%" }} />
         <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-          {/*Close*/}
+          {/*Upload*/}
           <TouchableOpacity
-            onPress={() => {
-              this.props.setAlbumSectionVisible(false);
-            }}
-          >
-            <Text>Close</Text>
-          </TouchableOpacity>
-
-          {/*Close*/}
-          <TouchableOpacity
+            style={{ margin: 5 }}
             onPress={() => {
               this.uploadtoS3();
             }}
           >
             <Text>Upload</Text>
+          </TouchableOpacity>
+
+          {/*Close*/}
+          <TouchableOpacity
+            style={{ margin: 5 }}
+            onPress={() => {
+              this.props.setAlbumSectionVisible(false);
+            }}
+          >
+            <Text>Close</Text>
           </TouchableOpacity>
         </View>
         <ScrollView>
