@@ -34,27 +34,13 @@ export default class CircularCarouselItem extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      oStatus: 'test'
+      onlineStatus: ' offline',
     }
+    console.log('logg', this.props.onlineUser);
   }
 
   componentDidMount() {
-    console.log('log');
-    getOnlineStatus(this.props.matchUserData.userGuid)
-    .then((data) => {
-      let obj = 'darrian';
-      console.log('darrian', data);
-      if(data === true) {
-        this.setState({
-          oStatus: " online"
-        });
-      } else {
-        this.setState({
-          oStatus: " offline"
-        });
-      }
-      // return data;
-    })
+
   }
 
   goToPermanentChatRoom = ({
@@ -92,6 +78,13 @@ export default class CircularCarouselItem extends React.Component {
   };
 
   render() {
+    console.log('hi');
+    if(this.props.onlineUser === this.props.matchUserData.userGuid){
+      console.log('comparing', this.props.onlineUser, this.props.matchUserData.userGuid)
+      // this.setState({
+      //   onlineStatus: ' online',
+      // })
+    }
     let nameFont = shortName(this.props.matchUserData.firstName);
     let ageAddressFont = shortAgeAndAddressSTR(
       this.props.matchUserData.age + " , " + this.props.matchUserData.city
@@ -167,7 +160,7 @@ export default class CircularCarouselItem extends React.Component {
                   }}
                 >
                   {this.props.matchUserData.firstName}
-                   {this.state.oStatus}
+                   {this.state.onlineStatus}
                   {/*this.props.matchUserData.matchLastName[0]*/}
                 </Text>
 

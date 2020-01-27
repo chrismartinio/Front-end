@@ -44,6 +44,7 @@ class ConversationsScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      onlineUserList: [],
       appState: AppState.currentState,
       matchUsersList: [],
       isSuccess: false
@@ -61,6 +62,24 @@ class ConversationsScreen extends React.Component {
       }
     });
   };
+
+   onlineIndicator(user) {
+    const socket = io(`http://localhost:3000/?token=${user}`);
+      socket.on('connect', () => {
+        console.log('Connected to server');
+        socket.emit('retrieving users');
+  
+      });
+      socket.on('retrieving users', (data) => {
+        console.log('array', data);
+        this.setState({
+          onlineUserList: data
+        });
+        console.log(this.state.onlineUserList);
+      })
+  
+  }
+
 
   getMatchedUsersProfileFromDB = async matchUsersList => {
     let matchUserGuidArray = [];
@@ -130,6 +149,7 @@ class ConversationsScreen extends React.Component {
   async componentDidMount() {
     AppState.addEventListener("change", this._handleAppStateChange);
     this.guid = await this.props.CreateProfileDataReducer.guid;
+    this.onlineIndicator(this.guid);
     this.user_firstName = await this.props.CreateProfileDataReducer.aboutYouData
       .firstName;
 
@@ -202,6 +222,7 @@ class ConversationsScreen extends React.Component {
         <View style={{ flex: 0.9 }}>
           {/*CircularCarousel */}
           <CircularCarousel
+          onlineUserList={this.state.onlineUserList}
             navigation={this.props.navigation}
             matchUsersList={this.state.matchUsersList}
           />
