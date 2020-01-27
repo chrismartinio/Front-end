@@ -21,6 +21,8 @@ import {
 //Redux
 import { connect } from "react-redux";
 
+import { server_imageProcessing } from "../../../config/ipconfig";
+
 import LoadingScreen from "../../../sharedComponents/LoadingScreen";
 
 import { StackActions, NavigationActions } from "react-navigation";
@@ -37,13 +39,48 @@ class PhotosAlbumModal extends React.Component {
     };
   }
 
-  uploadtoS3 = () => {
+  uploadtoS3 = async () => {
     console.log(`index: ${this.props.selectedPhotoIndex}`);
     console.log(`phone: ${this.state.selectedPhotoURI}`);
 
     if (this.state.selectedPhotoURI === "") {
       return;
     }
+    let images = [this.state.selectedPhotoURI, null, null, null, null, null];
+
+    const data = new FormData();
+    images.forEach((el, id) => {
+      console.log(el)
+      if (el) {
+        data.append(`photos`, {
+          name: `Pic001`,
+          type: "image",
+          uri: Platform.OS === "android" ? el : el.replace("file://", "")
+        });
+        data.append("index", this.props.selectedPhotoIndex);
+      }
+    });
+
+    console.log(data);
+
+    await fetch(
+      `${server_imageProcessing}/api/imageProcessing/uploadAlbumPhotos`,
+      {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json"
+        },
+        body: data
+      }
+    )
+      .then(res => res.json())
+      .then(res => {
+        console.log(res);
+      })
+      .catch(err => {
+        console.log(err);
+      });
 
     //upload button
     this.setState({
@@ -112,16 +149,6 @@ class PhotosAlbumModal extends React.Component {
       >
         <View style={{ padding: "7%" }} />
         <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-          {/*Upload*/}
-          <TouchableOpacity
-            style={{ margin: 5 }}
-            onPress={() => {
-              this.uploadtoS3();
-            }}
-          >
-            <Text>Upload</Text>
-          </TouchableOpacity>
-
           {/*Close*/}
           <TouchableOpacity
             style={{ margin: 5 }}
@@ -130,6 +157,16 @@ class PhotosAlbumModal extends React.Component {
             }}
           >
             <Text>Close</Text>
+          </TouchableOpacity>
+
+          {/*Upload*/}
+          <TouchableOpacity
+            style={{ margin: 5 }}
+            onPress={() => {
+              this.uploadtoS3();
+            }}
+          >
+            <Text>Upload</Text>
           </TouchableOpacity>
         </View>
         <ScrollView>
