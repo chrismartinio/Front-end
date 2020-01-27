@@ -9,19 +9,40 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   Dimensions,
-  Image
+  Image,
+  Alert
 } from "react-native";
-import { miniServer } from "../../config/ipconfig";
+import { server_chat } from "../../config/ipconfig";
 import axios from "axios";
 import { connect } from "react-redux";
 import LoadingScreen from "../../sharedComponents/LoadingScreen";
 import Footer from "../../sharedComponents/Footer";
 import { Card } from "react-native-paper";
-import { testobj } from "../../data/testObj";
 const { height, width } = Dimensions.get("window");
+import io from "socket.io-client";
+import { Icon } from "react-native-elements";
+import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
+import Constants from "expo-constants";
+
+//Because this is navigation stack, previous screen won't call componentWillUnmount, so won't close socket
+//this.socket.close();
+//Device user presses Back -> setDeviceUserReject -> Home
+//Device user presses Ghost -> setDeviceUserReject -> Home
+//Match user presses Ghost -> this.socket.on("ghostChat") -> componentDidUpdate -> backToHome -> Home
+//Device & Match press Accept -> this.socket.on("acceptChat") -> componentDidUpdate -> bothAccept -> Permanent
 
 class AcceptMatchingScreen extends React.Component {
-  //Header
+  static navigationOptions = ({ navigation }) => {
+    return {
+      headerLeft: () => (
+        <Button
+          color="#fff"
+          title="Back"
+          onPress={navigation.getParam("backToHome")}
+        />
+      )
+    };
+  };
 
   constructor(props) {
     super(props);
@@ -31,14 +52,50 @@ class AcceptMatchingScreen extends React.Component {
       matchUserGuid: "",
       matchFirstName: "",
       isDeviceUserAccept: false,
+      isDeviceUserClicked: false,
       isMatchUserAccept: false,
       isMatchUserClicked: false,
       matchImageUrl:
         "https://cdn.pixabay.com/photo/2016/03/31/15/33/contact-1293388_960_720.png"
     };
-    //setup socket to get matching user accept/reject
-    //socket.on
-    //this.setState({isMatchedUserClicked: true})
+    this.roomGuid = this.props.navigation.state.params.matchRoomGuid;
+    this.token = "";
+    this.socket = io(`${server_chat}/${this.roomGuid}`, {
+      forceNew: true,
+      transportOptions: {
+        polling: {
+          extraHeaders: {
+            authorization: "Bearer " + this.token // if you have token for auth
+          }
+        }
+      },
+      query: {
+        namespace: this.roomGuid
+      }
+    });
+
+    //handle ghost
+    this.socket.on("ghostChat", () => {
+      console.log("AcceptMatching");
+      if (Constants.isDevice) {
+        console.log("===phone===");
+      } else {
+        console.log("===simulator===");
+      }
+
+      this.setState({ isMatchUserClicked: true, isMatchUserAccept: false });
+    });
+
+    //handle ghost
+    this.socket.on("acceptChat", () => {
+      console.log("AcceptMatching");
+      if (Constants.isDevice) {
+        console.log("===phone===");
+      } else {
+        console.log("===simulator===");
+      }
+      this.setState({ isMatchUserClicked: true, isMatchUserAccept: true });
+    });
   }
 
   setMatchingUserInfo = match => {
@@ -52,64 +109,122 @@ class AcceptMatchingScreen extends React.Component {
   componentDidUpdate(prevProps, prevState, snapshot) {
     if (
       prevState.isDeviceUserAccept !== this.state.isDeviceUserAccept ||
-      prevState.isMatchUserAccept !== this.state.isMatchUserAccept
+      prevState.isMatchUserAccept !== this.state.isMatchUserAccept ||
+      prevState.isMatchUserClicked !== this.state.isMatchUserClicked
     ) {
       //Testing use
-      this.acceptMatchingUser();
+      //this.bothAccept();
       //Testing use
 
-      //if matching user click reject and also check if they clicked once
-      //isMatchUserAccept is set to false by default
-      //so need to check the matching user has clicked at least one or not
+      //isMatchUserAccept is set to default
+      //if Device's user triggers componentDidUpdate, (either accept or reject)
+      //and because isMatchUserAccept is false by default
+      //this would lead to a situation that match user didn't do any response
+      //but device's user does and send device's back to home
       if (
         this.state.isMatchUserAccept === false &&
         this.state.isMatchUserClicked
       ) {
         console.log("Match Reject");
-        return this.rejectMatchingUser();
+        return this.backToHome();
       }
 
       //if both users click accept
       if (this.state.isDeviceUserAccept && this.state.isMatchUserAccept) {
         console.log("Both Accept");
-        return this.acceptMatchingUser();
+        return this.bothAccept();
       }
     }
   }
 
   componentDidMount() {
+    this.roomGuid = this.props.navigation.state.params.matchRoomGuid;
     this.setMatchingUserInfo(this.props.navigation.state.params);
+
+    //exit button
+    this.props.navigation.setParams({
+      backToHome: () => {
+        this.setDeviceUserReject();
+      }
+    });
+  }
+
+  componentWillUnmount() {
+    this.socket.close();
   }
 
   setDeviceUserAccept = () => {
     console.log("Accept");
     //emit socket for accept
+    this.socket.emit("vote", {
+      voteData: "matched",
+      userGuid: this.props.CreateProfileDataReducer.guid,
+      matchedUserGuid: this.state.matchUserGuid
+    });
 
     //setState
     this.setState({
-      isDeviceUserAccept: true
+      isDeviceUserAccept: true,
+      isDeviceUserClicked: true
     });
   };
 
   setDeviceUserReject = () => {
     console.log("Device Reject");
-    //emit socket for reject
 
-    //setState
-    this.setState({
-      isDeviceUserAccept: false
-    });
-    return this.rejectMatchingUser();
+    Alert.alert(
+      "Warning!",
+      "Are you sure you want to leave?",
+      [
+        {
+          text: "Yes",
+          onPress: () => {
+            //setState
+            this.setState({
+              isDeviceUserAccept: false,
+              isDeviceUserClicked: true
+            });
+            this.socket.emit("vote", {
+              voteData: "ghost",
+              userGuid: this.props.CreateProfileDataReducer.guid,
+              matchedUserGuid: this.state.matchUserGuid
+            });
+            this.socket.close();
+            this.props.navigation.navigate("Home");
+          }
+        },
+        {
+          text: "No",
+          onPress: () => {},
+          style: "cancel"
+        }
+      ],
+      { cancelable: false }
+    );
   };
 
-  rejectMatchingUser = () => {
-    console.log("reject");
-    //do something for ghosting
-    this.props.navigation.navigate("Home");
+  backToHome = () => {
+    console.log("Back to HomeScreen.js");
+    Alert.alert(
+      "Ops!",
+      `${
+        this.state.matchFirstName
+      } Rejected you! You will be return to Home Screen.`,
+      [
+        {
+          text: "OK",
+          onPress: () => {
+            this.socket.close();
+            this.props.navigation.navigate("Home");
+          }
+        }
+      ],
+      { cancelable: false }
+    );
   };
 
-  acceptMatchingUser = () => {
-    console.log("accept");
+  bothAccept = () => {
+    console.log("Both Accept, Directing to PermanentChatRoom");
     let {
       matchAge,
       matchFirstName,
@@ -120,15 +235,31 @@ class AcceptMatchingScreen extends React.Component {
       matchImageUrl,
       matchRoomGuid
     } = this.props.navigation.state.params;
-    this.props.navigation.navigate(
-      "PermanentChatRoom",
-      this.props.navigation.state.params
+    Alert.alert(
+      "Yes!",
+      `${this.state.matchFirstName} accpeted you! ${
+        this.state.matchFirstName
+      } want to continue to chat with you.`,
+      [
+        {
+          text: "OK",
+          onPress: () => {
+            this.socket.close();
+            this.props.navigation.navigate(
+              "PermanentChatRoom",
+              this.props.navigation.state.params
+            );
+          }
+        }
+      ],
+      { cancelable: false }
     );
   };
 
   successScreen = () => {
     return (
       <View style={styles.container}>
+        {/*Image*/}
         <View
           style={{
             padding: width >= 375 ? `${0.026 * width}%` : `${0.013 * width}%`
@@ -149,8 +280,15 @@ class AcceptMatchingScreen extends React.Component {
 
         <View style={{ padding: `${0.013 * width}%` }} />
 
+        {/*Text*/}
         <View style={{ alignItems: "center" }}>
-          <Text style={{ fontSize: 0.064 * width, fontWeight: "bold", color: "white" }}>
+          <Text
+            style={{
+              fontSize: 0.064 * width,
+              fontWeight: "bold",
+              color: "white"
+            }}
+          >
             Congrats!
           </Text>
           <Text style={{ color: "white", fontSize: 0.053 * width }}>
@@ -161,25 +299,57 @@ class AcceptMatchingScreen extends React.Component {
           </Text>
         </View>
 
-        <View style={{ padding: `${0.026 * width}%` }} />
+        <View style={{ padding: `${0.013 * width}%` }} />
 
         <View style={{ flexDirection: "row", justifyContent: "space-around" }}>
-          <Button
-            title={"Reject"}
-            color={"white"}
-            style={{ borderWidth: 1, borderColor: "white" }}
-            onPress={() => {
-              this.setDeviceUserReject();
+          {/*Reject/Ghost Button*/}
+          <TouchableOpacity
+            onPress={() => this.setDeviceUserReject()}
+            style={{
+              borderWidth: 0.5,
+              borderRadius: 25,
+              borderColor: "#fff",
+              paddingLeft: 20,
+              paddingRight: 20,
+              paddingTop: 10,
+              paddingBottom: 10,
+              backgroundColor:
+                !this.state.isDeviceUserAccept && this.state.isDeviceUserClicked
+                  ? "#fff"
+                  : "transparent"
             }}
-          />
-          <Button
-            title={"Accept"}
-            color={"white"}
-            style={{ borderWidth: 1, borderColor: "white" }}
-            onPress={() => {
-              this.setDeviceUserAccept();
+          >
+            <FontAwesome5
+              color={"white"}
+              name={"ghost"}
+              size={width * 0.15}
+              solid
+            />
+          </TouchableOpacity>
+
+          {/*Accept Button*/}
+          <TouchableOpacity
+            onPress={() => this.setDeviceUserAccept()}
+            style={{
+              borderWidth: 0.5,
+              borderRadius: 50,
+              borderColor: "#fff",
+              paddingLeft: 20,
+              paddingRight: 20,
+              paddingTop: 10,
+              paddingBottom: 10,
+              backgroundColor: this.state.isDeviceUserAccept
+                ? "#fff"
+                : "transparent"
             }}
-          />
+          >
+            <FontAwesome5
+              color={"pink"}
+              name={"heart"}
+              size={width * 0.15}
+              solid
+            />
+          </TouchableOpacity>
         </View>
       </View>
     );

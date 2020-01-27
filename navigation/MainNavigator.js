@@ -223,11 +223,7 @@ const MainStack = createStackNavigator(
         headerStyle: {
           backgroundColor: "#4d88ff",
           borderBottomWidth: 0
-        },
-        headerLeft: (
-          <CustomBackButton buttonColor={"#fff"} navigation={navigation} />
-        )
-        //headerRight: <NotificationsButton navigation={navigation} />
+        }
       })
     },
     AcceptMatching: {

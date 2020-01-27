@@ -41,11 +41,21 @@ class MatchingScreen extends React.Component {
       return this.props.navigation.navigate("Home");
     }
 
-    this.setState({
-      foundaMatch: true,
-      matchUserGuid: matchedUsers[0].matchedUser,
-      matchRoomGuid: matchedUsers[0].roomGuid
-    });
+    //Testing Use
+    if (this.props.navigation.state.params.id === "5e0feb18efe16e02ee55c906") {
+      this.setState({
+        foundaMatch: true,
+        matchUserGuid: matchedUsers[1].matchedUser,
+        matchRoomGuid: matchedUsers[1].roomGuid
+      });
+    } else {
+      this.setState({
+        foundaMatch: true,
+        matchUserGuid: matchedUsers[0].matchedUser,
+        matchRoomGuid: matchedUsers[0].roomGuid
+      });
+    }
+    //Testing Use
   };
 
   componentDidMount() {

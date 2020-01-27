@@ -243,7 +243,7 @@ class LoginScreen extends React.Component {
   openBrowser = async provider => {
     try {
       let result = await WebBrowser.openAuthSessionAsync(
-        `${server_auth}/api/auth/${provider}?deepLink=${Linking.makeUrl('/?')}`
+        `${server_auth}/api/auth/${provider}?deepLink=${Linking.makeUrl("/?")}`
       );
 
       //console.log(`Result from ${provider}`, result);
@@ -470,7 +470,7 @@ class LoginScreen extends React.Component {
             //If Navigate to Profile, in side linkscreen has set a guid
             onPress={() => {
               this.props.SetGUIDAction({
-                guid: '5de42b16b4dc5b1fba94e1d4'
+                guid: "5de42b16b4dc5b1fba94e1d4"
                 //guid: "5e119b146ebb5e4b3c2fff6f"
               });
               this.props.SetAboutYouDataAction({
@@ -488,30 +488,86 @@ class LoginScreen extends React.Component {
         {/*Testing USE*/}
         <View style={{ position: 'absolute', left: 0, top: '15%' }}>
           <Button
-            title="HOME"
+            title="HOME - USER_A"
             onPress={() => {
               //TESTING USE (TEMP)
               //Set Device user GUID
               this.props.SetGUIDAction({
-                //guid: "5e0f04d2ed63ee02f3999dea",
-                guid: '5e119b146ebb5e4b3c2fff6f'
+                guid: "5e2bf53d2353214d94dd137e"
+                //guid: "5e119b146ebb5e4b3c2fff6f"
               });
               this.props.SetAboutYouDataAction({
-                firstName: 'te st',
-                lastName: '',
-                birthDate: '',
-                gender: '',
-                country: '',
-                zipCode: ''
+                firstName: "An",
+                lastName: "",
+                birthDate: "",
+                gender: "",
+                country: "",
+                zipCode: ""
+              });
+              //TESTING USE
+              this.props.navigation.navigate("PreSettings");
+            }}
+          />
+        </View>
+        {/*Testing USE*/}
+        <View style={{ position: "absolute", left: 0, top: "15%" }}>
+          <Button
+            title="HOME - USER_B"
+            onPress={() => {
+              //TESTING USE (TEMP)
+              //Set Device user GUID
+              this.props.SetGUIDAction({
+                guid: "5e2bf60b2353214d94dd137f"
+                //guid: "5e119b146ebb5e4b3c2fff6f"
+              });
+              this.props.SetAboutYouDataAction({
+                firstName: "BBB",
+                lastName: "",
+                birthDate: "",
+                gender: "",
+                country: "",
+                zipCode: ""
               });
               //TESTING USE
               this.props.navigation.navigate('PreSettings');
             }}
           />
         </View>
+        {/*Testing USE*/}
+        <View style={{ position: "absolute", left: 0, top: "20%" }}>
+          <Button
+            title="Reset"
+            onPress={() => {
+              this.resetMatchStatus();
+            }}
+          />
+        </View>
       </View>
     );
   }
+
+  resetMatchStatus = () => {
+    fetch(`${server_auth}/api/chat/kachi`, {
+      method: "POST",
+      mode: "cors",
+      credentials: "same-origin",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json"
+      }
+    })
+      .then(res => {
+        console.log(res);
+        return res;
+      })
+      .then(res => res.json())
+      .then(res => {
+        console.log(res);
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
 
   _maybeRenderDevelopmentModeWarning() {
     if (__DEV__) {
