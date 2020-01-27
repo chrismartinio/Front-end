@@ -36,7 +36,8 @@ import NotificationsScreen from "../screens/NotificationsFlow/NotificationsScree
 import CustomBackButton from "../sharedComponents/CustomBackButton";
 
 //LocationFlow
-import LocationServices from "../screens/LocationFlow/LocationServices";
+// import LocationServices from "../screens/LocationFlow/LocationServiuces";
+import LocationServices from "../screens/LocationFlow/Locations";
 
 const MainStack = createStackNavigator(
   {
