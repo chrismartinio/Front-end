@@ -25,7 +25,6 @@ import AcceptMatchingScreen from "../screens/MatchFlow/AcceptMatchingScreen";
 //Profile Flow
 import ProfileScreen from "../screens/ProfileFlow/Profile/ProfileScreen";
 import EditScreen from "../screens/ProfileFlow/Profile/EditScreen";
-import PhotosEditScreen from "../screens/ProfileFlow/Profile/PhotosEditScreen";
 import ProfileLocationScreen from "../screens/ProfileFlow/Profile/ProfileLocationScreen";
 import SelfieScreen from "../screens/ProfileFlow/Profile_Registration/RegistrationScreens/SelfieScreen";
 import ConnectionsScreen from "../screens/ProfileFlow/ConnectionsScreen";
@@ -95,12 +94,6 @@ const MainStack = createStackNavigator(
     },
     SeflieEdit: {
       screen: SelfieScreen,
-      navigationOptions: () => ({
-        title: `Edit`
-      })
-    },
-    PhotosEdit: {
-      screen: PhotosEditScreen,
       navigationOptions: () => ({
         title: `Edit`
       })

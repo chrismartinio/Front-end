@@ -254,32 +254,6 @@ class EditScreen extends React.Component {
                   />
                 </View>
 
-                {/*Photos*/}
-                <View style={{ alignItems: "center", margin: 50 }}>
-                  <TouchableOpacity
-                    style={{
-                      borderWidth: 1,
-                      borderColor: "purple",
-                      borderRadius: 25,
-                      padding: 25
-                    }}
-                    onPress={() => {
-                      this.props.navigation.navigate("PhotosEdit");
-                    }}
-                  >
-                    <Text
-                      style={{
-                        color: "#6a0dad",
-                        fontSize: Math.round(width / 17.625),
-                        fontWeight: "500",
-                        textAlign: "center"
-                      }}
-                    >
-                      Edit Photos
-                    </Text>
-                  </TouchableOpacity>
-                </View>
-
                 {/*Temporay solution for scrollView; without this would not scroll properly*/}
                 <View style={{ padding: "100%" }} />
               </View>
