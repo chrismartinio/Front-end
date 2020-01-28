@@ -50,13 +50,14 @@ class PhotosAlbumModal extends React.Component {
 
     const data = new FormData();
     images.forEach((el, id) => {
-      console.log(el)
+      console.log(el);
       if (el) {
         data.append(`photos`, {
           name: `Pic001`,
           type: "image",
           uri: Platform.OS === "android" ? el : el.replace("file://", "")
         });
+        data.append("guid", this.props.CreateProfileDataReducer.guid);
         data.append("index", this.props.selectedPhotoIndex);
       }
     });
@@ -108,6 +109,7 @@ class PhotosAlbumModal extends React.Component {
   };
 
   async componentDidMount() {
+    //console.log(this.props.CreateProfileDataReducer.guid)
     await this.getPhonePhotos();
     this.setState({
       isSuccess: true
