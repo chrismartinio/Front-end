@@ -136,10 +136,10 @@ class PreSettingsScreen extends React.Component {
     socket.on('connect', () => {
       console.log('Connected to server');
       socket.emit('login', this.guid);
-
     });
-    socket.on('login', function(data){
+    socket.on('login', (data) => {
       console.log('data', data);
+      socket.emit('retrieving users');
     })
 
     // onlineIndicator(this.guid);
