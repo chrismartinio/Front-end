@@ -49,6 +49,7 @@ class ConversationsScreen extends React.Component {
       matchUsersList: [],
       isSuccess: false
     };
+    this.array = [];
 
     //this.socket = io("http://74.80.250.210:3060");
     this.scrollY;
@@ -71,11 +72,12 @@ class ConversationsScreen extends React.Component {
   
       });
       socket.on('retrieving users', (data) => {
-        console.log('array', data);
+        // console.log('array1', data);
         this.setState({
           onlineUserList: data
         });
-        console.log(this.state.onlineUserList);
+        this.array = data;
+        console.log('1', this.array);
       })
   
   }
@@ -222,7 +224,7 @@ class ConversationsScreen extends React.Component {
         <View style={{ flex: 0.9 }}>
           {/*CircularCarousel */}
           <CircularCarousel
-            onlineUserList={this.state.onlineUserList}
+            onlineUserList={this.array}
             navigation={this.props.navigation}
             matchUsersList={this.state.matchUsersList}
           />

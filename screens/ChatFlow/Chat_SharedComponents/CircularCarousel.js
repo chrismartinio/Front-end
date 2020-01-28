@@ -147,7 +147,7 @@ export default class CircularCarousel extends React.Component {
           itemAnimationsXY={itemAnimationsXY}
           matchUserData={this.state.displayItems[i]}
           navigation={this.props.navigation}
-          onlineUser={this.props.onlineUserList[i]}
+          onlineUserList={this.props.onlineUserList}
         />
       );
     }
