@@ -20,6 +20,8 @@ import {
   calculateLastMessageDate
 } from "../Util/ConnectionsScreenFunctions.js";
 
+import {getOnlineStatus} from "../../../screens/ChatFlow/Util/onlinePresence.js"
+
 function calculateAge(birthday) {
   birthday = new Date(birthday);
   // birthday is a date
@@ -31,6 +33,11 @@ function calculateAge(birthday) {
 export default class CircularCarouselItem extends React.Component {
   constructor(props) {
     super(props);
+    console.log('logg', this.props.onlineUserList);
+  }
+
+  componentDidMount() {
+
   }
 
   goToPermanentChatRoom = ({
@@ -68,6 +75,8 @@ export default class CircularCarouselItem extends React.Component {
   };
 
   render() {
+    // console.log('hi');
+    let isOnline = this.props.onlineUserList.includes(this.props.matchUserData.userGuid);
     let nameFont = shortName(this.props.matchUserData.firstName);
     let ageAddressFont = shortAgeAndAddressSTR(
       this.props.matchUserData.age + " , " + this.props.matchUserData.city
@@ -145,6 +154,8 @@ export default class CircularCarouselItem extends React.Component {
                   {this.props.matchUserData.firstName}
                   {/*this.props.matchUserData.matchLastName[0]*/}
                 </Text>
+                
+                {isOnline ? <View><Text>Online</Text></View> : <View><Text>Offline</Text></View>}
 
                 {/*Age and Address*/}
                 <Text style={{ fontSize: width * 0.038 }}>

@@ -35,6 +35,7 @@ import {
 import Footer from "../../sharedComponents/Footer";
 
 import CircularCarousel from "./Chat_SharedComponents/CircularCarousel";
+import SetOnlineUserListAction from "../../storage/actions/GlobalReducerActions/SetOnlineUserListAction/";
 
 import { Chevron } from "react-native-shapes";
 
@@ -44,10 +45,12 @@ class ConversationsScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      onlineUserList: [],
       appState: AppState.currentState,
       matchUsersList: [],
       isSuccess: false
     };
+    this.array = [];
 
     //this.socket = io("http://74.80.250.210:3060");
     this.scrollY;
@@ -61,6 +64,22 @@ class ConversationsScreen extends React.Component {
       }
     });
   };
+
+  onlineIndicator(user) {
+    const socket = io(`http://localhost:3000/?token=${user}`);
+    socket.on("connect", () => {
+      console.log("Connected to server");
+      socket.emit("retrieving users");
+    });
+    socket.on("retrieving users", data => {
+      // console.log('array1', data);
+      this.setState({
+        onlineUserList: data
+      });
+      this.array = data;
+      console.log("1", this.array);
+    });
+  }
 
   getMatchedUsersProfileFromDB = async matchUsersList => {
     let matchUserGuidArray = [];
@@ -128,8 +147,12 @@ class ConversationsScreen extends React.Component {
   };
 
   async componentDidMount() {
+    //GETTING THE LIST FROM GLOBAL STORAGE REDUX
+    console.log(this.props.GlobalReducer.onlineUserList);
+
     AppState.addEventListener("change", this._handleAppStateChange);
     this.guid = await this.props.CreateProfileDataReducer.guid;
+    this.onlineIndicator(this.guid);
     this.user_firstName = await this.props.CreateProfileDataReducer.aboutYouData
       .firstName;
 
@@ -158,36 +181,30 @@ class ConversationsScreen extends React.Component {
       nextAppState === "active"
     ) {
       console.log("User: " + this.guid + " has come to the foreground!");
-      await fetch(
-        `${server_pushNotification}/api/pushNotification/appState`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({
-            data: { guid: this.guid, appState: "foreground" }
-          })
-        }
-      )
+      await fetch(`${server_pushNotification}/api/pushNotification/appState`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          data: { guid: this.guid, appState: "foreground" }
+        })
+      })
         .then(() => console.log("success"))
         .catch(error => {
           console.log(error);
         });
     } else {
       console.log("User: " + this.guid + " has gone to the background!");
-      await fetch(
-        `${server_pushNotification}/api/pushNotification/appState`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({
-            data: { guid: this.guid, appState: "background" }
-          })
-        }
-      )
+      await fetch(`${server_pushNotification}/api/pushNotification/appState`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          data: { guid: this.guid, appState: "background" }
+        })
+      })
         .then(() => console.log("success"))
         .catch(error => {
           console.log(error);
@@ -202,6 +219,7 @@ class ConversationsScreen extends React.Component {
         <View style={{ flex: 0.9 }}>
           {/*CircularCarousel */}
           <CircularCarousel
+            onlineUserList={this.array}
             navigation={this.props.navigation}
             matchUsersList={this.state.matchUsersList}
           />
@@ -287,7 +305,10 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => {
-  return {};
+  return {
+    SetOnlineUserListAction: payload =>
+      dispatch(SetOnlineUserListAction(payload))
+  };
 };
 
 export default connect(

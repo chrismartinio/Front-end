@@ -11,11 +11,15 @@ import {
 
 import { connect } from "react-redux";
 
-import { server_profile } from "../../config/ipconfig";
+import { server_profile, server_presence } from "../../config/ipconfig";
 import SetDeviceUserImageUrlAction from "../../storage/actions/ImageProcessingActions/SetDeviceUserImageUrlAction/";
 import SetTimeAction from "../../storage/actions/ConfigReducerActions/SetTimeAction/";
+import SetOnlineUserListAction from "../../storage/actions/GlobalReducerActions/SetOnlineUserListAction/";
 import { StackActions, NavigationActions } from "react-navigation";
 import ErrorScreen from "../../sharedComponents/ErrorScreen";
+import io from "socket.io-client";
+import ConversationsScreen from "../../screens/ChatFlow/ConversationsScreen.js";
+
 import { onlineIndicator } from "../ChatFlow/Util/onlinePresence.js";
 
 function fetchRetry(url, delay, limit, fetchOptions = {}) {
@@ -127,7 +131,23 @@ class PreSettingsScreen extends React.Component {
   async componentDidMount() {
     //Setup GUID
     this.guid = await this.props.CreateProfileDataReducer.guid;
-    onlineIndicator(this.guid);
+    const socket = io(`http://localhost:3000/?token=${this.guid}`);
+
+    socket.on("connect", () => {
+      console.log("Connected to server");
+      socket.emit("login", this.guid);
+    });
+    socket.on("login", data => {
+      console.log("data", data);
+      socket.emit("retrieving users");
+    });
+
+    //STORING THE LIST ON GLOBAL STORAGE REDUX
+    this.props.SetOnlineUserListAction({
+      onlineUserList: ["SOME", "LIST", "LOL"]
+    });
+
+    // onlineIndicator(this.guid);
 
     //Setup Profile Image
     await this.setProfileImage(this.guid);
@@ -174,6 +194,7 @@ class PreSettingsScreen extends React.Component {
   };
 
   render() {
+    <ConversationsScreen socket={true} />;
     return this.state.isSuccess ? this.loadingScreen() : this.errorScreen();
   }
 }
@@ -194,7 +215,9 @@ const mapDispatchToProps = dispatch => {
   return {
     SetDeviceUserImageUrlAction: payload =>
       dispatch(SetDeviceUserImageUrlAction(payload)),
-    SetTimeAction: payload => dispatch(SetTimeAction(payload))
+    SetTimeAction: payload => dispatch(SetTimeAction(payload)),
+    SetOnlineUserListAction: payload =>
+      dispatch(SetOnlineUserListAction(payload))
   };
 };
 
