@@ -33,10 +33,6 @@ function calculateAge(birthday) {
 export default class CircularCarouselItem extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      onlineStatus: ' offline',
-      test: this.props.onlineUser
-    }
     console.log('logg', this.props.onlineUser);
   }
 
@@ -79,16 +75,14 @@ export default class CircularCarouselItem extends React.Component {
   };
 
   render() {
-    console.log('hi');
-    if(this.state.test === this.props.matchUserData.userGuid){
-      console.log('comparing', this.state.test, this.props.matchUserData.userGuid)
-      this.setState({
-        onlineStatus: ' online',
-      })
-    } else {
-      console.log('comparing', this.state.test, this.props.matchUserData.userGuid)
-      console.log('no')
-    }
+    // console.log('hi');
+    // let onlineStatus = 'offline';
+    // if(this.state.test === this.props.matchUserData.userGuid){
+    //   console.log('comparing', this.state.test, this.props.matchUserData.userGuid)
+    // } else {
+    //   console.log('comparing', this.state.test, this.props.matchUserData.userGuid)
+    //   console.log('no')
+    // }
     let nameFont = shortName(this.props.matchUserData.firstName);
     let ageAddressFont = shortAgeAndAddressSTR(
       this.props.matchUserData.age + " , " + this.props.matchUserData.city
@@ -164,7 +158,7 @@ export default class CircularCarouselItem extends React.Component {
                   }}
                 >
                   {this.props.matchUserData.firstName}
-                   {this.state.onlineStatus}
+                   {/* {this.state.onlineStatus} */}
                   {/*this.props.matchUserData.matchLastName[0]*/}
                 </Text>
 

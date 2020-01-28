@@ -222,7 +222,7 @@ class ConversationsScreen extends React.Component {
         <View style={{ flex: 0.9 }}>
           {/*CircularCarousel */}
           <CircularCarousel
-          onlineUserList={this.state.onlineUserList}
+            onlineUserList={this.state.onlineUserList}
             navigation={this.props.navigation}
             matchUsersList={this.state.matchUsersList}
           />
