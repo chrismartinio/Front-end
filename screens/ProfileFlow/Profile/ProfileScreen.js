@@ -501,7 +501,7 @@ class ProfileScreen extends React.Component {
               this.setAlbumSectionVisible(true, index);
             }
           }}
-          key={index++}
+          key={index}
           style={{
             width: width * 0.267,
             height: width * 0.2,
@@ -521,7 +521,7 @@ class ProfileScreen extends React.Component {
               this.setAlbumSectionVisible(true, index);
             }
           }}
-          key={index++}
+          key={index}
         >
           <Image
             source={{
@@ -536,6 +536,7 @@ class ProfileScreen extends React.Component {
           />
         </TouchableOpacity>
       );
+      index++;
     });
 
     return (

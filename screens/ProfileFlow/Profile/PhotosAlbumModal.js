@@ -62,8 +62,6 @@ class PhotosAlbumModal extends React.Component {
       }
     });
 
-    console.log(data);
-
     await fetch(
       `${server_imageProcessing}/api/imageProcessing/uploadAlbumPhotos`,
       {
