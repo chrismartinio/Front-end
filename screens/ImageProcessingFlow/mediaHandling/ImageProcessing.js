@@ -42,8 +42,6 @@ const createFormDataMulti = (images, operatingSystem, body) => {
 
       data.append("guid", body.guid);
       data.append("caption", body.captions[id]);
-      data.append("filePath", el.node.image.uri.replace("file://", ""));
-      data.append("isPhone", Constants.isDevice ? true : false);
     }
   });
 
@@ -72,7 +70,7 @@ exports.sendImages = async (images, platform, body) => {
   let data = createFormDataMulti(images, platform.OS, body);
 
   let success = await fetch(
-    `${server_imageProcessing}/api/imageProcessing/upload`,
+    `${server_imageProcessing}/api/imageProcessing/uploadProfilePhoto`,
     {
       method: "POST",
       headers: {

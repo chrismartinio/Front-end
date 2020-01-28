@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 import {
   Image,
   Platform,
@@ -9,33 +9,33 @@ import {
   View,
   Button,
   Dimensions
-} from "react-native";
+} from 'react-native';
 
-import t from "tcomb-form-native";
+import t from 'tcomb-form-native';
 
-const { height, width } = Dimensions.get("window");
+const { height, width } = Dimensions.get('window');
 
 //Redux
-import { connect } from "react-redux";
-import SetFbDataAction from "../storage/actions/DataReducerActions/SetFbDataAction";
-import SetJwtAction from "../storage/actions/DataReducerActions/SetJwtAction";
-import SetGUIDAction from "../storage/actions/RegistrationActions/SetGUIDAction";
-import SetAboutYouDataAction from "../storage/actions/RegistrationActions/SetAboutYouDataAction";
-import SetIsContinueUserAction from "../storage/actions/RegistrationActions/SetIsContinueUserAction";
-import SetChecklistAction from "../storage/actions/RegistrationActions/SetChecklistAction";
-import ResetReduxDataAction from "../storage/actions/RegistrationActions/ResetReduxDataAction";
-import SetIsThirdPartyServicesUserAction from "../storage/actions/RegistrationActions/SetIsThirdPartyServicesUserAction";
+import { connect } from 'react-redux';
+import SetFbDataAction from '../storage/actions/DataReducerActions/SetFbDataAction';
+import SetJwtAction from '../storage/actions/DataReducerActions/SetJwtAction';
+import SetGUIDAction from '../storage/actions/RegistrationActions/SetGUIDAction';
+import SetAboutYouDataAction from '../storage/actions/RegistrationActions/SetAboutYouDataAction';
+import SetIsContinueUserAction from '../storage/actions/RegistrationActions/SetIsContinueUserAction';
+import SetChecklistAction from '../storage/actions/RegistrationActions/SetChecklistAction';
+import ResetReduxDataAction from '../storage/actions/RegistrationActions/ResetReduxDataAction';
+import SetIsThirdPartyServicesUserAction from '../storage/actions/RegistrationActions/SetIsThirdPartyServicesUserAction';
 
 //import publicIP from "react-native-public-ip";
-import * as WebBrowser from "expo-web-browser";
-import { Linking } from "expo";
-import * as Location from "expo-location";
-import Constants from "expo-constants";
-import * as Permissions from "expo-permissions";
+import * as WebBrowser from 'expo-web-browser';
+import { Linking } from 'expo';
+import * as Location from 'expo-location';
+import Constants from 'expo-constants';
+import * as Permissions from 'expo-permissions';
 
 const { manifest } = Constants;
-var _ = require("lodash");
-var jwtDecode = require("jwt-decode");
+var _ = require('lodash');
+var jwtDecode = require('jwt-decode');
 const stylesheet = _.cloneDeep(t.form.Form.stylesheet);
 
 stylesheet.textbox.normal.borderWidth = 0;
@@ -51,12 +51,12 @@ stylesheet.textboxView.normal.borderBottomWidth = 1;
 stylesheet.textboxView.error.borderBottomWidth = 1;
 stylesheet.textboxView.normal.marginBottom = 5;
 stylesheet.textboxView.error.marginBottom = 5;
-stylesheet.textbox.normal.color = "#6a0dad";
+stylesheet.textbox.normal.color = '#6a0dad';
 
 const Form = t.form.Form;
 var options = {
   stylesheet: stylesheet,
-  auto: "placeholders",
+  auto: 'placeholders',
   fields: {
     password: {
       password: true,
@@ -69,18 +69,18 @@ const User = t.struct({
   password: t.String
 });
 
-import { server_auth } from "../config/ipconfig";
+import { server_auth } from '../config/ipconfig';
 import {
   createTablesInToLocalStorage,
   displayAllTablesFromLocalStorage,
   dropAllTablesInLocalStorage,
   deleteDeviceUserData,
   createMatchedUserTablesInToLocalStorage
-} from "./ProfileFlow/LocalStorage/localStorage.js";
+} from './ProfileFlow/LocalStorage/localStorage.js';
 
 //SQLite
-import * as SQLite from "expo-sqlite";
-const db = SQLite.openDatabase("that.db");
+import * as SQLite from 'expo-sqlite';
+const db = SQLite.openDatabase('that.db');
 
 class LoginScreen extends React.Component {
   static navigationOptions = {
@@ -104,7 +104,7 @@ class LoginScreen extends React.Component {
     ///////////////////////////////
     //LOCALSTORAGE SECTION (SQLITE)
     ///////////////////////////////
-    console.log("LOGINSCREEN - CREATING TABLES");
+    console.log('LOGINSCREEN - CREATING TABLES');
 
     //DROP ALL TABLES
     //NOTICE: If you want to add a new column, you would have following:
@@ -134,22 +134,22 @@ class LoginScreen extends React.Component {
   }
 
   localLogin = async () => {
-    let email = "",
-      password = "";
+    let email = '',
+      password = '';
     try {
       email = this._form.getValue().email;
       password = this._form.getValue().password;
     } catch (e) {
-      return alert("Please fill in Email or Password");
+      return alert('Please fill in Email or Password');
     }
 
     await fetch(`${server_auth}/api/auth/login`, {
-      method: "POST",
-      mode: "cors",
-      credentials: "same-origin",
+      method: 'POST',
+      mode: 'cors',
+      credentials: 'same-origin',
       headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json"
+        Accept: 'application/json',
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify({
         password: password,
@@ -158,7 +158,7 @@ class LoginScreen extends React.Component {
     })
       .then(res => {
         if (res.status === 401) {
-          let err = new Error("Invalid Email and Password");
+          let err = new Error('Invalid Email and Password');
           err.httpStatusCode = 401;
           throw err;
         }
@@ -166,7 +166,7 @@ class LoginScreen extends React.Component {
       })
       .then(res => res.json())
       .then(async res => {
-        if (!res.jwt) throw new Error("Jwt is missing");
+        if (!res.jwt) throw new Error('Jwt is missing');
         var decoded = jwtDecode(res.jwt);
 
         let { guid, firstName, checklist } = decoded;
@@ -177,11 +177,11 @@ class LoginScreen extends React.Component {
         //store firstName to redux
         this.props.SetAboutYouDataAction({
           firstName: firstName,
-          lastName: "",
-          birthDate: "",
-          gender: "",
-          country: "",
-          zipCode: ""
+          lastName: '',
+          birthDate: '',
+          gender: '',
+          country: '',
+          zipCode: ''
         });
 
         let isContinueUser = false;
@@ -192,7 +192,7 @@ class LoginScreen extends React.Component {
         Object.entries(checklist).forEach(e => {
           let key = e[0],
             value = e[1];
-          if (key !== "imageProcessing") {
+          if (key !== 'imageProcessing') {
             //Registration Screen
             if (!value) {
               isContinueUser = true;
@@ -212,22 +212,22 @@ class LoginScreen extends React.Component {
 
         //if the user is a continue user, send the user back to registration
         if (isContinueUser) {
-          return this.props.navigation.navigate("Registration");
+          return this.props.navigation.navigate('Registration');
         }
 
         //if the user is a continue user and have not finish the image,
         //send them to registration selfie screen
         if (isContinueUserForImage) {
-          return this.props.navigation.navigate("Selfie", { isEdit: false });
+          return this.props.navigation.navigate('Selfie', { isEdit: false });
         }
 
-        this.props.navigation.navigate("PreSettings");
+        this.props.navigation.navigate('PreSettings');
       })
       .catch(err => {
         if (err.httpStatusCode === 401) {
-          alert("Incorrect Email or Password");
+          alert('Incorrect Email or Password');
         } else {
-          alert("Request Failed.\nPlease Try Again.");
+          alert('Request Failed.\nPlease Try Again.');
         }
       });
   };
@@ -237,26 +237,24 @@ class LoginScreen extends React.Component {
     this.props.ResetReduxDataAction({
       reset: true
     });
-    this.props.navigation.navigate("Registration");
+    this.props.navigation.navigate('Registration');
   };
 
   openBrowser = async provider => {
     try {
       let result = await WebBrowser.openAuthSessionAsync(
-        `${server_auth}/api/auth/${provider}?deepLink=${Linking.makeUrl(
-          "/?"
-        )}`
+        `${server_auth}/api/auth/${provider}?deepLink=${Linking.makeUrl("/?")}`
       );
 
       //console.log(`Result from ${provider}`, result);
 
-      if ((result.type = "success")) {
+      if ((result.type = 'success')) {
         let redirectionData = result.url ? Linking.parse(result.url) : null;
 
         //console.log(redirectionData);
 
         if (!redirectionData || !redirectionData.queryParams.jwt)
-          throw new Error("Url is invalid, might not contain jwt");
+          throw new Error('Url is invalid, might not contain jwt');
 
         const decodedToken = jwtDecode(redirectionData.queryParams.jwt);
         //console.log("User token", decodedToken);
@@ -274,11 +272,11 @@ class LoginScreen extends React.Component {
         //store firstName to redux
         this.props.SetAboutYouDataAction({
           firstName: firstName,
-          lastName: "",
-          birthDate: "",
-          gender: "",
-          country: "",
-          zipCode: ""
+          lastName: '',
+          birthDate: '',
+          gender: '',
+          country: '',
+          zipCode: ''
         });
 
         //store guid to redux
@@ -295,7 +293,7 @@ class LoginScreen extends React.Component {
         Object.entries(checklist).forEach(e => {
           let key = e[0],
             value = e[1];
-          if (key !== "imageProcessing") {
+          if (key !== 'imageProcessing') {
             //Registration Screen
             if (!value) {
               isContinueUser = true;
@@ -310,19 +308,19 @@ class LoginScreen extends React.Component {
 
         //if the user is a continue user, send the user back to registration
         if (isContinueUser) {
-          return this.props.navigation.navigate("Registration");
+          return this.props.navigation.navigate('Registration');
         }
 
         //if the user is a continue user and have not finish the image,
         //send them to registration selfie screen
         if (isContinueUserForImage) {
-          return this.props.navigation.navigate("Selfie", { isEdit: false });
+          return this.props.navigation.navigate('Selfie', { isEdit: false });
         }
 
         this.setState({ redirectionData });
 
-        this.props.navigation.navigate("PreSettings");
-      } else throw new Error("Redirection failed");
+        this.props.navigation.navigate('PreSettings');
+      } else throw new Error('Redirection failed');
     } catch (e) {
       alert(`${provider} login failed`);
       console.log(`${provider} login failed`, e);
@@ -330,15 +328,15 @@ class LoginScreen extends React.Component {
   };
 
   checkFaceBookValidity = async () => {
-    this.openBrowser("facebook");
+    this.openBrowser('facebook');
   };
 
   checkGoogleValidity = () => {
-    this.openBrowser("google");
+    this.openBrowser('google');
   };
 
   checkTwitterValidity = () => {
-    this.openBrowser("twitter");
+    this.openBrowser('twitter');
   };
 
   render() {
@@ -356,8 +354,8 @@ class LoginScreen extends React.Component {
           <Image
             source={
               __DEV__
-                ? require("../assets/images/butterfly.png")
-                : require("../assets/images/butterfly.png")
+                ? require('../assets/images/butterfly.png')
+                : require('../assets/images/butterfly.png')
             }
             style={styles.welcomeImage}
           />
@@ -408,14 +406,13 @@ class LoginScreen extends React.Component {
         {/*Third Party Providers*/}
         <Text style={styles.centerText}>Sign in with</Text>
         <View
-          style={{ flex: 1, flexDirection: "row", justifyContent: "center" }}
-        >
+          style={{ flex: 1, flexDirection: 'row', justifyContent: 'center' }}>
           <TouchableOpacity onPress={this.checkFaceBookValidity}>
             <Image
               source={
                 __DEV__
-                  ? require("../assets/images/facebookBW.png")
-                  : require("../assets/images/facebookBW.png")
+                  ? require('../assets/images/facebookBW.png')
+                  : require('../assets/images/facebookBW.png')
               }
               style={styles.iconImage}
             />
@@ -425,8 +422,8 @@ class LoginScreen extends React.Component {
             <Image
               source={
                 __DEV__
-                  ? require("../assets/images/googleBW.png")
-                  : require("../assets/images/googleBW.png")
+                  ? require('../assets/images/googleBW.png')
+                  : require('../assets/images/googleBW.png')
               }
               style={styles.iconImage}
             />
@@ -436,8 +433,8 @@ class LoginScreen extends React.Component {
             <Image
               source={
                 __DEV__
-                  ? require("../assets/images/TwitterBW.png")
-                  : require("../assets/images/TwitterBW.png")
+                  ? require('../assets/images/TwitterBW.png')
+                  : require('../assets/images/TwitterBW.png')
               }
               style={styles.iconImage}
             />
@@ -445,40 +442,62 @@ class LoginScreen extends React.Component {
         </View>
 
         {/*Testing USE*/}
-        <View style={{ position: "absolute", left: 0, top: "5%" }}>
+        <View style={{ position: 'absolute', left: 0, top: '5%' }}>
+          <Button
+            title="LOCATIONS"
+            onPress={() => {
+              this.props.SetGUIDAction({
+                guid: '5de42b16b4dc5b1fba94e1d4'
+                //guid: "5e119b146ebb5e4b3c2fff6f"
+              });
+              this.props.SetAboutYouDataAction({
+                firstName: 'te st',
+                lastName: '',
+                birthDate: '',
+                gender: '',
+                country: '',
+                zipCode: ''
+              });
+              this.props.navigation.navigate('LocationServices');
+            }}
+          />
+        </View>
+
+        {/*Testing USE*/}
+        <View style={{ position: 'absolute', left: 0, top: '10%' }}>
           <Button
             title="LINKS"
             //If Navigate to Profile, in side linkscreen has set a guid
             onPress={() => {
               this.props.SetGUIDAction({
-                guid: "5de42b16b4dc5b1fba94e1d4",
+                guid: "5de42b16b4dc5b1fba94e1d4"
                 //guid: "5e119b146ebb5e4b3c2fff6f"
               });
               this.props.SetAboutYouDataAction({
-                firstName: "KaChi",
-                lastName: "",
-                birthDate: "",
-                gender: "",
-                country: "",
-                zipCode: ""
+                firstName: 'KaChi',
+                lastName: '',
+                birthDate: '',
+                gender: '',
+                country: '',
+                zipCode: ''
               });
-              this.props.navigation.navigate("Links");
+              this.props.navigation.navigate('Links');
             }}
           />
         </View>
         {/*Testing USE*/}
-        <View style={{ position: "absolute", left: 0, top: "10%" }}>
+        <View style={{ position: 'absolute', left: 0, top: '15%' }}>
           <Button
-            title="HOME"
+            title="HOME - USER_A"
             onPress={() => {
               //TESTING USE (TEMP)
               //Set Device user GUID
               this.props.SetGUIDAction({
-                //guid: "5e0f04d2ed63ee02f3999dea",
-                guid: "5e119b146ebb5e4b3c2fff6f"
+                guid: "5e2bf53d2353214d94dd137e"
+                //guid: "5e119b146ebb5e4b3c2fff6f"
               });
               this.props.SetAboutYouDataAction({
-                firstName: "te st",
+                firstName: "An",
                 lastName: "",
                 birthDate: "",
                 gender: "",
@@ -490,9 +509,65 @@ class LoginScreen extends React.Component {
             }}
           />
         </View>
+        {/*Testing USE*/}
+        <View style={{ position: "absolute", left: 0, top: "20%" }}>
+          <Button
+            title="HOME - USER_B"
+            onPress={() => {
+              //TESTING USE (TEMP)
+              //Set Device user GUID
+              this.props.SetGUIDAction({
+                guid: "5e2bf60b2353214d94dd137f"
+                //guid: "5e119b146ebb5e4b3c2fff6f"
+              });
+              this.props.SetAboutYouDataAction({
+                firstName: "BBB",
+                lastName: "",
+                birthDate: "",
+                gender: "",
+                country: "",
+                zipCode: ""
+              });
+              //TESTING USE
+              this.props.navigation.navigate('PreSettings');
+            }}
+          />
+        </View>
+        {/*Testing USE*/}
+        <View style={{ position: "absolute", left: 0, top: "25%" }}>
+          <Button
+            title="Reset"
+            onPress={() => {
+              this.resetMatchStatus();
+            }}
+          />
+        </View>
       </View>
     );
   }
+
+  resetMatchStatus = () => {
+    fetch(`${server_auth}/api/chat/kachi`, {
+      method: "POST",
+      mode: "cors",
+      credentials: "same-origin",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json"
+      }
+    })
+      .then(res => {
+        console.log(res);
+        return res;
+      })
+      .then(res => res.json())
+      .then(res => {
+        console.log(res);
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
 
   _maybeRenderDevelopmentModeWarning() {
     if (__DEV__) {
@@ -519,13 +594,13 @@ class LoginScreen extends React.Component {
 
   _handleLearnMorePress = () => {
     WebBrowser.openBrowserAsync(
-      "https://docs.expo.io/versions/latest/guides/development-mode"
+      'https://docs.expo.io/versions/latest/guides/development-mode'
     );
   };
 
   _handleHelpPress = () => {
     WebBrowser.openBrowserAsync(
-      "https://docs.expo.io/versions/latest/guides/up-and-running.html#can-t-see-your-changes"
+      'https://docs.expo.io/versions/latest/guides/up-and-running.html#can-t-see-your-changes'
     );
   };
 }
@@ -533,68 +608,68 @@ class LoginScreen extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff"
+    backgroundColor: '#fff'
   },
   welcomeContainer: {
-    alignItems: "center"
+    alignItems: 'center'
   },
   welcomeImage: {
     width: width * 0.53,
     height: width * 0.53,
-    resizeMode: "contain"
+    resizeMode: 'contain'
   },
   formContainer: {
-    justifyContent: "center",
+    justifyContent: 'center',
     width: `${width * 0.18}%`,
-    backgroundColor: "#ffffff",
-    alignSelf: "center",
-    color: "#6a0dad",
-    borderColor: "#6a0dad"
+    backgroundColor: '#ffffff',
+    alignSelf: 'center',
+    color: '#6a0dad',
+    borderColor: '#6a0dad'
   },
   buttonStyle: {
     borderRadius: 20,
-    color: "white",
-    backgroundColor: "#6a0dad",
+    color: 'white',
+    backgroundColor: '#6a0dad',
     paddingLeft: width * 0.26,
     paddingRight: width * 0.26,
-    alignSelf: "center",
-    fontStyle: "italic",
+    alignSelf: 'center',
+    fontStyle: 'italic',
     margin: 5
   },
   buttonStyleOutline: {
     borderRadius: 20,
-    color: "#6a0dad",
+    color: '#6a0dad',
     borderWidth: 0.5,
-    borderColor: "#6a0dad",
+    borderColor: '#6a0dad',
     paddingLeft: width * 0.26,
     paddingRight: width * 0.26,
-    alignSelf: "center",
-    fontStyle: "italic",
+    alignSelf: 'center',
+    fontStyle: 'italic',
     margin: 5
   },
   developmentModeText: {
     marginBottom: 20,
-    color: "rgba(0,0,0,0.4)",
+    color: 'rgba(0,0,0,0.4)',
     fontSize: 14,
     lineHeight: 19,
-    textAlign: "center"
+    textAlign: 'center'
   },
   helpLink: {
     paddingVertical: 15
   },
   helpLinkText: {
     fontSize: 14,
-    color: "#2e78b7"
+    color: '#2e78b7'
   },
   centerText: {
     marginTop: 15,
-    textAlign: "center",
-    color: "#6a0dad"
+    textAlign: 'center',
+    color: '#6a0dad'
   },
   iconImage: {
     width: 50,
     height: 50,
-    resizeMode: "contain",
+    resizeMode: 'contain',
     padding: 10,
     margin: 20
   }
@@ -616,7 +691,4 @@ const mapDispatchToProps = dispatch => ({
     dispatch(SetIsThirdPartyServicesUserAction(payload))
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(LoginScreen);
+export default connect(mapStateToProps, mapDispatchToProps)(LoginScreen);

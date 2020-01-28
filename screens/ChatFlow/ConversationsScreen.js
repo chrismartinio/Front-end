@@ -38,7 +38,7 @@ import CircularCarousel from "./Chat_SharedComponents/CircularCarousel";
 
 import { Chevron } from "react-native-shapes";
 
-import { testobj } from "../../data/testObj";
+import { testobj, fakeData } from "../../data/testObj";
 
 class ConversationsScreen extends React.Component {
   constructor(props) {

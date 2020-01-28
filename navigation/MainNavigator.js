@@ -25,7 +25,6 @@ import AcceptMatchingScreen from "../screens/MatchFlow/AcceptMatchingScreen";
 //Profile Flow
 import ProfileScreen from "../screens/ProfileFlow/Profile/ProfileScreen";
 import EditScreen from "../screens/ProfileFlow/Profile/EditScreen";
-import PhotosEditScreen from "../screens/ProfileFlow/Profile/PhotosEditScreen";
 import ProfileLocationScreen from "../screens/ProfileFlow/Profile/ProfileLocationScreen";
 import SelfieScreen from "../screens/ProfileFlow/Profile_Registration/RegistrationScreens/SelfieScreen";
 import ConnectionsScreen from "../screens/ProfileFlow/ConnectionsScreen";
@@ -36,7 +35,8 @@ import NotificationsScreen from "../screens/NotificationsFlow/NotificationsScree
 import CustomBackButton from "../sharedComponents/CustomBackButton";
 
 //LocationFlow
-import LocationServices from "../screens/LocationFlow/LocationServices";
+// import LocationServices from "../screens/LocationFlow/LocationServiuces";
+import LocationServices from "../screens/LocationFlow/Locations";
 
 const MainStack = createStackNavigator(
   {
@@ -95,12 +95,6 @@ const MainStack = createStackNavigator(
     },
     SeflieEdit: {
       screen: SelfieScreen,
-      navigationOptions: () => ({
-        title: `Edit`
-      })
-    },
-    PhotosEdit: {
-      screen: PhotosEditScreen,
       navigationOptions: () => ({
         title: `Edit`
       })
@@ -222,11 +216,7 @@ const MainStack = createStackNavigator(
         headerStyle: {
           backgroundColor: "#4d88ff",
           borderBottomWidth: 0
-        },
-        headerLeft: (
-          <CustomBackButton buttonColor={"#fff"} navigation={navigation} />
-        )
-        //headerRight: <NotificationsButton navigation={navigation} />
+        }
       })
     },
     AcceptMatching: {

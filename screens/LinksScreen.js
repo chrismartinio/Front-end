@@ -24,12 +24,16 @@ class LinksScreen extends React.Component {
       isSuccess: false,
       isDeviceUserReady: false,
       isMatchUserReady: false,
-      matchingUserGuid: "ACD",
-      matchingFirstName: "A",
-      matchingLastName: "B",
-      matchingLikesArray: ["A", "B", "C"],
-      matchingImage: "http://shared.frenys.com/assets/1009731/6154108-Shawn-Ashmore.jpg",
-      matchingMiles: ""
+      matchUserGuid: "AAA",
+      matchFirstName: "A",
+      matchLastName: "B",
+      matchLikesArray: ["A", "B", "C"],
+      matchImageUrl:
+        "http://shared.frenys.com/assets/1009731/6154108-Shawn-Ashmore.jpg",
+      matchAge: "123",
+      matchCity: "Oakalnd",
+      matchState: "CA",
+      matchMiles: ""
     };
 
     this.buttonAry = [
@@ -88,9 +92,7 @@ class LinksScreen extends React.Component {
             key={index++}
             title={e}
             onPress={() => {
-              this.props.navigation.navigate("MinuteChatRoom", {
-                matchingInfo: this.state
-              });
+              this.props.navigation.navigate("MinuteChatRoom", this.state);
             }}
           />
         );

@@ -27,6 +27,8 @@ import { Icon } from "react-native-elements";
 
 const { height, width } = Dimensions.get("window");
 
+import PhotosAlbumModal from "./PhotosAlbumModal";
+
 function _calculateAge(birthday) {
   birthday = new Date(birthday);
   // birthday is a date
@@ -92,18 +94,13 @@ class ProfileScreen extends React.Component {
       likesArray: [],
       userBio: "",
       zipCode: "",
-      photosArray: [
-        "https://facebook.github.io/react-native/img/tiny_logo.png",
-        "https://facebook.github.io/react-native/img/tiny_logo.png",
-        "https://facebook.github.io/react-native/img/tiny_logo.png",
-        "https://facebook.github.io/react-native/img/tiny_logo.png",
-        "https://facebook.github.io/react-native/img/tiny_logo.png",
-        "https://facebook.github.io/react-native/img/tiny_logo.png"
-      ],
+      photosArray: ["", "", "", "", "", ""],
       addressLatitude: 0,
       addressLongitude: 0,
       isSuccess: false,
-      isEdited: false
+      isEdited: false,
+      isAlbumSectionVisible: false,
+      selectedPhotoIndex: ""
     };
   }
 
@@ -127,6 +124,10 @@ class ProfileScreen extends React.Component {
     this.setState({
       isEdited: true
     });
+  };
+
+  setAlbumSectionVisible = (isAlbumSectionVisible, selectedPhotoIndex) => {
+    this.setState({ isAlbumSectionVisible, selectedPhotoIndex });
   };
 
   async componentDidMount() {
@@ -333,7 +334,7 @@ class ProfileScreen extends React.Component {
         }
       })
       .catch(async err => {
-        console.log("ERROR")
+        console.log("ERROR");
         //console.log(err);
         //HANDLE ANY CATCHED ERRORS
         //AND WILL TRY TO GET DATA FROM LOCALSTORAGE
@@ -492,9 +493,36 @@ class ProfileScreen extends React.Component {
       );
     });
 
-    let displayphotosArray = this.state.photosArray.map((e, index = 0) => {
-      return (
-        <TouchableOpacity key={index++}>
+    let displayAlbumPhotos = this.state.photosArray.map((e, index = 0) => {
+      return e === "" ? (
+        <TouchableOpacity
+          onPress={() => {
+            if (this.props.navigation.getParam("isDeviceUser")) {
+              this.setAlbumSectionVisible(true, index);
+            }
+          }}
+          key={index++}
+          style={{
+            width: width * 0.267,
+            height: width * 0.2,
+            borderRadius: 15,
+            backgroundColor: "#eeeeee",
+            margin: 3
+          }}
+        >
+          <View style={{ top: "20%" }}>
+            <Text style={{ textAlign: "center", fontSize: 35 }}>+</Text>
+          </View>
+        </TouchableOpacity>
+      ) : (
+        <TouchableOpacity
+          onPress={() => {
+            if (this.props.navigation.getParam("isDeviceUser")) {
+              this.setAlbumSectionVisible(true, index);
+            }
+          }}
+          key={index++}
+        >
           <Image
             source={{
               uri: e
@@ -682,11 +710,17 @@ class ProfileScreen extends React.Component {
                   flexWrap: "wrap"
                 }}
               >
-                {displayphotosArray}
+                {displayAlbumPhotos}
               </View>
             </View>
           </ScrollView>
         </View>
+
+        <PhotosAlbumModal
+          isAlbumSectionVisible={this.state.isAlbumSectionVisible}
+          selectedPhotoIndex={this.state.selectedPhotoIndex}
+          setAlbumSectionVisible={this.setAlbumSectionVisible}
+        />
 
         {/*Footer*/}
         <Footer navigation={this.props.navigation} />
