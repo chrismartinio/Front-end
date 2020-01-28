@@ -35,6 +35,7 @@ export default class CircularCarouselItem extends React.Component {
     super(props);
     this.state = {
       onlineStatus: ' offline',
+      test: this.props.onlineUser
     }
     console.log('logg', this.props.onlineUser);
   }
@@ -79,11 +80,14 @@ export default class CircularCarouselItem extends React.Component {
 
   render() {
     console.log('hi');
-    if(this.props.onlineUser === this.props.matchUserData.userGuid){
-      console.log('comparing', this.props.onlineUser, this.props.matchUserData.userGuid)
-      // this.setState({
-      //   onlineStatus: ' online',
-      // })
+    if(this.state.test === this.props.matchUserData.userGuid){
+      console.log('comparing', this.state.test, this.props.matchUserData.userGuid)
+      this.setState({
+        onlineStatus: ' online',
+      })
+    } else {
+      console.log('comparing', this.state.test, this.props.matchUserData.userGuid)
+      console.log('no')
     }
     let nameFont = shortName(this.props.matchUserData.firstName);
     let ageAddressFont = shortAgeAndAddressSTR(
