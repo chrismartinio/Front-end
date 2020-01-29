@@ -54,7 +54,7 @@ import Constants from "expo-constants";
 
 //Because this is navigation stack, previous screen won't call componentWillUnmount, so won't close socket
 //this.socket.close();
-//Device user presses Alert -> reportAlert -> reportuser -> Home
+//Device user presses Alert -> ghostAlert -> ghostUser -> Home
 //Match user presses Back/Alert -> this.socket.on("ghostChat") -> componentDidUpdate -> backToHome -> Home
 
 class PermanentChatRoomScreen extends React.Component {
@@ -513,15 +513,15 @@ class PermanentChatRoomScreen extends React.Component {
     this.setState({ currentMessage });
   };
 
-  reportAlert = () => {
+  ghostAlert = () => {
     Alert.alert(
       "Warning!",
-      "Are you sure you want to report your match user",
+      "Are you sure you want to ghost your match user",
       [
         {
           text: "Yes",
           onPress: () => {
-            this.reportUser();
+            this.ghostUser();
           }
         },
         {
@@ -534,8 +534,8 @@ class PermanentChatRoomScreen extends React.Component {
     );
   };
 
-  reportUser = () => {
-    console.log("report user");
+  ghostUser = () => {
+    console.log("ghost user");
     this.socket.emit("vote", {
       voteData: "ghost",
       userGuid: this.props.CreateProfileDataReducer.guid,
@@ -543,7 +543,7 @@ class PermanentChatRoomScreen extends React.Component {
     });
     Alert.alert(
       "Success!",
-      "Your reported match user. You will be return to Home.",
+      "Your ghosted match user. You will be return to Home.",
       [
         {
           text: "OK",
@@ -631,7 +631,7 @@ class PermanentChatRoomScreen extends React.Component {
             >
               <TouchableOpacity
                 onPress={() => {
-                  this.reportAlert();
+                  this.ghostAlert();
                 }}
               >
                 <MaterialIcons

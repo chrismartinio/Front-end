@@ -16,6 +16,48 @@ import { server_match } from "../../config/ipconfig";
 import LoadingScreen from "../../sharedComponents/LoadingScreen";
 import Footer from "../../sharedComponents/Footer";
 import axios from "axios";
+import SetNewMatchlistAction from "../../storage/actions/MatchReducerActions/SetNewMatchlistAction";
+
+//SQLite
+import * as SQLite from "expo-sqlite";
+const db = SQLite.openDatabase("that.db");
+import {
+  insertDataIntoLocalStorage,
+  selectDataFromLocalStorage,
+  selectIdByGuidFromLocalStorage,
+  deleteDeviceUserData
+} from "../ProfileFlow/LocalStorage/localStorage.js";
+
+async function filterAlreadyMatch(matchingList, deviceUserGuid) {
+  let matchObject = await selectDataFromLocalStorage(
+    "device_user_matchlist",
+    1
+  );
+
+  //If localstorage matchlist is empty or internal error happens
+  if (!matchObject.success) {
+    return matchingList;
+  }
+
+  //if the localstorage matchlist is not belong to this user
+  if (matchObject.result.rows._array[0].guid !== deviceUserGuid) {
+    return matchingList;
+  }
+
+  let alreadyMatchList = matchObject.result.rows._array[0].alreadyMatchList;
+  let temp = [];
+  matchingList.map(e => {
+    if (!alreadyMatchList.includes(e.matchedUser)) {
+      temp.push(e);
+    }
+  });
+
+  if (temp.length <= 0) {
+    return [];
+  }
+
+  return temp;
+}
 
 class MatchingScreen extends React.Component {
   //Header
@@ -32,31 +74,31 @@ class MatchingScreen extends React.Component {
     //then change the foundaMatch = true
   }
 
-  handleMatchResponse = response => {
-    const matchedUsers =
+  handleMatchResponse = async response => {
+    let matchingList =
       response.data.matchData.matchedUsers.length > 0
         ? [...response.data.matchData.matchedUsers]
         : null;
-    if (matchedUsers === null) {
+
+    if (matchingList === null) {
       return this.props.navigation.navigate("Home");
     }
 
-    console.log(matchedUsers);
+    matchingList = await filterAlreadyMatch(
+      matchingList,
+      this.props.CreateProfileDataReducer.guid
+    );
 
-    //Testing Use
-    if (this.props.navigation.state.params.id === "5e0feb18efe16e02ee55c906") {
-      this.setState({
-        foundaMatch: true,
-        matchUserGuid: matchedUsers[1].matchedUser,
-        matchRoomGuid: matchedUsers[1].roomGuid
-      });
-    } else {
-      this.setState({
-        foundaMatch: true,
-        matchUserGuid: matchedUsers[0].matchedUser,
-        matchRoomGuid: matchedUsers[0].roomGuid
-      });
+    if (matchingList.length <= 0) {
+      return this.props.navigation.navigate("Home");
     }
+
+    this.setState({
+      foundaMatch: true,
+      matchUserGuid: matchingList[0].matchedUser,
+      matchRoomGuid: matchingList[0].roomGuid
+    });
+
     //Testing Use
   };
 
@@ -146,7 +188,9 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => {
-  return {};
+  return {
+    SetNewMatchlistAction: payload => dispatch(SetNewMatchlistAction(payload))
+  };
 };
 
 export default connect(

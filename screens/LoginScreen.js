@@ -125,7 +125,7 @@ class LoginScreen extends React.Component {
     createMatchedUserTablesInToLocalStorage();
 
     //DISPLAY Tables
-    displayAllTablesFromLocalStorage();
+    //displayAllTablesFromLocalStorage();
 
     //DELETE Device's user data
     //deleteDeviceUserData()

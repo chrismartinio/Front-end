@@ -262,7 +262,7 @@ export function createTablesInToLocalStorage() {
   let matchlistSqlStatement =
     "CREATE TABLE IF NOT EXISTS device_user_matchlist ( " +
     "id INTEGER PRIMARY KEY," +
-    "matchlist TEXT DEFAULT NULL," +
+    "alreadyMatchList TEXT DEFAULT NULL," +
     "createAccount_id INTEGER," +
     "guid TEXT DEFAULT NULL," +
     "FOREIGN KEY (createAccount_id) REFERENCES device_user_createAccount (id)" +
@@ -508,6 +508,10 @@ export function deleteDeviceUserData() {
     {
       tableName: "device_user_imageProcessing",
       sqlStatement: "DELETE FROM device_user_imageProcessing WHERE id = 1;"
+    },
+    {
+      tableName: "device_user_matchlist",
+      sqlStatement: "DELETE FROM device_user_matchlist WHERE id = 1;"
     }
   ];
   return new Promise((resolve, reject) => {
