@@ -15,7 +15,8 @@ import {
   TouchableOpacity,
   CameraRoll,
   TouchableHighlight,
-  Modal
+  Modal,
+  Alert
 } from "react-native";
 
 //Redux
@@ -62,8 +63,6 @@ class PhotosAlbumModal extends React.Component {
       }
     });
 
-    console.log(data);
-
     await fetch(
       `${server_imageProcessing}/api/imageProcessing/uploadAlbumPhotos`,
       {
@@ -77,18 +76,22 @@ class PhotosAlbumModal extends React.Component {
     )
       .then(res => res.json())
       .then(res => {
-        console.log(res);
+        console.log("RESULT");
+        console.log(res)
+        if (res.success) {
+          this.props.handleUpdateAlbumPhoto(true);
+        } else {
+          this.props.handleUpdateAlbumPhoto(false);
+        }
       })
       .catch(err => {
-        console.log(err);
+        this.props.handleUpdateAlbumPhoto(false);
       });
 
     //upload button
     this.setState({
       selectedPhotoURI: ""
     });
-
-    this.props.setAlbumSectionVisible(false);
   };
 
   getPhonePhotos = async () => {

@@ -41,6 +41,8 @@ class MatchingScreen extends React.Component {
       return this.props.navigation.navigate("Home");
     }
 
+    console.log(matchedUsers);
+
     //Testing Use
     if (this.props.navigation.state.params.id === "5e0feb18efe16e02ee55c906") {
       this.setState({

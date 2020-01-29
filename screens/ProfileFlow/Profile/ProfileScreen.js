@@ -8,7 +8,8 @@ import {
   Button,
   TouchableOpacity,
   Dimensions,
-  Image
+  Image,
+  Alert
 } from "react-native";
 
 import { connect } from "react-redux";
@@ -22,6 +23,8 @@ import SetDeviceUserImageUrlAction from "../../../storage/actions/ImageProcessin
 import Footer from "../../../sharedComponents/Footer";
 
 import { server_profile } from "../../../config/ipconfig";
+
+import { StackActions, NavigationActions } from "react-navigation";
 
 import { Icon } from "react-native-elements";
 
@@ -94,7 +97,7 @@ class ProfileScreen extends React.Component {
       likesArray: [],
       userBio: "",
       zipCode: "",
-      photosArray: ["", "", "", "", "", ""],
+      albumPhotosArray: ["", "", "", "", "", ""],
       addressLatitude: 0,
       addressLongitude: 0,
       isSuccess: false,
@@ -195,7 +198,8 @@ class ProfileScreen extends React.Component {
             likesArray,
             addressLatitude,
             addressLongitude,
-            imageUrl
+            imageUrl,
+            albumPhotoUrlsArray
           } = object.result;
 
           //setState
@@ -212,6 +216,7 @@ class ProfileScreen extends React.Component {
             addressLatitude: addressLatitude,
             addressLongitude: addressLongitude,
             imageUrl: imageUrl,
+            albumPhotosArray: albumPhotoUrlsArray,
             isSuccess: true
           });
 
@@ -482,6 +487,42 @@ class ProfileScreen extends React.Component {
       });
   };
 
+  handleUpdateAlbumPhoto = async success => {
+    if (success) {
+      const resetProfileAction = StackActions.reset({
+        index: 1,
+        actions: [
+          NavigationActions.navigate({ routeName: "Home" }),
+          NavigationActions.navigate({
+            routeName: "Profile",
+            params: {
+              guid: this.props.CreateProfileDataReducer.guid,
+              isDeviceUser: true
+            }
+          })
+        ]
+      });
+      let { navigation } = this.props;
+      setTimeout(function() {
+        navigation.dispatch(resetProfileAction);
+      }, 1000);
+    } else {
+      Alert.alert(
+        "Fail Upload!",
+        "There is some error! Please try again!",
+        [
+          {
+            text: "OK",
+            onPress: () => {
+              this.setAlbumSectionVisible(false);
+            }
+          }
+        ],
+        { cancelable: false }
+      );
+    }
+  };
+
   successScreen = () => {
     let displaylikesArray = this.state.likesArray.map((e, index = 0) => {
       return (
@@ -493,7 +534,7 @@ class ProfileScreen extends React.Component {
       );
     });
 
-    let displayAlbumPhotos = this.state.photosArray.map((e, index = 0) => {
+    let displayAlbumPhotos = this.state.albumPhotosArray.map((e, index = 0) => {
       return e === "" ? (
         <TouchableOpacity
           onPress={() => {
@@ -501,7 +542,7 @@ class ProfileScreen extends React.Component {
               this.setAlbumSectionVisible(true, index);
             }
           }}
-          key={index++}
+          key={index}
           style={{
             width: width * 0.267,
             height: width * 0.2,
@@ -521,11 +562,11 @@ class ProfileScreen extends React.Component {
               this.setAlbumSectionVisible(true, index);
             }
           }}
-          key={index++}
+          key={index}
         >
           <Image
             source={{
-              uri: e
+              uri: e.imageUrl
             }}
             style={{
               width: width * 0.267,
@@ -536,6 +577,7 @@ class ProfileScreen extends React.Component {
           />
         </TouchableOpacity>
       );
+      index++;
     });
 
     return (
@@ -720,6 +762,8 @@ class ProfileScreen extends React.Component {
           isAlbumSectionVisible={this.state.isAlbumSectionVisible}
           selectedPhotoIndex={this.state.selectedPhotoIndex}
           setAlbumSectionVisible={this.setAlbumSectionVisible}
+          handleUpdateAlbumPhoto={this.handleUpdateAlbumPhoto}
+          navigation={this.props.navigation}
         />
 
         {/*Footer*/}
