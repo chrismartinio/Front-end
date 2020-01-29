@@ -56,6 +56,11 @@ async function updateMatchlist(deviceUserGuid, matchUserGuid) {
     );
   }
 
+  //if the localstorage matchlist is not belong to this user
+  if (matchObject.result.rows._array[0].guid !== deviceUserGuid) {
+    return;
+  }
+
   alreadyMatchList.push(matchUserGuid);
 
   let json_alreadyMatchList = JSON.stringify(alreadyMatchList);
