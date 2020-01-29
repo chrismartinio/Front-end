@@ -43,34 +43,33 @@ import {
 //Device & Match press Accept -> this.socket.on("acceptChat") -> componentDidUpdate -> bothAccept -> Minute
 
 async function updateMatchlist(deviceUserGuid, matchUserGuid) {
-  let interestsObject = await selectDataFromLocalStorage(
+  let matchObject = await selectDataFromLocalStorage(
     "device_user_matchlist",
     1
   );
-
-  //Query the matchlist
-  let { guid, matchlist } = interestsObject.result.rows._array[0];
-  if (guid !== deviceUserGuid) {
-    return false;
+  let alreadyMatchList;
+  if (!matchObject.success) {
+    alreadyMatchList = [];
+  } else {
+    alreadyMatchList = JSON.parse(
+      matchObject.result.rows._array[0].alreadyMatchList
+    );
   }
-  matchlist = JSON.parse(matchlist);
-  matchlist = matchlist.filter(match => match.matchedUser !== matchUserGuid);
 
-  //store to matchlist
-  //LocalStorage
-  let json_matchlist = JSON.stringify(matchlist);
+  alreadyMatchList.push(matchUserGuid);
+
+  let json_alreadyMatchList = JSON.stringify(alreadyMatchList);
   //Only insert or replace id = 1
   let insertSqlStatement =
-    "INSERT OR REPLACE into device_user_matchlist(id, createAccount_id, matchlist, guid) " +
+    "INSERT OR REPLACE into device_user_matchlist(id, createAccount_id, alreadyMatchList, guid) " +
     "values(1, 1, ?, ?);";
 
   let { success } = await insertDataIntoLocalStorage(
     insertSqlStatement,
     "device_user_matchlist",
-    [json_matchlist, deviceUserGuid],
-    true
+    [json_alreadyMatchList, deviceUserGuid],
+    false
   );
-  return true;
 }
 
 class FoundaMatch extends React.Component {

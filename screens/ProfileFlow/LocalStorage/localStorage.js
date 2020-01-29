@@ -262,7 +262,7 @@ export function createTablesInToLocalStorage() {
   let matchlistSqlStatement =
     "CREATE TABLE IF NOT EXISTS device_user_matchlist ( " +
     "id INTEGER PRIMARY KEY," +
-    "matchlist TEXT DEFAULT NULL," +
+    "alreadyMatchList TEXT DEFAULT NULL," +
     "createAccount_id INTEGER," +
     "guid TEXT DEFAULT NULL," +
     "FOREIGN KEY (createAccount_id) REFERENCES device_user_createAccount (id)" +

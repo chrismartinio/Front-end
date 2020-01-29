@@ -116,7 +116,7 @@ class LoginScreen extends React.Component {
     //createTablesInToLocalStorage() won't create new table or update the table
     //so you would have to delete the old table (old columns)
     //then re-create a new table (new columns
-    dropAllTablesInLocalStorage();
+    //dropAllTablesInLocalStorage();
 
     //CREATE DEVICE'S USER TABLES
     createTablesInToLocalStorage();

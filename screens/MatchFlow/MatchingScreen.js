@@ -28,6 +28,37 @@ import {
   deleteDeviceUserData
 } from "../ProfileFlow/LocalStorage/localStorage.js";
 
+async function filterAlreadyMatch(matchingList, deviceUserGuid) {
+  let matchObject = await selectDataFromLocalStorage(
+    "device_user_matchlist",
+    1
+  );
+
+  //If localstorage matchlist is empty or internal error happens
+  if (!matchObject.success) {
+    return matchingList;
+  }
+
+  //if the localstorage matchlist is not belong to this user
+  if (matchObject.result.rows._array[0].guid !== deviceUserGuid) {
+    return matchingList;
+  }
+
+  let alreadyMatchList = matchObject.result.rows._array[0].alreadyMatchList;
+  let temp = [];
+  matchingList.map(e => {
+    if (!alreadyMatchList.includes(e.matchedUser)) {
+      temp.push(e);
+    }
+  });
+
+  if (temp.length <= 0) {
+    return [];
+  }
+
+  return temp;
+}
+
 class MatchingScreen extends React.Component {
   //Header
 
@@ -44,52 +75,22 @@ class MatchingScreen extends React.Component {
   }
 
   handleMatchResponse = async response => {
-    let matchingList;
+    let matchingList =
+      response.data.matchData.matchedUsers.length > 0
+        ? [...response.data.matchData.matchedUsers]
+        : null;
 
-    let interestsObject = await selectDataFromLocalStorage(
-      "device_user_matchlist",
-      1
+    if (matchingList === null) {
+      return this.props.navigation.navigate("Home");
+    }
+
+    matchingList = await filterAlreadyMatch(
+      matchingList,
+      this.props.CreateProfileDataReducer.guid
     );
 
-    let matchedUsers = null;
-    //If the global matchlist is empty, use the /api/match
-    if (!interestsObject.success) {
-      console.log("matchlist is null");
-      matchedUsers =
-        response.data.matchData.matchedUsers.length > 0
-          ? [...response.data.matchData.matchedUsers]
-          : null;
-      if (matchedUsers === null) {
-        return this.props.navigation.navigate("Home");
-      }
-
-      matchingList = matchedUsers;
-      //await this.props.SetNewMatchlistAction({ matchlist: matchedUsers });
-
-      //LocalStorage
-      let json_matchlist = JSON.stringify(matchedUsers);
-      //Only insert or replace id = 1
-      let insertSqlStatement =
-        "INSERT OR REPLACE into device_user_matchlist(id, createAccount_id, matchlist, guid) " +
-        "values(1, 1, ?, ?);";
-
-      let { success } = await insertDataIntoLocalStorage(
-        insertSqlStatement,
-        "device_user_matchlist",
-        [json_matchlist, this.props.CreateProfileDataReducer.guid],
-        true
-      );
-    } else {
-      let { guid, matchlist } = interestsObject.result.rows._array[0];
-      if (guid !== this.props.CreateProfileDataReducer.guid) {
-        deleteDeviceUserData();
-        return this.handleMatchResponse(response);
-      }
-      matchingList = JSON.parse(matchlist);
-      if (matchingList.length <= 0) {
-        return this.props.navigation.navigate("Home");
-      }
-      console.log(matchingList);
+    if (matchingList.length <= 0) {
+      return this.props.navigation.navigate("Home");
     }
 
     this.setState({
