@@ -30,11 +30,48 @@ import SetNewMatchlistAction from "../../storage/actions/MatchReducerActions/Set
 import io from "socket.io-client";
 import Constants from "expo-constants";
 
+import {
+  insertDataIntoLocalStorage,
+  selectDataFromLocalStorage,
+  selectIdByGuidFromLocalStorage
+} from "../ProfileFlow/LocalStorage/localStorage.js";
+
 //Because this is navigation stack, previous screen won't call componentWillUnmount, so won't close socket
 //this.socket.close();
 //Device user presses Back -> setDeviceUserReject -> Home
 //Match user presses Back -> this.socket.on("ghostChat") -> componentDidUpdate -> backToHome -> Home
 //Device & Match press Accept -> this.socket.on("acceptChat") -> componentDidUpdate -> bothAccept -> Minute
+
+async function updateMatchlist(deviceUserGuid, matchUserGuid) {
+  let interestsObject = await selectDataFromLocalStorage(
+    "device_user_matchlist",
+    1
+  );
+
+  //Query the matchlist
+  let { guid, matchlist } = interestsObject.result.rows._array[0];
+  if (guid !== deviceUserGuid) {
+    return false;
+  }
+  matchlist = JSON.parse(matchlist);
+  matchlist = matchlist.filter(match => match.matchedUser !== matchUserGuid);
+
+  //store to matchlist
+  //LocalStorage
+  let json_matchlist = JSON.stringify(matchlist);
+  //Only insert or replace id = 1
+  let insertSqlStatement =
+    "INSERT OR REPLACE into device_user_matchlist(id, createAccount_id, matchlist, guid) " +
+    "values(1, 1, ?, ?);";
+
+  let { success } = await insertDataIntoLocalStorage(
+    insertSqlStatement,
+    "device_user_matchlist",
+    [json_matchlist, deviceUserGuid],
+    true
+  );
+  return true;
+}
 
 class FoundaMatch extends React.Component {
   static navigationOptions = ({ navigation }) => {
@@ -93,11 +130,13 @@ class FoundaMatch extends React.Component {
         console.log("===simulator===");
       }
 
-      let matchlist = this.props.MatchReducer.matchlist.filter(
-        match => match.matchedUser !== this.state.matchUserGuid
-      );
+      this.socket.emit("disconnect", {});
 
-      this.props.SetNewMatchlistAction({ matchlist: matchlist });
+      updateMatchlist(
+        this.props.CreateProfileDataReducer.guid,
+        this.state.matchUserGuid
+      );
+      //this.props.SetNewMatchlistAction({ matchlist: matchlist });
 
       this.setState({ isMatchUserClicked: true, isMatchUserAccept: false });
     });
@@ -253,11 +292,10 @@ class FoundaMatch extends React.Component {
               matchedUserGuid: this.state.matchUserGuid
             });
 
-            let matchlist = this.props.MatchReducer.matchlist.filter(
-              match => match.matchedUser !== this.state.matchUserGuid
+            updateMatchlist(
+              this.props.CreateProfileDataReducer.guid,
+              this.state.matchUserGuid
             );
-
-            this.props.SetNewMatchlistAction({ matchlist: matchlist });
 
             this.socket.close();
             this.props.navigation.navigate("Home");
@@ -308,11 +346,12 @@ class FoundaMatch extends React.Component {
       matchedUserGuid: this.state.matchUserGuid
     });
 
-    let matchlist = this.props.MatchReducer.matchlist.filter(
-      match => match.matchedUser !== this.state.matchUserGuid
-    );
+    this.socket.emit("disconnect", {});
 
-    this.props.SetNewMatchlistAction({ matchlist: matchlist });
+    updateMatchlist(
+      this.props.CreateProfileDataReducer.guid,
+      this.state.matchUserGuid
+    );
 
     //setState
     this.setState({
