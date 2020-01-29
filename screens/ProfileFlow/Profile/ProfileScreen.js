@@ -97,7 +97,7 @@ class ProfileScreen extends React.Component {
       likesArray: [],
       userBio: "",
       zipCode: "",
-      photosArray: ["", "", "", "", "", ""],
+      albumPhotosArray: ["", "", "", "", "", ""],
       addressLatitude: 0,
       addressLongitude: 0,
       isSuccess: false,
@@ -198,7 +198,8 @@ class ProfileScreen extends React.Component {
             likesArray,
             addressLatitude,
             addressLongitude,
-            imageUrl
+            imageUrl,
+            albumPhotoUrlsArray
           } = object.result;
 
           //setState
@@ -215,6 +216,7 @@ class ProfileScreen extends React.Component {
             addressLatitude: addressLatitude,
             addressLongitude: addressLongitude,
             imageUrl: imageUrl,
+            albumPhotosArray: albumPhotoUrlsArray,
             isSuccess: true
           });
 
@@ -532,7 +534,7 @@ class ProfileScreen extends React.Component {
       );
     });
 
-    let displayAlbumPhotos = this.state.photosArray.map((e, index = 0) => {
+    let displayAlbumPhotos = this.state.albumPhotosArray.map((e, index = 0) => {
       return e === "" ? (
         <TouchableOpacity
           onPress={() => {
@@ -564,7 +566,7 @@ class ProfileScreen extends React.Component {
         >
           <Image
             source={{
-              uri: e
+              uri: e.imageUrl
             }}
             style={{
               width: width * 0.267,
