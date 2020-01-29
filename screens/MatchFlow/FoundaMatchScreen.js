@@ -25,6 +25,8 @@ import { Card } from "react-native-paper";
 import { testobj } from "../../data/testObj";
 const { height, width } = Dimensions.get("window");
 import SetTimeAction from "../../storage/actions/ConfigReducerActions/SetTimeAction/";
+import SetNewMatchlistAction from "../../storage/actions/MatchReducerActions/SetNewMatchlistAction";
+
 import io from "socket.io-client";
 import Constants from "expo-constants";
 
@@ -33,7 +35,6 @@ import Constants from "expo-constants";
 //Device user presses Back -> setDeviceUserReject -> Home
 //Match user presses Back -> this.socket.on("ghostChat") -> componentDidUpdate -> backToHome -> Home
 //Device & Match press Accept -> this.socket.on("acceptChat") -> componentDidUpdate -> bothAccept -> Minute
-
 
 class FoundaMatch extends React.Component {
   static navigationOptions = ({ navigation }) => {
@@ -92,10 +93,16 @@ class FoundaMatch extends React.Component {
         console.log("===simulator===");
       }
 
+      let matchlist = this.props.MatchReducer.matchlist.filter(
+        match => match.matchedUser !== this.state.matchUserGuid
+      );
+
+      this.props.SetNewMatchlistAction({ matchlist: matchlist });
+
       this.setState({ isMatchUserClicked: true, isMatchUserAccept: false });
     });
 
-    //handle ghost
+    //handle accept
     this.socket.on("acceptChat", () => {
       console.log("AcceptMatching");
       if (Constants.isDevice) {
@@ -245,6 +252,13 @@ class FoundaMatch extends React.Component {
               userGuid: this.props.CreateProfileDataReducer.guid,
               matchedUserGuid: this.state.matchUserGuid
             });
+
+            let matchlist = this.props.MatchReducer.matchlist.filter(
+              match => match.matchedUser !== this.state.matchUserGuid
+            );
+
+            this.props.SetNewMatchlistAction({ matchlist: matchlist });
+
             this.socket.close();
             this.props.navigation.navigate("Home");
           }
@@ -293,6 +307,12 @@ class FoundaMatch extends React.Component {
       userGuid: this.props.CreateProfileDataReducer.guid,
       matchedUserGuid: this.state.matchUserGuid
     });
+
+    let matchlist = this.props.MatchReducer.matchlist.filter(
+      match => match.matchedUser !== this.state.matchUserGuid
+    );
+
+    this.props.SetNewMatchlistAction({ matchlist: matchlist });
 
     //setState
     this.setState({
@@ -490,7 +510,10 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => {
-  return { SetTimeAction: payload => dispatch(SetTimeAction(payload)) };
+  return {
+    SetTimeAction: payload => dispatch(SetTimeAction(payload)),
+    SetNewMatchlistAction: payload => dispatch(SetNewMatchlistAction(payload))
+  };
 };
 
 export default connect(
