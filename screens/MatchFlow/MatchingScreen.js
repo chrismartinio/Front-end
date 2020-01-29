@@ -16,7 +16,6 @@ import { server_match } from "../../config/ipconfig";
 import LoadingScreen from "../../sharedComponents/LoadingScreen";
 import Footer from "../../sharedComponents/Footer";
 import axios from "axios";
-import SetNewMatchlistAction from "../../storage/actions/MatchReducerActions/SetNewMatchlistAction";
 
 class MatchingScreen extends React.Component {
   //Header
@@ -33,42 +32,29 @@ class MatchingScreen extends React.Component {
     //then change the foundaMatch = true
   }
 
-  handleMatchResponse = async response => {
-    let matchedUsers = null;
-    //If the global matchlist is empty, use the /api/match
-    if (this.props.MatchReducer.matchlist.length <= 0) {
-      matchedUsers =
-        response.data.matchData.matchedUsers.length > 0
-          ? [...response.data.matchData.matchedUsers]
-          : null;
-      if (matchedUsers === null) {
-        return this.props.navigation.navigate("Home");
-      }
-      await this.props.SetNewMatchlistAction({ matchlist: matchedUsers });
+  handleMatchResponse = response => {
+    const matchedUsers =
+      response.data.matchData.matchedUsers.length > 0
+        ? [...response.data.matchData.matchedUsers]
+        : null;
+    if (matchedUsers === null) {
+      return this.props.navigation.navigate("Home");
     }
 
-    let matchlist = this.props.MatchReducer.matchlist;
-    //console.log(matchlist)
+    console.log(matchedUsers);
+
     //Testing Use
     if (this.props.navigation.state.params.id === "5e0feb18efe16e02ee55c906") {
       this.setState({
         foundaMatch: true,
-        matchUserGuid: matchlist[3].matchedUser,
-        matchRoomGuid: matchlist[3].roomGuid
-      });
-    } else if (
-      this.props.navigation.state.params.id === "5e0f04d2ed63ee02f3999dea"
-    ) {
-      this.setState({
-        foundaMatch: true,
-        matchUserGuid: matchlist[1].matchedUser,
-        matchRoomGuid: matchlist[1].roomGuid
+        matchUserGuid: matchedUsers[1].matchedUser,
+        matchRoomGuid: matchedUsers[1].roomGuid
       });
     } else {
       this.setState({
         foundaMatch: true,
-        matchUserGuid: matchlist[0].matchedUser,
-        matchRoomGuid: matchlist[0].roomGuid
+        matchUserGuid: matchedUsers[0].matchedUser,
+        matchRoomGuid: matchedUsers[0].roomGuid
       });
     }
     //Testing Use
@@ -160,9 +146,7 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => {
-  return {
-    SetNewMatchlistAction: payload => dispatch(SetNewMatchlistAction(payload))
-  };
+  return {};
 };
 
 export default connect(

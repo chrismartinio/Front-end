@@ -259,6 +259,15 @@ export function createTablesInToLocalStorage() {
     "FOREIGN KEY (createAccount_id) REFERENCES device_user_createAccount (id)" +
     " );";
 
+  let matchlistSqlStatement =
+    "CREATE TABLE IF NOT EXISTS device_user_matchlist ( " +
+    "id INTEGER PRIMARY KEY," +
+    "matchlist TEXT DEFAULT NULL," +
+    "createAccount_id INTEGER," +
+    "guid TEXT DEFAULT NULL," +
+    "FOREIGN KEY (createAccount_id) REFERENCES device_user_createAccount (id)" +
+    " );";
+
   let createTable_SqlStatementsArray = [
     {
       tableName: "device_user_createAccount",
@@ -281,6 +290,10 @@ export function createTablesInToLocalStorage() {
     {
       tableName: "device_user_imageProcessing",
       sqlStatement: imageProcessingSqlStatement
+    },
+    {
+      tableName: "device_user_matchlist",
+      sqlStatement: matchlistSqlStatement
     }
   ];
   return new Promise((resolve, reject) => {
@@ -344,6 +357,10 @@ export function displayAllTablesFromLocalStorage() {
     {
       tableName: "matched_user_info",
       sqlStatement: "SELECT * FROM matched_user_info"
+    },
+    {
+      tableName: "device_user_matchlist",
+      sqlStatement: "SELECT * FROM device_user_matchlist"
     }
   ];
   return new Promise((resolve, reject) => {
@@ -429,6 +446,10 @@ export function dropAllTablesInLocalStorage() {
     {
       tableName: "matched_user_info",
       sqlStatement: "DROP TABLE matched_user_info"
+    },
+    {
+      tableName: "device_user_matchlist",
+      sqlStatement: "DROP TABLE device_user_matchlist"
     }
   ];
   return new Promise((resolve, reject) => {
