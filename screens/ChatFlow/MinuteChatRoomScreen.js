@@ -15,7 +15,6 @@ import {
   SafeAreaView,
   KeyboardAvoidingView,
   ImageBackground,
-  Modal,
   TouchableHighlight,
   AppState,
   Dimensions,
@@ -32,7 +31,7 @@ import LoadingScreen from "../../sharedComponents/LoadingScreen";
 
 import InputMenu from "./Chat_SharedComponents/InputMenu";
 
-import { server_chat } from "../../config/ipconfig";
+import { server_chat, server_report } from "../../config/ipconfig";
 
 const { height, width } = Dimensions.get("window");
 
@@ -41,6 +40,7 @@ import { testobj } from "../../data/testObj";
 import { Icon } from "react-native-elements";
 
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 
 //Flow of get to this screen
 //#1
@@ -53,7 +53,6 @@ import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 //Device user presses Back -> setDeviceUserReject -> Home
 //Device user presses Alert -> ghostAlert -> ghostUser -> Home
 //Match user presses Back/Alert -> this.socket.on("ghostChat") -> componentDidUpdate -> backToHome -> Home
-
 
 class MinuteChatRoomScreen extends React.Component {
   static navigationOptions = ({ navigation }) => {
@@ -79,7 +78,6 @@ class MinuteChatRoomScreen extends React.Component {
       appState: AppState.currentState,
       counting: false,
       endTime: "",
-      modalVisible: false,
       matchUserGuid: "",
       matchFirstName: "",
       matchLastName: "",
@@ -209,7 +207,7 @@ class MinuteChatRoomScreen extends React.Component {
 
     //handle ghost
     this.socket.on("ghostChat", () => {
-      console.log("Minute")
+      console.log("Minute");
       if (Constants.isDevice) {
         console.log("===phone===");
       } else {
@@ -503,8 +501,53 @@ class MinuteChatRoomScreen extends React.Component {
     this.props.navigation.navigate("Home");
   };
 
-  openMenu = visible => {
-    this.setState({ modalVisible: visible });
+
+  reportUser = () => {
+    fetch(`${server_report}/api/report/reportUser`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        reportData: {
+          userGuid: this.props.CreateProfileDataReducer.guid,
+          matchedUserGuid: this.state.matchUserGuid,
+          roomGuid: this.roomGuid
+        }
+      })
+    })
+      .then(res => {
+        console.log(res);
+        return res;
+      })
+      .then(res => res.json())
+      .then(res => {
+        this.formatOldMessage(res);
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
+
+  reportAlert = () => {
+    Alert.alert(
+      "Warning!",
+      "Are you sure you want to report? You may ghost this user after reporting them if you like.",
+      [
+        {
+          text: "Yes",
+          onPress: () => {
+            this.reportUser();
+          }
+        },
+        {
+          text: "No",
+          onPress: () => {},
+          style: "cancel"
+        }
+      ],
+      { cancelable: false }
+    );
   };
 
   messageType = (messageItem, index) => {
@@ -537,7 +580,11 @@ class MinuteChatRoomScreen extends React.Component {
 
       case 2:
         return (
-          <View key={index}>
+          <TouchableHighlight
+            onLongPress={this.reportAlert}
+            underlayColor="transparent"
+            key={index}
+          >
             <View style={styles.textContainer}>
               <Image
                 blurRadius={10}
@@ -555,7 +602,7 @@ class MinuteChatRoomScreen extends React.Component {
                 </View>
               </View>
             </View>
-          </View>
+          </TouchableHighlight>
         );
 
       case 3:
@@ -686,7 +733,7 @@ class MinuteChatRoomScreen extends React.Component {
             {/*Matched Image*/}
             <View
               style={{
-                justifyContent: "space-around",
+                justifyContent: "space-between",
                 flexDirection: "row"
               }}
             >
@@ -695,13 +742,27 @@ class MinuteChatRoomScreen extends React.Component {
                   this.ghostAlert();
                 }}
               >
-                <MaterialIcons
-                  name={"report-problem"}
-                  color={"red"}
-                  size={width * 0.1}
-                  solid
-                  style={{ top: 30 }}
-                />
+                <View
+                  style={{
+                    top: 30,
+                    left: 10,
+                    backgroundColor: "#4b1792",
+                    paddingLeft: 10,
+                    paddingRight: 10,
+                    paddingTop: 5,
+                    paddingBottom: 5,
+                    borderWidth: 1,
+                    borderRadius: 25,
+                    borderColor: "#4b1792"
+                  }}
+                >
+                  <FontAwesome5
+                    color={"white"}
+                    name={"ghost"}
+                    size={width * 0.09}
+                    solid
+                  />
+                </View>
               </TouchableOpacity>
 
               <Image
@@ -776,77 +837,6 @@ class MinuteChatRoomScreen extends React.Component {
             submitMessage={this.submitMessage}
           />
           {this.state.keyBoardShown && <View style={{ padding: "13%" }} />}
-
-          {/*Exit Chat POP UP*/}
-          <Modal
-            animationType="slide"
-            transparent={true}
-            visible={this.state.modalVisible}
-          >
-            <View
-              style={{
-                position: "absolute",
-                height: width * 0.4,
-                width: width * 0.53,
-                top: "40%",
-                alignSelf: "center",
-                backgroundColor: "#3399ff",
-                borderRadius: 30
-              }}
-            >
-              <View>
-                <View style={{ padding: "10%" }} />
-                <View style={{ alignItems: "center" }}>
-                  <Text style={{ color: "#fff", fontSize: width * 0.032 }}>
-                    Do you want to exit the chat?
-                  </Text>
-
-                  <View style={{ padding: "5%" }} />
-
-                  <View
-                    style={{
-                      flexDirection: "row"
-                    }}
-                  >
-                    <View
-                      style={{
-                        backgroundColor: "#fff",
-                        padding: "3%",
-                        borderRadius: 50
-                      }}
-                    >
-                      <TouchableOpacity
-                        onPress={() => {
-                          this.exitChat();
-                          this.openMenu(!this.state.modalVisible);
-                        }}
-                      >
-                        <Text style={{ color: "#3399ff" }}>Yes</Text>
-                      </TouchableOpacity>
-                    </View>
-
-                    <View style={{ padding: "5%" }} />
-
-                    <View
-                      style={{
-                        backgroundColor: "#fff",
-                        padding: "3%",
-                        borderRadius: 50
-                      }}
-                    >
-                      <TouchableOpacity
-                        onPress={() => {
-                          this.openMenu(!this.state.modalVisible);
-                        }}
-                      >
-                        <Text style={{ color: "#3399ff" }}>No</Text>
-                      </TouchableOpacity>
-                    </View>
-                  </View>
-                </View>
-              </View>
-            </View>
-          </Modal>
         </KeyboardAvoidingView>
       </SafeAreaView>
     );

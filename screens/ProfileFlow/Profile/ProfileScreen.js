@@ -538,9 +538,11 @@ class ProfileScreen extends React.Component {
       return e === "" ? (
         <TouchableOpacity
           onPress={() => {
+            /*
             if (this.props.navigation.getParam("isDeviceUser")) {
               this.setAlbumSectionVisible(true, index);
             }
+            */
           }}
           key={index}
           style={{

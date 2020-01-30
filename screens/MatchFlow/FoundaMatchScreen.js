@@ -135,10 +135,12 @@ class FoundaMatch extends React.Component {
 
       this.socket.emit("disconnect", {});
 
+      /*
       updateMatchlist(
         this.props.CreateProfileDataReducer.guid,
         this.state.matchUserGuid
       );
+      */
       //this.props.SetNewMatchlistAction({ matchlist: matchlist });
 
       this.setState({ isMatchUserClicked: true, isMatchUserAccept: false });
@@ -295,10 +297,12 @@ class FoundaMatch extends React.Component {
               matchedUserGuid: this.state.matchUserGuid
             });
 
+            /*
             updateMatchlist(
               this.props.CreateProfileDataReducer.guid,
               this.state.matchUserGuid
             );
+            */
 
             this.socket.close();
             this.props.navigation.navigate("Home");
@@ -351,10 +355,12 @@ class FoundaMatch extends React.Component {
 
     this.socket.emit("disconnect", {});
 
+    /*
     updateMatchlist(
       this.props.CreateProfileDataReducer.guid,
       this.state.matchUserGuid
     );
+    */
 
     //setState
     this.setState({
