@@ -27,6 +27,7 @@ import { connect } from "react-redux";
 import io from "socket.io-client";
 
 import LoadingScreen from "../../sharedComponents/LoadingScreen";
+import MeetupMenu from "./Chat_SharedComponents/MeetupMenu";
 
 import InputMenu from "./Chat_SharedComponents/InputMenu";
 
@@ -41,6 +42,7 @@ import { Icon } from "react-native-elements";
 import { StackActions, NavigationActions } from "react-navigation";
 
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 
 import Constants from "expo-constants";
 
@@ -677,7 +679,7 @@ class PermanentChatRoomScreen extends React.Component {
             {/*Matched Image*/}
             <View
               style={{
-                justifyContent: "space-around",
+                justifyContent: "space-between",
                 flexDirection: "row"
               }}
             >
@@ -686,13 +688,27 @@ class PermanentChatRoomScreen extends React.Component {
                   this.ghostAlert();
                 }}
               >
-                <MaterialIcons
-                  name={"report-problem"}
-                  color={"red"}
-                  size={width * 0.1}
-                  solid
-                  style={{ top: 30 }}
-                />
+                <View
+                  style={{
+                    top: 30,
+                    left: 10,
+                    backgroundColor: "#4b1792",
+                    paddingLeft: 10,
+                    paddingRight: 10,
+                    paddingTop: 5,
+                    paddingBottom: 5,
+                    borderWidth: 1,
+                    borderRadius: 25,
+                    borderColor: "#4b1792"
+                  }}
+                >
+                  <FontAwesome5
+                    color={"white"}
+                    name={"ghost"}
+                    size={width * 0.09}
+                    solid
+                  />
+                </View>
               </TouchableOpacity>
 
               <TouchableOpacity
@@ -757,72 +773,11 @@ class PermanentChatRoomScreen extends React.Component {
           {this.state.keyBoardShown && <View style={{ padding: "13%" }} />}
 
           {/*Menu POP UP*/}
-          <Modal
-            animationType="slide"
-            transparent={true}
-            visible={this.state.modalVisible}
-          >
-            <View
-              style={{
-                position: "absolute",
-                height: width * 1.0,
-                width: width * 0.8,
-                top: "20%",
-                alignSelf: "center",
-                backgroundColor: "#3399ff",
-                borderRadius: 30
-              }}
-            >
-              <View>
-                {/*X button*/}
-                <View
-                  style={{
-                    alignItems: "center",
-                    top: "5%"
-                  }}
-                >
-                  <TouchableOpacity
-                    onPress={() => {
-                      this.openMenu(!this.state.modalVisible);
-                    }}
-                  >
-                    <Text style={{ color: "#fff" }}>Close</Text>
-                  </TouchableOpacity>
-                </View>
-
-                <View style={{ padding: "5%" }} />
-
-                {/*Content*/}
-                <View style={{ alignItems: "center" }}>
-                  <Text style={{ color: "#fff" }}>Menu</Text>
-                </View>
-
-                <View>
-                  <View
-                    style={{
-                      justifyContent: "center"
-                    }}
-                  >
-                    <TouchableOpacity
-                      style={{
-                        margin: 10,
-                        padding: "5% 0% 5% 0%",
-                        backgroundColor: "#fff",
-                        borderRadius: 50,
-                        alignItems: "center"
-                      }}
-                      onPress={() => {
-                        this.openMenu(!this.state.modalVisible);
-                        this.props.navigation.navigate("LocationServices");
-                      }}
-                    >
-                      <Text style={{ color: "black" }}> Pick a place </Text>
-                    </TouchableOpacity>
-                  </View>
-                </View>
-              </View>
-            </View>
-          </Modal>
+          <MeetupMenu
+            modalVisible={this.state.modalVisible}
+            openMenu={this.openMenu}
+            navigation={this.props.navigation}
+          />
         </KeyboardAvoidingView>
       </SafeAreaView>
     );

@@ -307,12 +307,12 @@ class AcceptMatchingScreen extends React.Component {
             onPress={() => this.setDeviceUserReject()}
             style={{
               borderWidth: 0.5,
-              borderRadius: 25,
+              borderRadius: 50,
               borderColor: "#fff",
-              paddingLeft: 20,
-              paddingRight: 20,
-              paddingTop: 10,
-              paddingBottom: 10,
+              paddingLeft: 25,
+              paddingRight: 25,
+              paddingTop: 15,
+              paddingBottom: 15,
               backgroundColor:
                 !this.state.isDeviceUserAccept && this.state.isDeviceUserClicked
                   ? "#fff"
@@ -348,6 +348,7 @@ class AcceptMatchingScreen extends React.Component {
               name={"heart"}
               size={width * 0.15}
               solid
+              style={{ top: 10 }}
             />
           </TouchableOpacity>
         </View>
