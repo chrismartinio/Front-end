@@ -32,7 +32,7 @@ import LoadingScreen from "../../sharedComponents/LoadingScreen";
 
 import InputMenu from "./Chat_SharedComponents/InputMenu";
 
-import { server_chat } from "../../config/ipconfig";
+import { server_chat, server_report } from "../../config/ipconfig";
 
 const { height, width } = Dimensions.get("window");
 
@@ -53,7 +53,6 @@ import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 //Device user presses Back -> setDeviceUserReject -> Home
 //Device user presses Alert -> ghostAlert -> ghostUser -> Home
 //Match user presses Back/Alert -> this.socket.on("ghostChat") -> componentDidUpdate -> backToHome -> Home
-
 
 class MinuteChatRoomScreen extends React.Component {
   static navigationOptions = ({ navigation }) => {
@@ -209,7 +208,7 @@ class MinuteChatRoomScreen extends React.Component {
 
     //handle ghost
     this.socket.on("ghostChat", () => {
-      console.log("Minute")
+      console.log("Minute");
       if (Constants.isDevice) {
         console.log("===phone===");
       } else {
@@ -507,6 +506,54 @@ class MinuteChatRoomScreen extends React.Component {
     this.setState({ modalVisible: visible });
   };
 
+  reportUser = () => {
+    fetch(`${server_report}/api/report/reportUser`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        reportData: {
+          userGuid: this.props.CreateProfileDataReducer.guid,
+          matchedUserGuid: this.state.matchUserGuid,
+          roomGuid: this.roomGuid
+        }
+      })
+    })
+      .then(res => {
+        console.log(res);
+        return res;
+      })
+      .then(res => res.json())
+      .then(res => {
+        this.formatOldMessage(res);
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
+
+  reportAlert = () => {
+    Alert.alert(
+      "Warning!",
+      "Are you sure you want to report? You may ghost this user after reporting them if you like.",
+      [
+        {
+          text: "Yes",
+          onPress: () => {
+            this.reportUser();
+          }
+        },
+        {
+          text: "No",
+          onPress: () => {},
+          style: "cancel"
+        }
+      ],
+      { cancelable: false }
+    );
+  };
+
   messageType = (messageItem, index) => {
     //1 - device user message
     //2 - matching user message
@@ -537,7 +584,11 @@ class MinuteChatRoomScreen extends React.Component {
 
       case 2:
         return (
-          <View key={index}>
+          <TouchableHighlight
+            onLongPress={this.reportAlert}
+            underlayColor="transparent"
+            key={index}
+          >
             <View style={styles.textContainer}>
               <Image
                 blurRadius={10}
@@ -555,7 +606,7 @@ class MinuteChatRoomScreen extends React.Component {
                 </View>
               </View>
             </View>
-          </View>
+          </TouchableHighlight>
         );
 
       case 3:

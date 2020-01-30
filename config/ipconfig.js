@@ -47,6 +47,11 @@ export const server_frontendConfig = awsDevServer;
 export const server_location = awsDevServer;
 
 ////////////////////////
-//     LOCATION       //
+//     PRESENCE       //
 ////////////////////////
 export const server_presence = awsDevServer;
+
+//////////////////////
+//     REPORT       //
+//////////////////////
+export const server_report = awsDevServer;

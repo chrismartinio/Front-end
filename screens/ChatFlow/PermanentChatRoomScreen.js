@@ -30,7 +30,7 @@ import LoadingScreen from "../../sharedComponents/LoadingScreen";
 
 import InputMenu from "./Chat_SharedComponents/InputMenu";
 
-import { server_chat } from "../../config/ipconfig";
+import { server_chat, server_report } from "../../config/ipconfig";
 
 const { height, width } = Dimensions.get("window");
 
@@ -447,6 +447,54 @@ class PermanentChatRoomScreen extends React.Component {
     this.scrollView.scrollToEnd({ animated: true });
   };
 
+  reportUser = () => {
+    fetch(`${server_report}/api/report/reportUser`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        reportData: {
+          userGuid: this.props.CreateProfileDataReducer.guid,
+          matchedUserGuid: this.state.matchUserGuid,
+          roomGuid: this.roomGuid
+        }
+      })
+    })
+      .then(res => {
+        console.log(res);
+        return res;
+      })
+      .then(res => res.json())
+      .then(res => {
+        this.formatOldMessage(res);
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
+
+  reportAlert = () => {
+    Alert.alert(
+      "Warning!",
+      "Are you sure you want to report? You may ghost this user after reporting them if you like.",
+      [
+        {
+          text: "Yes",
+          onPress: () => {
+            this.reportUser();
+          }
+        },
+        {
+          text: "No",
+          onPress: () => {},
+          style: "cancel"
+        }
+      ],
+      { cancelable: false }
+    );
+  };
+
   messageType = (messageItem, index) => {
     //1 - device user message
     //2 - matched user message
@@ -477,7 +525,11 @@ class PermanentChatRoomScreen extends React.Component {
 
       case 2:
         return (
-          <View key={index}>
+          <TouchableHighlight
+            onLongPress={this.reportAlert}
+            underlayColor="transparent"
+            key={index}
+          >
             <View style={styles.textContainer}>
               <Image
                 source={{
@@ -494,7 +546,7 @@ class PermanentChatRoomScreen extends React.Component {
                 </View>
               </View>
             </View>
-          </View>
+          </TouchableHighlight>
         );
 
       case 3:

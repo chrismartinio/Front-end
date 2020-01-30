@@ -84,6 +84,7 @@ class MatchingScreen extends React.Component {
       return this.props.navigation.navigate("Home");
     }
 
+    /*
     matchingList = await filterAlreadyMatch(
       matchingList,
       this.props.CreateProfileDataReducer.guid
@@ -92,6 +93,7 @@ class MatchingScreen extends React.Component {
     if (matchingList.length <= 0) {
       return this.props.navigation.navigate("Home");
     }
+    */
 
     this.setState({
       foundaMatch: true,
