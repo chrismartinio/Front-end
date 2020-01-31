@@ -15,16 +15,15 @@ import { Icon } from "react-native-elements";
 
 const { height, width } = Dimensions.get("window");
 
+import SetFooterCurrentScreen from "../storage/actions/GlobalReducerActions/SetFooterCurrentScreen/";
+
 class Footer extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      profileToggle: false,
-      ConversationsToggle: false,
-      NotificationsToggle: false,
-      ConnectionsToggle: false,
-      SettingsToggle: false
-    };
+  }
+
+  async componentDidMount() {
+    console.log(this.props.GlobalReducer.footer_currentScreen);
   }
 
   render() {
@@ -91,16 +90,37 @@ class Footer extends React.Component {
         }}
       >
         <View style={styles.footer}>
+          {/*Profile*/}
           <TouchableOpacity
-            onPress={() => this.props.navigation.dispatch(resetProfileAction)}
+            disabled={
+              this.props.GlobalReducer.footer_currentScreen === "Profile"
+                ? true
+                : false
+            }
+            onPress={() => {
+              this.props.SetFooterCurrentScreen({
+                footer_currentScreen: "Profile"
+              });
+              this.props.navigation.dispatch(resetProfileAction);
+            }}
           >
             <Icon name="person" size={width * 0.06} color="#6a0dad" />
             <Text style={styles.footerText}>Profile</Text>
           </TouchableOpacity>
+
+          {/*Conversations*/}
           <TouchableOpacity
-            onPress={() =>
-              this.props.navigation.dispatch(resetConversationsAction)
+            disabled={
+              this.props.GlobalReducer.footer_currentScreen === "Conversations"
+                ? true
+                : false
             }
+            onPress={() => {
+              this.props.SetFooterCurrentScreen({
+                footer_currentScreen: "Conversations"
+              });
+              this.props.navigation.dispatch(resetConversationsAction);
+            }}
           >
             <Icon
               type="font-awesome"
@@ -110,8 +130,12 @@ class Footer extends React.Component {
             />
             <Text style={styles.footerText}>Conversations</Text>
           </TouchableOpacity>
+
+          {/*Notifications*/}
           <TouchableOpacity
-            onPress={() => this.props.navigation.navigate("Notifications")}
+            onPress={() => {
+              this.props.navigation.navigate("Notifications");
+            }}
           >
             <Icon
               type="font-awesome"
@@ -121,16 +145,38 @@ class Footer extends React.Component {
             />
             <Text style={styles.footerText}>Notifications</Text>
           </TouchableOpacity>
+
+          {/*Connections*/}
           <TouchableOpacity
-            onPress={() =>
-              this.props.navigation.dispatch(resetConnectionsAction)
+            disabled={
+              this.props.GlobalReducer.footer_currentScreen === "Connections"
+                ? true
+                : false
             }
+            onPress={() => {
+              this.props.SetFooterCurrentScreen({
+                footer_currentScreen: "Connections"
+              });
+              this.props.navigation.dispatch(resetConnectionsAction);
+            }}
           >
             <Icon name="people" size={width * 0.06} color="#6a0dad" />
             <Text style={styles.footerText}>Connections</Text>
           </TouchableOpacity>
+
+          {/*Settings*/}
           <TouchableOpacity
-            onPress={() => this.props.navigation.dispatch(resetSettingAction)}
+            disabled={
+              this.props.GlobalReducer.footer_currentScreen === "Settings"
+                ? true
+                : false
+            }
+            onPress={() => {
+              this.props.SetFooterCurrentScreen({
+                footer_currentScreen: "Settings"
+              });
+              this.props.navigation.dispatch(resetSettingAction);
+            }}
           >
             <View style={{ transform: [{ rotate: "180deg" }] }}>
               <Icon
@@ -173,7 +219,9 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => {
-  return {};
+  return {
+    SetFooterCurrentScreen: payload => dispatch(SetFooterCurrentScreen(payload))
+  };
 };
 
 export default connect(
