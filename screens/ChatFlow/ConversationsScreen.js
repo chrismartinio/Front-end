@@ -51,6 +51,7 @@ class ConversationsScreen extends React.Component {
       isSuccess: false
     };
     this.array = [];
+    console.log('HERE', this.props.test)
 
     //this.socket = io("http://74.80.250.210:3060");
     this.scrollY;
@@ -66,7 +67,7 @@ class ConversationsScreen extends React.Component {
   };
 
   onlineIndicator(user) {
-    const socket = io(`http://localhost:3000/?token=${user}`);
+    const socket = io(`http://172.20.10.2:3000/?token=${user}`);
     socket.on("connect", () => {
       console.log("Connected to server");
       socket.emit("retrieving users");

@@ -131,7 +131,7 @@ class PreSettingsScreen extends React.Component {
   async componentDidMount() {
     //Setup GUID
     this.guid = await this.props.CreateProfileDataReducer.guid;
-    const socket = io(`http://localhost:3000/?token=${this.guid}`);
+    const socket = io(`http://172.20.10.2:3000/?token=${this.guid}`);
 
     socket.on("connect", () => {
       console.log("Connected to server");
@@ -194,7 +194,11 @@ class PreSettingsScreen extends React.Component {
   };
 
   render() {
-    <ConversationsScreen socket={true} />;
+    // <ConversationsScreen socket={true} />;
+    /** 
+     * I'm trying to find a way to pass down the socket to the conversation screen so i won't have to
+     * initalize it on the conversation screen which could be causing my transport error
+     * */ 
     return this.state.isSuccess ? this.loadingScreen() : this.errorScreen();
   }
 }
