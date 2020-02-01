@@ -106,6 +106,12 @@ class MatchingScreen extends React.Component {
         onlineUserList: data
       });
     });
+
+    this.socket.on("disconnect", function() {});
+  }
+
+  componentWillUnmount() {
+    this.socket.close();
   }
 
   handleMatchResponse = async response => {

@@ -79,6 +79,7 @@ class Footer extends React.Component {
     this.timeout = setTimeout(() => {
       this.setState({ isDelaying: false }, () => {
         this.timeout = null;
+        clearTimeout(this.timeout);
       });
     }, 1500);
   }

@@ -20,7 +20,7 @@ import {
   calculateLastMessageDate
 } from "../Util/ConnectionsScreenFunctions.js";
 
-import {getOnlineStatus} from "../../../screens/ChatFlow/Util/onlinePresence.js"
+import { getOnlineStatus } from "../../../screens/ChatFlow/Util/onlinePresence.js";
 
 function calculateAge(birthday) {
   birthday = new Date(birthday);
@@ -33,12 +33,10 @@ function calculateAge(birthday) {
 export default class CircularCarouselItem extends React.Component {
   constructor(props) {
     super(props);
-    console.log('logg', this.props.onlineUserList);
+    console.log("logg", this.props.onlineUserList);
   }
 
-  componentDidMount() {
-
-  }
+  componentDidMount() {}
 
   goToPermanentChatRoom = ({
     addressLatitude,
@@ -75,8 +73,32 @@ export default class CircularCarouselItem extends React.Component {
   };
 
   render() {
-    // console.log('hi');
-    let isOnline = this.props.onlineUserList.includes(this.props.matchUserData.userGuid);
+    let isOnline = this.props.onlineUserList.includes(
+      this.props.matchUserData.userGuid
+    ) ? (
+      <View
+        style={{
+          width: 15,
+          height: 15,
+          borderWidth: 2,
+          borderRadius: 25,
+          borderColor: "#fff",
+          backgroundColor: "#00ca65"
+        }}
+      />
+    ) : (
+      <View
+        style={{
+          width: 15,
+          height: 15,
+          borderWidth: 2,
+          borderRadius: 25,
+          borderColor: "#fff",
+          backgroundColor: "gray"
+        }}
+      />
+    );
+
     let nameFont = shortName(this.props.matchUserData.firstName);
     let ageAddressFont = shortAgeAndAddressSTR(
       this.props.matchUserData.age + " , " + this.props.matchUserData.city
@@ -114,6 +136,9 @@ export default class CircularCarouselItem extends React.Component {
             }}
           >
             {/*Image*/}
+            <View style={{ position: "absolute", zIndex: 999 }}>
+              {isOnline}
+            </View>
             <Image
               source={{
                 uri: this.props.matchUserData.imageUrl
@@ -154,8 +179,6 @@ export default class CircularCarouselItem extends React.Component {
                   {this.props.matchUserData.firstName}
                   {/*this.props.matchUserData.matchLastName[0]*/}
                 </Text>
-                
-                {isOnline ? <View><Text>Online</Text></View> : <View><Text>Offline</Text></View>}
 
                 {/*Age and Address*/}
                 <Text style={{ fontSize: width * 0.038 }}>
