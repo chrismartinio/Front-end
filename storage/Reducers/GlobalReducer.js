@@ -1,5 +1,6 @@
 let initialState = {
-  onlineUserList: []
+  onlineUserList: [],
+  footer_currentScreen: ""
 };
 
 const GlobalReducer = (state = initialState, action) => {
@@ -8,6 +9,11 @@ const GlobalReducer = (state = initialState, action) => {
       return {
         ...state,
         onlineUserList: action.PAYLOAD.onlineUserList
+      };
+    case "SET_FOOTER_CURRENT_SCREEN":
+      return {
+        ...state,
+        footer_currentScreen: action.PAYLOAD.footer_currentScreen
       };
     default:
       return state;

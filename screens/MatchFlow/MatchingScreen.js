@@ -18,6 +18,8 @@ import Footer from "../../sharedComponents/Footer";
 import axios from "axios";
 import SetNewMatchlistAction from "../../storage/actions/MatchReducerActions/SetNewMatchlistAction";
 
+import io from "socket.io-client";
+
 //SQLite
 import * as SQLite from "expo-sqlite";
 const db = SQLite.openDatabase("that.db");
@@ -59,6 +61,12 @@ async function filterAlreadyMatch(matchingList, deviceUserGuid) {
   return temp;
 }
 
+function filterOfflineUser(matchingList, onlineUserList) {
+  return matchingList.filter(e => {
+    return onlineUserList.includes(e.matchedUser);
+  });
+}
+
 class MatchingScreen extends React.Component {
   //Header
 
@@ -68,10 +76,36 @@ class MatchingScreen extends React.Component {
       isSuccess: true,
       foundaMatch: false,
       matchUserGuid: "",
-      matchRoomGuid: ""
+      matchRoomGuid: "",
+      onlineUserList: []
     };
-    //Set up a socket that after socket send they found a match
-    //then change the foundaMatch = true
+
+    this.token = "";
+    this.socket = io(`${server_match}/`, {
+      forceNew: true,
+      transportOptions: {
+        polling: {
+          extraHeaders: {
+            authorization: "Bearer " + this.token // if you have token for auth
+          }
+        }
+      },
+      query: {
+        namespace: this.roomGuid
+      }
+    });
+
+    this.socket.on("connect", () => {
+      console.log("Connected to server");
+      this.socket.emit("retrieving users");
+    });
+
+    this.socket.on("retrieving users", data => {
+      // console.log('array1', data);
+      this.setState({
+        onlineUserList: data
+      });
+    });
   }
 
   handleMatchResponse = async response => {
@@ -80,7 +114,16 @@ class MatchingScreen extends React.Component {
         ? [...response.data.matchData.matchedUsers]
         : null;
 
-    if (matchingList === null) {
+    //uncomment should make it work
+    matchingList = filterOfflineUser(matchingList, this.state.onlineUserList);
+    /*
+    matchingList = filterOfflineUser(matchingList, [
+      "5e2bf53d2353214d94dd137e",
+      "5e2bf60b2353214d94dd137f"
+    ]);
+    */
+
+    if (matchingList === null || matchingList.length <= 0) {
       return this.props.navigation.navigate("Home");
     }
 

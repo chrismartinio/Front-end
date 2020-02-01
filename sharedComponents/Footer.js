@@ -14,21 +14,21 @@ import { connect } from "react-redux";
 import { Icon } from "react-native-elements";
 
 const { height, width } = Dimensions.get("window");
+import FontAwesome from "react-native-vector-icons/FontAwesome";
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+
+import SetFooterCurrentScreen from "../storage/actions/GlobalReducerActions/SetFooterCurrentScreen/";
 
 class Footer extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      profileToggle: false,
-      ConversationsToggle: false,
-      NotificationsToggle: false,
-      ConnectionsToggle: false,
-      SettingsToggle: false
+      isDelaying: false
     };
   }
 
-  render() {
-    const resetProfileAction = StackActions.reset({
+  async componentDidMount() {
+    this.resetProfileAction = StackActions.reset({
       index: 1,
       actions: [
         NavigationActions.navigate({ routeName: "Home" }),
@@ -42,7 +42,7 @@ class Footer extends React.Component {
       ]
     });
 
-    const resetConversationsAction = StackActions.reset({
+    this.resetConversationsAction = StackActions.reset({
       index: 1,
       actions: [
         NavigationActions.navigate({ routeName: "Home" }),
@@ -52,7 +52,7 @@ class Footer extends React.Component {
       ]
     });
 
-    const resetConnectionsAction = StackActions.reset({
+    this.resetConnectionsAction = StackActions.reset({
       index: 1,
       actions: [
         NavigationActions.navigate({ routeName: "Home" }),
@@ -62,17 +62,7 @@ class Footer extends React.Component {
       ]
     });
 
-    const resetMatchingAction = StackActions.reset({
-      index: 1,
-      actions: [
-        NavigationActions.navigate({ routeName: "Home" }),
-        NavigationActions.navigate({
-          routeName: "Matching"
-        })
-      ]
-    });
-
-    const resetSettingAction = StackActions.reset({
+    this.resetSettingAction = StackActions.reset({
       index: 1,
       actions: [
         NavigationActions.navigate({ routeName: "Home" }),
@@ -82,6 +72,22 @@ class Footer extends React.Component {
       ]
     });
 
+    this.isHomeScreen =
+      this.props.navigation.state.routeName === "Home" ? true : false;
+
+    this.setState({ isDelaying: true });
+    this.timeout = setTimeout(() => {
+      this.setState({ isDelaying: false }, () => {
+        this.timeout = null;
+      });
+    }, 1500);
+  }
+
+  componentWillUnmount() {
+    clearTimeout(this.timeout);
+  }
+
+  render() {
     return (
       <View
         style={{
@@ -90,28 +96,61 @@ class Footer extends React.Component {
           justifyContent: "flex-end"
         }}
       >
-        <View style={styles.footer}>
+        <View
+          style={[styles.footer, { borderWidth: this.isHomeScreen ? 0 : 0.17 }]}
+        >
+          {/*Profile*/}
           <TouchableOpacity
-            onPress={() => this.props.navigation.dispatch(resetProfileAction)}
+            disabled={this.state.isDelaying}
+            onPress={() => {
+              this.props.SetFooterCurrentScreen({
+                footer_currentScreen: "Profile"
+              });
+              this.props.navigation.dispatch(this.resetProfileAction);
+            }}
           >
-            <Icon name="person" size={width * 0.06} color="#6a0dad" />
+            <FontAwesome
+              name={
+                this.props.GlobalReducer.footer_currentScreen === "Profile"
+                  ? "user-circle"
+                  : "user-circle-o"
+              }
+              style={{ textAlign: "center" }}
+              size={width * 0.06}
+              color="#4b1792"
+            />
             <Text style={styles.footerText}>Profile</Text>
           </TouchableOpacity>
+
+          {/*Conversations*/}
           <TouchableOpacity
-            onPress={() =>
-              this.props.navigation.dispatch(resetConversationsAction)
-            }
+            disabled={this.state.isDelaying}
+            onPress={() => {
+              this.props.SetFooterCurrentScreen({
+                footer_currentScreen: "Conversations"
+              });
+              this.props.navigation.dispatch(this.resetConversationsAction);
+            }}
           >
-            <Icon
-              type="font-awesome"
+            <FontAwesome
+              name={
+                this.props.GlobalReducer.footer_currentScreen ===
+                "Conversations"
+                  ? "commenting"
+                  : "commenting-o"
+              }
+              style={{ textAlign: "center" }}
               size={width * 0.06}
-              name="commenting-o"
-              color="#6a0dad"
+              color="#4b1792"
             />
             <Text style={styles.footerText}>Conversations</Text>
           </TouchableOpacity>
+
+          {/*Notifications*/}
           <TouchableOpacity
-            onPress={() => this.props.navigation.navigate("Notifications")}
+            onPress={() => {
+              this.props.navigation.navigate("Notifications");
+            }}
           >
             <Icon
               type="font-awesome"
@@ -121,16 +160,43 @@ class Footer extends React.Component {
             />
             <Text style={styles.footerText}>Notifications</Text>
           </TouchableOpacity>
+
+          {/*Connections*/}
           <TouchableOpacity
-            onPress={() =>
-              this.props.navigation.dispatch(resetConnectionsAction)
-            }
+            disabled={this.state.isDelaying}
+            onPress={() => {
+              this.props.SetFooterCurrentScreen({
+                footer_currentScreen: "Connections"
+              });
+              this.props.navigation.dispatch(this.resetConnectionsAction);
+            }}
           >
-            <Icon name="people" size={width * 0.06} color="#6a0dad" />
-            <Text style={styles.footerText}>Connections</Text>
+            <View style={{ bottom: 10 }}>
+              <MaterialCommunityIcons
+                name={
+                  this.props.GlobalReducer.footer_currentScreen ===
+                  "Connections"
+                    ? "account-supervisor-circle"
+                    : "account-supervisor"
+                }
+                style={{ textAlign: "center" }}
+                size={width * 0.08}
+                style={{ top: 10, textAlign: "center" }}
+                color="#6a0dad"
+              />
+              <Text style={styles.footerText}>Connections</Text>
+            </View>
           </TouchableOpacity>
+
+          {/*Settings*/}
           <TouchableOpacity
-            onPress={() => this.props.navigation.dispatch(resetSettingAction)}
+            disabled={this.state.isDelaying}
+            onPress={() => {
+              this.props.SetFooterCurrentScreen({
+                footer_currentScreen: "Settings"
+              });
+              this.props.navigation.dispatch(this.resetSettingAction);
+            }}
           >
             <View style={{ transform: [{ rotate: "180deg" }] }}>
               <Icon
@@ -151,8 +217,10 @@ class Footer extends React.Component {
 const styles = StyleSheet.create({
   footer: {
     backgroundColor: "white",
-    borderTopLeftRadius: 25,
-    borderTopRightRadius: 25,
+    //borderTopLeftRadius: 25,
+    //borderTopRightRadius: 25,
+    borderColor: "#4b1792",
+    borderWidth: 0.17,
     flex: 1,
     flexDirection: "row",
     justifyContent: "space-between",
@@ -173,7 +241,9 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => {
-  return {};
+  return {
+    SetFooterCurrentScreen: payload => dispatch(SetFooterCurrentScreen(payload))
+  };
 };
 
 export default connect(
