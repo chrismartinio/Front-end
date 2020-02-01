@@ -14,6 +14,8 @@ import { connect } from "react-redux";
 import { Icon } from "react-native-elements";
 
 const { height, width } = Dimensions.get("window");
+import FontAwesome from "react-native-vector-icons/FontAwesome";
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import SetFooterCurrentScreen from "../storage/actions/GlobalReducerActions/SetFooterCurrentScreen/";
 
@@ -104,7 +106,16 @@ class Footer extends React.Component {
               this.props.navigation.dispatch(resetProfileAction);
             }}
           >
-            <Icon name="person" size={width * 0.06} color="#6a0dad" />
+            <FontAwesome
+              name={
+                this.props.GlobalReducer.footer_currentScreen === "Profile"
+                  ? "user-circle"
+                  : "user-circle-o"
+              }
+              style={{ textAlign: "center" }}
+              size={width * 0.06}
+              color="#4b1792"
+            />
             <Text style={styles.footerText}>Profile</Text>
           </TouchableOpacity>
 
@@ -122,11 +133,16 @@ class Footer extends React.Component {
               this.props.navigation.dispatch(resetConversationsAction);
             }}
           >
-            <Icon
-              type="font-awesome"
+            <FontAwesome
+              name={
+                this.props.GlobalReducer.footer_currentScreen ===
+                "Conversations"
+                  ? "commenting"
+                  : "commenting-o"
+              }
+              style={{ textAlign: "center" }}
               size={width * 0.06}
-              name="commenting-o"
-              color="#6a0dad"
+              color="#4b1792"
             />
             <Text style={styles.footerText}>Conversations</Text>
           </TouchableOpacity>
@@ -160,17 +176,22 @@ class Footer extends React.Component {
               this.props.navigation.dispatch(resetConnectionsAction);
             }}
           >
-            <Icon name="people" size={width * 0.06} color="#6a0dad" />
+            <MaterialCommunityIcons
+              name={
+                this.props.GlobalReducer.footer_currentScreen === "Connections"
+                  ? "account-supervisor-circle"
+                  : "account-supervisor"
+              }
+              style={{ textAlign: "center" }}
+              size={width * 0.06}
+              color="#6a0dad"
+            />
+
             <Text style={styles.footerText}>Connections</Text>
           </TouchableOpacity>
 
           {/*Settings*/}
           <TouchableOpacity
-            disabled={
-              this.props.GlobalReducer.footer_currentScreen === "Settings"
-                ? true
-                : false
-            }
             onPress={() => {
               this.props.SetFooterCurrentScreen({
                 footer_currentScreen: "Settings"
