@@ -28,6 +28,8 @@ import { Icon, Input } from "react-native-elements";
 
 import NextButton from "../../Profile_SharedComponents/NextButton";
 
+import LoadingScreen from "../../../../sharedComponents/LoadingScreen";
+
 import ImageProcessingScreen from "../../../ImageProcessingFlow/app";
 import ImgProcessing from "../../../ImageProcessingFlow/mediaHandling/ImageProcessing.js";
 
@@ -37,7 +39,8 @@ class SelfieScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      isUploaded: false
+      isUploaded: false,
+      isUploading: false
     };
   }
 
@@ -71,15 +74,21 @@ class SelfieScreen extends Component {
           })
         ]
       });
-      let { navigation } = this.props;
-      setTimeout(function() {
-        navigation.dispatch(resetProfileAction);
-      }, 1000);
+      this.setState({ isUploading: true });
+      this.timeout = setTimeout(() => {
+        this.setState({ isUploading: false }, () => {
+          this.props.navigation.dispatch(resetProfileAction);
+        });
+      }, 1500);
     } else {
       //Registration
       return this.props.navigation.navigate("RegistrationComplete");
     }
   };
+
+  componentWillUnmount() {
+    clearTimeout(this.timeout);
+  }
 
   componentDidMount() {
     const { navigation } = this.props;
