@@ -8,7 +8,11 @@ import {
   TouchableOpacity,
   View,
   Button,
-  Dimensions
+  Dimensions,
+  KeyboardAvoidingView,
+  Safeareaview,
+  Keyboard,
+  TouchableWithoutFeedback
 } from "react-native";
 
 import t from "tcomb-form-native";
@@ -341,215 +345,222 @@ class LoginScreen extends React.Component {
 
   render() {
     return (
-      <View style={styles.container}>
-        {/*space*/}
-        <View
-          style={{
-            padding: width >= 375 ? `${width * 0.036}%` : `${width * 0.013}%`
-          }}
-        />
-
-        {/*Image*/}
-        <View style={styles.welcomeContainer}>
-          <Image
-            source={
-              __DEV__
-                ? require("../assets/images/butterfly.png")
-                : require("../assets/images/butterfly.png")
-            }
-            style={styles.welcomeImage}
-          />
-        </View>
-
-        {/*space*/}
-        <View style={{ padding: width >= 375 && `${width * 0.013}%` }} />
-
-        {/*email and password input*/}
-        <View style={styles.formContainer}>
-          <Form
-            options={options}
-            autoCapitalize="none"
-            type={User}
-            ref={c => (this._form = c)}
-          />
-        </View>
-
-        {/*Sign in Button*/}
-        <View style={styles.buttonStyle}>
-          <Button
-            title="Sign In"
-            onPress={e => this.localLogin(e)}
-            color="white"
-            key="100"
-          />
-        </View>
-
-        {/*Sign Up Button*/}
-        <View style={styles.buttonStyleOutline}>
-          <Button
-            title="Sign Up"
-            onPress={this.handleSignUp}
-            color="#6a0dad"
-            key="100"
-          />
-        </View>
-
-        {/*Forgot Password */}
-        <Button
-          title="Forgot password!"
-          /*onPress={this.handleSignUp}*/ color="#6a0dad"
-        />
-
-        {/*space*/}
-        <View style={{ padding: width >= 375 && `${width * 0.013}%` }} />
-
-        {/*Third Party Providers*/}
-        <Text style={styles.centerText}>Sign in with</Text>
-        <View
-          style={{ flex: 1, flexDirection: "row", justifyContent: "center" }}
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+        <KeyboardAvoidingView
+          style={styles.container}
+          behavior="position"
+          keyboardVerticalOffset={-300}
+          enabled
         >
-          <TouchableOpacity onPress={this.checkFaceBookValidity}>
+          {/*space*/}
+          <View
+            style={{
+              padding: width >= 375 ? `${width * 0.036}%` : `${width * 0.013}%`
+            }}
+          />
+
+          {/*Image*/}
+          <View style={styles.welcomeContainer}>
             <Image
               source={
                 __DEV__
-                  ? require("../assets/images/facebookBW.png")
-                  : require("../assets/images/facebookBW.png")
+                  ? require("../assets/images/butterfly.png")
+                  : require("../assets/images/butterfly.png")
               }
-              style={styles.iconImage}
+              style={styles.welcomeImage}
             />
-          </TouchableOpacity>
+          </View>
 
-          <TouchableOpacity onPress={this.checkGoogleValidity}>
-            <Image
-              source={
-                __DEV__
-                  ? require("../assets/images/googleBW.png")
-                  : require("../assets/images/googleBW.png")
-              }
-              style={styles.iconImage}
+          {/*space*/}
+          <View style={{ padding: width >= 375 && `${width * 0.013}%` }} />
+
+          {/*email and password input*/}
+          <View style={styles.formContainer}>
+            <Form
+              options={options}
+              autoCapitalize="none"
+              type={User}
+              ref={c => (this._form = c)}
             />
-          </TouchableOpacity>
+          </View>
 
-          <TouchableOpacity onPress={this.checkTwitterValidity}>
-            <Image
-              source={
-                __DEV__
-                  ? require("../assets/images/TwitterBW.png")
-                  : require("../assets/images/TwitterBW.png")
-              }
-              style={styles.iconImage}
+          {/*Sign in Button*/}
+          <View style={styles.buttonStyle}>
+            <Button
+              title="Sign In"
+              onPress={e => this.localLogin(e)}
+              color="white"
+              key="100"
             />
-          </TouchableOpacity>
-        </View>
+          </View>
 
-        {/*Testing USE*/}
-        <View style={{ position: "absolute", left: 0, top: "5%" }}>
-          <Button
-            title="LOCATIONS"
-            onPress={() => {
-              this.props.SetGUIDAction({
-                guid: "5de42b16b4dc5b1fba94e1d4"
-                //guid: "5e119b146ebb5e4b3c2fff6f"
-              });
-              this.props.SetAboutYouDataAction({
-                firstName: "te st",
-                lastName: "",
-                birthDate: "",
-                gender: "",
-                country: "",
-                zipCode: ""
-              });
-              this.props.navigation.navigate("LocationServices");
-            }}
-          />
-        </View>
+          {/*Sign Up Button*/}
+          <View style={styles.buttonStyleOutline}>
+            <Button
+              title="Sign Up"
+              onPress={this.handleSignUp}
+              color="#6a0dad"
+              key="100"
+            />
+          </View>
 
-        {/*Testing USE*/}
-        <View style={{ position: "absolute", left: 0, top: "10%" }}>
+          {/*Forgot Password */}
           <Button
-            title="LINKS"
-            //If Navigate to Profile, in side linkscreen has set a guid
-            onPress={() => {
-              this.props.SetGUIDAction({
-                guid: "5de42b16b4dc5b1fba94e1d4"
-                //guid: "5e119b146ebb5e4b3c2fff6f"
-              });
-              this.props.SetAboutYouDataAction({
-                firstName: "KaChi",
-                lastName: "",
-                birthDate: "",
-                gender: "",
-                country: "",
-                zipCode: ""
-              });
-              this.props.navigation.navigate("Links");
-            }}
+            title="Forgot password!"
+            /*onPress={this.handleSignUp}*/ color="#6a0dad"
           />
-        </View>
-        {/*Testing USE*/}
-        <View style={{ position: "absolute", left: 0, top: "15%" }}>
-          <Button
-            title="HOME - USER_A"
-            onPress={() => {
-              //TESTING USE (TEMP)
-              //Set Device user GUID
-              this.props.SetGUIDAction({
-                //abc
-                guid: "5e0f04d2ed63ee02f3999dea"
-                //One, Number
-                //guid: "5e2bf53d2353214d94dd137e"
-                //guid: "5e119b146ebb5e4b3c2fff6f"
-              });
-              this.props.SetAboutYouDataAction({
-                firstName: "An",
-                lastName: "",
-                birthDate: "",
-                gender: "",
-                country: "",
-                zipCode: ""
-              });
-              //TESTING USE
-              this.props.navigation.navigate("PreSettings");
-            }}
-          />
-        </View>
-        {/*Testing USE*/}
-        <View style={{ position: "absolute", left: 0, top: "20%" }}>
-          <Button
-            title="HOME - USER_B"
-            onPress={() => {
-              //TESTING USE (TEMP)
-              //Set Device user GUID
-              this.props.SetGUIDAction({
-                //bbb
-                guid: "5e0feb18efe16e02ee55c906"
-                //Two, Number
-                //guid: "5e2bf60b2353214d94dd137f"
-                //guid: "5e119b146ebb5e4b3c2fff6f"
-              });
-              this.props.SetAboutYouDataAction({
-                firstName: "BBB",
-                lastName: "",
-                birthDate: "",
-                gender: "",
-                country: "",
-                zipCode: ""
-              });
-              //TESTING USE
-              this.props.navigation.navigate("PreSettings");
-            }}
-          />
-        </View>
-        {/*Testing USE*/}
-        <View style={{ position: "absolute", left: 0, top: "25%" }}>
-          <Button
-            title="Reset"
-            onPress={() => {
-              this.resetMatchStatus();
-            }}
-          />
-        </View>
-      </View>
+
+          {/*space*/}
+          <View style={{ padding: width >= 375 && `${width * 0.013}%` }} />
+
+          {/*Third Party Providers*/}
+          <Text style={styles.centerText}>Sign in with</Text>
+          <View
+            style={{ flex: 1, flexDirection: "row", justifyContent: "center" }}
+          >
+            <TouchableOpacity onPress={this.checkFaceBookValidity}>
+              <Image
+                source={
+                  __DEV__
+                    ? require("../assets/images/facebookBW.png")
+                    : require("../assets/images/facebookBW.png")
+                }
+                style={styles.iconImage}
+              />
+            </TouchableOpacity>
+
+            <TouchableOpacity onPress={this.checkGoogleValidity}>
+              <Image
+                source={
+                  __DEV__
+                    ? require("../assets/images/googleBW.png")
+                    : require("../assets/images/googleBW.png")
+                }
+                style={styles.iconImage}
+              />
+            </TouchableOpacity>
+
+            <TouchableOpacity onPress={this.checkTwitterValidity}>
+              <Image
+                source={
+                  __DEV__
+                    ? require("../assets/images/TwitterBW.png")
+                    : require("../assets/images/TwitterBW.png")
+                }
+                style={styles.iconImage}
+              />
+            </TouchableOpacity>
+          </View>
+
+          {/*Testing USE*/}
+          <View style={{ position: "absolute", left: 0, top: "5%" }}>
+            <Button
+              title="LOCATIONS"
+              onPress={() => {
+                this.props.SetGUIDAction({
+                  guid: "5de42b16b4dc5b1fba94e1d4"
+                  //guid: "5e119b146ebb5e4b3c2fff6f"
+                });
+                this.props.SetAboutYouDataAction({
+                  firstName: "te st",
+                  lastName: "",
+                  birthDate: "",
+                  gender: "",
+                  country: "",
+                  zipCode: ""
+                });
+                this.props.navigation.navigate("LocationServices");
+              }}
+            />
+          </View>
+
+          {/*Testing USE*/}
+          <View style={{ position: "absolute", left: 0, top: "10%" }}>
+            <Button
+              title="LINKS"
+              //If Navigate to Profile, in side linkscreen has set a guid
+              onPress={() => {
+                this.props.SetGUIDAction({
+                  guid: "5de42b16b4dc5b1fba94e1d4"
+                  //guid: "5e119b146ebb5e4b3c2fff6f"
+                });
+                this.props.SetAboutYouDataAction({
+                  firstName: "KaChi",
+                  lastName: "",
+                  birthDate: "",
+                  gender: "",
+                  country: "",
+                  zipCode: ""
+                });
+                this.props.navigation.navigate("Links");
+              }}
+            />
+          </View>
+          {/*Testing USE*/}
+          <View style={{ position: "absolute", left: 0, top: "15%" }}>
+            <Button
+              title="HOME - USER_A"
+              onPress={() => {
+                //TESTING USE (TEMP)
+                //Set Device user GUID
+                this.props.SetGUIDAction({
+                  //abc
+                  guid: "5e0f04d2ed63ee02f3999dea"
+                  //One, Number
+                  //guid: "5e2bf53d2353214d94dd137e"
+                  //guid: "5e119b146ebb5e4b3c2fff6f"
+                });
+                this.props.SetAboutYouDataAction({
+                  firstName: "An",
+                  lastName: "",
+                  birthDate: "",
+                  gender: "",
+                  country: "",
+                  zipCode: ""
+                });
+                //TESTING USE
+                this.props.navigation.navigate("PreSettings");
+              }}
+            />
+          </View>
+          {/*Testing USE*/}
+          <View style={{ position: "absolute", left: 0, top: "20%" }}>
+            <Button
+              title="HOME - USER_B"
+              onPress={() => {
+                //TESTING USE (TEMP)
+                //Set Device user GUID
+                this.props.SetGUIDAction({
+                  //bbb
+                  guid: "5e0feb18efe16e02ee55c906"
+                  //Two, Number
+                  //guid: "5e2bf60b2353214d94dd137f"
+                  //guid: "5e119b146ebb5e4b3c2fff6f"
+                });
+                this.props.SetAboutYouDataAction({
+                  firstName: "BBB",
+                  lastName: "",
+                  birthDate: "",
+                  gender: "",
+                  country: "",
+                  zipCode: ""
+                });
+                //TESTING USE
+                this.props.navigation.navigate("PreSettings");
+              }}
+            />
+          </View>
+          {/*Testing USE*/}
+          <View style={{ position: "absolute", left: 0, top: "25%" }}>
+            <Button
+              title="Reset"
+              onPress={() => {
+                this.resetMatchStatus();
+              }}
+            />
+          </View>
+        </KeyboardAvoidingView>
+      </TouchableWithoutFeedback>
     );
   }
 
