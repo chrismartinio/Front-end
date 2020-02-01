@@ -176,18 +176,21 @@ class Footer extends React.Component {
               this.props.navigation.dispatch(resetConnectionsAction);
             }}
           >
-            <MaterialCommunityIcons
-              name={
-                this.props.GlobalReducer.footer_currentScreen === "Connections"
-                  ? "account-supervisor-circle"
-                  : "account-supervisor"
-              }
-              style={{ textAlign: "center" }}
-              size={width * 0.06}
-              color="#6a0dad"
-            />
-
-            <Text style={styles.footerText}>Connections</Text>
+            <View style={{ bottom: 10 }}>
+              <MaterialCommunityIcons
+                name={
+                  this.props.GlobalReducer.footer_currentScreen ===
+                  "Connections"
+                    ? "account-supervisor-circle"
+                    : "account-supervisor"
+                }
+                style={{ textAlign: "center" }}
+                size={width * 0.08}
+                style={{ top: 10, textAlign: "center" }}
+                color="#6a0dad"
+              />
+              <Text style={styles.footerText}>Connections</Text>
+            </View>
           </TouchableOpacity>
 
           {/*Settings*/}
