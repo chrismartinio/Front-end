@@ -11,7 +11,11 @@ import {
 
 import { connect } from "react-redux";
 
-import { server_profile, server_presence, server_chat } from "../../config/ipconfig";
+import {
+  server_profile,
+  server_presence,
+  server_chat
+} from "../../config/ipconfig";
 import SetDeviceUserImageUrlAction from "../../storage/actions/ImageProcessingActions/SetDeviceUserImageUrlAction/";
 import SetTimeAction from "../../storage/actions/ConfigReducerActions/SetTimeAction/";
 import SetOnlineUserListAction from "../../storage/actions/GlobalReducerActions/SetOnlineUserListAction/";
@@ -131,26 +135,24 @@ class PreSettingsScreen extends React.Component {
   async componentDidMount() {
     //Setup GUID
     this.guid = await this.props.CreateProfileDataReducer.guid;
-    const socket = io(`${server_chat}`);
+    this.socket = io(`${server_chat}`);
 
-    socket.on("connect", () => {
+    this.socket.on("connect", () => {
       console.log("Connected to server");
-      socket.emit("login", {guid: this.guid} );
+      this.socket.emit("login", { guid: this.guid });
     });
-    socket.on("login", data => {
+    this.socket.on("login", data => {
       console.log("Online User Array:", data);
-      socket.emit("retrieving users");
+      this.socket.emit("retrieving users");
     });
-
-    //STORING THE LIST ON GLOBAL STORAGE REDUX
-    this.props.SetOnlineUserListAction({
-      onlineUserList: ["SOME", "LIST", "LOL"]
-    });
-
-    // onlineIndicator(this.guid);
 
     //Setup Profile Image
     await this.setProfileImage(this.guid);
+  }
+
+  componentWillUnmount() {
+    //PreSettingsScreen Socket don't need to off or close , it is global
+    //this.socket.off();
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
@@ -195,10 +197,11 @@ class PreSettingsScreen extends React.Component {
 
   render() {
     // <ConversationsScreen socket={true} />;
-    /** 
+    /**
      * I'm trying to find a way to pass down the socket to the conversation screen so i won't have to
      * initalize it on the conversation screen which could be causing my transport error
-     * */ 
+     * */
+
     return this.state.isSuccess ? this.loadingScreen() : this.errorScreen();
   }
 }

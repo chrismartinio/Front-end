@@ -111,7 +111,7 @@ class MatchingScreen extends React.Component {
   }
 
   componentWillUnmount() {
-    this.socket.close();
+    this.socket.off();
   }
 
   handleMatchResponse = async response => {

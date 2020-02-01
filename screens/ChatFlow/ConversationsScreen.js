@@ -50,38 +50,8 @@ class ConversationsScreen extends React.Component {
       matchUsersList: [],
       isSuccess: false
     };
-    this.token = "";
-    this.socket = io(`${server_chat}/`, {
-      forceNew: true,
-      transportOptions: {
-        polling: {
-          extraHeaders: {
-            authorization: "Bearer " + this.token // if you have token for auth
-          }
-        }
-      },
-      query: {
-        namespace: this.roomGuid
-      }
-    });
-
-    this.socket.on("connect", () => {
-      console.log("Connected to server");
-      this.socket.emit("retrieving users");
-    });
-
-    this.socket.on("retrieving users", data => {
-      // console.log('array1', data);
-      this.setState({
-        onlineUserList: data
-      });
-    });
-
-    this.socket.on("disconnect", function() {});
-  }
-
-  componentWillUnmount() {
-    this.socket.close();
+    //this.array = [];
+    //this.scrollY;
   }
 
   mergeArrayObjects = (arr1, arr2) => {
@@ -92,6 +62,25 @@ class ConversationsScreen extends React.Component {
       }
     });
   };
+
+  onlineIndicator(user) {
+    this.socket = io(`${server_chat}`);
+    this.socket.on("connect", () => {
+      console.log("Connected to server");
+      this.socket.emit("retrieving users");
+    });
+    this.socket.on("retrieving users", data => {
+      // console.log('array1', data);
+      this.setState({
+        onlineUserList: data
+      });
+      /*
+      this.array = data;
+      console.log("1", this.array);
+      */
+    });
+    this.socket.on("disconnect", function() {});
+  }
 
   getMatchedUsersProfileFromDB = async matchUsersList => {
     let matchUserGuidArray = [];
@@ -164,7 +153,7 @@ class ConversationsScreen extends React.Component {
 
     AppState.addEventListener("change", this._handleAppStateChange);
     this.guid = await this.props.CreateProfileDataReducer.guid;
-
+    this.onlineIndicator(this.guid);
     this.user_firstName = await this.props.CreateProfileDataReducer.aboutYouData
       .firstName;
 
@@ -183,7 +172,7 @@ class ConversationsScreen extends React.Component {
   }
 
   componentWillUnmount() {
-    //this.socket.off();
+    this.socket.off();
     AppState.removeEventListener("change", this._handleAppStateChange);
   }
 

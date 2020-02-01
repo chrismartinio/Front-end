@@ -65,6 +65,10 @@ class SettingsScreen extends React.Component {
       });
   };
 
+  componentWillUnmount() {
+    //this.socket.close();
+  }
+
   render() {
     return (
       <View style={{ flex: 1 }}>
