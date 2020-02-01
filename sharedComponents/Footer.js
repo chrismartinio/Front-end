@@ -22,10 +22,22 @@ import SetFooterCurrentScreen from "../storage/actions/GlobalReducerActions/SetF
 class Footer extends React.Component {
   constructor(props) {
     super(props);
+    this.state = {
+      isDelaying: false
+    };
   }
 
   async componentDidMount() {
-    console.log(this.props.GlobalReducer.footer_currentScreen);
+    this.setState({ isDelaying: true });
+    this.timeout = setTimeout(() => {
+      this.setState({ isDelaying: false }, () => {
+        this.timeout = null;
+      });
+    }, 1500);
+  }
+
+  componentWillUnmount() {
+    clearTimeout(this.timeout);
   }
 
   render() {
@@ -94,11 +106,7 @@ class Footer extends React.Component {
         <View style={styles.footer}>
           {/*Profile*/}
           <TouchableOpacity
-            disabled={
-              this.props.GlobalReducer.footer_currentScreen === "Profile"
-                ? true
-                : false
-            }
+            disabled={this.state.isDelaying}
             onPress={() => {
               this.props.SetFooterCurrentScreen({
                 footer_currentScreen: "Profile"
@@ -121,11 +129,7 @@ class Footer extends React.Component {
 
           {/*Conversations*/}
           <TouchableOpacity
-            disabled={
-              this.props.GlobalReducer.footer_currentScreen === "Conversations"
-                ? true
-                : false
-            }
+            disabled={this.state.isDelaying}
             onPress={() => {
               this.props.SetFooterCurrentScreen({
                 footer_currentScreen: "Conversations"
@@ -164,11 +168,7 @@ class Footer extends React.Component {
 
           {/*Connections*/}
           <TouchableOpacity
-            disabled={
-              this.props.GlobalReducer.footer_currentScreen === "Connections"
-                ? true
-                : false
-            }
+            disabled={this.state.isDelaying}
             onPress={() => {
               this.props.SetFooterCurrentScreen({
                 footer_currentScreen: "Connections"
@@ -195,6 +195,7 @@ class Footer extends React.Component {
 
           {/*Settings*/}
           <TouchableOpacity
+            disabled={this.state.isDelaying}
             onPress={() => {
               this.props.SetFooterCurrentScreen({
                 footer_currentScreen: "Settings"
