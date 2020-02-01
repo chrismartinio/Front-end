@@ -221,8 +221,10 @@ class Footer extends React.Component {
 const styles = StyleSheet.create({
   footer: {
     backgroundColor: "white",
-    borderTopLeftRadius: 25,
-    borderTopRightRadius: 25,
+    //borderTopLeftRadius: 25,
+    //borderTopRightRadius: 25,
+    borderColor: "#4b1792",
+    borderWidth: 0.17,
     flex: 1,
     flexDirection: "row",
     justifyContent: "space-between",
