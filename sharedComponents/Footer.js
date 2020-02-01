@@ -72,11 +72,8 @@ class Footer extends React.Component {
       ]
     });
 
-    let footerButtons = ["Profile", "Conversations", "Connections", "Settings"];
-
-    this.isHomeScreen = !footerButtons.includes(
-      this.props.GlobalReducer.footer_currentScreen
-    );
+    this.isHomeScreen =
+      this.props.navigation.state.routeName === "Home" ? true : false;
 
     this.setState({ isDelaying: true });
     this.timeout = setTimeout(() => {
