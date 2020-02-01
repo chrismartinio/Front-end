@@ -11,7 +11,7 @@ import {
 
 import { connect } from "react-redux";
 
-import { server_profile, server_presence } from "../../config/ipconfig";
+import { server_profile, server_presence, server_chat } from "../../config/ipconfig";
 import SetDeviceUserImageUrlAction from "../../storage/actions/ImageProcessingActions/SetDeviceUserImageUrlAction/";
 import SetTimeAction from "../../storage/actions/ConfigReducerActions/SetTimeAction/";
 import SetOnlineUserListAction from "../../storage/actions/GlobalReducerActions/SetOnlineUserListAction/";
@@ -131,14 +131,14 @@ class PreSettingsScreen extends React.Component {
   async componentDidMount() {
     //Setup GUID
     this.guid = await this.props.CreateProfileDataReducer.guid;
-    const socket = io(`http://172.20.10.2:3000/?token=${this.guid}`);
+    const socket = io(`${server_chat}`);
 
     socket.on("connect", () => {
       console.log("Connected to server");
-      socket.emit("login", this.guid);
+      socket.emit("login", {guid: this.guid} );
     });
     socket.on("login", data => {
-      console.log("data", data);
+      console.log("Online User Array:", data);
       socket.emit("retrieving users");
     });
 

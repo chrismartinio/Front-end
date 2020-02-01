@@ -67,7 +67,7 @@ class ConversationsScreen extends React.Component {
   };
 
   onlineIndicator(user) {
-    const socket = io(`http://172.20.10.2:3000/?token=${user}`);
+    const socket = io(`${server_chat}`);
     socket.on("connect", () => {
       console.log("Connected to server");
       socket.emit("retrieving users");
@@ -80,6 +80,9 @@ class ConversationsScreen extends React.Component {
       this.array = data;
       console.log("1", this.array);
     });
+    socket.on('disconnect', function() {
+
+    })
   }
 
   getMatchedUsersProfileFromDB = async matchUsersList => {
