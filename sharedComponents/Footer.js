@@ -28,20 +28,7 @@ class Footer extends React.Component {
   }
 
   async componentDidMount() {
-    this.setState({ isDelaying: true });
-    this.timeout = setTimeout(() => {
-      this.setState({ isDelaying: false }, () => {
-        this.timeout = null;
-      });
-    }, 1500);
-  }
-
-  componentWillUnmount() {
-    clearTimeout(this.timeout);
-  }
-
-  render() {
-    const resetProfileAction = StackActions.reset({
+    this.resetProfileAction = StackActions.reset({
       index: 1,
       actions: [
         NavigationActions.navigate({ routeName: "Home" }),
@@ -55,7 +42,7 @@ class Footer extends React.Component {
       ]
     });
 
-    const resetConversationsAction = StackActions.reset({
+    this.resetConversationsAction = StackActions.reset({
       index: 1,
       actions: [
         NavigationActions.navigate({ routeName: "Home" }),
@@ -65,7 +52,7 @@ class Footer extends React.Component {
       ]
     });
 
-    const resetConnectionsAction = StackActions.reset({
+    this.resetConnectionsAction = StackActions.reset({
       index: 1,
       actions: [
         NavigationActions.navigate({ routeName: "Home" }),
@@ -75,17 +62,7 @@ class Footer extends React.Component {
       ]
     });
 
-    const resetMatchingAction = StackActions.reset({
-      index: 1,
-      actions: [
-        NavigationActions.navigate({ routeName: "Home" }),
-        NavigationActions.navigate({
-          routeName: "Matching"
-        })
-      ]
-    });
-
-    const resetSettingAction = StackActions.reset({
+    this.resetSettingAction = StackActions.reset({
       index: 1,
       actions: [
         NavigationActions.navigate({ routeName: "Home" }),
@@ -95,6 +72,25 @@ class Footer extends React.Component {
       ]
     });
 
+    let footerButtons = ["Profile", "Conversations", "Connections", "Settings"];
+
+    this.isHomeScreen = !footerButtons.includes(
+      this.props.GlobalReducer.footer_currentScreen
+    );
+
+    this.setState({ isDelaying: true });
+    this.timeout = setTimeout(() => {
+      this.setState({ isDelaying: false }, () => {
+        this.timeout = null;
+      });
+    }, 1500);
+  }
+
+  componentWillUnmount() {
+    clearTimeout(this.timeout);
+  }
+
+  render() {
     return (
       <View
         style={{
@@ -103,7 +99,9 @@ class Footer extends React.Component {
           justifyContent: "flex-end"
         }}
       >
-        <View style={styles.footer}>
+        <View
+          style={[styles.footer, { borderWidth: this.isHomeScreen ? 0 : 0.17 }]}
+        >
           {/*Profile*/}
           <TouchableOpacity
             disabled={this.state.isDelaying}
@@ -111,7 +109,7 @@ class Footer extends React.Component {
               this.props.SetFooterCurrentScreen({
                 footer_currentScreen: "Profile"
               });
-              this.props.navigation.dispatch(resetProfileAction);
+              this.props.navigation.dispatch(this.resetProfileAction);
             }}
           >
             <FontAwesome
@@ -134,7 +132,7 @@ class Footer extends React.Component {
               this.props.SetFooterCurrentScreen({
                 footer_currentScreen: "Conversations"
               });
-              this.props.navigation.dispatch(resetConversationsAction);
+              this.props.navigation.dispatch(this.resetConversationsAction);
             }}
           >
             <FontAwesome
@@ -173,7 +171,7 @@ class Footer extends React.Component {
               this.props.SetFooterCurrentScreen({
                 footer_currentScreen: "Connections"
               });
-              this.props.navigation.dispatch(resetConnectionsAction);
+              this.props.navigation.dispatch(this.resetConnectionsAction);
             }}
           >
             <View style={{ bottom: 10 }}>
@@ -200,7 +198,7 @@ class Footer extends React.Component {
               this.props.SetFooterCurrentScreen({
                 footer_currentScreen: "Settings"
               });
-              this.props.navigation.dispatch(resetSettingAction);
+              this.props.navigation.dispatch(this.resetSettingAction);
             }}
           >
             <View style={{ transform: [{ rotate: "180deg" }] }}>
