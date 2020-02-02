@@ -22,7 +22,7 @@ class LoadingScreen extends React.Component {
       <View
         style={{
           flex: 1,
-          backgroundColor: "#4d88ff",
+          backgroundColor: "#6a0dad",//6a0dad
           justifyContent: "center"
         }}
       >

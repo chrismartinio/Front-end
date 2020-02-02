@@ -244,7 +244,7 @@ class ConversationsScreen extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#4d88ff"
+    backgroundColor: "#ffffff"
   },
   chatRoomBox: {
     padding: 20,

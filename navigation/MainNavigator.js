@@ -135,7 +135,7 @@ const MainStack = createStackNavigator(
           color: "#fff"
         },
         headerStyle: {
-          backgroundColor: "#4d88ff",
+          backgroundColor: "#6a0dad",
           borderBottomWidth: 0
         },
         headerLeft: (
@@ -194,7 +194,7 @@ const MainStack = createStackNavigator(
           color: "#fff"
         },
         headerStyle: {
-          backgroundColor: "#4d88ff",
+          backgroundColor: "#6a0dad",
           borderBottomWidth: 0
         },
         headerLeft: (
@@ -214,7 +214,7 @@ const MainStack = createStackNavigator(
           color: "#fff"
         },
         headerStyle: {
-          backgroundColor: "#4d88ff",
+          backgroundColor: "#6a0dad",
           borderBottomWidth: 0
         }
       })
@@ -230,7 +230,7 @@ const MainStack = createStackNavigator(
           color: "#fff"
         },
         headerStyle: {
-          backgroundColor: "#4d88ff",
+          backgroundColor: "#6a0dad",
           borderBottomWidth: 0
         },
         gesturesEnabled: false
