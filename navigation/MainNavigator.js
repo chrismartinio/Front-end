@@ -52,7 +52,7 @@ const MainStack = createStackNavigator(
         },
         headerTitleStyle: {
           bottom: "3%",
-          color: "#6a0dad"
+          color: "#6a0dad"//6a0dad
         }
       })
     },
@@ -132,10 +132,10 @@ const MainStack = createStackNavigator(
         //HeaderLeft is set inside ConversationsScreen.js
         headerTitleStyle: {
           bottom: "3%",
-          color: "#fff"
+          color: "#6a0dad"
         },
         headerStyle: {
-          backgroundColor: "#6a0dad",
+          backgroundColor: "#fff",
           borderBottomWidth: 0
         },
         headerLeft: (
