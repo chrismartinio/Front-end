@@ -449,7 +449,7 @@ class FoundaMatch extends React.Component {
                 style={{
                   borderWidth: 1,
                   width: 0.8 * width,
-                  borderColor: "#4d88ff",
+                  borderColor: "#6a0dad",
                   marginLeft: "1%",
                   marginRight: "1%",
                   alignSelf: "center"
@@ -506,7 +506,7 @@ class FoundaMatch extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#4d88ff"
+    backgroundColor: "#6a0dad"
   },
   likeButtonWrap: {
     alignItems: "center",

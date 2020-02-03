@@ -68,11 +68,12 @@ export default class CircularCarouselItem extends React.Component {
       matchCity: city,
       matchState: state
     };
-
     this.props.navigation.navigate("PermanentChatRoom", matchObj);
   };
 
   render() {
+    const bullet  = "\u2022";
+
     let isOnline = this.props.onlineUserList.includes(
       this.props.matchUserData.userGuid
     ) ? (
@@ -101,7 +102,7 @@ export default class CircularCarouselItem extends React.Component {
 
     let nameFont = shortName(this.props.matchUserData.firstName);
     let ageAddressFont = shortAgeAndAddressSTR(
-      this.props.matchUserData.age + " , " + this.props.matchUserData.city
+      this.props.matchUserData.age + {bullet} + this.props.matchUserData.city
     );
     //Outer box
     return (
@@ -122,7 +123,7 @@ export default class CircularCarouselItem extends React.Component {
             this.goToPermanentChatRoom(this.props.matchUserData);
           }}
           style={{
-            backgroundColor: "#ccccff",
+            backgroundColor: "#e1ddff",//#e1ddff
             width: this.props.width - 5,
             height: this.props.height - 5,
             borderRadius: this.props.borderRadius
@@ -182,8 +183,7 @@ export default class CircularCarouselItem extends React.Component {
 
                 {/*Age and Address*/}
                 <Text style={{ fontSize: width * 0.038 }}>
-                  {this.props.matchUserData.age} ,
-                  {this.props.matchUserData.city}
+                  {this.props.matchUserData.age} {bullet} {this.props.matchUserData.city}
                 </Text>
               </View>
 
