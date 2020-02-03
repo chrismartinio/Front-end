@@ -68,18 +68,21 @@ class Profile_Registration extends Component {
       interestsToggle: false,
       wouldYouRatherToggle: false,
       localDestinationToggle: false,
-      createAccountPassed: false,
+      backgroundCheckToggle: false,
+      createAccountPassed: true, //Modifled
       aboutYouPassed: false,
       preferencesPassed: false,
       interestsPassed: false,
       wouldYouRatherPassed: false,
       localDestinationPassed: false,
+      backgroundCheckPassed: false,
       createAccountStatus: "empty", //empty, passed, or error
       aboutYouStatus: "empty",
       preferencesStatus: "empty",
       interestsStatus: "empty",
       wouldYouRatherStatus: "empty",
       localDestinationStatus: "empty",
+      backgroundCheckStatus: "empty",
       isSuccess: false, //use to make sure if there data inside redux before rendering
       scrollY: 0
     };
@@ -166,6 +169,7 @@ class Profile_Registration extends Component {
       localDestinationStatus: jwtObject.checklist.localDestination
         ? "passed"
         : "empty"
+      //backgroundCheckStatus: false //FIXXXXXXXXXX
     });
   };
 
@@ -204,7 +208,8 @@ class Profile_Registration extends Component {
       this.state.preferencesPassed !== prevState.preferencesPassed ||
       this.state.interestsPassed !== prevState.interestsPassed ||
       this.state.wouldYouRatherPassed !== prevState.wouldYouRatherPassed ||
-      this.state.localDestinationPassed !== prevState.localDestinationPassed
+      this.state.localDestinationPassed !== prevState.localDestinationPassed ||
+      this.state.backgroundCheckPassed !== prevState.backgroundCheckPassed
     ) {
       this.passChecker();
     }
@@ -218,7 +223,8 @@ class Profile_Registration extends Component {
       this.state.preferencesPassed &&
       this.state.interestsPassed &&
       this.state.wouldYouRatherPassed &&
-      this.state.localDestinationPassed
+      this.state.localDestinationPassed &&
+      this.state.backgroundCheckPassed
     ) {
       /*
       this.props.ResetReduxDataAction({
@@ -348,6 +354,19 @@ class Profile_Registration extends Component {
                   }}
                 />
 
+                {/*backgroundCheck*/}
+                <View>
+                  <CollapsibleScreenTab
+                    componentToggle={this.state.backgroundCheckToggle}
+                    componentPassed={this.state.backgroundCheckPassed}
+                    componentStatus={this.state.backgroundCheckStatus}
+                    componentName={"backgroundCheck"}
+                    handleToggle={this.handleToggle}
+                    handlePassed={this.handlePassed}
+                    navigation={this.props.navigation}
+                  />
+                </View>
+
                 {/*Create Account*/}
                 <View>
                   <CollapsibleScreenTab
@@ -419,6 +438,20 @@ class Profile_Registration extends Component {
                     handlePassed={this.handlePassed}
                   />
                 </View>
+
+                {/*backgroundCheck*/}
+                <View>
+                  <CollapsibleScreenTab
+                    componentToggle={this.state.backgroundCheckToggle}
+                    componentPassed={this.state.backgroundCheckPassed}
+                    componentStatus={this.state.backgroundCheckStatus}
+                    componentName={"backgroundCheck"}
+                    handleToggle={this.handleToggle}
+                    handlePassed={this.handlePassed}
+                    navigation={this.props.navigation}
+                  />
+                </View>
+
                 {/*Temporay solution for scrollView; without this would not scroll properly*/}
                 <View style={{ padding: "100%" }} />
               </View>

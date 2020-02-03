@@ -18,6 +18,7 @@ import Preferences from "../Profile_Registration/RegistrationScreens/Preferences
 import Interests from "../Profile_Registration/RegistrationScreens/Interests";
 import WouldYouRather from "../Profile_Registration/RegistrationScreens/WouldYouRather";
 import LocalDestination from "../Profile_Registration/RegistrationScreens/LocalDestination";
+import BackgroundCheck from "../Profile_Registration/RegistrationScreens/BackgroundCheck";
 
 //Dimensions
 const { height, width } = Dimensions.get("window");
@@ -80,6 +81,16 @@ export default function CollapsibleScreenTab(props) {
           />
         );
 
+      case "backgroundCheck":
+        return (
+          <BackgroundCheck
+            handlePassed={props.handlePassed}
+            localDestinationToggle={props.componentToggle}
+            navigation={props.navigation}
+            backgroundCheckPassed={props.componentPassed}
+          />
+        );
+
       default:
         return;
     }
@@ -104,6 +115,9 @@ export default function CollapsibleScreenTab(props) {
 
       case "localDestination":
         return "Local destinations";
+
+      case "backgroundCheck":
+        return "Background Check";
 
       default:
         return;

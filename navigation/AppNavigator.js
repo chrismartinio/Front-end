@@ -9,7 +9,7 @@ import {
 //Profile Home Settings
 import MainNavigator from "./MainNavigator";
 
-//Signup flow Screens
+//Signup flow Screens (OLD)
 import RegistrationPage from "../screens/OldScreens/SignUpFlow/RegistrationPage";
 import SelfiePage from "../screens/OldScreens/SignUpFlow/SelfiePage";
 import PhotoReview from "../screens/OldScreens/SignUpFlow/PhotoReview";
@@ -50,6 +50,7 @@ import PermanentChatRoomScreen from "../screens/ChatFlow/PermanentChatRoomScreen
 import Profile_Registration from "../screens/ProfileFlow/Profile_Registration/Profile_Registration";
 import SelfieScreen from "../screens/ProfileFlow/Profile_Registration/RegistrationScreens/SelfieScreen";
 import RegistrationComplete from "../screens/ProfileFlow/Profile_Registration/RegistrationScreens/RegistrationComplete";
+import BackgroundCheckImage from "../screens/ProfileFlow/Profile_Registration/RegistrationScreens/BackgroundCheckImage";
 
 //Profile Flow - Profile Screen
 import ProfileScreen from "../screens/ProfileFlow/Profile/ProfileScreen";
@@ -144,6 +145,13 @@ const StartStack = createStackNavigator({
       title: `Sign Up`
     })
   },
+  BackgroundCheckImage: {
+    screen: BackgroundCheckImage,
+    navigationOptions: () => ({
+      title: `Background Check`,
+      header: null
+    })
+  },
   Selfie: {
     screen: SelfieScreen,
     navigationOptions: () => ({
@@ -191,7 +199,7 @@ export default createAppContainer(
     {
       // You could add another route here for authentication.
       // Read more at https://reactnavigation.org/docs/en/auth-flow.html
-      Start: StartStack,//Stacks for Auth and Profile
+      Start: StartStack, //Stacks for Auth and Profile
       Main: MainNavigator, //Stacks for App main screens
       Test: TestStack //Stacks for any test screens
     },
